@@ -1,10 +1,14 @@
 <div class="container justified">
     <h1 class="header-item">Bienvenue au cours {{ title }}</h1>
     <img src="https://bit.ly/3m206ss" width="400" height="80" alt="Logo Scrabble" />
-    
 
-    
-    
+    <section class="justified">
+        <div>
+            <button *ngFor="let choice of userChoices | keyvalue" mat-raised-button (click)="openDialog(choice.value)">
+                {{ choice.value }}
+            </button>
+        </div>
+    </section>
 
     <div class="footer-item">
         <h4 class="team-name">Équipe 201</h4>
