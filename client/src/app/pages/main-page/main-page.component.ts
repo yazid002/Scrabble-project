@@ -12,14 +12,18 @@ export class MainPageComponent {
     readonly userChoices = {
         classic: 'Mode Classique',
         log2990: 'Mode LOG2990',
-        scores: 'Meilleurs Scores',
     };
+
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     constructor(public dialog: MatDialog) {}
 
     openDialog(mode: string) {
         mode.replace('c', 'c');
-        this.dialog.open(GameModeDialogComponent);
+        if (mode === this.userChoices.classic) {
+            this.dialog.open(GameModeDialogComponent);
+        } else if (mode === this.userChoices.log2990) {
+            window.alert(mode + ' is unavailable at the moment');
+        }
     }
 }

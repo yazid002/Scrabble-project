@@ -3,7 +3,6 @@
 <form mat-dialog-content>
     <button mat-raised-button mat-dialog-close>Retour à l'accueil</button>
 
-    <button *ngFor="let choice of choices | keyvalue" type="submit" mat-raised-button>
-        {{ choice.value }}
-    </button>
+    <button mat-raised-button mat-dialog-close routerLink=game>Solo</button>
+    <!-- <button mat-raised-button>Multijoueur</button> -->
 </form>
