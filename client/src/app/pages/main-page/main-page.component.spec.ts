@@ -1,5 +1,7 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { CommunicationService } from '@app/services/communication.service';
@@ -19,7 +21,12 @@ describe('MainPageComponent', () => {
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],
-            providers: [{ provide: CommunicationService, useValue: communicationServiceSpy }],
+            providers: [
+                Overlay,
+                MatDialog,
+                MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
+                { provide: CommunicationService, useValue: communicationServiceSpy },
+            ],
         }).compileComponents();
     });
 
