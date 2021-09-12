@@ -7,7 +7,7 @@
             <button *ngFor="let choice of userChoices | keyvalue" mat-raised-button (click)="openDialog(choice.value)">
                 {{ choice.value }}
             </button>
-            <button routerlink="leaderboard" mat-raised-button>Meilleurs scores</button>
+            <button mat-raised-button [routerLink]="['/leaderboard']" >Meilleurs scores</button>
         </div>
     </section>
 
