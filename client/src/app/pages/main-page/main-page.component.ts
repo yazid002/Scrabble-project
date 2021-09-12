@@ -42,7 +42,6 @@ export class MainPageComponent {
             .subscribe(this.message);
     }
     openDialog(mode: string) {
-        mode.replace('c', 'c');
         if (mode === this.userChoices.classic) {
             this.dialog.open(GameModeDialogComponent);
         } else if (mode === this.userChoices.log2990) {
