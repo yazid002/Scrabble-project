@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GameModeDialogComponent } from './game-mode-dialog.component';
 
 describe('GameModeDialogComponent', () => {
@@ -9,6 +9,7 @@ describe('GameModeDialogComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [GameModeDialogComponent],
+            providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
         }).compileComponents();
     });
 
