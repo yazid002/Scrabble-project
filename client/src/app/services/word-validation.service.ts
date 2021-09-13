@@ -17,15 +17,23 @@ export class WordValidationService {
         // console.log('words', this.dictionary.words);
     }
 
-    checkWordMinLength(minLength: number, wordToCheck: string): boolean {
+    validateWord(minLength: number, wordToCheck: string): string | boolean {
+        const word = this.processWord(wordToCheck);
+        const wordIsInvalid = this.checkInvalidSymbols(word);
+        if (!wordIsInvalid) {
+            return this.checkWordMinLength(minLength, wordToCheck) && this.checkWordExists(word);
+        } else return !wordIsInvalid;
+    }
+
+    private checkWordMinLength(minLength: number, wordToCheck: string): boolean {
         return wordToCheck.length >= minLength;
     }
 
-    checkWordExists(wordToCheck: string): boolean {
+    private checkWordExists(wordToCheck: string): boolean {
         return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
 
-    processWord(wordToProcess: string): string {
+    private processWord(wordToProcess: string): string {
         const word = wordToProcess
             .toLocaleLowerCase()
             .normalize('NFD')
@@ -33,15 +41,7 @@ export class WordValidationService {
         return word;
     }
 
-    checkInvalidSymbols(wordToCheck: string): boolean {
+    private checkInvalidSymbols(wordToCheck: string): boolean {
         return this.invalidSymbols.some((symbol) => wordToCheck.includes(symbol));
-    }
-
-    validateWord(minLength: number, wordToCheck: string): string | boolean {
-        const word = this.processWord(wordToCheck);
-        const wordIsInvalid = this.checkInvalidSymbols(word);
-        if (!wordIsInvalid) {
-            return this.checkWordExists(word) && this.checkWordMinLength(minLength, wordToCheck);
-        } else return wordIsInvalid;
     }
 }
