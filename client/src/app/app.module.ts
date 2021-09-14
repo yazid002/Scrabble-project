@@ -13,6 +13,7 @@ import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { GameModeDialogComponent } from './components/dialogs/game-mode-dialog/game-mode-dialog.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
+import { ChatboxComponent } from './components/chatbox/chatbox.component';
 
 /**
  * Main module that is used in main.ts.
@@ -30,6 +31,7 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         SidebarComponent,
         GameModeDialogComponent,
         LeaderboardPageComponent,
+        ChatboxComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
