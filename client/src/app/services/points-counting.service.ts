@@ -3,6 +3,9 @@
 
 import { Injectable } from '@angular/core';
 
+// A placer dans un fichier de constantes
+export const INVALID_NUMBER = -1;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -14,21 +17,22 @@ export class PointsCountingService {
 
     // constructor() {}
 
-    getLetterPoints(letter: string): number | undefined {
+    getLetterPoints(letter: string): number {
         const aLetter = this.reserve.find((element) => element.name === letter.toUpperCase());
-        return aLetter?.params.points;
+        return aLetter?.params.points || INVALID_NUMBER;
     }
 
-    getWordPoints(word: string): number | void {
+    getWordPoints(word: string): number {
         if (this.wordIsValid) {
             return word
                 .split('')
                 .map((letter) => {
-                    return this.getLetterPoints(letter) as number;
+                    return this.getLetterPoints(letter);
                 })
                 .reduce((firstPoint: number, secondPoint: number) => {
                     return firstPoint + secondPoint;
                 });
         }
+        return INVALID_NUMBER;
     }
 }
