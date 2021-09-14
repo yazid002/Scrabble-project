@@ -5,6 +5,8 @@ import { Injectable } from '@angular/core';
 
 // A placer dans un fichier de constantes
 export const INVALID_NUMBER = -1;
+export const BINGO_BONUS = 50;
+export const BINGO_LENGTH = 7;
 
 @Injectable({
     providedIn: 'root',
@@ -22,7 +24,7 @@ export class PointsCountingService {
         return aLetter?.params.points || INVALID_NUMBER;
     }
 
-    getWordPoints(word: string): number {
+    getWordBasePoints(word: string): number {
         if (this.wordIsValid) {
             return word
                 .split('')
@@ -34,5 +36,17 @@ export class PointsCountingService {
                 });
         }
         return INVALID_NUMBER;
+    }
+
+    applyBingo(wordToCheck: string, basePoints: number): number {
+        return wordToCheck.length === BINGO_LENGTH ? basePoints + BINGO_BONUS : basePoints;
+    }
+
+    processWordPoints(wordToCheck: string): number {
+        let points = this.getWordBasePoints(wordToCheck);
+        if (points !== INVALID_NUMBER) {
+            points = this.applyBingo(wordToCheck, points);
+        }
+        return points;
     }
 }
