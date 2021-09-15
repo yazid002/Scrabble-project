@@ -1,10 +1,10 @@
 .input{
+    width: 250px;
     height: max-content;
     position: absolute;
     bottom: 2px;
-}
-.message-container{
-
+    display: flex;
+    flex-direction: row;
 }
 .header{
     height:20px;
@@ -13,6 +13,32 @@
 }
 
 .chat-container{
-    position: relative;
+    // position: relative;
     height: 100%;
+    width: 250px;
+}
+
+.from{
+    color: white;
+    width: 70%;
+    margin: 10px auto;
+    padding: 5px;
+    border: radius 10px;
+}
+.me{
+    background-color: lightblue;
+    margin-left: 30px;
+}
+.him{
+    background-color: darkgray;
+    margin-right: 30px;
+}
+button{
+    height: min-content;
+    width: min-content;
+    bottom: 2px;
+}
+textarea{
+    height:max-content;
+    max-height: 100px;
 }
