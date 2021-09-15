@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Component, OnInit } from '@angular/core';
-import { LettreService } from '@app/services_/serve.service';
+import { ReserveService } from '@app/services/reserve.service';
 
 @Component({
     selector: 'app-root',
@@ -7,10 +8,13 @@ import { LettreService } from '@app/services_/serve.service';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-    constructor(private reserveService: LettreService) {}
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+    constructor(private reserveService: ReserveService) {}
 
     ngOnInit(): void {
-        const mesReserves = this.reserveService.getReserve(7);
+        // eslint-disable-next-line no-undef
+        const taille = 7;
+        const mesReserves = this.reserveService.getReserve(taille);
         // eslint-disable-next-line no-console
         console.log(mesReserves);
         // eslint-disable-next-line no-console
