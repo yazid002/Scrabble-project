@@ -7,19 +7,28 @@
         <input id="message" placeholder="Tapez votre message ou commande ici" />
     </div>
 </div> -->
-<form [formGroup]="myForm">
-    Value: {{ myForm.value | json }}
-    <mat-form-field>
-        <textarea matInput placehorder="message" formControlName="message" name="message"></textarea>
+<div class="chat-container">
+    <div *ngFor="let message of messages">
+        <div class="from me" *ngIf="message.from === me">{{ message.body }}</div>
+        <div class="from him" *ngIf="message.from === him">{{ message.body }}</div>
+    </div>
 
-        <mat-error *ngIf="message?.errors?.minlength">Le message doit être au moins {{ minLength }} caractères. </mat-error>
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">
+        <!-- Value: {{ myForm.value | json }} -->
+        <div class="input">
+            <mat-form-field>
+                <textarea matInput placehorder="message" formControlName="message" name="message"></textarea>
 
-        <mat-error *ngIf="message?.errors?.maxlength">Le message doit être au maximum {{maxLength}} caractères.</mat-error>
-    </mat-form-field>
+                <mat-error *ngIf="message?.errors?.minlength">Le message doit être au moins {{ minLength }} caractères. </mat-error>
 
-    <!-- <button mat-raised-button class="material-icons-outlined"
-type="submit">Envoyer</button> -->
-    <button mat-raised-button [disabled]="myForm.invalid">
-        <mat-icon aria-hidden="false" aria-label="send" color="primary">send</mat-icon>
-    </button>
-</form>
+                <mat-error *ngIf="message?.errors?.maxlength">Le message doit être au maximum {{ maxLength }} caractères.</mat-error>
+            </mat-form-field>
+
+            <!-- <button mat-raised-button class="material-icons-outlined"
+            type="submit">Envoyer</button> -->
+            <button mat-raised-button [disabled]="myForm.invalid" type="submit">
+                <mat-icon aria-hidden="false" aria-label="send" color="primary">send</mat-icon>
+            </button>
+        </div>
+    </form>
+</div>
