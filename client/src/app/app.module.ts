@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
@@ -15,6 +15,8 @@ import { GameModeDialogComponent } from './components/dialogs/game-mode-dialog/g
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
 import { ChatboxComponent } from './components/chatbox/chatbox.component';
 
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -33,7 +35,17 @@ import { ChatboxComponent } from './components/chatbox/chatbox.component';
         LeaderboardPageComponent,
         ChatboxComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
+    imports: [
+        AppMaterialModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        MatInputModule,
+        MatButtonModule,
+    ],
     providers: [],
     bootstrap: [AppComponent],
 })
