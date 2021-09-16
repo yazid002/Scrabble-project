@@ -41,6 +41,7 @@ button{
     bottom: 2px;
 }
 textarea{
-    height:max-content;
+    min-height: 20px;
     max-height: 100px;
+    resize: auto;
 }

@@ -1,13 +1,21 @@
 import { Injectable } from '@angular/core';
-import { place } from './validation-placer';
-import { exchange } from './validation-exchange';
-import { pass } from './validation-pass';
-import { debug } from './validation-debug';
-import { reserve } from './validation-reserve';
+import { DebugExecutionService } from './debug-execution.service';
+import { ExchangeExecutionService } from './exchange-execution.service';
+import { PassExecutionService } from './pass-execution.service';
+import { PlaceExecutionService } from './place-execution.service';
+import { ReserveExecutionService } from './reserve-execution.service';
+
 @Injectable({
     providedIn: 'root',
 })
 export class CommandExecutionService {
+    constructor(
+        private reserveExecutionService: ReserveExecutionService,
+        private placeExecutionService: PlaceExecutionService,
+        private debugExecutionService: DebugExecutionService,
+        private passExecutionService: PassExecutionService,
+        private exchangeExecutionService: ExchangeExecutionService,
+    ) {}
     interpretCommand(command: string): boolean {
         /**
          * Interprets the command given in parameter and returns whether or not a command was executed.
@@ -27,15 +35,15 @@ export class CommandExecutionService {
         const parameters: string[] = command.split(' ');
         switch (parameters[0]) {
             case 'placer':
-                return place(parameters);
+                return this.placeExecutionService.execute(parameters);
             case 'echanger':
-                return exchange(parameters);
+                return this.exchangeExecutionService.execute();
             case 'passer':
-                return pass();
+                return this.passExecutionService.execute();
             case 'debug':
-                return debug();
+                return this.debugExecutionService.execute();
             case 'reserve':
-                return reserve();
+                return this.reserveExecutionService.execute();
             default:
                 break;
         }
