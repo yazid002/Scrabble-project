@@ -34,7 +34,12 @@ export class RackService extends ReserveService {
             this.rackContext.fillStyle = 'rgb(0,0,0)';
             this.rackContext.font = '30px serif';
             if (this.rackLetters != null) {
-                this.rackContext.fillText(this.rackLetters[x].params.affiche, (DEFAULT_WIDTH / RACK_SIZE) * x + 10, DEFAULT_HEIGHT - 10);
+                this.rackContext.fillStyle = 'rgb(0,0,0)';
+                this.rackContext.font = '30px serif';
+                this.rackContext.fillText(this.rackLetters[x].params.affiche, (DEFAULT_WIDTH / RACK_SIZE) * x + 6, DEFAULT_HEIGHT - 8);
+
+                this.rackContext.font = '10px serif';
+                this.rackContext.fillText(this.rackLetters[x].params.points.toString(), (DEFAULT_WIDTH / RACK_SIZE) * x + 25, DEFAULT_HEIGHT - 1);
             }
         }
     }
