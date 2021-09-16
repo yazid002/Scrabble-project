@@ -4,6 +4,7 @@ import { ExchangeExecutionService } from './exchange-execution.service';
 import { PassExecutionService } from './pass-execution.service';
 import { PlaceExecutionService } from './place-execution.service';
 import { ReserveExecutionService } from './reserve-execution.service';
+import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
 
 @Injectable({
     providedIn: 'root',
@@ -16,7 +17,7 @@ export class CommandExecutionService {
         private passExecutionService: PassExecutionService,
         private exchangeExecutionService: ExchangeExecutionService,
     ) {}
-    interpretCommand(command: string): boolean {
+    interpretCommand(command: string): IComputerResponse {
         /**
          * Interprets the command given in parameter and returns whether or not a command was executed.
          * If No command was executed, the command was invalid
@@ -47,6 +48,16 @@ export class CommandExecutionService {
             default:
                 break;
         }
-        return false;
+        const result: IChat = {
+            from: SENDER.computer,
+            body: 'Went throught the command execution service',
+        };
+        const response: IComputerResponse = {
+            success: false,
+            response: result,
+        };
+        return response;
     }
+    
+    
 }

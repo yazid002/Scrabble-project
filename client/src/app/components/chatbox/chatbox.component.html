@@ -1,7 +1,8 @@
 <div class="chat-container">
     <div *ngFor="let message of messages">
-        <div class="from me">{{ message.body }}</div>
-        <!-- <div class="from him">{{ message.body }}</div> -->
+        <div class="from me" *ngIf="message.from===possibleSenders.me">{{ message.body }}</div>
+        <div class="from him" *ngIf="message.from===possibleSenders.otherPlayer">{{ message.body }}</div>
+        <div class="from computer" *ngIf="message.from===possibleSenders.computer">{{ message.body }}</div>
     </div>
 
     <form [formGroup]="myForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-
+import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
 
 const NUM_PARAMETERS = 3; // parameters should have format ['placer',position, word]
 const POSITION_INDEX = 1;
@@ -15,9 +15,18 @@ const DIRECTION_CHAR_POSITION = -1;
     providedIn: 'root',
 })
 export class PlaceExecutionService {
-    execute(parameters: string[]): boolean {
+    execute(parameters: string[]): IComputerResponse {
+        const result: IChat = {
+            from: SENDER.computer,
+            body: 'Went throught the place execution service',
+        };
+        const response: IComputerResponse = {
+            success: true,
+            response: result,
+        };
+
         if (parameters.length !== NUM_PARAMETERS) {
-            return false;
+            response.success = false;
         }
         const position: string = parameters[POSITION_INDEX];
         const word: string = parameters[WORD_INDEX];
@@ -35,15 +44,15 @@ export class PlaceExecutionService {
 
         // Vérifier si les entrées sont valides
         if (ligne >= BOARD_HEIGHT || colone >= BOARD_WIDTH || ligne < 0 || colone < 0) {
-            return false;
+            response.success = false;
         }
         if (direction !== VERTICAL && direction !== HORIZONTAL) {
-            return false;
+            response.success = false;
         }
         if (word.length >= Math.min(BOARD_HEIGHT, BOARD_WIDTH)) {
-            return false;
+            response.success = false;
         }
         // À ce point, on devrait appeler la fonction
-        return true;
+        return response;
     }
 }

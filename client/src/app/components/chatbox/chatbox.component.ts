@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IChat } from '@app/classes/chat';
+import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
@@ -14,6 +14,7 @@ export class ChatboxComponent implements OnInit {
     minLength: number = 0;
     maxLength: number = 512;
     messages: IChat[] = [];
+    readonly possibleSenders = SENDER;
 
     constructor(public chatService: ChatService, private fb: FormBuilder, private commandExecutionService: CommandExecutionService) {}
 
@@ -38,9 +39,10 @@ export class ChatboxComponent implements OnInit {
         const body = this.myForm.value.message;
         console.warn(body);
         if (body.startsWith('!')) {
-            const validCommand: boolean = this.commandExecutionService.interpretCommand(body);
-            if (validCommand) {
+            const response: IComputerResponse = this.commandExecutionService.interpretCommand(body);
+            if (response.success) {
                 this.chatService.addMessage(body, 'ME');
+                this.chatService.addMessage(response.response.body, response.response.from);
             }
         } else {
             this.chatService.addMessage(body, 'ME');
