@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { place } from './validation-placer';
+import { exchange } from './validation-exchange';
+import { pass } from './validation-pass';
+import { debug } from './validation-debug';
+import { reserve } from './validation-reserve';
 @Injectable({
     providedIn: 'root',
 })
 export class CommandExecutionService {
     interpretCommand(command: string): boolean {
         /**
-         * Interprets the command given in parameter and returns whether or not a command was executed. If No command was executed, the command was invalid
+         * Interprets the command given in parameter and returns whether or not a command was executed.
+         * If No command was executed, the command was invalid
          */
 
         /*
@@ -24,29 +29,16 @@ export class CommandExecutionService {
             case 'placer':
                 return place(parameters);
             case 'echanger':
-                return this.exchange(parameters);
+                return exchange(parameters);
             case 'passer':
-                return this.pass();
+                return pass();
             case 'debug':
-                return this.debug();
+                return debug();
             case 'reserve':
-                return this.reserve();
+                return reserve();
             default:
                 break;
         }
         return false;
-    }
-
-    private exchange(parameters: string[]): boolean {
-        return true;
-    }
-    private pass(): boolean {
-        return true;
-    }
-    private debug(): boolean {
-        return true;
-    }
-    private reserve(): boolean {
-        return true;
     }
 }
