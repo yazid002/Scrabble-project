@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IChat, ME } from './chat';
+import { IChat } from '../classes/chat';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -7,12 +8,13 @@ import { IChat, ME } from './chat';
 export class ChatService {
     messages: IChat[] = [];
 
-    getMessages() {
-        return this.messages;
+    getMessages(): Observable<IChat[]> {
+        const obs = of(this.messages);
+        return obs;
     }
-    addMessage(message: string): void {
+    addMessage(message: string, sender: string): void {
         const newMessage: IChat = {
-            from: ME,
+            from: sender,
             body: message,
         };
         this.messages.push(newMessage);
