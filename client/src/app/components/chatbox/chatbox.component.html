@@ -1,7 +1,7 @@
 <div class="chat-container">
     <div *ngFor="let message of messages">
         <div class="from me">{{ message.body }}</div>
-        <div class="from him">{{ message.body }}</div>
+        <!-- <div class="from him">{{ message.body }}</div> -->
     </div>
 
     <form [formGroup]="myForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">
