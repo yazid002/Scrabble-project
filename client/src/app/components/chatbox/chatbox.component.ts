@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ChatService } from '@app/chat.service';
-import {IChat, ME, HIM} from '../../chat'
+import { IChat } from '@app/classes/chat';
+import { ChatService } from '@app/services/chat.service';
+import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
 @Component({
     selector: 'app-chatbox',
@@ -10,19 +11,18 @@ import {IChat, ME, HIM} from '../../chat'
 })
 export class ChatboxComponent implements OnInit {
     myForm: FormGroup;
-    minLength: number = 5;
-    maxLength: number = 25;
+    minLength: number = 0;
+    maxLength: number = 512;
     messages: IChat[] = [];
 
-    me = ME;
-    him = HIM;
-    constructor(public chatService: ChatService, private fb: FormBuilder) {}
+    constructor(public chatService: ChatService, private fb: FormBuilder, private CommandExecutionService: CommandExecutionService) {}
 
     ngOnInit(): void {
         this.myForm = this.fb.group({
             message: ['', [Validators.required, Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]],
         });
         this.myForm.valueChanges.subscribe(/* console.log*/);
+        this.getMessages();
     }
     get message() {
         const message = this.myForm.get('message');
@@ -31,13 +31,19 @@ export class ChatboxComponent implements OnInit {
         return message;
     }
     getMessages(): void {
-        this.messages = this.chatService.getMessages();
+        this.chatService.getMessages().subscribe((messages) => (this.messages = messages));
     }
     onSubmit() {
         console.log('starting submission');
-        console.warn(this.myForm.value);
-        this.chatService.addMessage(this.myForm.value.message);
-        this.getMessages();
+        const body = this.myForm.value.message;
+        console.warn(body);
+        if (body.startsWith('!')) {
+            const validCommand: boolean = this.CommandExecutionService.interpretCommand(body);
+            if (validCommand) {
+                this.chatService.addMessage(body, 'ME');
+            }
+        }
+        // this.getMessages();
         this.myForm.reset();
     }
 }

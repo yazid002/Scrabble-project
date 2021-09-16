@@ -1,16 +1,7 @@
-<!-- <div class="chat-container" >
-    <div class="header">Chat</div>
-    <div class="message-container"></div>
-
-    <div class="input">
-        <label for="message">Message</label>
-        <input id="message" placeholder="Tapez votre message ou commande ici" />
-    </div>
-</div> -->
 <div class="chat-container">
     <div *ngFor="let message of messages">
-        <div class="from me" *ngIf="message.from === me">{{ message.body }}</div>
-        <div class="from him" *ngIf="message.from === him">{{ message.body }}</div>
+        <div class="from me">{{ message.body }}</div>
+        <div class="from him">{{ message.body }}</div>
     </div>
 
     <form [formGroup]="myForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">
@@ -24,8 +15,6 @@
                 <mat-error *ngIf="message?.errors?.maxlength">Le message doit être au maximum {{ maxLength }} caractères.</mat-error>
             </mat-form-field>
 
-            <!-- <button mat-raised-button class="material-icons-outlined"
-            type="submit">Envoyer</button> -->
             <button mat-raised-button [disabled]="myForm.invalid" type="submit">
                 <mat-icon aria-hidden="false" aria-label="send" color="primary">send</mat-icon>
             </button>
