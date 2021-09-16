@@ -42,6 +42,8 @@ export class ChatboxComponent implements OnInit {
             if (validCommand) {
                 this.chatService.addMessage(body, 'ME');
             }
+        } else {
+            this.chatService.addMessage(body, 'ME');
         }
         // this.getMessages();
         this.myForm.reset();
