@@ -35,7 +35,7 @@ export class ReserveService {
         { name: 'X', params: { quantity: 1, points: 10, affiche: 'X' } },
         { name: 'Y', params: { quantity: 1, points: 10, affiche: 'Y' } },
         { name: 'Z', params: { quantity: 1, points: 10, affiche: 'Z' } },
-        { name: '*', params: { quantity: 2, points: 0, affiche: ' ' } },
+        { name: '*', params: { quantity: 2, points: 0, affiche: '' } },
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
