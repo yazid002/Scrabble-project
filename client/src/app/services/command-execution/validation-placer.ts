@@ -23,12 +23,11 @@ export const place = (parameters: string[]): boolean => {
         Taken from: 
         https://stackoverflow.com/questions/10003683/how-can-i-extract-a-number-from-a-string-in-javascript
         */
-    
+
     const direction: string = position.slice(DIRECTION_CHAR_POSITION);
 
     // Vérifier si les entrées sont valides
-    if (ligne >= BOARD_HEIGHT || colone >= BOARD_WIDTH ||
-        ligne < 0 || colone < 10) {
+    if (ligne >= BOARD_HEIGHT || colone >= BOARD_WIDTH || ligne < 0 || colone < 0) {
         return false;
     }
     if (direction !== VERTICAL && direction !== HORIZONTAL) {

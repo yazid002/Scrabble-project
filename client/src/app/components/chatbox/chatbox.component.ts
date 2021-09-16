@@ -15,7 +15,7 @@ export class ChatboxComponent implements OnInit {
     maxLength: number = 512;
     messages: IChat[] = [];
 
-    constructor(public chatService: ChatService, private fb: FormBuilder, private CommandExecutionService: CommandExecutionService) {}
+    constructor(public chatService: ChatService, private fb: FormBuilder, private commandExecutionService: CommandExecutionService) {}
 
     ngOnInit(): void {
         this.myForm = this.fb.group({
@@ -38,7 +38,7 @@ export class ChatboxComponent implements OnInit {
         const body = this.myForm.value.message;
         console.warn(body);
         if (body.startsWith('!')) {
-            const validCommand: boolean = this.CommandExecutionService.interpretCommand(body);
+            const validCommand: boolean = this.commandExecutionService.interpretCommand(body);
             if (validCommand) {
                 this.chatService.addMessage(body, 'ME');
             }
