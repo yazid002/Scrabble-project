@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { Vec2 } from '@app/classes/vec2';
 import { ICaracter } from '@app/models/lettre.model';
+import { ReserveService } from './reserve.service';
 
 // TODO : Avoir un fichier séparé pour les constantes et ne pas les répéter!
 export const DEFAULT_WIDTH = 500;
@@ -21,6 +22,8 @@ export class GridService {
     gridContext: CanvasRenderingContext2D;
 
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+
+    constructor(public res: ReserveService) {}
 
     // TODO : pas de valeurs magiques!! Faudrait avoir une meilleure manière de le faire
     /* eslint-disable @typescript-eslint/no-magic-numbers */
@@ -73,6 +76,7 @@ export class GridService {
 
     drawWord(word: string) {
         const startPosition: Vec2 = { x: 175, y: 100 };
+
         const step = 20;
         this.gridContext.font = '20px system-ui';
         for (let i = 0; i < word.length; i++) {
@@ -88,7 +92,7 @@ export class GridService {
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
-        this.gridContext.fillText(letter.affiche, (DEFAULT_WIDTH / SQUARE_NUMBER) * line + 6, (DEFAULT_WIDTH / SQUARE_NUMBER) * (colone+1) - 3.33);
+        this.gridContext.fillText(letter.affiche, (DEFAULT_WIDTH / SQUARE_NUMBER) * line + 6, (DEFAULT_WIDTH / SQUARE_NUMBER) * (colone + 1) - 3.33);
         this.gridContext.stroke();
 
         // this.gridContext.rect(33.33 * 4, 33.33 * 0, 33.33, 33.33);
@@ -103,6 +107,24 @@ export class GridService {
         // this.gridContext.font = '10px serif';
 
         // tiles[colone][line].letter = letter.affiche;
+    }
+
+    WriteWordH(word: string, x: number, y: number) {
+        // maison
+
+        for (let i = 0; i < word.length; i++) {
+            const caractere = this.res.findLetter(word[i]);
+            this.fillRackPortion(x + i, y, caractere);
+        }
+    }
+
+    WriteWordV(word: string, x: number, y: number) {
+        // maison
+
+        for (let i = 0; i < word.length; i++) {
+            const caractere = this.res.findLetter(word[i]);
+            this.fillRackPortion(x , y+i, caractere);
+        }
     }
 
     get width(): number {
