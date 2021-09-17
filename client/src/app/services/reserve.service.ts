@@ -9,33 +9,33 @@ import { ICaracter } from '@app/models/lettre.model';
 })
 export class ReserveService {
     alphabets: ICaracter[] = [
-        { name: 'A', params: { quantity: 9, points: 1, affiche: 'A' } },
-        { name: 'B', params: { quantity: 2, points: 3, affiche: 'B' } },
-        { name: 'C', params: { quantity: 2, points: 3, affiche: 'C' } },
-        { name: 'D', params: { quantity: 3, points: 2, affiche: 'D' } },
-        { name: 'E', params: { quantity: 15, points: 1, affiche: 'E' } },
-        { name: 'F', params: { quantity: 2, points: 4, affiche: 'F' } },
-        { name: 'G', params: { quantity: 2, points: 4, affiche: 'G' } },
-        { name: 'H', params: { quantity: 2, points: 4, affiche: 'H' } },
-        { name: 'I', params: { quantity: 8, points: 1, affiche: 'I' } },
-        { name: 'J', params: { quantity: 1, points: 8, affiche: 'J' } },
-        { name: 'K', params: { quantity: 1, points: 10, affiche: 'K' } },
-        { name: 'L', params: { quantity: 5, points: 1, affiche: 'L' } },
-        { name: 'M', params: { quantity: 3, points: 2, affiche: 'M' } },
-        { name: 'N', params: { quantity: 6, points: 1, affiche: 'N' } },
-        { name: 'O', params: { quantity: 6, points: 1, affiche: 'O' } },
-        { name: 'P', params: { quantity: 2, points: 3, affiche: 'P' } },
-        { name: 'Q', params: { quantity: 1, points: 8, affiche: 'Q' } },
-        { name: 'R', params: { quantity: 6, points: 1, affiche: 'R' } },
-        { name: 'S', params: { quantity: 6, points: 1, affiche: 'S' } },
-        { name: 'T', params: { quantity: 6, points: 1, affiche: 'T' } },
-        { name: 'U', params: { quantity: 6, points: 1, affiche: 'U' } },
-        { name: 'V', params: { quantity: 2, points: 4, affiche: 'V' } },
-        { name: 'W', params: { quantity: 1, points: 10, affiche: 'W' } },
-        { name: 'X', params: { quantity: 1, points: 10, affiche: 'X' } },
-        { name: 'Y', params: { quantity: 1, points: 10, affiche: 'Y' } },
-        { name: 'Z', params: { quantity: 1, points: 10, affiche: 'Z' } },
-        { name: '*', params: { quantity: 2, points: 0, affiche: '' } },
+        { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+        { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+        { name: 'C', quantity: 2, points: 3, affiche: 'C' },
+        { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+        { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+        { name: 'F', quantity: 2, points: 4, affiche: 'F' },
+        { name: 'G', quantity: 2, points: 4, affiche: 'G' },
+        { name: 'H', quantity: 2, points: 4, affiche: 'H' },
+        { name: 'I', quantity: 8, points: 1, affiche: 'I' },
+        { name: 'J', quantity: 1, points: 8, affiche: 'J' },
+        { name: 'K', quantity: 1, points: 10, affiche: 'K' },
+        { name: 'L', quantity: 5, points: 1, affiche: 'L' },
+        { name: 'M', quantity: 3, points: 2, affiche: 'M' },
+        { name: 'N', quantity: 6, points: 1, affiche: 'N' },
+        { name: 'O', quantity: 6, points: 1, affiche: 'O' },
+        { name: 'P', quantity: 2, points: 3, affiche: 'P' },
+        { name: 'Q', quantity: 1, points: 8, affiche: 'Q' },
+        { name: 'R', quantity: 6, points: 1, affiche: 'R' },
+        { name: 'S', quantity: 6, points: 1, affiche: 'S' },
+        { name: 'T', quantity: 6, points: 1, affiche: 'T' },
+        { name: 'U', quantity: 6, points: 1, affiche: 'U' },
+        { name: 'V', quantity: 2, points: 4, affiche: 'V' },
+        { name: 'W', quantity: 1, points: 10, affiche: 'W' },
+        { name: 'X', quantity: 1, points: 10, affiche: 'X' },
+        { name: 'Y', quantity: 1, points: 10, affiche: 'Y' },
+        { name: 'Z', quantity: 1, points: 10, affiche: 'Z' },
+        { name: '*', quantity: 2, points: 0, affiche: '' },
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -44,7 +44,7 @@ export class ReserveService {
     getNbreOfAvailableLetter() {
         // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
         const nbTotal = this.alphabets.reduce(function (acc, obj) {
-            return acc + obj.params.quantity;
+            return acc + obj.quantity;
         }, 0);
         return nbTotal;
     }
@@ -53,7 +53,7 @@ export class ReserveService {
         // eslint-disable-next-line no-console
         console.log('totaux = ' + this.getNbreOfAvailableLetter());
         const totalAvailableLetters = this.getNbreOfAvailableLetter();
-        const filterByQuantity = (letters: ICaracter[]) => letters.filter((letter) => letter.params.quantity > 0);
+        const filterByQuantity = (letters: ICaracter[]) => letters.filter((letter) => letter.quantity > 0);
         let availableLetters = filterByQuantity(this.alphabets);
         const reserve: ICaracter[] = [];
         if (totalAvailableLetters < requestedQuantity) {
@@ -61,11 +61,11 @@ export class ReserveService {
         }
         let i = 0;
         while (i < requestedQuantity) {
-            const index = Math.round(Math.random() * availableLetters.length);
+            const index = Math.floor(Math.random() * availableLetters.length);
             reserve[i] = availableLetters[index];
             const pos = this.alphabets.findIndex((char) => char?.name + '' === reserve[i]?.name + '');
-            ((this.alphabets[pos] || null).params || null).quantity -= 1;
-            if (this.alphabets[pos].params.quantity == 0) {
+            this.alphabets[pos].quantity -= 1;
+            if (this.alphabets[pos].quantity == 0) {
                 availableLetters = availableLetters.filter((elem) => elem.name != this.alphabets[pos].name);
                 // eslint-disable-next-line no-console
                 console.log('taille de available = ' + availableLetters.length);
@@ -73,5 +73,10 @@ export class ReserveService {
             i++;
         }
         return reserve;
+    }
+
+    findLetter(letterToCheck: string): ICaracter {
+        const index = this.alphabets?.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
+        return this.alphabets[index];
     }
 }

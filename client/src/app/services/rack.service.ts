@@ -13,13 +13,13 @@ export class RackService extends ReserveService {
     rackContext: CanvasRenderingContext2D;
 
     rackLetters: ICaracter[] | null = [
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
     ];
 
     constructor(private reserveService: ReserveService) {
@@ -36,10 +36,10 @@ export class RackService extends ReserveService {
             if (this.rackLetters != null) {
                 this.rackContext.fillStyle = 'rgb(0,0,0)';
                 this.rackContext.font = '30px serif';
-                this.rackContext.fillText(this.rackLetters[x].params.affiche, (DEFAULT_WIDTH / RACK_SIZE) * x + 6, DEFAULT_HEIGHT - 8);
+                this.rackContext.fillText(this.rackLetters[x].affiche, (DEFAULT_WIDTH / RACK_SIZE) * x + 6, DEFAULT_HEIGHT - 8);
 
                 this.rackContext.font = '10px serif';
-                this.rackContext.fillText(this.rackLetters[x].params.points.toString(), (DEFAULT_WIDTH / RACK_SIZE) * x + 25, DEFAULT_HEIGHT - 1);
+                this.rackContext.fillText(this.rackLetters[x].points.toString(), (DEFAULT_WIDTH / RACK_SIZE) * x + 25, DEFAULT_HEIGHT - 1);
             }
         }
     }
