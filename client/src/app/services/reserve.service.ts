@@ -61,10 +61,10 @@ export class ReserveService {
         }
         let i = 0;
         while (i < requestedQuantity) {
-            const index = Math.round(Math.random() * availableLetters.length);
+            const index = Math.floor(Math.random() * availableLetters.length);
             reserve[i] = availableLetters[index];
-            const pos = this.alphabets.findIndex((char) => char?.name + '' === reserve[i]?.name + '');
-            ((this.alphabets[pos] || null).params || null).quantity -= 1;
+            const pos = this.alphabets.findIndex((char) => char.name + '' === reserve[i].name + '');
+            this.alphabets[pos].params.quantity -= 1;
             if (this.alphabets[pos].params.quantity == 0) {
                 availableLetters = availableLetters.filter((elem) => elem.name != this.alphabets[pos].name);
                 // eslint-disable-next-line no-console
