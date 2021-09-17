@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
+import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
 import { DebugExecutionService } from './debug-execution.service';
 import { ExchangeExecutionService } from './exchange-execution.service';
 import { PassExecutionService } from './pass-execution.service';
 import { PlaceExecutionService } from './place-execution.service';
 import { ReserveExecutionService } from './reserve-execution.service';
-import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
 
 @Injectable({
     providedIn: 'root',
@@ -34,11 +34,12 @@ export class CommandExecutionService {
             .replace(/[\u0300-\u036f]/g, '');
 
         const parameters: string[] = command.split(' ');
+        console.log(parameters);
         switch (parameters[0]) {
             case 'placer':
                 return this.placeExecutionService.execute(parameters);
             case 'echanger':
-                return this.exchangeExecutionService.execute();
+                return this.exchangeExecutionService.execute(parameters);
             case 'passer':
                 return this.passExecutionService.execute();
             case 'debug':
@@ -58,6 +59,4 @@ export class CommandExecutionService {
         };
         return response;
     }
-    
-    
 }
