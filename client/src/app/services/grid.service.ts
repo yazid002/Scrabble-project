@@ -83,24 +83,26 @@ export class GridService {
     fillRackPortion(line: number, colone: number, letter: ICaracter) {
         this.gridContext.clearRect(
             (DEFAULT_WIDTH / SQUARE_NUMBER) * line,
-            (DEFAULT_HEIGHT / SQUARE_NUMBER) * colone,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * colone,
             DEFAULT_WIDTH / SQUARE_NUMBER,
-            DEFAULT_HEIGHT / SQUARE_NUMBER,
-        );
-        this.gridContext.rect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * line,
-            (DEFAULT_HEIGHT / SQUARE_NUMBER) * colone,
             DEFAULT_WIDTH / SQUARE_NUMBER,
-            DEFAULT_HEIGHT / SQUARE_NUMBER,
         );
+
+        this.gridContext.fillText(letter.affiche, (DEFAULT_WIDTH / SQUARE_NUMBER) * line + 6, (DEFAULT_WIDTH / SQUARE_NUMBER) * (colone+1) - 3.33);
+        this.gridContext.stroke();
+
+        // this.gridContext.rect(33.33 * 4, 33.33 * 0, 33.33, 33.33);
+
         this.gridContext.stroke();
         this.gridContext.fillStyle = 'rgb(0,0,0)';
         this.gridContext.font = '30px serif';
 
-        // this.gridContext.font = '10px serif';
-        this.gridContext.fillText(letter.affiche, (DEFAULT_WIDTH / SQUARE_NUMBER) * line + 25, (DEFAULT_HEIGHT / SQUARE_NUMBER) * colone - 1);
+        console.log(letter.affiche);
+        console.log(line, colone);
 
-        tiles[colone][line].letter = letter.affiche;
+        // this.gridContext.font = '10px serif';
+
+        // tiles[colone][line].letter = letter.affiche;
     }
 
     get width(): number {
