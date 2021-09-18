@@ -50,7 +50,7 @@ export class CommandExecutionService {
         }
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Went throught the command execution service',
+            body: 'Invalid Command',
         };
         const response: IComputerResponse = {
             success: false,
@@ -58,6 +58,4 @@ export class CommandExecutionService {
         };
         return response;
     }
-    
-    
 }

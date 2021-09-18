@@ -24,35 +24,56 @@ export class PlaceExecutionService {
             success: true,
             response: result,
         };
+        if (!this.checkCommandLength(parameters, response).success) return response;
 
-        if (parameters.length !== NUM_PARAMETERS) {
-            response.success = false;
-        }
         const position: string = parameters[POSITION_INDEX];
+        if (!this.checkPlacementPosition(position, response).success) return response;
+
         const word: string = parameters[WORD_INDEX];
 
-        // Decomposer la position (ex: 'g15v)' en paramètres compréhensible
-        const valeurA: number = 'a'.charCodeAt(0);
-        const ligne: number = position.charCodeAt(0) - valeurA;
-
-        const colone = Number(position.replace(/\d/g, '')); /* Removes all non numeric characters from string, then converts is to a number
-        Taken from: 
-        https://stackoverflow.com/questions/10003683/how-can-i-extract-a-number-from-a-string-in-javascript
-        */
-
-        const direction: string = position.slice(DIRECTION_CHAR_POSITION);
-
-        // Vérifier si les entrées sont valides
-        if (ligne >= BOARD_HEIGHT || colone >= BOARD_WIDTH || ligne < 0 || colone < 0) {
-            response.success = false;
-        }
-        if (direction !== VERTICAL && direction !== HORIZONTAL) {
-            response.success = false;
-        }
-        if (word.length >= Math.min(BOARD_HEIGHT, BOARD_WIDTH)) {
-            response.success = false;
-        }
+        this.checkWordValidity(word, response);
         // À ce point, on devrait appeler la fonction
         return response;
+    }
+
+    private checkCommandLength(parameters: string[], iComputerResponse: IComputerResponse): IComputerResponse {
+        if (parameters.length !== NUM_PARAMETERS) {
+            iComputerResponse.success = false;
+            iComputerResponse.response.body = `ERROR: command 'placer' had ${parameters.length} words, but 'placer' requires ${NUM_PARAMETERS} words`;
+        }
+        return iComputerResponse;
+    }
+    private checkPlacementPosition(position: string, iComputerResponse: IComputerResponse): IComputerResponse {
+        // Decomposer la position (ex: 'g15v)' en paramètres compréhensible
+        const valeurA: number = 'a'.charCodeAt(0); // Pour avoir le code ASCII de a
+
+        const direction: string = position.slice(DIRECTION_CHAR_POSITION);
+        const ligne: number = position.charCodeAt(0) - valeurA;
+        const colone = Number(position.replace(/\D/g, '')); /* Removes all non numeric characters from string, then converts is to a number
+        Taken from: 
+        https://stackoverflow.com/questions/1862130/strip-all-non-numeric-characters-from-string-in-javascript
+        */
+        // Vérifier si les entrées sont valides
+        console.log('colone: ', colone);
+        if (ligne >= BOARD_HEIGHT || colone >= BOARD_WIDTH || ligne < 0 || colone < 0) {
+            iComputerResponse.success = false;
+            iComputerResponse.response.body = "Line index must be between 1 and 15. Column index must be between 'a' and .'o'";
+        }
+        if (direction !== VERTICAL && direction !== HORIZONTAL) {
+            iComputerResponse.success = false;
+            iComputerResponse.response.body = "word direction must be horizontal 'h' of vertical 'v'";
+        }
+        return iComputerResponse;
+    }
+    private checkWordValidity(word: string, iComputerResponse: IComputerResponse): IComputerResponse {
+        if (word.length > BOARD_HEIGHT || word.length > BOARD_WIDTH) {
+            iComputerResponse.success = false;
+            iComputerResponse.response.body = `Word is ${word.length} letters long, but maximum allowed length is ${Math.max(
+                BOARD_HEIGHT,
+                BOARD_WIDTH,
+            )} letters`;
+        }
+
+        return iComputerResponse;
     }
 }
