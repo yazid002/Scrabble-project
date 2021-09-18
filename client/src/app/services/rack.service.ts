@@ -50,32 +50,36 @@ export class RackService extends ReserveService {
         }
     }
 
-    findLetterOccurrence(letterToCheck: string): ICaracter[] {
-        return this.rackLetters?.filter((letter) => letter.name === letterToCheck.toUpperCase()) as ICaracter[];
+    replaceLetter(letterToReplace: string): void {
+        const notFound = -1;
+        if (this.rackLetters != null) {
+            const index = this.findLetterPosition(letterToReplace);
+            if (index !== notFound) {
+                const newCharacters = this.reserveService.getReserve(1);
+                if (newCharacters !== null) {
+                    this.rackLetters[index] = newCharacters[0];
+                }
+                this.fillRackPortion(index);
+            }
+        }
+    }
+
+    countLetterOccurrences(letterToCheck: string, letters: string[]): number {
+        const count = letters.reduce((n, letter) => n + Number(letter.toUpperCase() === letterToCheck.toUpperCase()), 0);
+        return count;
     }
 
     findLetterPosition(letterToCheck: string): number {
         return this.rackLetters?.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
     }
 
-    findOccurrences(letterToCheck: string, letters: ICaracter[]): number {
-        const count = letters.reduce((n, letter) => n + Number(letter.name === letterToCheck.toUpperCase()), 0);
-        return count;
+    checkLettersAvailability(limit: number): boolean {
+        return this.reserveService.getNbreOfAvailableLetter() > limit;
     }
 
-    replaceLetter(letterToReplace: string): void {
-        if (this.rackLetters != null) {
-            const index = this.findLetterPosition(letterToReplace);
-            if (index !== -1) {
-                const newCaracterS = this.reserveService.getReserve(1);
-                if (newCaracterS !== null) {
-                    this.rackLetters[index] = newCaracterS[0];
-                }
-                this.fillRackPortion(index);
-            }
-            console.log(this.rackLetters);
-        }
-    }
+    // private findLetterOccurrence(letterToCheck: string): ICaracter[] {
+    //     return this.rackLetters?.filter((letter) => letter.name === letterToCheck.toUpperCase()) as ICaracter[];
+    // }
 
     // constructor() {}
 }
