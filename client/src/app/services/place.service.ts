@@ -5,9 +5,9 @@ import { ReserveService } from './reserve.service';
     providedIn: 'root',
 })
 export class PlaceService {
-    constructor(public rackService: ReserveService) {}
+    constructor(public reserve: ReserveService) {}
 
-    placeLetter(ligne: number, colomne: number, lettre: string) {
-        const caractere = this.rackService.findLetter(lettre);
-    }
+    // placeLetter(ligne: number, colomne: number, lettre: string) {
+    //     const caractere = this.reserve.findLetter(lettre);
+    // }
 }

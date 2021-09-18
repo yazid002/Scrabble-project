@@ -57,7 +57,8 @@ export class ReserveService {
         let availableLetters = filterByQuantity(this.alphabets);
         const reserve: ICaracter[] = [];
         if (totalAvailableLetters < requestedQuantity) {
-            return null;
+            //return null; 
+            console.log('bug');
         }
         let i = 0;
         while (i < requestedQuantity) {
@@ -75,8 +76,8 @@ export class ReserveService {
         return reserve;
     }
 
-    findLetter(letterToCheck: string): ICaracter {
-        const index = this.alphabets?.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
-        return this.alphabets[index];
-    }
+    // findLetter(letterToCheck: string): ICaracter {
+    //     const index = this.alphabets?.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
+    //     return this.alphabets[index];
+    // }
 }

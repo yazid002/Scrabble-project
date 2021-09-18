@@ -9,10 +9,10 @@ const DEFAULT_HEIGHT = 35;
 @Injectable({
     providedIn: 'root',
 })
-export class RackService extends ReserveService {
+export class RackService {
     rackContext: CanvasRenderingContext2D;
 
-    rackLetters: ICaracter[] | null = [
+    rackLetters: ICaracter[] = [
         { name: ' ', quantity: 0, points: 0, affiche: ' ' },
         { name: ' ', quantity: 0, points: 0, affiche: ' ' },
         { name: ' ', quantity: 0, points: 0, affiche: ' ' },
@@ -22,9 +22,8 @@ export class RackService extends ReserveService {
         { name: ' ', quantity: 0, points: 0, affiche: ' ' },
     ];
 
-    constructor(private reserveService: ReserveService) {
-        super();
-    }
+    constructor(private reserveService: ReserveService) {}
+
     fillRack() {
         this.rackLetters = this.reserveService.getReserve(RACK_SIZE);
 
@@ -44,5 +43,13 @@ export class RackService extends ReserveService {
         }
     }
 
-    // constructor() {}
+    findLetter(letterToCheck: string): ICaracter {
+        const index = this.rackLetters?.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
+
+        if (this.rackLetters[index].affiche === letterToCheck) {
+            return this.rackLetters[index];
+        }
+
+        return this.rackLetters[index];
+    }
 }

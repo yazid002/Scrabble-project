@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+//import { ICaracter } from '@app/models/lettre.model';
 import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
 
@@ -30,19 +31,25 @@ export class PlayAreaComponent implements AfterViewInit {
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     constructor(private readonly gridService: GridService, private readonly rackService: RackService) {}
-
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
         this.buttonPressed = event.key;
+        //this.gridService.fillRackPortion(7, 7, { name: 'A', quantity: 9, points: 1, affiche: 'A' } as ICaracter);
+        this.gridService.writeWordH('M', 7, 7);
+        this.gridService.writeWordV('M', 4, 4);
+
+        // eslint-disable-next-line no-console
+        console.log(this.buttonPressed);
     }
 
     ngAfterViewInit(): void {
         this.gridService.gridContext = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.gridService.fillSquare();
+
         this.gridService.drawGrid();
         this.gridCanvas.nativeElement.focus();
         this.rackService.rackContext = this.rackCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.rackService.fillRack();
+
         this.rackCanvas.nativeElement.focus();
     }
 

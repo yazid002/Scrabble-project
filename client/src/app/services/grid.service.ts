@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { Vec2 } from '@app/classes/vec2';
 import { ICaracter } from '@app/models/lettre.model';
-import { ReserveService } from './reserve.service';
+//import { ReserveService } from './reserve.service';
+import { RackService } from './rack.service';
 
 // TODO : Avoir un fichier séparé pour les constantes et ne pas les répéter!
 export const DEFAULT_WIDTH = 500;
@@ -23,7 +24,7 @@ export class GridService {
 
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    constructor(public res: ReserveService) {}
+    constructor(private rack: RackService) {}
 
     // TODO : pas de valeurs magiques!! Faudrait avoir une meilleure manière de le faire
     /* eslint-disable @typescript-eslint/no-magic-numbers */
@@ -101,29 +102,30 @@ export class GridService {
         this.gridContext.fillStyle = 'rgb(0,0,0)';
         this.gridContext.font = '30px serif';
 
-        console.log(letter.affiche);
-        console.log(line, colone);
+        // eslint-disable-next-line no-console
+        // eslint-disable-next-line no-console
+        
 
         // this.gridContext.font = '10px serif';
 
         // tiles[colone][line].letter = letter.affiche;
     }
 
-    WriteWordH(word: string, x: number, y: number) {
+    writeWordH(word: string, x: number, y: number) {
         // maison
 
         for (let i = 0; i < word.length; i++) {
-            const caractere = this.res.findLetter(word[i]);
+            const caractere = this.rack.findLetter(word[i]);
             this.fillRackPortion(x + i, y, caractere);
         }
     }
 
-    WriteWordV(word: string, x: number, y: number) {
+    writeWordV(word: string, x: number, y: number) {
         // maison
 
         for (let i = 0; i < word.length; i++) {
-            const caractere = this.res.findLetter(word[i]);
-            this.fillRackPortion(x , y+i, caractere);
+            const caractere = this.rack.findLetter(word[i]);
+            this.fillRackPortion(x, y + i, caractere);
         }
     }
 
