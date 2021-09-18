@@ -40,12 +40,11 @@ export class ChatboxComponent implements OnInit {
         console.warn(body);
         if (body.startsWith('!')) {
             const response: IComputerResponse = this.commandExecutionService.interpretCommand(body);
-            if (response.success) {
-                this.chatService.addMessage(body, 'ME');
-                this.chatService.addMessage(response.response.body, response.response.from);
-            }
+
+            this.chatService.addMessage(body, this.possibleSenders.me);
+            this.chatService.addMessage(response.response.body, response.response.from);
         } else {
-            this.chatService.addMessage(body, 'ME');
+            this.chatService.addMessage(body, this.possibleSenders.me);
         }
         // this.getMessages();
         this.myForm.reset();
