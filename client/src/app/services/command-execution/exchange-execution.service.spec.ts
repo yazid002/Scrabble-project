@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { ExchangeExecutionService } from './exchange-execution.service';
 
 describe('ExchangeExecutionService', () => {
