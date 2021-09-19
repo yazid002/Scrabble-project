@@ -22,7 +22,7 @@ export class ExchangeService {
         const incoherentOccurrences: string[] = [
             ...new Set(lettersToChange.filter((letter: string) => this.checkLetterOccurrencesMatch(letter, lettersToChange) === false)),
         ];
-        const inexistentLettersOnRack = lettersToChange.filter((letter: string) => this.findLetterToChangeOnRack(letter) === false);
+        const inexistentLettersOnRack = [...new Set(lettersToChange.filter((letter: string) => this.findLetterToChangeOnRack(letter) === false))];
 
         if (!this.rackService.checkLettersAvailability(EXCHANGE_LIMIT)) {
             throw new ImpossibleCommand("Il n'y a plus assez de lettres dans la réserve.");

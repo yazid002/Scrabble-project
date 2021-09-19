@@ -22,12 +22,12 @@ export class ExchangeExecutionService {
         };
         try {
             this.exchangeService.exchangeLetters(lettersToChange);
+            // « NomDuJoueurQuiÉchange : !échanger lettres »
+            // result.body = `"NomDuJoueurQuiÉchange" : !echanger ${lettersToChange.join('')}`;
         } catch (error) {
             if (error instanceof CommandError) {
                 result.body = error.message;
                 // response.success = false;
-                response.response = result;
-                // console.log(result.body);
                 return response;
             } else {
                 throw error;

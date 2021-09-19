@@ -28,6 +28,7 @@ export class RackService extends ReserveService {
 
     fillRack() {
         this.rackLetters = this.reserveService.getReserve(RACK_SIZE);
+        console.log('totaux: ', this.reserveService.getNbreOfAvailableLetter());
 
         for (let x = 0; x < RACK_SIZE; x++) {
             this.fillRackPortion(x);
@@ -53,13 +54,14 @@ export class RackService extends ReserveService {
     replaceLetter(letterToReplace: string): void {
         const notFound = -1;
         if (this.rackLetters != null) {
-            const index = this.findLetterPosition(letterToReplace);
-            if (index !== notFound) {
+            const indexOnRack = this.findLetterPosition(letterToReplace);
+            if (indexOnRack !== notFound) {
                 const newCharacters = this.reserveService.getReserve(1);
                 if (newCharacters !== null) {
-                    this.rackLetters[index] = newCharacters[0];
+                    this.reserveService.replaceLetter(this.rackLetters[indexOnRack].name);
+                    this.rackLetters[indexOnRack] = newCharacters[0];
                 }
-                this.fillRackPortion(index);
+                this.fillRackPortion(indexOnRack);
             }
         }
     }
