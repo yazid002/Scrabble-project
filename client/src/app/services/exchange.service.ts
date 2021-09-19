@@ -49,7 +49,7 @@ export class ExchangeService {
 
     private checkLetterOccurrencesMatch(letter: string, letters: string[]): boolean {
         const rackLetters = this.rackService.rackLetters as ICaracter[];
-        const rackLettersToStrings = rackLetters.map((rackLetter) => rackLetter.name);
+        const rackLettersToStrings: string[] = rackLetters.map((rackLetter) => rackLetter.name);
         return this.rackService.countLetterOccurrences(letter, letters) <= this.rackService.countLetterOccurrences(letter, rackLettersToStrings);
     }
 

@@ -13,7 +13,7 @@ export class RackService extends ReserveService {
     rackContext: CanvasRenderingContext2D;
 
     rackLetters: ICaracter[] | null = [
-        { name: 'A', params: { quantity: 0, points: 0, affiche: ' ' } },
+        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
         { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
         { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
         { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
