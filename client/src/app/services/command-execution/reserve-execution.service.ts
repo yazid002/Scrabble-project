@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
 import { ReserveService } from '@app/services/reserve.service';
-
 @Injectable({
     providedIn: 'root',
 })

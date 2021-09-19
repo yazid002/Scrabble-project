@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { PlaceExecutionService } from './place-execution.service';
 
 describe('PlaceExecuteService', () => {

@@ -7,4 +7,3 @@ export class CommandSyntaxError extends CommandError {
         this.message = 'Erreur de syntaxe : ' + message;
     }
 }
-// CommandSyntaxError.prototype = new Error();
