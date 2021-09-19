@@ -6,40 +6,73 @@
     display: flex;
     flex-direction: row;
 }
-.header{
-    height:20px;
-    background-color: lightskyblue;
-    padding: 5px auto;
+#r{
+    margin:none;
+    padding: 0.5em 1em;
+    border-radius: 1em;
+    background-color: lightgray;
 }
+textarea{
+    margin: none 1cm;
 
+}
+.header{
+    height:2em;
+    font-size: 2em;
+    text-align: center;
+    background-color: lightskyblue;
+    padding: 50px auto;
+}
+#message-list{
+    height: 100%;
+    max-height: 50vh;
+    // margin-bottom: 1em;
+    
+}
+#button-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#cont1{
+    overflow: auto;
+    
+}
 .chat-container{
     // position: relative;
     height: 100%;
     width: 250px;
+    color: white;
 }
 
 .from{
-    color: white;
     width: 70%;
     margin: 10px auto;
     padding: 5px;
-    border: radius 10px;
+    border-radius: 1em;
+    
+    
 }
 .me{
-    background-color: lightblue;
+    background-color: lightskyblue;
     margin-left: 30px;
     margin-right: 5px;
+    border-bottom-right-radius: 0;
 }
 .him{
     background-color: darkgray;
     margin-right: 30px;
     margin-left: 5px;
+    border-bottom-left-radius: 0;
 }
 .computer{
     background-color: red;
-    color: white;
     margin-right: 30px;
     margin-left: 5px;
+    border-bottom-left-radius: 0;
+}
+#spacing{
+    height: 3cm;
 }
 button{
     height: min-content;
@@ -50,4 +83,7 @@ textarea{
     min-height: 20px;
     max-height: 100px;
     resize: auto;
+}
+form{
+    color: black;
 }
