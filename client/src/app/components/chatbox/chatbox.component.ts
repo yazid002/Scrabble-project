@@ -46,12 +46,15 @@ export class ChatboxComponent implements OnInit {
         this.myForm.reset();
         this.scrollDown();
     }
-    scrollDown() {
-        const cont1 = document.getElementById('cont1');
+    private scrollDown() {
+        const cont1 = document.getElementById('message-history');
 
         if (cont1) {
             cont1.scrollTop = cont1.scrollHeight;
             cont1.scrollTo(0, cont1.scrollHeight);
         }
+    }
+    private getMessages(): void {
+        this.chatService.getMessages().subscribe((messages) => (this.messages = messages));
     }
 }
