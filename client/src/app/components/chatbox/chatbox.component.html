@@ -6,14 +6,13 @@
     <mat-card id="message-history">
         <div class="from"  *ngFor="let message of messages">
 
-            <mat-card [ngClass]="possibleSenders.me" *ngIf="message.from===possibleSenders.me" color="primary">
-                {{message.body}}
+            <mat-card [ngClass]="possibleSenders.me" *ngIf="message.from===possibleSenders.me" color="primary" [innerHTML]="message.body">
             </mat-card>
-            <mat-card [ngClass]="possibleSenders.computer" *ngIf="message.from===possibleSenders.computer" color="accent">
-                {{message.body}}
+            <mat-card [ngClass]="possibleSenders.computer" *ngIf="message.from===possibleSenders.computer" color="accent" [innerHTML]="message.body">
+                
             </mat-card>
-            <mat-card [ngClass]="possibleSenders.otherPlayer" *ngIf="message.from===possibleSenders.otherPlayer">
-                {{message.body}}
+            <mat-card [ngClass]="possibleSenders.otherPlayer" *ngIf="message.from===possibleSenders.otherPlayer" [innerHTML]="message.body">
+                
             </mat-card>
         </div>
     </mat-card>
