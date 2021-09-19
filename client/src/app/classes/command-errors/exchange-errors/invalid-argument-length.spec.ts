@@ -1,6 +1,6 @@
 import { InvalidArgumentsLength } from './invalid-argument-length';
 
-describe('InvalidInput', () => {
+describe('InvalidArgumentsLength', () => {
     let invalidArgumentsLength: InvalidArgumentsLength;
 
     beforeEach(() => {
