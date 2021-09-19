@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
+import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { ExchangeService } from '@app/services/exchange.service';
 
@@ -10,16 +10,13 @@ const ARGUMENTS_INDEX = 1;
 })
 export class ExchangeExecutionService {
     constructor(private exchangeService: ExchangeService) {}
-    execute(parameters: string[]): IComputerResponse {
+    execute(parameters: string[]): IChat {
         const lettersToChange: string[] = parameters[ARGUMENTS_INDEX].split('');
         const result: IChat = {
             from: SENDER.computer,
             body: 'Went through the exchange execution service',
         };
-        const response: IComputerResponse = {
-            success: true,
-            response: result,
-        };
+
         try {
             this.exchangeService.exchangeLetters(lettersToChange);
             // « NomDuJoueurQuiÉchange : !échanger lettres »
@@ -27,12 +24,11 @@ export class ExchangeExecutionService {
         } catch (error) {
             if (error instanceof CommandError) {
                 result.body = error.message;
-                // response.success = false;
-                return response;
+                return result;
             } else {
                 throw error;
             }
         }
-        return response;
+        return result;
     }
 }

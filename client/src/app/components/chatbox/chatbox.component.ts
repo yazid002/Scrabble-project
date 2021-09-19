@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
+import { IChat, SENDER } from '@app/classes/chat';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
@@ -35,10 +35,10 @@ export class ChatboxComponent implements OnInit {
     onSubmit() {
         const body = this.myForm.value.message;
         if (body.startsWith('!')) {
-            const response: IComputerResponse = this.commandExecutionService.interpretCommand(body);
+            const result: IChat = this.commandExecutionService.interpretCommand(body);
 
             this.chatService.addMessage(body, this.possibleSenders.me);
-            this.chatService.addMessage(response.response.body, response.response.from);
+            this.chatService.addMessage(result.body, result.from);
         } else {
             this.chatService.addMessage(body, this.possibleSenders.me);
         }
