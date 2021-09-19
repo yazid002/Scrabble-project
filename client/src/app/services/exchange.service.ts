@@ -65,40 +65,4 @@ export class ExchangeService {
     private findInexistentLettersOnRack(lettersToChange: string[]): string[] {
         return [...new Set(lettersToChange.filter((letter: string) => this.findLetterToChangeOnRack(letter) === false))];
     }
-
-    // private countLetterOccurrences(letterToCheck: string, letters: string[]): number {
-    //     const count = letters.reduce((n, letter) => n + Number(letter === letterToCheck), 0);
-    //     return count;
-    // }
-
-    // private checkLettersRackOccurrence(letterToCheck: string): ICaracter[] {
-    //     const occurences = this.rackService.findLetterOccurrence(letterToCheck);
-    //     console.log(occurences);
-    //     return occurences;
-    // }
-
-    // private checkLetterToChangeOccurrence(letters: string[], letterToCheck: string): string[] {
-    //     return letters.filter((letter) => letter.toUpperCase() === letterToCheck.toUpperCase());
-    // }
-
-    // checkLettersTo(letter: string, letters: string[]): boolean {
-    //     return this.findOccurrences(letter, letters) >= 1 && this.findOccurrences(letter, letters) <= EXCHANGE_LIMIT;
-    // }
-
-    // if (invalidOccurrences || inexistantLettersOnRack || invalidArgumentsLength) {
-    //     // throw new SyntaxError('blabla');
-    //     //  throw new 'blabla'();
-    //     // return ExchangeStatus.SyntaxError;
-    // }
-    //  console.log('invalidOccurrences: ', incoherentOccurrences);
-    //  console.log('inexistentLettersOnRack: ', inexistentLettersOnRack);
-    //  console.log('length: ', invalidArgumentsLength);
-    // switch (key) {
-    //     case value:
-    //         break;
-
-    //     default:
-    //         break;
-    // }
-    // return ExchangeStatus.Success;
 }
