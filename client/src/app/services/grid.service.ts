@@ -130,30 +130,34 @@ export class GridService {
         // tiles[colone][line].letter = letter.affiche;
     }
 
-    placeWord(mot: string, positions: string, x: number, y: number) {
+    placeWord(word: string, positions: string, x: number, y: number) {
         if (positions === 'h') {
-            this.writeWordH(mot, x, y);
+            this.writeWordH(word, x, y);
         } else {
-            this.writeWordV(mot, x, y);
+            this.writeWordV(word, x, y);
         }
+
+        this.rack.replaceWord(word)
     }
 
     writeWordH(word: string, x: number, y: number) {
         // maison
 
         for (let i = 0; i < word.length; i++) {
-            const caractere = this.rack.findLetter(word[i]) as ICaracter;
-            this.fillRackPortion(x, y + i, caractere);
+            const character = this.rack.findLetter(word[i]) as ICaracter;
+            this.fillRackPortion(x, y + i, character);
         }
+        //this.rack.replaceWord(word);
     }
 
     writeWordV(word: string, x: number, y: number) {
         // maison
 
         for (let i = 0; i < word.length; i++) {
-            const caractere = this.rack.findLetter(word[i]) as ICaracter;
-            this.fillRackPortion(x + i, y, caractere);
+            const character = this.rack.findLetter(word[i]) as ICaracter;
+            this.fillRackPortion(x + i, y, character);
         }
+        //this.rack.replaceWord(word);
     }
 
     get width(): number {

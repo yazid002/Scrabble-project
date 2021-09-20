@@ -93,4 +93,10 @@ export class RackService {
         const notFound = -1;
         return this.findLetterPosition(letterToCheck) !== notFound;
     }
+
+    replaceWord(word: string) {
+        for (let i = 0; i < word.length; i++) {
+            this.replaceLetter(word[i]);
+        }
+    }
 }

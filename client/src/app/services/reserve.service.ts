@@ -57,7 +57,7 @@ export class ReserveService {
         let availableLetters = filterByQuantity(this.alphabets);
         const reserve: ICaracter[] = [];
         if (totalAvailableLetters < requestedQuantity) {
-            //return null; 
+            // return null;
             console.log('bug');
         }
         let i = 0;
@@ -88,4 +88,6 @@ export class ReserveService {
         }
         console.log('totaux: ', this.getNbreOfAvailableLetter());
     }
+
+    
 }
