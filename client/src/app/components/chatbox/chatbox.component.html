@@ -1,42 +1,45 @@
-<div class="chat-container">
-    <div class="header">
-        <p>Messages</p>
-    </div>
-    <div id="cont1">
+<div id="chat-area">
+    <mat-card id="header">
+        <mat-card-title> Messages </mat-card-title>
+    </mat-card>
 
-        <div id="message-list">
-            <div *ngFor="let message of messages">
-                <div class="from me" *ngIf="message.from === possibleSenders.me">{{ message.body }}</div>
-                <div class="from him" *ngIf="message.from === possibleSenders.otherPlayer">{{ message.body }}</div>
-                <div class="from computer" *ngIf="message.from === possibleSenders.computer">{{ message.body }}</div>
-            </div>
-        </div>
-        <div id="spacing">
+    <mat-card id="message-history">
+        <div class="from"  *ngFor="let message of messages">
 
+            <mat-card [ngClass]="possibleSenders.me" *ngIf="message.from===possibleSenders.me" color="primary" [innerHTML]="message.body">
+            </mat-card>
+            <mat-card [ngClass]="possibleSenders.computer" *ngIf="message.from===possibleSenders.computer" color="accent" [innerHTML]="message.body">
+                
+            </mat-card>
+            <mat-card [ngClass]="possibleSenders.otherPlayer" *ngIf="message.from===possibleSenders.otherPlayer" [innerHTML]="message.body">
+                
+            </mat-card>
         </div>
-    </div>
-      
+    </mat-card>
     
-    <form [formGroup]="myForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">
-        <!-- Value: {{ myForm.value | json }} -->
-        <div class="input">
-            <mat-form-field>
-                <div id="r">
+    <mat-card id="message-input">
+        <form [formGroup]="myForm" (keyup.enter)="onSubmit()" (ngSubmit)="onSubmit()">
+                <!-- {{myForm.value | json}} -->
+            <div id="textbox-container">
 
-                    <textarea matInput placehorder="message" formControlName="message" name="message"></textarea>
-                </div>
-                    
-                    <mat-error *ngIf="message?.errors?.minlength">Le message doit être au moins {{ minLength }} caractères. </mat-error>
-                    
-                    <mat-error *ngIf="message?.errors?.maxlength">Le message doit être au maximum {{ maxLength }} caractères.</mat-error>
-            </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Tapez un message</mat-label>
+                    <textarea matInput formControlName="message"></textarea>
+                    <mat-error *ngIf="message?.errors?.minlength && message?.touched">
+                        Votre message est trop long. 
+                    </mat-error>
+                    <mat-error *ngIf="message?.errors?.placerPattern && message?.touched">
+                        placeer
+                    </mat-error>
 
+                </mat-form-field>
+            </div>
             <div id="button-container">
 
-                <button mat-raised-button [disabled]="myForm.invalid" type="submit">
-                    <mat-icon aria-hidden="false" aria-label="send" color="primary">send</mat-icon>
+                <button type="submit" [disabled]="!myForm.valid" mat-mini-fab color="primary" aria-label="Example icon button with a home icon" >
+                    <mat-icon>send</mat-icon>
                 </button>
             </div>
-        </div>
-    </form>
+        </form>
+        </mat-card>
 </div>

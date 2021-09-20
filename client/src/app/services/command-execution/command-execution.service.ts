@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
+import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
 import { InvalidInput } from '@app/classes/command-errors/invalid-input';
@@ -20,7 +20,7 @@ export class CommandExecutionService {
         private passExecutionService: PassExecutionService,
         private exchangeExecutionService: ExchangeExecutionService,
     ) {}
-    interpretCommand(command: string): IComputerResponse {
+    interpretCommand(command: string): IChat {
         /**
          * Interprets the command given in parameter and returns whether or not a command was executed.
          * If No command was executed, the command was invalid
@@ -61,10 +61,6 @@ export class CommandExecutionService {
             from: SENDER.computer,
             body: 'Went through the command execution service',
         };
-        const response: IComputerResponse = {
-            success: false,
-            response: result,
-        };
 
         try {
             switch (parameters[0]) {
@@ -89,9 +85,7 @@ export class CommandExecutionService {
         } catch (error) {
             if (error instanceof CommandError) {
                 result.body = error.message;
-                response.success = true;
-                response.response = result;
-                return response;
+                return result;
             } else {
                 throw error;
             }

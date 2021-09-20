@@ -1,89 +1,52 @@
-.input{
+#chat-area {
     width: 250px;
-    height: max-content;
+    height: 100%;
+    position: relative;
+    bottom: 0;
+    
+}
+
+#header{
+    width: 100%;
+
+}
+
+#message-history {
+    scroll-behavior: auto;
+    overflow: auto;
+    max-height: 50vh;
+    width: 100%;
+}
+.from {
+    margin-top: 0.5em;
+}
+.ME {
+    margin-left: 1em;
+    background-color: #3f51b5;
+    color: white;
+    border-radius: 1em;
+    border-bottom-right-radius: 0;
+}
+.COMPUTER {
+    margin-right: 1em;
+    background-color: lightgray;
+    border-radius: 1em;
+    border-bottom-left-radius: 0;
+}
+
+#message-input {
+    height: fit-content;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     position: absolute;
-    bottom: 2px;
+    bottom: 0;
+}
+form {
     display: flex;
     flex-direction: row;
 }
-#r{
-    margin:none;
-    padding: 0.5em 1em;
-    border-radius: 1em;
-    background-color: lightgray;
-}
-textarea{
-    margin: none 1cm;
-
-}
-.header{
-    height:2em;
-    font-size: 2em;
-    text-align: center;
-    background-color: lightskyblue;
-    padding: 50px auto;
-}
-#message-list{
-    height: 100%;
-    max-height: 50vh;
-    // margin-bottom: 1em;
-    
-}
-#button-container{
+.button-container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-#cont1{
-    overflow: auto;
-    
-}
-.chat-container{
-    // position: relative;
-    height: 100%;
-    width: 250px;
-    color: white;
-}
-
-.from{
-    width: 70%;
-    margin: 10px auto;
-    padding: 5px;
-    border-radius: 1em;
-    
-    
-}
-.me{
-    background-color: lightskyblue;
-    margin-left: 30px;
-    margin-right: 5px;
-    border-bottom-right-radius: 0;
-}
-.him{
-    background-color: darkgray;
-    margin-right: 30px;
-    margin-left: 5px;
-    border-bottom-left-radius: 0;
-}
-.computer{
-    background-color: red;
-    margin-right: 30px;
-    margin-left: 5px;
-    border-bottom-left-radius: 0;
-}
-#spacing{
-    height: 3cm;
-}
-button{
-    height: min-content;
-    width: min-content;
-    bottom: 2px;
-}
-textarea{
-    min-height: 20px;
-    max-height: 100px;
-    resize: auto;
-}
-form{
-    color: black;
+    flex-direction: row-reverse;
 }
