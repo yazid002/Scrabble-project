@@ -28,14 +28,12 @@ export class GridService {
 
     // TODO : pas de valeurs magiques!! Faudrait avoir une meilleure manière de le faire
     /* eslint-disable @typescript-eslint/no-magic-numbers */
-
     fillGrid(xPos: number, yPos: number, text: string): void {
         this.gridContext.fillRect(xPos * SQUARE_WIDTH, yPos * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
         this.gridContext.fillStyle = 'rgb(200,200,200)';
         this.gridContext.font = '15px serif';
         this.gridContext.strokeText(text, SQUARE_WIDTH * xPos + 7, SQUARE_HEIGHT * yPos + 22);
     }
-
     drawGrid() {
         this.gridContext.beginPath();
         this.gridContext.strokeStyle = 'black';
@@ -70,13 +68,21 @@ export class GridService {
                 this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
             }
         }
+        this.gridContext.fillStyle = '#FFE4C4';
+        this.gridContext.fillRect(0, DEFAULT_WIDTH, SQUARE_HEIGHT * 16, SQUARE_WIDTH * 16);
+        this.gridContext.fillRect(DEFAULT_HEIGHT, 0, SQUARE_HEIGHT * 16, SQUARE_WIDTH * 16);
+
         this.gridContext.fillStyle = 'rgb(0,0,0)';
         this.gridContext.font = '30px serif';
 
         for (let i = 0; i < 15; i++) {
             const pas = i + 1;
             const pas2 = i + 65;
+
             if (pas < 10) {
+                // this.gridContext.fillStyle = '#FFF0F5';
+                //     this.gridContext.fillRect(0, DEFAULT_WIDTH, SQUARE_HEIGHT * 16, SQUARE_WIDTH * 16);
+                // this.gridContext.fillRect(DEFAULT_HEIGHT, 0, SQUARE_HEIGHT * 16, SQUARE_WIDTH * 16);
                 this.gridContext.fillText(pas.toString(), SQUARE_WIDTH * i + 10, SQUARE_HEIGHT * 16 - 6);
             } else {
                 this.gridContext.fillText(pas.toString(), SQUARE_WIDTH * i, SQUARE_HEIGHT * 16 - 6);
