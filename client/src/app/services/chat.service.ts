@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IChat } from '../classes/chat';
+import { IChat } from '@app/classes/chat';
 import { Observable, of } from 'rxjs';
 
 @Injectable({

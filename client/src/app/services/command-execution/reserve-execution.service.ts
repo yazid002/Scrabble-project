@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IChat, IComputerResponse, SENDER } from '@app/classes/chat';
-import { ReserveService } from '../reserve.service';
-
+import { ReserveService } from '@app/services/reserve.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -11,7 +10,7 @@ export class ReserveExecutionService {
     execute(): IComputerResponse {
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Went throught the reserve execution service',
+            body: 'Went through the reserve execution service ',
         };
         for (const letter of this.reserveService.alphabets) {
             const line = `${letter.name}: ${letter.quantity}

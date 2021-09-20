@@ -76,8 +76,16 @@ export class ReserveService {
         return reserve;
     }
 
-    // findLetter(letterToCheck: string): ICaracter {
-    //     const index = this.alphabets?.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
-    //     return this.alphabets[index];
-    // }
+    findLetterPosition(letterToCheck: string): number {
+        return this.alphabets?.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
+    }
+
+    replaceLetter(letterToReplace: string): void {
+        const notFound = -1;
+        const indexInReserve = this.findLetterPosition(letterToReplace);
+        if (indexInReserve !== notFound) {
+            this.alphabets[indexInReserve].quantity++;
+        }
+        console.log('totaux: ', this.getNbreOfAvailableLetter());
+    }
 }

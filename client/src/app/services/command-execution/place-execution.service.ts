@@ -18,7 +18,7 @@ export class PlaceExecutionService {
     execute(parameters: string[]): IComputerResponse {
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Went throught the place execution service',
+            body: 'Went through the place execution service',
         };
         const response: IComputerResponse = {
             success: true,

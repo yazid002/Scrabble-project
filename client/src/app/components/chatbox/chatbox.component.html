@@ -1,24 +1,42 @@
 <div class="chat-container">
-    <div *ngFor="let message of messages">
-        <div class="from me" *ngIf="message.from===possibleSenders.me">{{ message.body }}</div>
-        <div class="from him" *ngIf="message.from===possibleSenders.otherPlayer">{{ message.body }}</div>
-        <div class="from computer" *ngIf="message.from===possibleSenders.computer">{{ message.body }}</div>
+    <div class="header">
+        <p>Messages</p>
     </div>
+    <div id="cont1">
 
+        <div id="message-list">
+            <div *ngFor="let message of messages">
+                <div class="from me" *ngIf="message.from === possibleSenders.me">{{ message.body }}</div>
+                <div class="from him" *ngIf="message.from === possibleSenders.otherPlayer">{{ message.body }}</div>
+                <div class="from computer" *ngIf="message.from === possibleSenders.computer">{{ message.body }}</div>
+            </div>
+        </div>
+        <div id="spacing">
+
+        </div>
+    </div>
+      
+    
     <form [formGroup]="myForm" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">
         <!-- Value: {{ myForm.value | json }} -->
         <div class="input">
             <mat-form-field>
-                <textarea matInput placehorder="message" formControlName="message" name="message"></textarea>
+                <div id="r">
 
-                <mat-error *ngIf="message?.errors?.minlength">Le message doit être au moins {{ minLength }} caractères. </mat-error>
-
-                <mat-error *ngIf="message?.errors?.maxlength">Le message doit être au maximum {{ maxLength }} caractères.</mat-error>
+                    <textarea matInput placehorder="message" formControlName="message" name="message"></textarea>
+                </div>
+                    
+                    <mat-error *ngIf="message?.errors?.minlength">Le message doit être au moins {{ minLength }} caractères. </mat-error>
+                    
+                    <mat-error *ngIf="message?.errors?.maxlength">Le message doit être au maximum {{ maxLength }} caractères.</mat-error>
             </mat-form-field>
 
-            <button mat-raised-button [disabled]="myForm.invalid" type="submit">
-                <mat-icon aria-hidden="false" aria-label="send" color="primary">send</mat-icon>
-            </button>
+            <div id="button-container">
+
+                <button mat-raised-button [disabled]="myForm.invalid" type="submit">
+                    <mat-icon aria-hidden="false" aria-label="send" color="primary">send</mat-icon>
+                </button>
+            </div>
         </div>
     </form>
 </div>

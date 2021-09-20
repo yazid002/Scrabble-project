@@ -22,32 +22,36 @@ export class ChatboxComponent implements OnInit {
         this.myForm = this.fb.group({
             message: ['', [Validators.required, Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]],
         });
-        this.myForm.valueChanges.subscribe(/* console.log*/);
+        this.myForm.valueChanges.subscribe();
         this.getMessages();
     }
     get message() {
         const message = this.myForm.get('message');
-        // console.log('message min length:');
-        // console.log(message?.errors?.minlength);
         return message;
     }
     getMessages(): void {
         this.chatService.getMessages().subscribe((messages) => (this.messages = messages));
     }
     onSubmit() {
-        console.log('starting submission');
         const body = this.myForm.value.message;
-        console.warn(body);
         if (body.startsWith('!')) {
             const response: IComputerResponse = this.commandExecutionService.interpretCommand(body);
-            if (response.success) {
-                this.chatService.addMessage(body, 'ME');
-                this.chatService.addMessage(response.response.body, response.response.from);
-            }
+
+            this.chatService.addMessage(body, this.possibleSenders.me);
+            this.chatService.addMessage(response.response.body, response.response.from);
         } else {
-            this.chatService.addMessage(body, 'ME');
+            this.chatService.addMessage(body, this.possibleSenders.me);
         }
         // this.getMessages();
         this.myForm.reset();
+        this.scrollDown();
+    }
+    scrollDown() {
+        const cont1 = document.getElementById('cont1');
+
+        if (cont1) {
+            cont1.scrollTop = cont1.scrollHeight;
+            cont1.scrollTo(0, cont1.scrollHeight);
+        }
     }
 }
