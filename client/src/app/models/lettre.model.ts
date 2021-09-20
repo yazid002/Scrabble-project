@@ -1,7 +1,7 @@
 export interface IParams {
     quantity: number;
     points: number;
-    affiche: String;
+    affiche: string;
 }
 export interface ICaracter {
     name: string;

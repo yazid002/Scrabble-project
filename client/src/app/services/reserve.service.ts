@@ -1,6 +1,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable @typescript-eslint/no-useless-constructor */
 import { Injectable } from '@angular/core';
+import { ICaracter } from '@app/models/lettre.model';
 
 @Injectable({
     // eslint-disable-next-line prettier/prettier
