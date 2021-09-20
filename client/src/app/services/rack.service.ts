@@ -64,14 +64,11 @@ export class RackService {
         }
     }
 
-    findLetter(letterToCheck: string): ICaracter {
-        const index = this.rackLetters?.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
-
-        if (this.rackLetters[index].affiche === letterToCheck) {
+    findLetter(letterToCheck: string): ICaracter | void {
+        const index = this.findLetterPosition(letterToCheck);
+        if (index != -1) {
             return this.rackLetters[index];
         }
-
-        return this.rackLetters[index];
     }
     countLetterOccurrences(letterToCheck: string, letters: string[]): number {
         const count = letters.reduce((n, letter) => n + Number(letter.toUpperCase() === letterToCheck.toUpperCase()), 0);
@@ -91,4 +88,9 @@ export class RackService {
     // }
 
     // constructor() {}
+
+    isLetterOnRack(letterToCheck: string): boolean {
+        const notFound = -1;
+        return this.findLetterPosition(letterToCheck) !== notFound;
+    }
 }

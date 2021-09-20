@@ -104,18 +104,25 @@ export class GridService {
 
         // eslint-disable-next-line no-console
         // eslint-disable-next-line no-console
-        
 
         // this.gridContext.font = '10px serif';
 
         // tiles[colone][line].letter = letter.affiche;
     }
 
+    placeWord(mot: string, positions: string, x: number, y: number) {
+        if (positions === 'h') {
+            this.writeWordH(mot, x, y);
+        } else {
+            this.writeWordV(mot, x, y);
+        }
+    }
+
     writeWordH(word: string, x: number, y: number) {
         // maison
 
         for (let i = 0; i < word.length; i++) {
-            const caractere = this.rack.findLetter(word[i]);
+            const caractere = this.rack.findLetter(word[i]) as ICaracter;
             this.fillRackPortion(x + i, y, caractere);
         }
     }
@@ -124,7 +131,7 @@ export class GridService {
         // maison
 
         for (let i = 0; i < word.length; i++) {
-            const caractere = this.rack.findLetter(word[i]);
+            const caractere = this.rack.findLetter(word[i]) as ICaracter;
             this.fillRackPortion(x, y + i, caractere);
         }
     }
