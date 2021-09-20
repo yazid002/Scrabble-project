@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { Vec2 } from '@app/classes/vec2';
 import { ICaracter } from '@app/models/lettre.model';
-//import { ReserveService } from './reserve.service';
+// import { ReserveService } from './reserve.service';
 import { RackService } from './rack.service';
 
 // TODO : Avoir un fichier séparé pour les constantes et ne pas les répéter!
@@ -72,7 +72,17 @@ export class GridService {
         }
         this.gridContext.fillStyle = 'rgb(0,0,0)';
         this.gridContext.font = '30px serif';
-        this.gridContext.fillText(tiles[0][0].letter, (DEFAULT_WIDTH / SQUARE_NUMBER) * 0 + 5, (DEFAULT_HEIGHT / SQUARE_NUMBER) * 0 + 25);
+
+        for (let i = 0; i < 15; i++) {
+            const pas = i + 1;
+            const pas2 = i + 65;
+            if (pas < 10) {
+                this.gridContext.fillText(pas.toString(), SQUARE_WIDTH * i + 10, SQUARE_HEIGHT * 16 - 6);
+            } else {
+                this.gridContext.fillText(pas.toString(), SQUARE_WIDTH * i, SQUARE_HEIGHT * 16 - 6);
+            }
+            this.gridContext.fillText(String.fromCharCode(pas2), SQUARE_WIDTH * 15 + 5, SQUARE_HEIGHT * i + 28);
+        }
     }
 
     drawWord(word: string) {
@@ -87,13 +97,17 @@ export class GridService {
 
     fillRackPortion(line: number, colone: number, letter: ICaracter) {
         this.gridContext.clearRect(
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * (colone - 1),
             (DEFAULT_WIDTH / SQUARE_NUMBER) * line,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * colone,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
-        this.gridContext.fillText(letter.affiche, (DEFAULT_WIDTH / SQUARE_NUMBER) * line + 6, (DEFAULT_WIDTH / SQUARE_NUMBER) * (colone + 1) - 3.33);
+        this.gridContext.fillText(
+            letter.affiche,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * (colone - 1) + 6,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * (line + 1) - 3.33,
+        );
         this.gridContext.stroke();
 
         // this.gridContext.rect(33.33 * 4, 33.33 * 0, 33.33, 33.33);
@@ -123,7 +137,7 @@ export class GridService {
 
         for (let i = 0; i < word.length; i++) {
             const caractere = this.rack.findLetter(word[i]) as ICaracter;
-            this.fillRackPortion(x + i, y, caractere);
+            this.fillRackPortion(x, y + i, caractere);
         }
     }
 
@@ -132,7 +146,7 @@ export class GridService {
 
         for (let i = 0; i < word.length; i++) {
             const caractere = this.rack.findLetter(word[i]) as ICaracter;
-            this.fillRackPortion(x, y + i, caractere);
+            this.fillRackPortion(x + i, y, caractere);
         }
     }
 
