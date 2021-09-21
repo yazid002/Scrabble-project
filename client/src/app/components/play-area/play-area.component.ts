@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
-//import { ICaracter } from '@app/models/lettre.model';
+// import { ICaracter } from '@app/models/lettre.model';
 import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
 
 // TODO : Avoir un fichier séparé pour les constantes!
-export const DEFAULT_WIDTH = 500;
-export const DEFAULT_HEIGHT = 500;
+export const DEFAULT_WIDTH = 533;
+export const DEFAULT_HEIGHT = 533;
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -34,7 +34,7 @@ export class PlayAreaComponent implements AfterViewInit {
     @HostListener('keydown', ['$event'])
     buttonDetect(event: KeyboardEvent) {
         this.buttonPressed = event.key;
-        //this.gridService.fillRackPortion(7, 7, { name: 'A', quantity: 9, points: 1, affiche: 'A' } as ICaracter);
+        // this.gridService.fillRackPortion(7, 7, { name: 'A', quantity: 9, points: 1, affiche: 'A' } as ICaracter);
         this.gridService.writeWordH('M', 7, 7);
         this.gridService.writeWordV('M', 4, 4);
 

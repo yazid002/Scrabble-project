@@ -35,7 +35,7 @@ export class ReserveService {
         { name: 'X', quantity: 1, points: 10, affiche: 'X' },
         { name: 'Y', quantity: 1, points: 10, affiche: 'Y' },
         { name: 'Z', quantity: 1, points: 10, affiche: 'Z' },
-        { name: '*', quantity: 2, points: 0, affiche: '' },
+        { name: '*', quantity: 2, points: 0, affiche: '*' },
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -57,7 +57,7 @@ export class ReserveService {
         let availableLetters = filterByQuantity(this.alphabets);
         const reserve: ICaracter[] = [];
         if (totalAvailableLetters < requestedQuantity) {
-            //return null; 
+            // return null;
             console.log('bug');
         }
         let i = 0;
@@ -88,4 +88,6 @@ export class ReserveService {
         }
         console.log('totaux: ', this.getNbreOfAvailableLetter());
     }
+
+    
 }
