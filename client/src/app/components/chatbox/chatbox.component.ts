@@ -34,13 +34,12 @@ export class ChatboxComponent implements OnInit {
     onSubmit() {
         if (!this.myForm.valid) return;
         const body = this.myForm.value.message;
+        const message: IChat = { from: this.possibleSenders.me, body };
+        this.chatService.addMessage(message);
         if (body.startsWith('!')) {
             const result: IChat = this.commandExecutionService.interpretCommand(body);
 
-            this.chatService.addMessage(body, this.possibleSenders.me);
-            this.chatService.addMessage(result.body, result.from);
-        } else {
-            this.chatService.addMessage(body, this.possibleSenders.me);
+            this.chatService.addMessage(result);
         }
         // this.getMessages();
         this.myForm.reset();
