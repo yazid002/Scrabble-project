@@ -35,11 +35,11 @@ export class PlayAreaComponent implements AfterViewInit {
     buttonDetect(event: KeyboardEvent) {
         this.buttonPressed = event.key;
         // this.gridService.fillRackPortion(7, 7, { name: 'A', quantity: 9, points: 1, affiche: 'A' } as ICaracter);
-        this.gridService.writeWordH('M', 7, 7);
-        this.gridService.writeWordV('M', 4, 4);
+        // this.gridService.writeWordH('M', 7, 7);
+        // this.gridService.writeWordV('M', 4, 4);
 
-        // eslint-disable-next-line no-console
-        console.log(this.buttonPressed);
+        // // eslint-disable-next-line no-console
+        // console.log(this.buttonPressed);
     }
 
     ngAfterViewInit(): void {
