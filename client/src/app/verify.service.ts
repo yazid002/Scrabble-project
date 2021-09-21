@@ -8,7 +8,7 @@ export class VerifyService {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     dim: number = 8;
     grille: string[][] = [];
-    constructor(private dictionaryService: DictionaryService, private grilleService: GrilleService) {
+    constructor(private: DictionaryService, private grilleService: GrilleService) {
         this.grille = new Array(this.dim).fill(false).map(() => new Array(this.dim).fill(''));
         this.grille[4][3] = 'N';
         this.grille[6][3] = 'E';
