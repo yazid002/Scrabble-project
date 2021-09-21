@@ -1,11 +1,7 @@
 .container {
     height: 100%;
     display: flex;
-}
-
-.play-area-container {
-    overflow: auto;
-    flex: 1 1 auto;
+    max-width: 100vmax;
 }
 
 .play-area {
@@ -13,6 +9,6 @@
     width: min-content;
     outline: none;
 }
-app-chatbox{
-    min-width: 200px;
+app-chatbox {
+    max-width: 500px;
 }
