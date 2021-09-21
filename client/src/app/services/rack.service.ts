@@ -64,6 +64,20 @@ export class RackService {
         }
     }
 
+    replaceLetterOnRackOnly(letterToReplace: string): void {
+        const notFound = -1;
+        if (this.rackLetters != null) {
+            const indexOnRack = this.findLetterPosition(letterToReplace);
+            if (indexOnRack !== notFound) {
+                const newCharacters = this.reserveService.getReserve(1);
+                if (newCharacters !== null) {
+                    this.rackLetters[indexOnRack] = newCharacters[0];
+                }
+                this.fillRackPortion(indexOnRack);
+            }
+        }
+    }
+
     findLetter(letterToCheck: string): ICaracter | void {
         let letter = letterToCheck;
         if (letterToCheck === letterToCheck.toUpperCase()) {
@@ -104,7 +118,7 @@ export class RackService {
             if (letter === letter.toUpperCase()) {
                 letter = '*';
             }
-            this.replaceLetter(letter);
+            this.replaceLetterOnRackOnly(letter);
         }
     }
 
