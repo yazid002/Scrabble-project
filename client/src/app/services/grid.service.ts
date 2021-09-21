@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { InexistentLettersOnRack } from '@app/classes/command-errors/exchange-errors/inexistent-letters-on-rack';
 import { Vec2 } from '@app/classes/vec2';
 import { ICaracter } from '@app/models/lettre.model';
 // import { ReserveService } from './reserve.service';
@@ -131,13 +132,14 @@ export class GridService {
     }
 
     placeWord(word: string, positions: string, x: number, y: number) {
+        this.validatePlaceFeasibility(word);
         if (positions === 'h') {
             this.writeWordH(word, x, y);
         } else {
             this.writeWordV(word, x, y);
         }
 
-        this.rack.replaceWord(word)
+        this.rack.replaceWord(word);
     }
 
     writeWordH(word: string, x: number, y: number) {
@@ -147,7 +149,7 @@ export class GridService {
             const character = this.rack.findLetter(word[i]) as ICaracter;
             this.fillRackPortion(x, y + i, character);
         }
-        //this.rack.replaceWord(word);
+        // this.rack.replaceWord(word);
     }
 
     writeWordV(word: string, x: number, y: number) {
@@ -157,7 +159,15 @@ export class GridService {
             const character = this.rack.findLetter(word[i]) as ICaracter;
             this.fillRackPortion(x + i, y, character);
         }
-        //this.rack.replaceWord(word);
+        // this.rack.replaceWord(word);
+    }
+
+    private validatePlaceFeasibility(word: string): void {
+        const wordToChange = word.split('');
+        const inexistentLettersOnRack: string[] = this.rack.findInexistentLettersOnRack(wordToChange);
+        if (inexistentLettersOnRack.length) {
+            throw new InexistentLettersOnRack(`${inexistentLettersOnRack.join(', ')}.`);
+        }
     }
 
     get width(): number {

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
+import { CommandError } from '@app/classes/command-errors/command-error';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
 import { GridService } from '../grid.service';
 
@@ -28,15 +29,25 @@ export class PlaceExecutionService {
 
         this.checkWordValidity(word, result);
         // À ce point, on devrait appeler la fonction
-        //const VERTICAL = 'v';
-        //const HORIZONTAL = 'h';
+        // const VERTICAL = 'v';
+        // const HORIZONTAL = 'h';
         const DIRECTION_CHAR_POSITION = -1;
         const VALEUR_A: number = 'a'.charCodeAt(0); // Pour avoir le code ASCII de a
 
         const direction: string = position.slice(DIRECTION_CHAR_POSITION);
         const ligne: number = position.charCodeAt(0) - VALEUR_A;
         const colone = Number(position.replace(/\D/g, ''));
-        this.grid.placeWord(word, direction, ligne, colone);
+
+        try {
+            this.grid.placeWord(word, direction, ligne, colone);
+        } catch (error) {
+            if (error instanceof CommandError) {
+                result.body = error.message;
+                return result;
+            } else {
+                throw error;
+            }
+        }
 
         return result;
     }

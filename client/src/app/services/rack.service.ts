@@ -66,7 +66,8 @@ export class RackService {
 
     findLetter(letterToCheck: string): ICaracter | void {
         const index = this.findLetterPosition(letterToCheck);
-        if (index != -1) {
+        const notFound = -1;
+        if (index !== notFound) {
             return this.rackLetters[index];
         }
     }
@@ -95,8 +96,12 @@ export class RackService {
     }
 
     replaceWord(word: string) {
-        for (let i = 0; i < word.length; i++) {
-            this.replaceLetter(word[i]);
+        for (const letter of word) {
+            this.replaceLetter(letter);
         }
+    }
+
+    findInexistentLettersOnRack(lettersToChange: string[]): string[] {
+        return [...new Set(lettersToChange.filter((letter: string) => this.isLetterOnRack(letter) === false))];
     }
 }
