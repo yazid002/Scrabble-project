@@ -65,7 +65,11 @@ export class RackService {
     }
 
     findLetter(letterToCheck: string): ICaracter | void {
-        const index = this.findLetterPosition(letterToCheck);
+        let letter = letterToCheck;
+        if (letterToCheck === letterToCheck.toUpperCase()) {
+            letter = '*';
+        }
+        const index = this.findLetterPosition(letter);
         const notFound = -1;
         if (index !== notFound) {
             return this.rackLetters[index];
@@ -96,9 +100,17 @@ export class RackService {
     }
 
     replaceWord(word: string) {
-        for (const letter of word) {
+        for (let letter of word) {
+            if (letter === letter.toUpperCase()) {
+                letter = '*';
+            }
             this.replaceLetter(letter);
         }
+    }
+
+    findJokerOnRack(): number {
+        const jokers = this.rackLetters.filter((letter) => letter.name === '*');
+        return jokers.length;
     }
 
     findInexistentLettersOnRack(lettersToChange: string[]): string[] {

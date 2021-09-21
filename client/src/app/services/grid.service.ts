@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { InexistentLettersOnRack } from '@app/classes/command-errors/exchange-errors/inexistent-letters-on-rack';
+import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
 import { Vec2 } from '@app/classes/vec2';
 import { ICaracter } from '@app/models/lettre.model';
 // import { ReserveService } from './reserve.service';
@@ -110,6 +111,8 @@ export class GridService {
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
+        console.log(letter);
+
         this.gridContext.fillText(
             letter.affiche,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * (colone - 1) + 6,
@@ -147,6 +150,12 @@ export class GridService {
 
         for (let i = 0; i < word.length; i++) {
             const character = this.rack.findLetter(word[i]) as ICaracter;
+
+            if (word[i] === word[i].toUpperCase()) {
+                if (character.name === '*') {
+                    character.affiche = word[i];
+                }
+            }
             this.fillRackPortion(x, y + i, character);
             tiles[x][y - 1 + i].letter = word[i];
         }
@@ -158,6 +167,12 @@ export class GridService {
 
         for (let i = 0; i < word.length; i++) {
             const character = this.rack.findLetter(word[i]) as ICaracter;
+
+            if (word[i] === word[i].toUpperCase()) {
+                if (character.name === '*') {
+                    character.affiche = word[i];
+                }
+            }
             this.fillRackPortion(x + i, y, character);
             tiles[x + i][y - 1].letter = word[i];
         }
@@ -166,7 +181,19 @@ export class GridService {
 
     private validatePlaceFeasibility(word: string): void {
         const wordToChange = word.split('');
-        const inexistentLettersOnRack: string[] = this.rack.findInexistentLettersOnRack(wordToChange);
+        const inexistentLettersOnRack: string[] = this.rack
+            .findInexistentLettersOnRack(wordToChange)
+            .filter((letter) => letter === letter.toLowerCase());
+        const upperLettersInWord: string[] = wordToChange.filter((letter) => letter === letter.toUpperCase());
+        // const upperLettersInWord: string[] = wordToChange.filter((letter) => letter === letter.toUpperCase());
+        console.log(upperLettersInWord);
+        const jokersNumb = this.rack.findJokerOnRack();
+        console.log(jokersNumb);
+
+        if (upperLettersInWord.length > jokersNumb) {
+            throw new NotEnoughOccurrences(`suivantes ${upperLettersInWord.join(', ')} représentées par des *.`);
+        }
+
         if (inexistentLettersOnRack.length) {
             throw new InexistentLettersOnRack(`${inexistentLettersOnRack.join(', ')}.`);
         }
