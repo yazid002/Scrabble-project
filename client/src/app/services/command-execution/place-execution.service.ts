@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
-import { GridService } from '../grid.service';
+import { GridService } from '@app/services/grid.service';
 
 const BOARD_WIDTH = 15;
 const BOARD_HEIGHT = 15;
@@ -66,7 +66,7 @@ export class PlaceExecutionService {
         https://stackoverflow.com/questions/1862130/strip-all-non-numeric-characters-from-string-in-javascript
         */
         // Vérifier si les entrées sont valides
-        if (ligne >= BOARD_HEIGHT || colone >= BOARD_WIDTH || ligne < 0 || colone < 0) {
+        if (ligne > BOARD_HEIGHT || colone > BOARD_WIDTH || ligne < 0 || colone < 0) {
             throw new CommandSyntaxError("Line index must be between 1 and 15. Column index must be between 'a' and .'o'");
         }
         if (direction !== VERTICAL && direction !== HORIZONTAL) {

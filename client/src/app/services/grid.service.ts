@@ -148,6 +148,7 @@ export class GridService {
         for (let i = 0; i < word.length; i++) {
             const character = this.rack.findLetter(word[i]) as ICaracter;
             this.fillRackPortion(x, y + i, character);
+            tiles[x][y - 1 + i].letter = word[i];
         }
         // this.rack.replaceWord(word);
     }
@@ -158,6 +159,7 @@ export class GridService {
         for (let i = 0; i < word.length; i++) {
             const character = this.rack.findLetter(word[i]) as ICaracter;
             this.fillRackPortion(x + i, y, character);
+            tiles[x + i][y - 1].letter = word[i];
         }
         // this.rack.replaceWord(word);
     }
