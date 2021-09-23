@@ -18,8 +18,7 @@
     </mat-card>
     
     <mat-card id="message-input">
-        <form (keyup.enter)="error? '' :onSubmit()">
-                <!-- {{myForm.value | json}} -->
+        <form>
             <div id="textbox-container">
 
                 <mat-form-field appearance="outline" [color]="error? 'warn': 'primary'">
@@ -34,7 +33,7 @@
             </div>
             <div id="button-container">
 
-                <button type="submit" mat-mini-fab color="primary" [disabled]="error" (click)="error? '' :onSubmit()">
+                <button type="submit" mat-mini-fab color="primary" [disabled]="error" (click)="error? '' : onSubmit()">
                     <mat-icon>send</mat-icon>
                 </button>
             </div>

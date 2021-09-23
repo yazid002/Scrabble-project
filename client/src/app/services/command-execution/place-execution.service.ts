@@ -5,8 +5,6 @@ import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-e
 const BOARD_WIDTH = 15;
 const BOARD_HEIGHT = 15;
 
-
-
 @Injectable({
     providedIn: 'root',
 })
@@ -14,7 +12,7 @@ export class PlaceExecutionService {
     execute(parameters: string[]): IChat {
         const POSITION_INDEX = 1;
         const WORD_INDEX = 2;
-        
+
         const result: IChat = {
             from: SENDER.computer,
             body: 'Went through the place execution service',

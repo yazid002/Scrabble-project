@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { IChat } from '@app/classes/chat';
-// import { CommandError } from '@app/classes/command-errors/command-error';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
 import { DebugExecutionService } from './debug-execution.service';
 import { ExchangeExecutionService } from './exchange-execution.service';
@@ -26,10 +25,9 @@ export class CommandExecutionService {
         const functionToExecute: () => IChat = this.process(command);
         return functionToExecute();
     }
-    process(command: string): () => IChat {
+    private process(command: string): () => IChat {
         /**
-         * Interprets the command given in parameter and returns whether or not a command was executed.
-         * If No command was executed, the command was invalid
+         * Interprets the command given in parameter and returns a response from the right execution service
          */
 
         /*
@@ -52,7 +50,6 @@ export class CommandExecutionService {
                     format: '^placer[\\s][a-z]+[0-9]+(h|v)[\\s][A-Za-z]+$',
                     description: '"!placer <ligne><colonne>(h|v) <mot>" sans espace entre la ligne, la colonne et la direction',
                     command: () => {
-                        console.log('On execute');
                         return this.placeExecutionService.execute(parameters);
                     },
                 },
@@ -98,20 +95,12 @@ export class CommandExecutionService {
                 },
             ],
         ]);
-        // try {
+
         const commandToExecute: () => IChat = this.validateParametersFormat(
             command,
             commandFormatMapping.get(parameters[0]) as { format: string; description: string; command: () => IChat },
         );
-        // } catch (error) {
-        //     if (error instanceof CommandError) {
-        //         // result.body = error.message;
-        //         // return result;
-        //         throw new CommandSyntaxError('Commande inexistance');
-        //     } else {
-        //         throw error;
-        //     }
-        // }
+
         return commandToExecute;
     }
 
@@ -124,7 +113,7 @@ export class CommandExecutionService {
         }
         const test = regexp.test(command);
         if (!test) {
-            throw new CommandSyntaxError(`Le bon format de commande est: ${format.description}.`);
+            throw new CommandSyntaxError(`${format.description}`);
         }
         return format.command;
     }

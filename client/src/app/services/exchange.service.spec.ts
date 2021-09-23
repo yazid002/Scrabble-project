@@ -61,19 +61,19 @@ describe('ExchangeService', () => {
         expect(rackServiceSpy.countLetterOccurrences).toHaveBeenCalled();
     });
 
-    it('checkLetterOccurrencesMatch should return true if the letter to change has the same or less occurrence number in command and on rack', () => {
-        const letterToChange = 'B';
-        const lettersToChange = ['B', 'D'];
-        rackServiceSpy.rackLetters = [
-            { name: 'A', params: { quantity: 9, points: 1, affiche: 'A' } },
-            { name: 'B', params: { quantity: 0, points: 3, affiche: 'B' } },
-            { name: 'B', params: { quantity: 0, points: 3, affiche: 'B' } },
-            { name: 'D', params: { quantity: 3, points: 2, affiche: 'D' } },
-            { name: 'E', params: { quantity: 15, points: 1, affiche: 'E' } },
-        ];
-        // eslint-disable-next-line dot-notation
-        const result = service['checkLetterOccurrencesMatch'](letterToChange, lettersToChange);
-        expect(rackServiceSpy.countLetterOccurrences).toHaveBeenCalledWith(letterToChange, ['A', 'B', 'B', 'D', 'E']);
-        expect(result).toBeTrue();
-    });
+    // it('checkLetterOccurrencesMatch should return true if the letter to change has the same or less occurrence number in command and on rack', () => {
+    //     const letterToChange = 'B';
+    //     const lettersToChange = ['B', 'D'];
+    //     rackServiceSpy.rackLetters = [
+    //         { name: 'A', params: { quantity: 9, points: 1, affiche: 'A' } },
+    //         { name: 'B', params: { quantity: 0, points: 3, affiche: 'B' } },
+    //         { name: 'B', params: { quantity: 0, points: 3, affiche: 'B' } },
+    //         { name: 'D', params: { quantity: 3, points: 2, affiche: 'D' } },
+    //         { name: 'E', params: { quantity: 15, points: 1, affiche: 'E' } },
+    //     ];
+    //     // eslint-disable-next-line dot-notation
+    //     const result = service['checkLetterOccurrencesMatch'](letterToChange, lettersToChange);
+    //     expect(rackServiceSpy.countLetterOccurrences).toHaveBeenCalledWith(letterToChange, ['A', 'B', 'B', 'D', 'E']);
+    //     expect(result).toBeTrue();
+    // });
 });

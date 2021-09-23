@@ -22,13 +22,9 @@ export class ChatboxComponent implements OnInit {
     constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService) {}
 
     ngOnInit(): void {
-        // const placerPattern = Validators.pattern('^!placer[\\s][a-z]+[0-9]+(h|v)[\\s][A-Za-z]+$');
-
         this.getMessages();
     }
     validateFormat() {
-        // /^placer[\\s][a-z]+[0-9]+(h|v)[\\s][A-Za-z]+$/.test(this.inputBox)
-        console.log(this.inputBox);
         if (this.inputBox.startsWith('!')) {
             try {
                 this.commandExecutionService.interpretCommand(this.inputBox);
@@ -43,11 +39,6 @@ export class ChatboxComponent implements OnInit {
             this.error = false;
             this.errorMessage = 'valide';
         }
-
-        // else {
-        //     this.error = true;
-        //     this.errorMessage = 'ereur';
-        // }
     }
     onSubmit() {
         const message: IChat = {
@@ -68,27 +59,17 @@ export class ChatboxComponent implements OnInit {
                 }
             }
             this.chatService.addMessage(response);
-            this.inputBox = '';
         }
-        // console.log('onSubmit');
-        // const message: IChat = { from: this.possibleSenders.me, body: this.inputBox };
-        // this.chatService.addMessage(message);
 
-        // if (this.inputBox.startsWith('!')) {
-        //     const result: IChat = this.commandExecutionService.interpretCommand(this.inputBox, true);
-
-        //     this.chatService.addMessage(result);
-        // }
-        // // this.getMessages();
-        // this.inputBox = '';
+        this.inputBox = '';
         this.scrollDown();
     }
     private scrollDown() {
-        const cont1 = document.getElementById('message-history');
+        const container = document.getElementById('message-history');
 
-        if (cont1) {
-            cont1.scrollTop = cont1.scrollHeight;
-            cont1.scrollTo(0, cont1.scrollHeight);
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+            container.scrollTo(0, container.scrollHeight);
         }
     }
     private getMessages(): void {
