@@ -1,8 +1,34 @@
 <h2 mat-dialog-title>Veuillez Choisir le nombre de joueurs</h2>
 
-<form mat-dialog-content>
-    <button mat-raised-button mat-dialog-close>Retour à l'accueil</button>
+<form mat-dialog-content aria-details="w">
+    <mat-card *ngFor="let setting of settings | keyvalue">
+        <mat-card-title>{{ setting.value.displayName }}</mat-card-title>
+        <mat-radio-group color="primary" [name]="setting.value.name" [required]="setting.value.required">
+            <mat-radio-button *ngFor="let choice of setting.value.options" [value]="choice.name">
+                {{ choice.displayName }}
+            </mat-radio-button>
+        </mat-radio-group>
+    </mat-card>
 
-    <button mat-raised-button mat-dialog-close routerLink=game>Solo</button>
-    <!-- <button mat-raised-button>Multijoueur</button> -->
+    <mat-card>
+        <mat-form-field appearance="outline">
+            <input
+                autocomplete="off"
+                matInput
+                type="text"
+                [id]="nameOption.name"
+                [name]="nameOption.name"
+                [placeholder]="nameOption.displayName"
+                required="true"
+                [aria-pattern]="nameOption.allowedPattern.rule"
+                aria-errormessage="ppp"
+            />
+        </mat-form-field>
+        <mat-card-footer color="primary" >{{ nameOption.allowedPattern.errorMessage }}</mat-card-footer>
+    </mat-card>
+
+    <section id="footer">
+        <button mat-raised-button mat-dialog-close>Retour À l'accueil</button>
+        <button mat-raised-button color="primary" type="submit">Jouer</button>
+    </section>
 </form>
