@@ -12,6 +12,8 @@ const MAX_MESSAGE_LENGTH = 512;
 })
 export class ChatboxComponent implements OnInit {
     inputBox: string='';
+    error: boolean;
+    errorMessage: string;
     minLength: number = 0;
     maxLength: number = MAX_MESSAGE_LENGTH;
     messages: IChat[] = [];
@@ -21,12 +23,22 @@ export class ChatboxComponent implements OnInit {
 
     ngOnInit(): void {
         // const placerPattern = Validators.pattern('^!placer[\\s][a-z]+[0-9]+(h|v)[\\s][A-Za-z]+$');
-        
+
         this.getMessages();
     }
-    
+    validateFormat() {
+        // /^placer[\\s][a-z]+[0-9]+(h|v)[\\s][A-Za-z]+$/.test(this.inputBox)
+        console.log(this.inputBox);
+        if (this.inputBox === 'allo') {
+            this.error = false;
+            this.errorMessage = 'valide';
+        } else {
+            this.error = true;
+            this.errorMessage = 'ereur';
+        }
+    }
     onSubmit() {
-        
+        console.log("onSubmit");
         const message: IChat = { from: this.possibleSenders.me, body: this.inputBox };
         this.chatService.addMessage(message);
         if (this.inputBox.startsWith('!')) {
@@ -35,7 +47,7 @@ export class ChatboxComponent implements OnInit {
             this.chatService.addMessage(result);
         }
         // this.getMessages();
-        
+
         this.scrollDown();
     }
     private scrollDown() {
