@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Veuillez Choisir le nombre de joueurs</h2>
 
-<form mat-dialog-content aria-details="w">
+<form (keyup)="validateName()" mat-dialog-content aria-details="w">
     <mat-card *ngFor="let setting of settings | keyvalue">
         <mat-card-title>{{ setting.value.displayName }}</mat-card-title>
         <mat-radio-group color="primary" [name]="setting.value.name" [required]="setting.value.required">
@@ -11,7 +11,8 @@
     </mat-card>
 
     <mat-card>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" [color]="error? 'warn':'primary'">
+            <mat-label>{{ errorMessage }}</mat-label>
             <input
                 autocomplete="off"
                 matInput
@@ -20,15 +21,16 @@
                 [name]="nameOption.name"
                 [placeholder]="nameOption.displayName"
                 required="true"
-                [aria-pattern]="nameOption.allowedPattern.rule"
+                [(ngModel)]="name"
                 aria-errormessage="ppp"
+                
             />
         </mat-form-field>
-        <mat-card-footer color="primary" >{{ nameOption.allowedPattern.errorMessage }}</mat-card-footer>
+        <mat-card-footer color="primary">{{ errorMessage }}</mat-card-footer>
     </mat-card>
 
     <section id="footer">
         <button mat-raised-button mat-dialog-close>Retour À l'accueil</button>
-        <button mat-raised-button color="primary" type="submit">Jouer</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="error">Jouer</button>
     </section>
 </form>
