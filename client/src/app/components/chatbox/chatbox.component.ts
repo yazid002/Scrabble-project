@@ -50,6 +50,26 @@ export class ChatboxComponent implements OnInit {
         // }
     }
     onSubmit() {
+        const message: IChat = {
+            from: this.possibleSenders.me,
+            body: this.inputBox,
+        };
+        this.chatService.addMessage(message);
+        if (this.inputBox.startsWith('!')) {
+            let response: IChat = { from: '', body: '' };
+            try {
+                response = this.commandExecutionService.executeCommand(this.inputBox);
+            } catch (error) {
+                if (error instanceof CommandError) {
+                    response = {
+                        from: this.possibleSenders.computer,
+                        body: error.message,
+                    };
+                }
+            }
+            this.chatService.addMessage(response);
+            this.inputBox = '';
+        }
         // console.log('onSubmit');
         // const message: IChat = { from: this.possibleSenders.me, body: this.inputBox };
         // this.chatService.addMessage(message);

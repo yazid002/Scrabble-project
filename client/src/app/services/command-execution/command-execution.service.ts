@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-// import { IChat } from '@app/classes/chat';
+import { IChat } from '@app/classes/chat';
 // import { CommandError } from '@app/classes/command-errors/command-error';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
 import { DebugExecutionService } from './debug-execution.service';
@@ -20,6 +20,13 @@ export class CommandExecutionService {
         private exchangeExecutionService: ExchangeExecutionService,
     ) {}
     interpretCommand(command: string) {
+        this.process(command);
+    }
+    executeCommand(command: string): IChat {
+        const functionToExecute: () => IChat = this.process(command);
+        return functionToExecute();
+    }
+    process(command: string): () => IChat {
         /**
          * Interprets the command given in parameter and returns whether or not a command was executed.
          * If No command was executed, the command was invalid
@@ -36,7 +43,7 @@ export class CommandExecutionService {
             .replace(/[\u0300-\u036f]/g, '');
 
         const parameters: string[] = command.split(' ');
-        const commandFormatMapping: Map<string, { format: string; description: string; command: () => void }> = new Map([
+        const commandFormatMapping: Map<string, { format: string; description: string; command: () => IChat }> = new Map([
             [
                 'placer',
                 {
@@ -46,7 +53,7 @@ export class CommandExecutionService {
                     description: '"!placer <ligne><colonne>(h|v) <mot>" sans espace entre la ligne, la colonne et la direction',
                     command: () => {
                         console.log('On execute');
-                        this.placeExecutionService.execute(parameters);
+                        return this.placeExecutionService.execute(parameters);
                     },
                 },
             ],
@@ -56,7 +63,7 @@ export class CommandExecutionService {
                     format: '^echanger[\\s][a-z]+$',
                     description: '"!echanger <arguments>" sans majuscule ni espace entre les lettres à échanger',
                     command: () => {
-                        this.exchangeExecutionService.execute(parameters);
+                        return this.exchangeExecutionService.execute(parameters);
                     },
                 },
             ],
@@ -66,7 +73,7 @@ export class CommandExecutionService {
                     format: '^passer$',
                     description: '"!passer" sans majuscule ni espace',
                     command: () => {
-                        this.passExecutionService.execute();
+                        return this.passExecutionService.execute();
                     },
                 },
             ],
@@ -76,7 +83,7 @@ export class CommandExecutionService {
                     format: '^debug$',
                     description: '"!debug" sans majuscule ni espace',
                     command: () => {
-                        this.debugExecutionService.execute();
+                        return this.debugExecutionService.execute();
                     },
                 },
             ],
@@ -86,15 +93,15 @@ export class CommandExecutionService {
                     format: '^reserve$',
                     description: '"!reserve" sans majuscule ni espace',
                     command: () => {
-                        this.reserveExecutionService.execute();
+                        return this.reserveExecutionService.execute();
                     },
                 },
             ],
         ]);
         // try {
-        this.validateParametersFormat(
+        const commandToExecute: () => IChat = this.validateParametersFormat(
             command,
-            commandFormatMapping.get(parameters[0]) as { format: string; description: string; command: () => void },
+            commandFormatMapping.get(parameters[0]) as { format: string; description: string; command: () => IChat },
         );
         // } catch (error) {
         //     if (error instanceof CommandError) {
@@ -105,9 +112,10 @@ export class CommandExecutionService {
         //         throw error;
         //     }
         // }
+        return commandToExecute;
     }
 
-    private validateParametersFormat(command: string, format: { format: string; description: string; command: () => void }): void {
+    private validateParametersFormat(command: string, format: { format: string; description: string; command: () => IChat }): () => IChat {
         let regexp: RegExp;
         try {
             regexp = new RegExp(format.format);
@@ -118,9 +126,6 @@ export class CommandExecutionService {
         if (!test) {
             throw new CommandSyntaxError(`Le bon format de commande est: ${format.description}.`);
         }
+        return format.command;
     }
-
-    // get validationMap(): Map<string, { format: string; description: string; command: () => void }>{
-
-    // };
 }
