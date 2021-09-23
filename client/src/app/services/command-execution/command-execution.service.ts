@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IChat, SENDER } from '@app/classes/chat';
-import { CommandError } from '@app/classes/command-errors/command-error';
+// import { IChat } from '@app/classes/chat';
+// import { CommandError } from '@app/classes/command-errors/command-error';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
 import { DebugExecutionService } from './debug-execution.service';
 import { ExchangeExecutionService } from './exchange-execution.service';
@@ -19,7 +19,7 @@ export class CommandExecutionService {
         private passExecutionService: PassExecutionService,
         private exchangeExecutionService: ExchangeExecutionService,
     ) {}
-    interpretCommand(command: string, execute: boolean): IChat {
+    interpretCommand(command: string) {
         /**
          * Interprets the command given in parameter and returns whether or not a command was executed.
          * If No command was executed, the command was invalid
@@ -91,57 +91,36 @@ export class CommandExecutionService {
                 },
             ],
         ]);
-
-        const result: IChat = {
-            from: SENDER.computer,
-            body: 'Went through the command execution service',
-        };
-
-        try {
-            const whatToExecute = this.validateParametersFormat(
-                command,
-                commandFormatMapping.get(parameters[0]) as { format: string; description: string; command: () => void },
-                execute,
-            );
-            console.log(whatToExecute);
-
-            const dummyreturn: IChat = {
-                from: 'me',
-                body: 'patati',
-            };
-            return dummyreturn;
-        } catch (error) {
-            if (error instanceof CommandError) {
-                result.body = error.message;
-                return result;
-            } else {
-                throw error;
-            }
-        }
-        
-
+        // try {
+        this.validateParametersFormat(
+            command,
+            commandFormatMapping.get(parameters[0]) as { format: string; description: string; command: () => void },
+        );
+        // } catch (error) {
+        //     if (error instanceof CommandError) {
+        //         // result.body = error.message;
+        //         // return result;
+        //         throw new CommandSyntaxError('Commande inexistance');
+        //     } else {
+        //         throw error;
+        //     }
+        // }
     }
-    
 
-    private validateParametersFormat(command: string, format: { format: string; description: string; command: () => void }, execute: boolean): void {
+    private validateParametersFormat(command: string, format: { format: string; description: string; command: () => void }): void {
         let regexp: RegExp;
         try {
-            
             regexp = new RegExp(format.format);
-        }
-        catch {
-            throw new CommandSyntaxError('Commande Invalide')
+        } catch {
+            throw new CommandSyntaxError('Commande Invalide');
         }
         const test = regexp.test(command);
         if (!test) {
             throw new CommandSyntaxError(`Le bon format de commande est: ${format.description}.`);
-        } else {
-            if (execute) {
-                format.command();
-            }
-            
         }
     }
 
-    // private executeCommand()
+    // get validationMap(): Map<string, { format: string; description: string; command: () => void }>{
+
+    // };
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
-
+import { CommandError } from '@app/classes/command-errors/command-error';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
@@ -30,34 +30,37 @@ export class ChatboxComponent implements OnInit {
         // /^placer[\\s][a-z]+[0-9]+(h|v)[\\s][A-Za-z]+$/.test(this.inputBox)
         console.log(this.inputBox);
         if (this.inputBox.startsWith('!')) {
-            const result: IChat = this.commandExecutionService.interpretCommand(this.inputBox, false);
-            this.errorMessage = result.body;
-            
-
-            
-            
+            try {
+                this.commandExecutionService.interpretCommand(this.inputBox);
+                this.error = false;
+            } catch (error) {
+                if (error instanceof CommandError) {
+                    this.errorMessage = error.message;
+                    this.error = true;
+                }
+            }
         } else {
             this.error = false;
             this.errorMessage = 'valide';
         }
-        this.error = true;
+
         // else {
         //     this.error = true;
         //     this.errorMessage = 'ereur';
         // }
     }
     onSubmit() {
-        console.log('onSubmit');
-        const message: IChat = { from: this.possibleSenders.me, body: this.inputBox };
-        this.chatService.addMessage(message);
-        
-        if (this.inputBox.startsWith('!')) {
-            const result: IChat = this.commandExecutionService.interpretCommand(this.inputBox, true);
+        // console.log('onSubmit');
+        // const message: IChat = { from: this.possibleSenders.me, body: this.inputBox };
+        // this.chatService.addMessage(message);
 
-            this.chatService.addMessage(result);
-        }
-        // this.getMessages();
-        this.inputBox = '';
+        // if (this.inputBox.startsWith('!')) {
+        //     const result: IChat = this.commandExecutionService.interpretCommand(this.inputBox, true);
+
+        //     this.chatService.addMessage(result);
+        // }
+        // // this.getMessages();
+        // this.inputBox = '';
         this.scrollDown();
     }
     private scrollDown() {
