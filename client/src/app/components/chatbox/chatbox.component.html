@@ -18,25 +18,20 @@
     </mat-card>
     
     <mat-card id="message-input">
-        <form [formGroup]="myForm" (keyup.enter)="onSubmit()" (ngSubmit)="onSubmit()">
+        <form (keyup.enter)="onSubmit()" (ngSubmit)="onSubmit()">
                 <!-- {{myForm.value | json}} -->
             <div id="textbox-container">
 
                 <mat-form-field appearance="outline">
                     <mat-label>Tapez un message</mat-label>
-                    <textarea matInput formControlName="message"></textarea>
-                    <mat-error *ngIf="message?.errors?.minlength && message?.touched">
-                        Votre message est trop long. 
-                    </mat-error>
-                    <mat-error *ngIf="message?.errors?.placerPattern && message?.touched">
-                        placeer
-                    </mat-error>
+                    <input matInput autocomplete="off" [(ngModel)]="inputBox">
+                    
 
                 </mat-form-field>
             </div>
             <div id="button-container">
 
-                <button type="submit" [disabled]="!myForm.valid" mat-mini-fab color="primary" aria-label="Example icon button with a home icon" >
+                <button type="submit" mat-mini-fab color="primary" >
                     <mat-icon>send</mat-icon>
                 </button>
             </div>
