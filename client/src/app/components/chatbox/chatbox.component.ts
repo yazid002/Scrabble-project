@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
 import { IChat, SENDER } from '@app/classes/chat';
+
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
@@ -11,7 +11,7 @@ const MAX_MESSAGE_LENGTH = 512;
     styleUrls: ['./chatbox.component.scss'],
 })
 export class ChatboxComponent implements OnInit {
-    inputBox: string='';
+    inputBox: string = '';
     error: boolean;
     errorMessage: string;
     minLength: number = 0;
@@ -29,25 +29,35 @@ export class ChatboxComponent implements OnInit {
     validateFormat() {
         // /^placer[\\s][a-z]+[0-9]+(h|v)[\\s][A-Za-z]+$/.test(this.inputBox)
         console.log(this.inputBox);
-        if (this.inputBox === 'allo') {
+        if (this.inputBox.startsWith('!')) {
+            const result: IChat = this.commandExecutionService.interpretCommand(this.inputBox, false);
+            this.errorMessage = result.body;
+            
+
+            
+            
+        } else {
             this.error = false;
             this.errorMessage = 'valide';
-        } else {
-            this.error = true;
-            this.errorMessage = 'ereur';
         }
+        this.error = true;
+        // else {
+        //     this.error = true;
+        //     this.errorMessage = 'ereur';
+        // }
     }
     onSubmit() {
-        console.log("onSubmit");
+        console.log('onSubmit');
         const message: IChat = { from: this.possibleSenders.me, body: this.inputBox };
         this.chatService.addMessage(message);
+        
         if (this.inputBox.startsWith('!')) {
-            const result: IChat = this.commandExecutionService.interpretCommand(this.inputBox);
+            const result: IChat = this.commandExecutionService.interpretCommand(this.inputBox, true);
 
             this.chatService.addMessage(result);
         }
         // this.getMessages();
-
+        this.inputBox = '';
         this.scrollDown();
     }
     private scrollDown() {
