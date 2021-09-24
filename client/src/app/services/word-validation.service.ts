@@ -29,7 +29,7 @@ export class WordValidationService {
         return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
 
-    private checkWordMinLength(minLength: number, wordToCheck: string): boolean {
+    checkWordMinLength(minLength: number, wordToCheck: string): boolean {
         return wordToCheck.length >= minLength;
     }
 

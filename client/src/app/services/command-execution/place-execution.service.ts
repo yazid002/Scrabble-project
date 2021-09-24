@@ -39,7 +39,7 @@ export class PlaceExecutionService {
         const colone = Number(position.replace(/\D/g, ''));
 
         try {
-            this.grid.placeWord(word, direction, ligne, colone);
+            this.grid.IsplacingWordValid(word, direction, ligne, colone);
         } catch (error) {
             if (error instanceof CommandError) {
                 result.body = error.message;
