@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
+import { Vec2 } from '@app/classes/vec2';
 import { GridService } from '@app/services/grid.service';
 
 const BOARD_WIDTH = 15;
@@ -13,7 +14,7 @@ const BOARD_HEIGHT = 15;
 export class PlaceExecutionService {
     constructor(public grid: GridService) {}
 
-    execute(parameters: string[]): IChat {
+    async execute(parameters: string[]): Promise<IChat> {
         const POSITION_INDEX = 1;
         const WORD_INDEX = 2;
 
@@ -23,57 +24,63 @@ export class PlaceExecutionService {
         };
 
         const position: string = parameters[POSITION_INDEX];
-        this.checkPlacementPosition(position, result);
+
+        // Commenter car les vérifications sont faites dans le pattern dans le fichier command-execution.service.ts
+        //   this.checkPlacementPosition(position, result);
 
         const word: string = parameters[WORD_INDEX];
 
         this.checkWordValidity(word, result);
-        // À ce point, on devrait appeler la fonction
-        // const VERTICAL = 'v';
-        // const HORIZONTAL = 'h';
-        const DIRECTION_CHAR_POSITION = -1;
-        const VALEUR_A: number = 'a'.charCodeAt(0); // Pour avoir le code ASCII de a
 
-        const direction: string = position.slice(DIRECTION_CHAR_POSITION);
-        const ligne: number = position.charCodeAt(0) - VALEUR_A;
-        const colone = Number(position.replace(/\D/g, ''));
+        const extractedParameters = this.extractParameters(position);
 
-        try {
-            this.grid.isplacingWordValid(word, direction, ligne, colone);
-        } catch (error) {
+        this.grid.isPlacingWordValid(word, extractedParameters.coord, extractedParameters.direction).catch((error) => {
             if (error instanceof CommandError) {
                 result.body = error.message;
                 return result;
             } else {
                 throw error;
             }
-        }
+        });
 
         return result;
     }
 
-    private checkPlacementPosition(position: string, result: IChat): IChat {
-        // Decomposer la position (ex: 'g15v)' en paramètres compréhensible
-        const VERTICAL = 'v';
-        const HORIZONTAL = 'h';
+    // Commenté car les vérifications sont faites dans le pattern dans le fichier command-execution.service.ts
+    // private checkPlacementPosition(position: string, result: IChat): IChat {
+    //     const VERTICAL = 'v';
+    //     const HORIZONTAL = 'h';
+
+    //     const parameters = this.extractParameters(position);
+
+    //     const direction = parameters.direction;
+    //     const line = parameters.coord.x;
+    //     const column = parameters.coord.y;
+
+    //     // Vérifier si les entrées sont valides
+    //     if (line > BOARD_HEIGHT || column > BOARD_WIDTH || line < 0 || column < 0) {
+    //         throw new CommandSyntaxError("Line index must be between 1 and 15. Column index must be between 'a' and .'o'");
+    //     }
+    //     if (direction !== VERTICAL && direction !== HORIZONTAL) {
+    //         throw new CommandSyntaxError("word direction must be horizontal 'h' of vertical 'v'");
+    //     }
+    //     return result;
+    // }
+
+    private extractParameters(position: string): { direction: string; coord: Vec2 } {
+        // Décomposer la position (ex: 'g15v)' en paramètres compréhensibles
         const DIRECTION_CHAR_POSITION = -1;
         const VALEUR_A: number = 'a'.charCodeAt(0); // Pour avoir le code ASCII de a
 
         const direction: string = position.slice(DIRECTION_CHAR_POSITION);
-        const ligne: number = position.charCodeAt(0) - VALEUR_A;
-        const colone = Number(position.replace(/\D/g, '')); /* Removes all non numeric characters from string, then converts is to a number
+        const line: number = position.charCodeAt(0) - VALEUR_A;
+        const column = Number(position.replace(/\D/g, '')) - 1; /* Removes all non numeric characters from string, then converts is to a number
         Taken from: 
         https://stackoverflow.com/questions/1862130/strip-all-non-numeric-characters-from-string-in-javascript
         */
-        // Vérifier si les entrées sont valides
-        if (ligne > BOARD_HEIGHT || colone > BOARD_WIDTH || ligne < 0 || colone < 0) {
-            throw new CommandSyntaxError("Line index must be between 1 and 15. Column index must be between 'a' and .'o'");
-        }
-        if (direction !== VERTICAL && direction !== HORIZONTAL) {
-            throw new CommandSyntaxError("word direction must be horizontal 'h' of vertical 'v'");
-        }
-        return result;
+        return { direction, coord: { x: line, y: column } };
     }
+
     private checkWordValidity(word: string, result: IChat): IChat {
         if (word.length > BOARD_HEIGHT || word.length > BOARD_WIDTH) {
             throw new CommandSyntaxError(

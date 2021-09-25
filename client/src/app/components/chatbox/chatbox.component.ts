@@ -31,11 +31,11 @@ export class ChatboxComponent implements OnInit {
         const message = this.myForm.get('message');
         return message;
     }
-    onSubmit() {
+    async onSubmit() {
         if (!this.myForm.valid) return;
         const body = this.myForm.value.message;
         if (body.startsWith('!')) {
-            const result: IChat = this.commandExecutionService.interpretCommand(body);
+            const result: IChat = await this.commandExecutionService.interpretCommand(body);
 
             this.chatService.addMessage(body, this.possibleSenders.me);
             this.chatService.addMessage(result.body, result.from);

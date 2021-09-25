@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
+import { CommandError } from '@app/classes/command-errors/command-error';
 import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
 import { Point } from '@app/classes/point';
 import { PosChars } from '@app/classes/pos-chars';
@@ -106,9 +107,9 @@ export class GridService {
         this.drawGridOutdoor();
     }
 
-    fillGridPortion(line: number, colone: number, letter: string, style: CaseStyle) {
+    fillGridPortion(line: number, column: number, letter: string, style: CaseStyle) {
         this.gridContext.clearRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * colone,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * column,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * line,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
@@ -119,14 +120,14 @@ export class GridService {
         this.gridContext.fillStyle = style.color;
 
         this.gridContext.fillRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * colone,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * column,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * line,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
         this.gridContext.strokeRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * colone,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * column,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * line,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
@@ -134,44 +135,62 @@ export class GridService {
 
         this.gridContext.fillStyle = 'rgb(0,0,0)';
         this.gridContext.font = style.font;
-        this.gridContext.strokeText(letter, (DEFAULT_WIDTH / SQUARE_NUMBER) * colone + 7, (DEFAULT_WIDTH / SQUARE_NUMBER) * line + 22);
+        this.gridContext.strokeText(letter, (DEFAULT_WIDTH / SQUARE_NUMBER) * column + 7, (DEFAULT_WIDTH / SQUARE_NUMBER) * line + 22);
 
         this.gridContext.stroke();
     }
 
-    isplacingWordValid(word: string, position: string, x: number, y: number) {
-        this.placeWord(word, position, x, y);
-        if (!this.dictionaryService.checkWordExists(word) || !this.dictionaryService.checkWordMinLength(2, word)) {
-            for (let i = 0; i < word.length; i++) {
-                const newX = position === 'h' ? x : x + i;
-                const newY = position === 'v' ? y - 1 : y + i - 1;
+    async isPlacingWordValid(word: string, coord: Vec2, direction: string): Promise<void> {
+        const promise = new Promise<void>((resolve, reject) => {
+            this.placeWord(word, coord, direction);
+            if (!this.dictionaryService.checkWordExists(word) || !this.dictionaryService.checkWordMinLength(2, word)) {
+                for (let i = 0; i < word.length; i++) {
+                    const x = this.computeCoordByDirection(direction, coord, i).x;
+                    const y = this.computeCoordByDirection(direction, coord, i).y;
 
-                tiles[newX][newY].text = tiles[newX][newY].oldText;
-                tiles[newX][newY].style = tiles[newX][newY].oldStyle;
-                tiles[newX][newY].letter = '';
+                    tiles[x][y].text = tiles[x][y].oldText;
+                    tiles[x][y].style = tiles[x][y].oldStyle;
+                    setTimeout(() => {
+                        this.fillGridPortion(x, y, tiles[x][y].text.toUpperCase(), tiles[x][y].style);
+                    }, 3000);
+                }
 
-                setTimeout(() => this.fillGridPortion(newX, newY, tiles[newX][newY].text.toUpperCase(), tiles[newX][newY].style), 3000);
+                reject(new CommandError("Ce mot n'existe pas dans le dictionnaire"));
+            } else {
+                this.updateTilesLetters(word, coord, direction);
+                resolve(this.rack.replaceWord(word));
             }
-        } else {
-            this.rack.replaceWord(word);
+        });
+        return promise;
+    }
+
+    computeCoordByDirection(direction: string, coord: Vec2, step: number): Vec2 {
+        const x = direction === 'h' ? coord.x : coord.x + step;
+        const y = direction === 'v' ? coord.y : coord.y + step;
+
+        return { x, y };
+    }
+
+    updateTilesLetters(word: string, coord: Vec2, direction: string): void {
+        for (let i = 0; i < word.length; i++) {
+            const x = this.computeCoordByDirection(direction, coord, i).x;
+            const y = this.computeCoordByDirection(direction, coord, i).y;
+            tiles[x][y].letter = word[i].toLowerCase();
         }
     }
 
-    placeWord(word: string, positions: string, x: number, y: number) {
-        const posWord = new PosChars(word, new Point(x, y));
+    placeWord(word: string, coord: Vec2, direction: string) {
+        const posWord = new PosChars(word, new Point(coord.x, coord.y));
 
-        this.validatePlaceFeasibility(posWord, positions);
+        this.validatePlaceFeasibility(posWord, direction);
 
-        this.writeWord(word, x, y, positions);
+        this.writeWord(word, coord, direction);
     }
 
-    writeWord(word: string, x: number, y: number, position: string) {
-        let newX: number;
-        let newY: number;
-
+    writeWord(word: string, coord: Vec2, direction: string) {
         for (let i = 0; i < word.length; i++) {
-            newX = position === 'h' ? x : x + i;
-            newY = position === 'v' ? y - 1 : y + i - 1;
+            const x = this.computeCoordByDirection(direction, coord, i).x;
+            const y = this.computeCoordByDirection(direction, coord, i).y;
             const character = this.reserveService.findLetter(word[i]) as ICaracter;
 
             if (word[i] === word[i].toUpperCase()) {
@@ -179,15 +198,14 @@ export class GridService {
                     character.affiche = word[i];
                 }
             }
-            tiles[newX][newY].letter = word[i].toLowerCase();
 
-            tiles[newX][newY].oldStyle = tiles[newX][newY].style;
-            tiles[newX][newY].style = tile;
+            tiles[x][y].oldStyle = tiles[x][y].style;
+            tiles[x][y].style = tile;
 
-            tiles[newX][newY].oldText = tiles[newX][newY].text;
-            tiles[newX][newY].text = word[i].toUpperCase();
+            tiles[x][y].oldText = tiles[x][y].text;
+            tiles[x][y].text = word[i].toUpperCase();
 
-            this.fillGridPortion(newX, newY, tiles[newX][newY].text, tiles[newX][newY].style);
+            this.fillGridPortion(x, y, tiles[x][y].text, tiles[x][y].style);
         }
     }
     private validatePlaceFeasibility(posChar: PosChars, positions: string): void {
