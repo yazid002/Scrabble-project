@@ -42,20 +42,23 @@ export class CommandExecutionService {
                 {
                     // TO DO: Fait en considérant que la ligne est en minuscule, si cela n'a pas d'importance (maj ou min),
                     // remplacer [a-z] par [A-Za-z]
-                    format: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][A-Za-z]+$',
-                    description: '"!placer &lt;ligne&gt;&lt;colonne&gt;(h|v) &lt;mot&gt;" sans espace entre la ligne, la colonne et la direction',
+                    format: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][A-Za-z]{1,15}$',
+                    description:
+                        '"!placer &lt;ligne&gt;&lt;colonne&gt;(h|v) &lt;mot&gt;" sans espace à la fin, avec la ligne de a à o, la colonne de 1 à 15',
                 },
             ],
             [
                 'echanger',
                 {
-                    format: '^echanger[\\s][a-z]+$',
-                    description: '"!echanger &lt;arguments&gt;" sans majuscule ni espace entre les lettres à échanger',
+                    format: '^echanger[\\s][a-z*]{1,7}$',
+                    description:
+                        '"!echanger &lt;arguments&gt;" sans majuscule ni espace entre les lettres à échanger ni à la fin.' +
+                        ' Indiquez 1 à 7 lettres à échanger',
                 },
             ],
-            ['passer', { format: '^passer$', description: '"!passer" sans majuscule ni espace' }],
-            ['debug', { format: '^debug$', description: '"!debug" sans majuscule ni espace' }],
-            ['reserve', { format: '^reserve$', description: '"!reserve" sans majuscule ni espace' }],
+            ['passer', { format: '^passer$', description: '"!passer" sans majuscule ni espace à la fin' }],
+            ['debug', { format: '^debug$', description: '"!debug" sans majuscule ni espace  à la fin' }],
+            ['reserve', { format: '^reserve$', description: '"!reserve" sans majuscule ni espace  à la fin' }],
         ]);
 
         const parameters: string[] = command.split(' ');
