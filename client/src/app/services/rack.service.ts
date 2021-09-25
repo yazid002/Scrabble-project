@@ -3,6 +3,7 @@ import { ICaracter } from '@app/models/lettre.model';
 import { ReserveService } from '@app/services/reserve.service';
 
 const RACK_SIZE = 7;
+
 const DEFAULT_WIDTH = 245;
 const DEFAULT_HEIGHT = 35;
 
@@ -26,7 +27,6 @@ export class RackService {
 
     fillRack() {
         this.rackLetters = this.reserveService.getReserve(RACK_SIZE);
-        console.log('totaux: ', this.reserveService.getNbreOfAvailableLetter());
 
         for (let x = 0; x < RACK_SIZE; x++) {
             this.fillRackPortion(x);
@@ -37,6 +37,8 @@ export class RackService {
         this.rackContext.clearRect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.rect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.stroke();
+        this.rackContext.fillStyle = 'NavajoWhite';
+        this.rackContext.fillRect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.fillStyle = 'rgb(0,0,0)';
         this.rackContext.font = '30px serif';
         if (this.rackLetters != null) {
