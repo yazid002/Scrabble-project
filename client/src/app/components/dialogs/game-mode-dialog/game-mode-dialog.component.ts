@@ -11,16 +11,21 @@ export class GameModeDialogComponent {
     readonly nameOption = GAME_SETTINGS.NAME_OPTION;
     name: string = '';
     error: boolean;
-    errorMessage: string=''
+    errorMessage: string = '';
 
     validateName() {
         console.log(this.name);
-        if (this.name === 'allo'){
-            this.error = false;
-            this.errorMessage = 'valide';
-        } else {
-            this.error = true;
-            this.errorMessage = 'cest pas allo';
+        this.error = false;
+        this.errorMessage = '';
+        for (const pattern of this.nameOption.allowedPattern) {
+            
+            if (!pattern.rule.test(this.name)) {
+            
+                this.error = true;
+                this.errorMessage = pattern.errorMessage;
+
+                break;
+            }
         }
     }
 }

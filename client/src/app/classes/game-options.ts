@@ -54,22 +54,28 @@ const COMPUTER_LEVEL: IOptionList = {
 };
 
 export interface IPattern {
-    rule: string;
+    rule: RegExp;
     errorMessage: string;
 }
 export interface ITextChoice {
     name: string;
     displayName: string;
-    allowedPattern: IPattern;
+    allowedPattern: IPattern[];
 }
 
 export const NAME_OPTION: ITextChoice = {
     name: 'name',
     displayName: "Votre nom d'utilisateur",
-    allowedPattern: {
-        rule: 'allo',
-        errorMessage: 'Vous devez entrer un nom valide',
-    },
+    allowedPattern: [
+        {
+            rule: /^[a-zA-Z0-9_]*$/,
+            errorMessage: 'Caractères spéciaux intertits',
+        },
+        {
+            rule: /^.{1,20}$/,
+            errorMessage: 'Entre 0 et 20 caratères',
+        },
+    ],
 };
 
 export const SETTINGS: {
