@@ -4,8 +4,12 @@
 
     <section class="justified">
         <div>
-            <button *ngFor="let choice of userChoices | keyvalue" mat-raised-button (click)="openDialog(choice.value)">
-                {{ choice.value }}
+            <button mat-raised-button (click)="openDialog(userChoices.classic)">
+                {{ userChoices.classic }}
+            </button>
+
+            <button  mat-raised-button disabled>
+                {{ userChoices.log2990 }}
             </button>
             <button mat-raised-button [routerLink]="['/leaderboard']" >Meilleurs scores</button>
         </div>

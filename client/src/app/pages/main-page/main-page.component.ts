@@ -42,10 +42,6 @@ export class MainPageComponent {
             .subscribe(this.message);
     }
     openDialog(mode: string) {
-        if (mode === this.userChoices.classic) {
-            this.dialog.open(GameModeDialogComponent);
-        } else if (mode === this.userChoices.log2990) {
-            window.alert(mode + ' is unavailable at the moment');
-        }
+        this.dialog.open(GameModeDialogComponent);
     }
 }
