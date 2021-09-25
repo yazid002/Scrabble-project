@@ -34,7 +34,7 @@ export class PlaceExecutionService {
 
         const extractedParameters = this.extractParameters(position);
 
-        this.grid.isPlacingWordValid(word, extractedParameters.coord, extractedParameters.direction).catch((error) => {
+        this.grid.placeWord(word, extractedParameters.coord, extractedParameters.direction).catch((error) => {
             if (error instanceof CommandError) {
                 result.body = error.message;
                 return result;

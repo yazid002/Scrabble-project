@@ -29,7 +29,7 @@ export class VerifyService {
         }
         // const array: boolean[] = [];
         for (let i = 0; i < word.length; i++) {
-            const charInBox = dir === Direction.RIGHT ? tiles[p.row][i + p.column - 1].letter : tiles[i + p.row][p.column - 1].letter;
+            const charInBox = dir === Direction.RIGHT ? tiles[p.row][i + p.column].letter : tiles[i + p.row][p.column].letter;
             console.log('charInBox: ', charInBox);
             console.log('word.charAt(i): ', word.charAt(i));
             console.log("charInBox !== ''", charInBox !== '');
@@ -96,7 +96,7 @@ export class VerifyService {
         let toIndex: number = dir === Direction.BOTTOM ? p.row : p.column;
         let newWord = ''; // le mot a extraire
 
-        console.log('y a quoi dedans : ', tiles[fromIndex - 2][p.column - 1]);
+        console.log('y a quoi dedans : ', tiles[fromIndex - 2][p.column]);
 
         // reculer fromIndex jusqu'au debut du mot a extraire (jusqu'au un case vide)
         if (dir === Direction.BOTTOM) {

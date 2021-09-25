@@ -36,70 +36,50 @@ export class GridService {
         private dictionaryService: WordValidationService,
     ) {}
 
-    // TODO : pas de valeurs magiques!! Faudrait avoir une meilleure manière de le faire
-    /* eslint-disable @typescript-eslint/no-magic-numbers */
-
     drawGridOutdoor() {
         this.gridContext.fillStyle = 'PeachPuff';
-        this.gridContext.fillRect(0, DEFAULT_WIDTH, SQUARE_HEIGHT * 16, SQUARE_WIDTH * 16);
-        this.gridContext.fillRect(DEFAULT_HEIGHT, 0, SQUARE_HEIGHT * 16, SQUARE_WIDTH * 16);
+        this.gridContext.fillRect(0, DEFAULT_WIDTH, SQUARE_HEIGHT * (SQUARE_NUMBER + 1), SQUARE_WIDTH * (SQUARE_NUMBER + 1));
+        this.gridContext.fillRect(DEFAULT_HEIGHT, 0, SQUARE_HEIGHT * (SQUARE_NUMBER + 1), SQUARE_WIDTH * (SQUARE_NUMBER + 1));
 
         this.gridContext.fillStyle = 'rgb(0,0,0)';
         this.gridContext.font = '30px serif';
 
-        for (let i = 0; i < 15; i++) {
-            const pas = i + 1;
-            const pas2 = i + 65;
+        for (let i = 0; i < SQUARE_NUMBER; i++) {
+            const NUMBERS_STEP = i + 1;
+            const LETTERS_STEP = i + 'A'.charCodeAt(0);
+            const NUMBERS_PIXELS_HEIGH_ADJUSTEMENT = 6;
+            const LETTERS_PIXELS_WIDTH_ADJUSTEMENT = 5;
+            const LETTERS_PIXELS_HEIGH_ADJUSTEMENT = 28;
+            const NUMBERS_STEP_MAX = 10;
 
-            if (pas < 10) {
-                this.gridContext.fillText(pas.toString(), SQUARE_WIDTH * i + 10, SQUARE_HEIGHT * 16 - 6);
+            if (NUMBERS_STEP < NUMBERS_STEP_MAX) {
+                this.gridContext.fillText(
+                    NUMBERS_STEP.toString(),
+                    SQUARE_WIDTH * i + NUMBERS_STEP_MAX,
+                    SQUARE_HEIGHT * (SQUARE_NUMBER + 1) - NUMBERS_PIXELS_HEIGH_ADJUSTEMENT,
+                );
             } else {
-                this.gridContext.fillText(pas.toString(), SQUARE_WIDTH * i, SQUARE_HEIGHT * 16 - 6);
+                this.gridContext.fillText(
+                    NUMBERS_STEP.toString(),
+                    SQUARE_WIDTH * i,
+                    SQUARE_HEIGHT * (SQUARE_NUMBER + 1) - NUMBERS_PIXELS_HEIGH_ADJUSTEMENT,
+                );
             }
-            this.gridContext.fillText(String.fromCharCode(pas2), SQUARE_WIDTH * 15 + 5, SQUARE_HEIGHT * i + 28);
+            this.gridContext.fillText(
+                String.fromCharCode(LETTERS_STEP),
+                SQUARE_WIDTH * SQUARE_NUMBER + LETTERS_PIXELS_WIDTH_ADJUSTEMENT,
+                SQUARE_HEIGHT * i + LETTERS_PIXELS_HEIGH_ADJUSTEMENT,
+            );
         }
     }
 
-    fillGrid(x: number, y: number, text: string): void {
-        this.gridContext.fillRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
-        this.gridContext.fillStyle = 'rgb(200,200,200)';
-        this.gridContext.font = '15px serif';
-        this.gridContext.strokeText(text, SQUARE_WIDTH * x + 7, SQUARE_HEIGHT * y + 22);
-    }
     drawGrid() {
         this.gridContext.beginPath();
-        this.gridContext.strokeStyle = 'black';
-        this.gridContext.lineWidth = 1;
-        this.gridContext.fillStyle = 'rgb(245, 241, 222)';
+        this.changeGridStyle('rgb(245, 241, 222)', undefined, 'black', 1);
         this.gridContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                switch (tiles[y][x].bonus) {
-                    case 'TW':
-                        this.gridContext.fillStyle = tiles[y][x].style.color;
-                        this.fillGrid(x, y, tiles[y][x].text);
-                        break;
-                    case 'DL':
-                        this.gridContext.fillStyle = tiles[y][x].style.color;
-                        this.fillGrid(x, y, tiles[y][x].text);
-
-                        break;
-                    case 'DW':
-                        this.gridContext.fillStyle = tiles[y][x].style.color;
-                        this.fillGrid(x, y, tiles[y][x].text);
-
-                        break;
-                    case 'TL':
-                        this.gridContext.fillStyle = tiles[y][x].style.color;
-                        this.fillGrid(x, y, tiles[y][x].text);
-
-                        break;
-                    case 'xx':
-                        this.gridContext.fillStyle = tiles[y][x].style.color;
-                        this.fillGrid(x, y, tiles[y][x].text);
-
-                        break;
-                }
+                this.fillGridPortion({ x, y }, tiles[y][x].text, tiles[y][x].style);
                 this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
             }
         }
@@ -107,43 +87,57 @@ export class GridService {
         this.drawGridOutdoor();
     }
 
-    fillGridPortion(line: number, column: number, letter: string, style: CaseStyle) {
+    fillGridPortion(coord: Vec2, letter: string, style: CaseStyle) {
+        const LETTERS_PIXELS_WIDTH_ADJUSTEMENT = 7;
+        const LETTERS_PIXELS_HEIGH_ADJUSTEMENT = 22;
         this.gridContext.clearRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * column,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * line,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
-        this.gridContext.strokeStyle = 'black';
-        this.gridContext.lineWidth = 1;
-        this.gridContext.fillStyle = style.color;
+        this.changeGridStyle(style.color, undefined, 'black', 1);
 
         this.gridContext.fillRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * column,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * line,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
         this.gridContext.strokeRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * column,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * line,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
-        this.gridContext.fillStyle = 'rgb(0,0,0)';
-        this.gridContext.font = style.font;
-        this.gridContext.strokeText(letter, (DEFAULT_WIDTH / SQUARE_NUMBER) * column + 7, (DEFAULT_WIDTH / SQUARE_NUMBER) * line + 22);
+        this.changeGridStyle('black', style.font);
+        this.gridContext.strokeText(
+            letter,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + LETTERS_PIXELS_WIDTH_ADJUSTEMENT,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + LETTERS_PIXELS_HEIGH_ADJUSTEMENT,
+        );
 
         this.gridContext.stroke();
     }
 
-    async isPlacingWordValid(word: string, coord: Vec2, direction: string): Promise<void> {
+    changeGridStyle(fillStyle?: string, font?: string, strokeStyle?: string, lineWidth?: number): void {
+        this.gridContext.fillStyle = fillStyle as string;
+        this.gridContext.font = font as string;
+        this.gridContext.strokeStyle = strokeStyle as string;
+        this.gridContext.lineWidth = lineWidth as number;
+    }
+
+    async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
         const promise = new Promise<void>((resolve, reject) => {
-            this.placeWord(word, coord, direction);
+            const posWord = new PosChars(word, new Point(coord.x, coord.y));
+            this.validatePlaceFeasibility(posWord, direction);
+            this.writeWord(word, coord, direction);
+
             if (!this.dictionaryService.checkWordExists(word) || !this.dictionaryService.checkWordMinLength(2, word)) {
+                const PLACEMENT_DURATION = 3000; // 3000 millisecondes soit 3s;
                 for (let i = 0; i < word.length; i++) {
                     const x = this.computeCoordByDirection(direction, coord, i).x;
                     const y = this.computeCoordByDirection(direction, coord, i).y;
@@ -151,8 +145,8 @@ export class GridService {
                     tiles[x][y].text = tiles[x][y].oldText;
                     tiles[x][y].style = tiles[x][y].oldStyle;
                     setTimeout(() => {
-                        this.fillGridPortion(x, y, tiles[x][y].text.toUpperCase(), tiles[x][y].style);
-                    }, 3000);
+                        this.fillGridPortion({ x, y }, tiles[x][y].text.toUpperCase(), tiles[x][y].style);
+                    }, PLACEMENT_DURATION);
                 }
 
                 reject(new CommandError("Ce mot n'existe pas dans le dictionnaire"));
@@ -179,14 +173,6 @@ export class GridService {
         }
     }
 
-    placeWord(word: string, coord: Vec2, direction: string) {
-        const posWord = new PosChars(word, new Point(coord.x, coord.y));
-
-        this.validatePlaceFeasibility(posWord, direction);
-
-        this.writeWord(word, coord, direction);
-    }
-
     writeWord(word: string, coord: Vec2, direction: string) {
         for (let i = 0; i < word.length; i++) {
             const x = this.computeCoordByDirection(direction, coord, i).x;
@@ -205,49 +191,24 @@ export class GridService {
             tiles[x][y].oldText = tiles[x][y].text;
             tiles[x][y].text = word[i].toUpperCase();
 
-            this.fillGridPortion(x, y, tiles[x][y].text, tiles[x][y].style);
+            this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
         }
     }
+
     private validatePlaceFeasibility(posChar: PosChars, positions: string): void {
-        const wordToChange = posChar.lettre?.split('') as string[];
+        this.validateJokersOccurrencesMatch(posChar.lettre as string);
+        const dir = positions === 'h' ? Direction.RIGHT : Direction.BOTTOM;
+        this.verifyService.isFiting(posChar.position as Point, dir, posChar.lettre as string);
+    }
+
+    private validateJokersOccurrencesMatch(word: string): void {
+        const wordToChange = word.split('') as string[];
         const upperLettersInWord: string[] = wordToChange.filter((letter) => letter === letter.toUpperCase());
-        // const upperLettersInWord: string[] = wordToChange.filter((letter) => letter === letter.toUpperCase());
         const jokersNumb = this.rack.findJokerOnRack();
 
         if (upperLettersInWord.length > jokersNumb) {
-            throw new NotEnoughOccurrences(`suivantes ${upperLettersInWord.join(', ')} représentées par des *.`);
+            throw new NotEnoughOccurrences(` * (lettres blanches) pour représenter les lettres "${upperLettersInWord.join('", "')}" demandées.`);
         }
-        const dir = positions === 'h' ? Direction.RIGHT : Direction.BOTTOM;
-
-        // if (
-        //     !(
-        //         !this.verifyService.isAllValid(posChar.position as Point, dir, posChar.lettre as string) &&
-        //         this.rack.findWordOnRack(posChar.lettre?.split('') as string[])
-        //     )
-        // ) {
-        //     throw new CommandError('Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet');
-        //     // throw new CommandError('Il y a des erreurs par rapport aux règles du scrabble');
-        // }
-
-        // if (!this.verifyService.isFiting(posChar.position as Point, dir, posChar.lettre as string)) {
-        //     console.log('je suis pas valide');
-        //     // if (!this.rack.findWordOnRack(posChar.lettre?.split('') as string[])) {
-        //     //     throw new CommandError('Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet');
-        //     // }
-        //     throw new CommandError('Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet');
-        // }
-        this.verifyService.isFiting(posChar.position as Point, dir, posChar.lettre as string);
-        // if (!this.dictionaryService.checkWordExists(posChar.lettre as string)) {
-        //     throw new CommandError("Ce mot n'existe pas dans le dictionnaire");
-        // }
-
-        //  for()
-
-        // if (inexistentLettersOnRack.length) {
-        //     throw new InexistentLettersOnRack(`${inexistentLettersOnRack.join(', ')}.`);
-        // }
-
-        //   if(!this.verifyService.isAllValid(posChar.position as Point, dir, posChar.lettre as string) && )
     }
 
     get width(): number {
