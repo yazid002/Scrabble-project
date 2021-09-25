@@ -19,13 +19,13 @@ export class CommandExecutionService {
         private exchangeExecutionService: ExchangeExecutionService,
     ) {}
     interpretCommand(command: string) {
-        this.process(command);
+        this.findCommand(command);
     }
     executeCommand(command: string): IChat {
-        const functionToExecute: () => IChat = this.process(command);
+        const functionToExecute: () => IChat = this.findCommand(command);
         return functionToExecute();
     }
-    private process(command: string): () => IChat {
+    private findCommand(command: string): () => IChat {
         /**
          * Interprets the command given in parameter and returns a response from the right execution service
          */
