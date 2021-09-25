@@ -4,10 +4,9 @@
 
     <section class="justified">
         <div>
-            <button mat-raised-button (click)="openDialog(userChoices.classic)">
+            <button mat-raised-button (click)="chooseMode(settings.modes.options[0].key)">
                 {{ userChoices.classic }}
             </button>
-
             <button  mat-raised-button disabled>
                 {{ userChoices.log2990 }}
             </button>

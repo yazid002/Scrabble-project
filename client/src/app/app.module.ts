@@ -16,6 +16,7 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { ChatboxComponent } from './components/chatbox/chatbox.component';
 import { GameModeDialogComponent } from './components/dialogs/game-mode-dialog/game-mode-dialog.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
+import { GameOverviewComponent } from './components/game-overview/game-overview.component';
 
 /**
  * Main module that is used in main.ts.
@@ -34,6 +35,7 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         GameModeDialogComponent,
         LeaderboardPageComponent,
         ChatboxComponent,
+        GameOverviewComponent,
     ],
     imports: [
         AppMaterialModule,

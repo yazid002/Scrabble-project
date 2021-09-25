@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import * as GAME_SETTINGS from '@app/classes/game-options';
+import { UserSettingsService } from '@app/services/user-settings.service';
 
 @Component({
     selector: 'app-game-mode-dialog',
@@ -7,25 +8,20 @@ import * as GAME_SETTINGS from '@app/classes/game-options';
     styleUrls: ['./game-mode-dialog.component.scss'],
 })
 export class GameModeDialogComponent {
-    readonly settings = GAME_SETTINGS.SETTINGS;
     readonly nameOption = GAME_SETTINGS.NAME_OPTION;
-    name: string = '';
+    settings: {
+        modes: GAME_SETTINGS.IOptionList;
+        numPlayers: GAME_SETTINGS.IOptionList;
+        computerLevel: GAME_SETTINGS.IOptionList;
+    };
     error: boolean;
     errorMessage: string = '';
 
-    validateName() {
-        console.log(this.name);
-        this.error = false;
-        this.errorMessage = '';
-        for (const pattern of this.nameOption.allowedPattern) {
-            
-            if (!pattern.rule.test(this.name)) {
-            
-                this.error = true;
-                this.errorMessage = pattern.errorMessage;
+    constructor(public userSettingsService: UserSettingsService) {}
 
-                break;
-            }
-        }
+    validateName() {
+        const result = this.userSettingsService.validateName(this.nameOption.userChoice);
+        this.error = result.error;
+        this.errorMessage = result.errorMessage;
     }
 }

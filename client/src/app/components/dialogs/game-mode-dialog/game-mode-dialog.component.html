@@ -1,36 +1,35 @@
 <h2 mat-dialog-title>Veuillez Choisir le nombre de joueurs</h2>
 
 <form (keyup)="validateName()" mat-dialog-content aria-details="w">
-    <mat-card *ngFor="let setting of settings | keyvalue">
+    <mat-card *ngFor="let setting of userSettingsService.settings| keyvalue">
+        {{userSettingsService.settings | json}}
         <mat-card-title>{{ setting.value.displayName }}</mat-card-title>
-        <mat-radio-group color="primary" [name]="setting.value.name" [required]="setting.value.required">
-            <mat-radio-button *ngFor="let choice of setting.value.options" [value]="choice.name">
+        <mat-radio-group color="primary" [name]="setting.value.key"  [(ngModel)]="setting.value.userValueKey">
+            <mat-radio-button *ngFor="let choice of setting.value.options; let i = index" [attr.data-index]='i' [value]="setting.value.userValueKey" [checked]="choice.key===setting.value.userValueKey">
                 {{ choice.displayName }}
             </mat-radio-button>
         </mat-radio-group>
     </mat-card>
 
     <mat-card>
-        <mat-form-field appearance="outline" [color]="error? 'warn':'primary'">
+        <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
             <mat-label>{{ errorMessage }}</mat-label>
             <input
                 autocomplete="off"
                 matInput
                 type="text"
-                [id]="nameOption.name"
-                [name]="nameOption.name"
+                [id]="nameOption.key"
+                [name]="nameOption.key"
                 [placeholder]="nameOption.displayName"
                 required="true"
-                [(ngModel)]="name"
+                [(ngModel)]="nameOption.userChoice"
                 aria-errormessage="ppp"
-                
             />
         </mat-form-field>
-        
     </mat-card>
 
     <section id="footer">
         <button mat-raised-button mat-dialog-close>Retour À l'accueil</button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="error">Jouer</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="error" routerLink="game"  mat-dialog-close>Jouer</button>
     </section>
 </form>

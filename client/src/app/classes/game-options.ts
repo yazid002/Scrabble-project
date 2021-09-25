@@ -1,56 +1,56 @@
 export interface IOption {
-    name: string;
+    key: string;
     displayName: string;
 }
 
 export interface IOptionList {
-    name: string;
+    key: string;
     displayName: string;
-    required?: boolean;
     options: IOption[];
+    userValueKey?: string;
 }
 const MODES: IOptionList = {
-    name: 'gameMode',
+    key: 'gameMode',
     displayName: 'Mode de jeux',
-    required: true,
     options: [
         {
-            name: 'classic',
+            key: 'classic',
             displayName: 'Classique',
         },
         {
-            name: 'LOG2990',
+            key: 'LOG2990',
             displayName: 'LOG2990',
         },
     ],
+    userValueKey: '',
 };
 
 const NUM_PLAYERS: IOptionList = {
-    name: 'numPlayers',
+    key: 'numPlayers',
     displayName: 'Nombre de joueurs',
-    required: true,
     options: [
         {
-            name: 'multi',
+            key: 'multi',
             displayName: 'Multijoueur',
         },
         {
-            name: 'solo',
+            key: 'solo',
             displayName: 'Solo',
         },
     ],
+    userValueKey: '',
 };
 
 const COMPUTER_LEVEL: IOptionList = {
-    name: 'computerLevel',
-    displayName: "Niveau de l'ardinateur",
-    required: true,
+    key: 'computerLevel',
+    displayName: "Niveau de l'ordinateur",
     options: [
         {
-            name: 'easy',
+            key: 'easy',
             displayName: 'Débutant',
         },
     ],
+    userValueKey: '',
 };
 
 export interface IPattern {
@@ -58,13 +58,14 @@ export interface IPattern {
     errorMessage: string;
 }
 export interface ITextChoice {
-    name: string;
+    key: string;
     displayName: string;
     allowedPattern: IPattern[];
+    userChoice: string;
 }
 
 export const NAME_OPTION: ITextChoice = {
-    name: 'name',
+    key: 'name',
     displayName: "Votre nom d'utilisateur",
     allowedPattern: [
         {
@@ -76,6 +77,7 @@ export const NAME_OPTION: ITextChoice = {
             errorMessage: 'Entre 0 et 20 caratères',
         },
     ],
+    userChoice: '',
 };
 
 export const SETTINGS: {
@@ -87,3 +89,10 @@ export const SETTINGS: {
     numPlayers: NUM_PLAYERS,
     computerLevel: COMPUTER_LEVEL,
 };
+
+export interface IUserSettings {
+    name: string;
+    numPlayers: string;
+    gameMode: string;
+    computerLevel?: string;
+}

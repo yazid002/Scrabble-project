@@ -5,11 +5,8 @@ import * as GAME_SETTINGS from '@app/classes/game-options';
     providedIn: 'root',
 })
 export class UserSettingsService {
-    gameMode: string;
-    userName: string;
-    computerLevel: string;
-    numPlayers: string;
-
+    settings = GAME_SETTINGS.SETTINGS;
+    profile = GAME_SETTINGS.NAME_OPTION;
     validateName(name: string): { error: boolean; errorMessage: string } {
         let error = false;
         let errorMessage = '';

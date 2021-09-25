@@ -5,6 +5,7 @@ import { GameModeDialogComponent } from '@app/components/dialogs/game-mode-dialo
 import { CommunicationService } from '@app/services/communication.service';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SETTINGS } from '@app/classes/game-options';
 
 @Component({
     selector: 'app-main-page',
@@ -16,7 +17,7 @@ export class MainPageComponent {
         classic: 'Mode Classique',
         log2990: 'Mode LOG2990',
     };
-
+    settings = SETTINGS;
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     constructor(public dialog: MatDialog, private readonly communicationService: CommunicationService) {}
@@ -41,7 +42,13 @@ export class MainPageComponent {
             )
             .subscribe(this.message);
     }
-    openDialog(mode: string) {
+
+    chooseMode(mode: string) {
+        SETTINGS.modes.userValueKey = mode;
+        console.log(SETTINGS);
+        this.openDialog();
+    }
+    private openDialog() {
         this.dialog.open(GameModeDialogComponent);
     }
 }
