@@ -54,9 +54,9 @@ describe('MainPageComponent', () => {
         component.sendTimeToServer();
         expect(communicationServiceSpy.basicPost).toHaveBeenCalled();
     });
-    it('should open a MatDialog box asking for the number of players', () => {
-        const mode = component.userChoices.classic;
-        component.openDialog(mode);
+    it("should open a MatDialog box when pressing 'classic' button", () => {
+        const mode = 'classic';
+        component.chooseMode(mode);
         const popup = document.getElementsByTagName('h2');
         expect(popup.length).toBeGreaterThanOrEqual(1);
     });
