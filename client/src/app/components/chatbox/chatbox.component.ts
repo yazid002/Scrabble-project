@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IChat, SENDER } from '@app/classes/chat';
+import { CommandError } from '@app/classes/command-errors/command-error';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
@@ -11,47 +11,63 @@ const MAX_MESSAGE_LENGTH = 512;
     styleUrls: ['./chatbox.component.scss'],
 })
 export class ChatboxComponent implements OnInit {
-    myForm: FormGroup;
+    inputBox: string = '';
+    error: boolean;
+    errorMessage: string = '';
     minLength: number = 0;
     maxLength: number = MAX_MESSAGE_LENGTH;
     messages: IChat[] = [];
     readonly possibleSenders = SENDER;
 
-    constructor(public chatService: ChatService, private fb: FormBuilder, private commandExecutionService: CommandExecutionService) {}
+    constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService) {}
 
     ngOnInit(): void {
-        // const placerPattern = Validators.pattern('^!placer[\\s][a-z]+[0-9]+(h|v)[\\s][A-Za-z]+$');
-        this.myForm = this.fb.group({
-            message: ['', [Validators.required, Validators.minLength(this.minLength), Validators.maxLength(this.maxLength)]],
-        });
-        this.myForm.valueChanges.subscribe();
         this.getMessages();
     }
-    get message() {
-        const message = this.myForm.get('message');
-        return message;
+    validateFormat() {
+        this.error = false;
+        if (this.inputBox.startsWith('!')) {
+            try {
+                this.commandExecutionService.interpretCommand(this.inputBox);
+                this.error = false;
+            } catch (error) {
+                if (error instanceof CommandError) {
+                    this.errorMessage = error.message;
+                    this.error = true;
+                }
+            }
+        }
     }
     async onSubmit() {
-        if (!this.myForm.valid) return;
-        const body = this.myForm.value.message;
-        if (body.startsWith('!')) {
-            const result: IChat = await this.commandExecutionService.interpretCommand(body);
-
-            this.chatService.addMessage(body, this.possibleSenders.me);
-            this.chatService.addMessage(result.body, result.from);
-        } else {
-            this.chatService.addMessage(body, this.possibleSenders.me);
+        const message: IChat = {
+            from: this.possibleSenders.me,
+            body: this.inputBox,
+        };
+        this.chatService.addMessage(message);
+        if (this.inputBox.startsWith('!')) {
+            let response: IChat = { from: '', body: '' };
+            try {
+                response = await this.commandExecutionService.executeCommand(this.inputBox);
+            } catch (error) {
+                if (error instanceof CommandError) {
+                    response = {
+                        from: this.possibleSenders.computer,
+                        body: error.message,
+                    };
+                }
+            }
+            this.chatService.addMessage(response);
         }
-        // this.getMessages();
-        this.myForm.reset();
+
+        this.inputBox = '';
         this.scrollDown();
     }
     private scrollDown() {
-        const cont1 = document.getElementById('message-history');
+        const container = document.getElementById('message-history');
 
-        if (cont1) {
-            cont1.scrollTop = cont1.scrollHeight;
-            cont1.scrollTo(0, cont1.scrollHeight);
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+            container.scrollTo(0, container.scrollHeight);
         }
     }
     private getMessages(): void {
