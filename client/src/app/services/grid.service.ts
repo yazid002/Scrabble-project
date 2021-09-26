@@ -47,28 +47,28 @@ export class GridService {
         for (let i = 0; i < SQUARE_NUMBER; i++) {
             const NUMBERS_STEP = i + 1;
             const LETTERS_STEP = i + 'A'.charCodeAt(0);
-            const NUMBERS_PIXELS_HEIGH_ADJUSTEMENT = 6;
-            const LETTERS_PIXELS_WIDTH_ADJUSTEMENT = 5;
-            const LETTERS_PIXELS_HEIGH_ADJUSTEMENT = 28;
+            const NUMBERS_PIXELS_HEIGH_ADJUSTMENT = 6;
+            const LETTERS_PIXELS_WIDTH_ADJUSTMENT = 5;
+            const LETTERS_PIXELS_HEIGH_ADJUSTMENT = 28;
             const NUMBERS_STEP_MAX = 10;
 
             if (NUMBERS_STEP < NUMBERS_STEP_MAX) {
                 this.gridContext.fillText(
                     NUMBERS_STEP.toString(),
                     SQUARE_WIDTH * i + NUMBERS_STEP_MAX,
-                    SQUARE_HEIGHT * (SQUARE_NUMBER + 1) - NUMBERS_PIXELS_HEIGH_ADJUSTEMENT,
+                    SQUARE_HEIGHT * (SQUARE_NUMBER + 1) - NUMBERS_PIXELS_HEIGH_ADJUSTMENT,
                 );
             } else {
                 this.gridContext.fillText(
                     NUMBERS_STEP.toString(),
                     SQUARE_WIDTH * i,
-                    SQUARE_HEIGHT * (SQUARE_NUMBER + 1) - NUMBERS_PIXELS_HEIGH_ADJUSTEMENT,
+                    SQUARE_HEIGHT * (SQUARE_NUMBER + 1) - NUMBERS_PIXELS_HEIGH_ADJUSTMENT,
                 );
             }
             this.gridContext.fillText(
                 String.fromCharCode(LETTERS_STEP),
-                SQUARE_WIDTH * SQUARE_NUMBER + LETTERS_PIXELS_WIDTH_ADJUSTEMENT,
-                SQUARE_HEIGHT * i + LETTERS_PIXELS_HEIGH_ADJUSTEMENT,
+                SQUARE_WIDTH * SQUARE_NUMBER + LETTERS_PIXELS_WIDTH_ADJUSTMENT,
+                SQUARE_HEIGHT * i + LETTERS_PIXELS_HEIGH_ADJUSTMENT,
             );
         }
     }
@@ -88,8 +88,8 @@ export class GridService {
     }
 
     fillGridPortion(coord: Vec2, letter: string, style: CaseStyle) {
-        const LETTERS_PIXELS_WIDTH_ADJUSTEMENT = 7;
-        const LETTERS_PIXELS_HEIGH_ADJUSTEMENT = 22;
+        const LETTERS_PIXELS_WIDTH_ADJUSTMENT = 7;
+        const LETTERS_PIXELS_HEIGH_ADJUSTMENT = 22;
         this.gridContext.clearRect(
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
@@ -116,8 +116,8 @@ export class GridService {
         this.changeGridStyle('black', style.font);
         this.gridContext.strokeText(
             letter,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + LETTERS_PIXELS_WIDTH_ADJUSTEMENT,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + LETTERS_PIXELS_HEIGH_ADJUSTEMENT,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + LETTERS_PIXELS_WIDTH_ADJUSTMENT,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + LETTERS_PIXELS_HEIGH_ADJUSTMENT,
         );
 
         this.gridContext.stroke();
@@ -204,7 +204,7 @@ export class GridService {
     private validateJokersOccurrencesMatch(word: string): void {
         const wordToChange = word.split('') as string[];
         const upperLettersInWord: string[] = wordToChange.filter((letter) => letter === letter.toUpperCase());
-        const jokersNumb = this.rack.findJokerOnRack();
+        const jokersNumb = this.rack.findJokersNumberOnRack();
 
         if (upperLettersInWord.length > jokersNumb) {
             throw new NotEnoughOccurrences(` * (lettres blanches) pour représenter les lettres "${upperLettersInWord.join('", "')}" demandées.`);

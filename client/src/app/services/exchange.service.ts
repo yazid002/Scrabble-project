@@ -20,13 +20,13 @@ export class ExchangeService {
         this.validateExchangeFeasibility(lettersToChange);
 
         for (const letter of lettersToChange) {
-            this.rackService.replaceLetter(letter);
+            this.rackService.replaceLetter(letter, false);
         }
     }
 
     private validateExchangeFeasibility(lettersToChange: string[]): void {
         const validArgumentsLength = this.validateArgumentLength(lettersToChange, ExchangeLimits.Min, ExchangeLimits.Max);
-        const inexistentLettersOnRack: string[] = this.findInexistentLettersOnRack(lettersToChange);
+        const inexistentLettersOnRack: string[] = this.rackService.findInexistentLettersOnRack(lettersToChange);
         const incoherentOccurrences: string[] = this.findIncoherentOccurrencesMatch(lettersToChange);
 
         if (!this.rackService.checkLettersAvailability(ExchangeLimits.Max)) {
@@ -43,10 +43,10 @@ export class ExchangeService {
         }
     }
 
-    private findLetterToChangeOnRack(letterToCheck: string): boolean {
-        const notFound = -1;
-        return this.rackService.findLetterPosition(letterToCheck) !== notFound;
-    }
+    // private findLetterToChangeOnRack(letterToCheck: string): boolean {
+    //     const notFound = -1;
+    //     return this.rackService.findLetterPosition(letterToCheck) !== notFound;
+    // }
 
     private validateLetterOccurrencesMatch(letter: string, letters: string[]): boolean {
         const rackLetters = this.rackService.rackLetters as ICaracter[];
@@ -62,7 +62,7 @@ export class ExchangeService {
         return [...new Set(lettersToChange.filter((letter: string) => this.validateLetterOccurrencesMatch(letter, lettersToChange) === false))];
     }
 
-    private findInexistentLettersOnRack(lettersToChange: string[]): string[] {
-        return [...new Set(lettersToChange.filter((letter: string) => this.findLetterToChangeOnRack(letter) === false))];
-    }
+    // private findInexistentLettersOnRack(lettersToChange: string[]): string[] {
+    //     return [...new Set(lettersToChange.filter((letter: string) => this.findLetterToChangeOnRack(letter) === false))];
+    // }
 }

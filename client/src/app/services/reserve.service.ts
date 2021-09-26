@@ -41,7 +41,7 @@ export class ReserveService {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     constructor() {}
 
-    getNbreOfAvailableLetter() {
+    getNumberOfAvailableLetter() {
         // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
         const nbTotal = this.alphabets.reduce(function (acc, obj) {
             return acc + obj.quantity;
@@ -51,8 +51,8 @@ export class ReserveService {
 
     getReserve(requestedQuantity: number) {
         // eslint-disable-next-line no-console
-        console.log('totaux = ' + this.getNbreOfAvailableLetter());
-        const totalAvailableLetters = this.getNbreOfAvailableLetter();
+        console.log('totaux = ' + this.getNumberOfAvailableLetter());
+        const totalAvailableLetters = this.getNumberOfAvailableLetter();
         const filterByQuantity = (letters: ICaracter[]) => letters.filter((letter) => letter.quantity > 0);
         let availableLetters = filterByQuantity(this.alphabets);
         const reserve: ICaracter[] = [];
@@ -86,7 +86,7 @@ export class ReserveService {
         if (indexInReserve !== notFound) {
             this.alphabets[indexInReserve].quantity++;
         }
-        console.log('totaux: ', this.getNbreOfAvailableLetter());
+        console.log('totaux: ', this.getNumberOfAvailableLetter());
     }
 
     findLetter(letterToCheck: string): ICaracter | void {

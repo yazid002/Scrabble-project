@@ -16,13 +16,14 @@ describe('ExchangeService', () => {
             'findLetterPosition',
             'countLetterOccurrences',
             'checkLettersAvailability',
+            'findInexistentLettersOnRack',
         ]);
         rackServiceSpy.rackLetters = [
-            { name: 'A', params: { quantity: 9, points: 1, affiche: 'A' } },
-            { name: 'B', params: { quantity: 2, points: 3, affiche: 'B' } },
-            { name: 'C', params: { quantity: 2, points: 3, affiche: 'C' } },
-            { name: 'D', params: { quantity: 3, points: 2, affiche: 'D' } },
-            { name: 'E', params: { quantity: 15, points: 1, affiche: 'E' } },
+            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
+            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
         ];
         TestBed.configureTestingModule({
             providers: [{ provide: RackService, useValue: rackServiceSpy }],
@@ -32,38 +33,6 @@ describe('ExchangeService', () => {
 
     it('should be created', () => {
         expect(service).toBeTruthy();
-    });
-
-    it('findLetterToChangeOnRack should call findLetterPosition de rackServiceSpy', () => {
-        const letterToChange = 'B';
-
-        // eslint-disable-next-line dot-notation
-        service['findLetterToChangeOnRack'](letterToChange);
-
-        expect(rackServiceSpy.findLetterPosition).toHaveBeenCalled();
-    });
-
-    it('findLetterToChangeOnRack should return true', () => {
-        rackServiceSpy.findLetterPosition.and.returnValue(2);
-        // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // const findLetterToChangeOnRackSpy = spyOn<any>(service, 'findLetterToChangeOnRack').and.returnValue(true);
-        const letterToChange = 'B';
-
-        // eslint-disable-next-line dot-notation
-        const result = service['findLetterToChangeOnRack'](letterToChange);
-
-        expect(result).toBeTrue();
-    });
-
-    it('findLetterToChangeOnRack should return false', () => {
-        const notFound = -1;
-        rackServiceSpy.findLetterPosition.and.returnValue(notFound);
-        const letterToChange = 'G';
-
-        // eslint-disable-next-line dot-notation
-        const result = service['findLetterToChangeOnRack'](letterToChange);
-
-        expect(result).toBeFalse();
     });
 
     it('validateLetterOccurrencesMatch should call countLetterOccurrences de rackServiceSpy', () => {
@@ -80,11 +49,11 @@ describe('ExchangeService', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'D'];
         rackServiceSpy.rackLetters = [
-            { name: 'A', params: { quantity: 9, points: 1, affiche: 'A' } },
-            { name: 'B', params: { quantity: 0, points: 3, affiche: 'B' } },
-            { name: 'B', params: { quantity: 0, points: 3, affiche: 'B' } },
-            { name: 'D', params: { quantity: 3, points: 2, affiche: 'D' } },
-            { name: 'E', params: { quantity: 15, points: 1, affiche: 'E' } },
+            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
+            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
+            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
         ];
         const rackLettersToStrings = ['A', 'B', 'B', 'D', 'E'];
         rackServiceSpy.countLetterOccurrences
@@ -103,11 +72,11 @@ describe('ExchangeService', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'B', 'D'];
         rackServiceSpy.rackLetters = [
-            { name: 'A', params: { quantity: 9, points: 1, affiche: 'A' } },
-            { name: 'B', params: { quantity: 1, points: 3, affiche: 'B' } },
-            { name: 'C', params: { quantity: 1, points: 3, affiche: 'C' } },
-            { name: 'D', params: { quantity: 3, points: 2, affiche: 'D' } },
-            { name: 'E', params: { quantity: 15, points: 1, affiche: 'E' } },
+            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+            { name: 'B', quantity: 1, points: 3, affiche: 'B' },
+            { name: 'C', quantity: 1, points: 3, affiche: 'C' },
+            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
         ];
         const rackLettersToStrings = ['A', 'B', 'C', 'D', 'E'];
         rackServiceSpy.countLetterOccurrences
@@ -204,27 +173,6 @@ describe('ExchangeService', () => {
         expect(result).toEqual(expectedResult);
     });
 
-    it('findInexistentLettersOnRack should return all lettersToChange that are not on the rack', () => {
-        const lettersToChange: string[] = ['B', 'U', 'D'];
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const findLetterToChangeOnRackSpy = spyOn<any>(service, 'findLetterToChangeOnRack')
-            .withArgs(lettersToChange[0])
-            .and.returnValue(true)
-            .withArgs(lettersToChange[1])
-            .and.returnValue(false)
-            .withArgs(lettersToChange[2])
-            .and.returnValue(true);
-
-        const expectedResult = ['U'];
-
-        // eslint-disable-next-line dot-notation
-        const result = service['findInexistentLettersOnRack'](lettersToChange);
-
-        expect(findLetterToChangeOnRackSpy).toHaveBeenCalledTimes(lettersToChange.length);
-        expect(result).toEqual(expectedResult);
-    });
-
     it('exchangeLetters should call replaceLetter of rackServiceSpy on each letter to change', () => {
         const lettersToChange = ['B', 'D'];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -264,16 +212,15 @@ describe('ExchangeService', () => {
         const inexistentLettersOnRack = ['B', 'D'];
 
         rackServiceSpy.checkLettersAvailability.and.returnValue(true);
+        rackServiceSpy.findInexistentLettersOnRack.and.returnValue(inexistentLettersOnRack);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'validateArgumentLength').and.returnValue(true);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const findInexistentLettersOnRackSpy = spyOn<any>(service, 'findInexistentLettersOnRack').and.returnValue(inexistentLettersOnRack);
 
         // eslint-disable-next-line dot-notation
         expect(() => service['validateExchangeFeasibility'](lettersToChange)).toThrow(
             new InexistentLettersOnRack(`${inexistentLettersOnRack.join(', ')}.`),
         );
-        expect(findInexistentLettersOnRackSpy).toHaveBeenCalled();
+        expect(rackServiceSpy.findInexistentLettersOnRack).toHaveBeenCalled();
     });
 
     it('validateExchangeFeasibility should throw NotEnoughOccurrences', () => {
@@ -281,10 +228,9 @@ describe('ExchangeService', () => {
         const incoherentOccurrences = ['B', 'D'];
 
         rackServiceSpy.checkLettersAvailability.and.returnValue(true);
+        rackServiceSpy.findInexistentLettersOnRack.and.returnValue([]);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'validateArgumentLength').and.returnValue(true);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        spyOn<any>(service, 'findInexistentLettersOnRack').and.returnValue([]);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const findIncoherentOccurrencesMatchSpy = spyOn<any>(service, 'findIncoherentOccurrencesMatch').and.returnValue(incoherentOccurrences);
 
@@ -299,10 +245,9 @@ describe('ExchangeService', () => {
         const lettersToChange = ['B', 'D', 'C'];
 
         rackServiceSpy.checkLettersAvailability.and.returnValue(true);
+        rackServiceSpy.findInexistentLettersOnRack.and.returnValue([]);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'validateArgumentLength').and.returnValue(true);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        spyOn<any>(service, 'findInexistentLettersOnRack').and.returnValue([]);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'findIncoherentOccurrencesMatch').and.returnValue([]);
 
