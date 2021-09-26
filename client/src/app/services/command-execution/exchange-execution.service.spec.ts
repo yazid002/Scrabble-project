@@ -19,7 +19,7 @@ describe('ExchangeExecutionService', () => {
 
     describe('execute', () => {
         it(' should call exchangeLetters of exchangeServiceSpy', () => {
-            const PARAMETERS = ['placer', 'g4h', 'dos'];
+            const PARAMETERS = ['echanger', 'dos'];
 
             service.execute(PARAMETERS);
 
@@ -27,7 +27,7 @@ describe('ExchangeExecutionService', () => {
         });
 
         it(' should catch and return an error throw by exchangeServiceSpy', () => {
-            const PARAMETERS = ['placer', 'g4h', 'dos'];
+            const PARAMETERS = ['echanger', 'dos'];
 
             exchangeServiceSpy.exchangeLetters.and.throwError(new CommandError('Une erreur de test.'));
 
@@ -37,7 +37,7 @@ describe('ExchangeExecutionService', () => {
         });
 
         it(' should propagate the error if it is not a commandError', () => {
-            const PARAMETERS = ['placer', 'g4h', 'dos'];
+            const PARAMETERS = ['echanger', 'dos'];
 
             exchangeServiceSpy.exchangeLetters.and.throwError(new Error('Une erreur de test.'));
 
@@ -45,7 +45,7 @@ describe('ExchangeExecutionService', () => {
         });
 
         it(' should return the initial result if no error was threw', () => {
-            const PARAMETERS = ['placer', 'g4h', 'dos'];
+            const PARAMETERS = ['echanger', 'dos'];
 
             exchangeServiceSpy.exchangeLetters.and.returnValue(void '');
 
