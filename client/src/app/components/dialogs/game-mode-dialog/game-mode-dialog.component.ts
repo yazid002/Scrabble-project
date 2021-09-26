@@ -9,11 +9,6 @@ import { UserSettingsService } from '@app/services/user-settings.service';
 })
 export class GameModeDialogComponent {
     readonly nameOption = GAME_SETTINGS.NAME_OPTION;
-    settings: {
-        modes: GAME_SETTINGS.IOptionList;
-        numPlayers: GAME_SETTINGS.IOptionList;
-        computerLevel: GAME_SETTINGS.IOptionList;
-    };
     error: boolean;
     errorMessage: string = '';
 

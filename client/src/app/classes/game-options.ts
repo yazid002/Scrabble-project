@@ -1,57 +1,18 @@
 export interface IOption {
     key: string;
-    displayName: string;
+    value: string;
+    disabled?: boolean;
 }
 
 export interface IOptionList {
-    key: string;
-    displayName: string;
-    options: IOption[];
-    userValueKey?: string;
+    settingName: string;
+    availableChoices: IOption[];
 }
-const MODES: IOptionList = {
-    key: 'gameMode',
-    displayName: 'Mode de jeux',
-    options: [
-        {
-            key: 'classic',
-            displayName: 'Classique',
-        },
-        {
-            key: 'LOG2990',
-            displayName: 'LOG2990',
-        },
-    ],
-    userValueKey: '',
-};
 
-const NUM_PLAYERS: IOptionList = {
-    key: 'numPlayers',
-    displayName: 'Nombre de joueurs',
-    options: [
-        {
-            key: 'multi',
-            displayName: 'Multijoueur',
-        },
-        {
-            key: 'solo',
-            displayName: 'Solo',
-        },
-    ],
-    userValueKey: '',
-};
-
-const COMPUTER_LEVEL: IOptionList = {
-    key: 'computerLevel',
-    displayName: "Niveau de l'ordinateur",
-    options: [
-        {
-            key: 'easy',
-            displayName: 'Débutant',
-        },
-    ],
-    userValueKey: '',
-};
+export interface IUserSetting {
+    setting: IOptionList;
+    currentChoiceKey: string;
+}
 
 export interface IPattern {
     rule: RegExp;
@@ -79,20 +40,3 @@ export const NAME_OPTION: ITextChoice = {
     ],
     userChoice: '',
 };
-
-export const SETTINGS: {
-    modes: IOptionList;
-    numPlayers: IOptionList;
-    computerLevel: IOptionList;
-} = {
-    modes: MODES,
-    numPlayers: NUM_PLAYERS,
-    computerLevel: COMPUTER_LEVEL,
-};
-
-export interface IUserSettings {
-    name: string;
-    numPlayers: string;
-    gameMode: string;
-    computerLevel?: string;
-}
