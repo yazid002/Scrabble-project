@@ -13,7 +13,7 @@ describe('RackService', () => {
     const CANVAS_HEIGHT = 500;
 
     beforeEach(() => {
-        reserveServiceSpy = jasmine.createSpyObj('ReserveService', ['getNumberOfAvailableLetter', 'getReserve', 'replaceLetter']);
+        reserveServiceSpy = jasmine.createSpyObj('ReserveService', ['getQuantityOfAvailableLetters', 'getLettersFromReserve', 'addLetterInReserve']);
         reserveServiceSpy.alphabets = [
             { name: 'A', quantity: 9, points: 1, affiche: 'A' },
             { name: 'B', quantity: 2, points: 3, affiche: 'B' },
@@ -176,12 +176,12 @@ describe('RackService', () => {
     });
 
     describe('checkLettersAvailability', () => {
-        it('should call getNumberOfAvailableLetter of reserveServiceSpy', () => {
+        it('should call getQuantityOfAvailableLetters of reserveServiceSpy', () => {
             const LIMIT = 5;
 
             service.checkLettersAvailability(LIMIT);
 
-            expect(reserveServiceSpy.getNumberOfAvailableLetter).toHaveBeenCalled();
+            expect(reserveServiceSpy.getQuantityOfAvailableLetters).toHaveBeenCalled();
         });
 
         it('should return true if there is enough letters in the reserve of reserveServiceSpy', () => {
@@ -189,7 +189,7 @@ describe('RackService', () => {
 
             const LIMIT = 5;
             const FALSE_NUMBER_OF_AVAILABLE_LETTERS = 10;
-            reserveServiceSpy.getNumberOfAvailableLetter.and.returnValue(FALSE_NUMBER_OF_AVAILABLE_LETTERS);
+            reserveServiceSpy.getQuantityOfAvailableLetters.and.returnValue(FALSE_NUMBER_OF_AVAILABLE_LETTERS);
 
             const result = service.checkLettersAvailability(LIMIT);
 
@@ -201,7 +201,7 @@ describe('RackService', () => {
 
             const LIMIT = 10;
             const FALSE_NUMBER_OF_AVAILABLE_LETTERS = 10;
-            reserveServiceSpy.getNumberOfAvailableLetter.and.returnValue(FALSE_NUMBER_OF_AVAILABLE_LETTERS);
+            reserveServiceSpy.getQuantityOfAvailableLetters.and.returnValue(FALSE_NUMBER_OF_AVAILABLE_LETTERS);
 
             const result = service.checkLettersAvailability(LIMIT);
 
@@ -246,16 +246,16 @@ describe('RackService', () => {
     });
 
     describe('replaceLetter', () => {
-        it('should call reserveServiceSpy.getReserve if the letter to replace is on the rack', () => {
+        it('should call reserveServiceSpy.getLettersFromReserve if the letter to replace is on the rack', () => {
             const LETTER_TO_REPLACE = 'A';
             const REPLACEMENT_LETTER = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
-            reserveServiceSpy.getReserve.and.returnValue([REPLACEMENT_LETTER]);
+            reserveServiceSpy.getLettersFromReserve.and.returnValue([REPLACEMENT_LETTER]);
 
             // Car replaceLetterOnRackOnly est privée
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](LETTER_TO_REPLACE, true);
 
-            expect(reserveServiceSpy.getReserve).toHaveBeenCalledWith(LETTER_TO_REPLACE.length);
+            expect(reserveServiceSpy.getLettersFromReserve).toHaveBeenCalledWith(LETTER_TO_REPLACE.length);
         });
 
         it('should call fillRackPortion there is a letter for replacement', () => {
@@ -265,7 +265,7 @@ describe('RackService', () => {
             // Car fillRackPortion est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();
-            reserveServiceSpy.getReserve.and.returnValue([REPLACEMENT_LETTER]);
+            reserveServiceSpy.getLettersFromReserve.and.returnValue([REPLACEMENT_LETTER]);
 
             // Car replaceLetter est privée
             // eslint-disable-next-line dot-notation
@@ -274,35 +274,35 @@ describe('RackService', () => {
             expect(fillRackPortionSpy).toHaveBeenCalledWith(INDEX_OF_LETTER_TO_REPLACE_ON_RACK);
         });
 
-        it('should call reserveServiceSpy.replaceLetter if there is letter for replacement and the replacement is also in reserve', () => {
+        it('should call reserveServiceSpy.addLetterInReserve if there is letter for replacement and the replacement is also in reserve', () => {
             const LETTER_TO_REPLACE = 'A';
             const REPLACEMENT_LETTER = { name: 'V', quantity: 2, points: 4, affiche: 'V' };
-            reserveServiceSpy.getReserve.and.returnValue([REPLACEMENT_LETTER]);
+            reserveServiceSpy.getLettersFromReserve.and.returnValue([REPLACEMENT_LETTER]);
 
             // Car replaceLetterOnRackOnly est privée
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](LETTER_TO_REPLACE, false);
 
-            expect(reserveServiceSpy.replaceLetter).toHaveBeenCalledWith(LETTER_TO_REPLACE);
+            expect(reserveServiceSpy.addLetterInReserve).toHaveBeenCalledWith(LETTER_TO_REPLACE);
         });
 
-        it('should not call reserveServiceSpy.replaceLetter if there is letter for replacement but the replacement is only on rack', () => {
+        it('should not call reserveServiceSpy.addLetterInReserve if there is letter for replacement but the replacement is only on rack', () => {
             const LETTER_TO_REPLACE = 'A';
             const REPLACEMENT_LETTER = { name: 'V', quantity: 2, points: 4, affiche: 'V' };
-            reserveServiceSpy.getReserve.and.returnValue([REPLACEMENT_LETTER]);
+            reserveServiceSpy.getLettersFromReserve.and.returnValue([REPLACEMENT_LETTER]);
 
             // Car replaceLetterOnRackOnly est privée
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](LETTER_TO_REPLACE, true);
 
-            expect(reserveServiceSpy.replaceLetter).not.toHaveBeenCalledWith(LETTER_TO_REPLACE);
+            expect(reserveServiceSpy.addLetterInReserve).not.toHaveBeenCalledWith(LETTER_TO_REPLACE);
         });
 
         it('should actually replace the letter to replace on the rack', () => {
             const LETTER_TO_REPLACE = 'A';
             const REPLACEMENT_LETTER = { name: 'V', quantity: 2, points: 4, affiche: 'V' };
             const INDEX_OF_LETTER_TO_REPLACE_ON_RACK = 0;
-            reserveServiceSpy.getReserve.and.returnValue([REPLACEMENT_LETTER]);
+            reserveServiceSpy.getLettersFromReserve.and.returnValue([REPLACEMENT_LETTER]);
 
             // Car replaceLetterOnRackOnly est privée
             // eslint-disable-next-line dot-notation
@@ -314,7 +314,7 @@ describe('RackService', () => {
         it('should call findLetterPosition if the rackLetters is not null', () => {
             const LETTER_TO_REPLACE = 'A';
             const REPLACEMENT_LETTER = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
-            reserveServiceSpy.getReserve.and.returnValue([REPLACEMENT_LETTER]);
+            reserveServiceSpy.getLettersFromReserve.and.returnValue([REPLACEMENT_LETTER]);
 
             // Car findLetterPosition est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -334,7 +334,7 @@ describe('RackService', () => {
             // Car fillRackPortion est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();
-            reserveServiceSpy.getReserve.and.returnValue([REPLACEMENT_LETTER]);
+            reserveServiceSpy.getLettersFromReserve.and.returnValue([REPLACEMENT_LETTER]);
             // Car findLetterPosition est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'findLetterPosition').and.returnValue(NOT_FOUND);
@@ -346,15 +346,15 @@ describe('RackService', () => {
             expect(fillRackPortionSpy).not.toHaveBeenCalled();
         });
 
-        it('should not call reserveServiceSpy.replaceLetter if there is not letter for replacement', () => {
+        it('should not call reserveServiceSpy.addLetterInReserve if there is not letter for replacement', () => {
             const LETTER_TO_REPLACE = 'A';
-            reserveServiceSpy.getReserve.and.returnValue([]);
+            reserveServiceSpy.getLettersFromReserve.and.returnValue([]);
 
             // Car replaceLetterOnRackOnly est privée
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](LETTER_TO_REPLACE, false);
 
-            expect(reserveServiceSpy.replaceLetter).not.toHaveBeenCalled();
+            expect(reserveServiceSpy.addLetterInReserve).not.toHaveBeenCalled();
         });
     });
 
@@ -445,7 +445,7 @@ describe('RackService', () => {
         // Car fillRackPortion est privée
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();
-        reserveServiceSpy.getReserve.and.returnValue([A_LETTER_IN_RESERVE]);
+        reserveServiceSpy.getLettersFromReserve.and.returnValue([A_LETTER_IN_RESERVE]);
 
         // Car fillRackPortion est privée
         // eslint-disable-next-line dot-notation
@@ -454,14 +454,14 @@ describe('RackService', () => {
         expect(fillRackPortionSpy).toHaveBeenCalledTimes(RACK_SIZE);
     });
 
-    it(' fillRack should call reserveServiceSpy.getReserve once', () => {
+    it(' fillRack should call reserveServiceSpy.getLettersFromReserve once', () => {
         const A_LETTER_IN_RESERVE = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
-        reserveServiceSpy.getReserve.and.returnValue([A_LETTER_IN_RESERVE]);
+        reserveServiceSpy.getLettersFromReserve.and.returnValue([A_LETTER_IN_RESERVE]);
 
         // Car fillRackPortion est privée
         // eslint-disable-next-line dot-notation
         service['fillRack']();
 
-        expect(reserveServiceSpy.getReserve).toHaveBeenCalledTimes(1);
+        expect(reserveServiceSpy.getLettersFromReserve).toHaveBeenCalledTimes(1);
     });
 });

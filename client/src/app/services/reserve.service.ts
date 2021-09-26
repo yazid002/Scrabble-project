@@ -1,14 +1,14 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable @typescript-eslint/no-useless-constructor */
 import { Injectable } from '@angular/core';
-import { ICaracter } from '@app/models/lettre.model';
+import { ICharacter } from '@app/classes/letter.model';
 
 @Injectable({
     // eslint-disable-next-line prettier/prettier
     providedIn: 'root',
 })
 export class ReserveService {
-    alphabets: ICaracter[] = [
+    alphabets: ICharacter[] = [
         { name: 'A', quantity: 9, points: 1, affiche: 'A' },
         { name: 'B', quantity: 2, points: 3, affiche: 'B' },
         { name: 'C', quantity: 2, points: 3, affiche: 'C' },
@@ -38,66 +38,52 @@ export class ReserveService {
         { name: '*', quantity: 2, points: 0, affiche: '*' },
     ];
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    constructor() {}
-
-    getNumberOfAvailableLetter() {
-        // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-        const nbTotal = this.alphabets.reduce(function (acc, obj) {
-            return acc + obj.quantity;
-        }, 0);
-        return nbTotal;
+    getQuantityOfAvailableLetters() {
+        return this.alphabets.reduce((total, letter) => total + letter.quantity, 0);
     }
 
-    getReserve(requestedQuantity: number) {
-        // eslint-disable-next-line no-console
-        console.log('totaux = ' + this.getNumberOfAvailableLetter());
-        const totalAvailableLetters = this.getNumberOfAvailableLetter();
-        const filterByQuantity = (letters: ICaracter[]) => letters.filter((letter) => letter.quantity > 0);
+    getLettersFromReserve(requestedQuantity: number): ICharacter[] {
+        const totalAvailableLetters = this.getQuantityOfAvailableLetters();
+        const filterByQuantity = (letters: ICharacter[]) => letters.filter((letter) => letter.quantity > 0);
         let availableLetters = filterByQuantity(this.alphabets);
-        const reserve: ICaracter[] = [];
+        const reserve: ICharacter[] = [];
         if (totalAvailableLetters < requestedQuantity) {
-            // return null;
-            console.log('bug');
+            return reserve;
         }
         let i = 0;
         while (i < requestedQuantity) {
             const index = Math.floor(Math.random() * availableLetters.length);
             reserve[i] = availableLetters[index];
-            const pos = this.alphabets.findIndex((char) => char?.name + '' === reserve[i]?.name + '');
+            const pos = this.findLetterPosition(reserve[i].name, this.alphabets);
             this.alphabets[pos].quantity -= 1;
-            if (this.alphabets[pos].quantity == 0) {
+            if (this.alphabets[pos].quantity === 0) {
                 availableLetters = availableLetters.filter((elem) => elem.name != this.alphabets[pos].name);
-                // eslint-disable-next-line no-console
-                console.log('taille de available = ' + availableLetters.length);
             }
             i++;
         }
         return reserve;
     }
 
-    findLetterPosition(letterToCheck: string): number {
-        return this.alphabets?.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
-    }
-
-    replaceLetter(letterToReplace: string): void {
+    addLetterInReserve(letterToReplace: string): void {
         const notFound = -1;
-        const indexInReserve = this.findLetterPosition(letterToReplace);
+        const indexInReserve = this.findLetterPosition(letterToReplace, this.alphabets);
         if (indexInReserve !== notFound) {
             this.alphabets[indexInReserve].quantity++;
         }
-        console.log('totaux: ', this.getNumberOfAvailableLetter());
     }
 
-    findLetter(letterToCheck: string): ICaracter | void {
-        let letter = letterToCheck;
+    findLetterInReserve(letterToCheck: string): ICharacter | void {
         if (letterToCheck === letterToCheck.toUpperCase()) {
-            letter = '*';
+            letterToCheck = '*';
         }
-        const index = this.findLetterPosition(letter);
+        const index = this.findLetterPosition(letterToCheck, this.alphabets);
         const notFound = -1;
         if (index !== notFound) {
             return this.alphabets[index];
         }
+    }
+
+    private findLetterPosition(letterToCheck: string, letters: ICharacter[]): number {
+        return letters.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
     }
 }

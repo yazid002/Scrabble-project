@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { CommandError } from './classes/command-errors/command-error';
+import { Direction } from './classes/letter.model';
 import { Point } from './classes/point';
-import { Direction } from './models/lettre.model';
 import { RackService } from './services/rack.service';
 import { WordValidationService } from './services/word-validation.service';
 

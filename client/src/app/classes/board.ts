@@ -1,4 +1,4 @@
-import { Case } from '@app/classes/model';
+import { Case } from '@app/classes/case';
 
 // const BISQUE = 'rgba(200, 0, 0, 0.75)';
 

@@ -3,7 +3,7 @@ import { InexistentLettersOnRack } from '@app/classes/command-errors/exchange-er
 import { InvalidArgumentsLength } from '@app/classes/command-errors/exchange-errors/invalid-argument-length';
 import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command';
-import { ICaracter } from '@app/models/lettre.model';
+import { ICharacter } from '@app/classes/letter.model';
 import { RackService } from '@app/services/rack.service';
 
 export enum ExchangeLimits {
@@ -49,7 +49,7 @@ export class ExchangeService {
     // }
 
     private validateLetterOccurrencesMatch(letter: string, letters: string[]): boolean {
-        const rackLetters = this.rackService.rackLetters as ICaracter[];
+        const rackLetters = this.rackService.rackLetters as ICharacter[];
         const rackLettersToStrings: string[] = rackLetters.map((rackLetter) => rackLetter.name);
         return this.rackService.countLetterOccurrences(letter, letters) <= this.rackService.countLetterOccurrences(letter, rackLettersToStrings);
     }

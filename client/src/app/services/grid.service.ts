@@ -3,10 +3,10 @@ import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
+import { Direction, ICharacter as ICharacter } from '@app/classes/letter.model';
 import { Point } from '@app/classes/point';
 import { PosChars } from '@app/classes/pos-chars';
 import { Vec2 } from '@app/classes/vec2';
-import { Direction, ICaracter } from '@app/models/lettre.model';
 import { VerifyService } from '@app/verify.service';
 // import { ReserveService } from './reserve.service';
 import { RackService } from './rack.service';
@@ -177,7 +177,7 @@ export class GridService {
         for (let i = 0; i < word.length; i++) {
             const x = this.computeCoordByDirection(direction, coord, i).x;
             const y = this.computeCoordByDirection(direction, coord, i).y;
-            const character = this.reserveService.findLetter(word[i]) as ICaracter;
+            const character = this.reserveService.findLetterInReserve(word[i]) as ICharacter;
 
             if (word[i] === word[i].toUpperCase()) {
                 if (character.name === '*') {
@@ -196,9 +196,9 @@ export class GridService {
     }
 
     private validatePlaceFeasibility(posChar: PosChars, positions: string): void {
-        this.validateJokersOccurrencesMatch(posChar.lettre as string);
+        this.validateJokersOccurrencesMatch(posChar.letter as string);
         const dir = positions === 'h' ? Direction.RIGHT : Direction.BOTTOM;
-        this.verifyService.isFiting(posChar.position as Point, dir, posChar.lettre as string);
+        this.verifyService.isFiting(posChar.position as Point, dir, posChar.letter as string);
     }
 
     private validateJokersOccurrencesMatch(word: string): void {

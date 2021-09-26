@@ -1,5 +1,4 @@
 import { CaseStyle } from './case-style';
-
 export interface Case {
     letter: string;
     bonus: string;
@@ -8,8 +7,3 @@ export interface Case {
     style: CaseStyle;
     oldStyle: CaseStyle;
 }
-
-// export interface Bonus {
-//     value: number;
-//     color: string;
-// }

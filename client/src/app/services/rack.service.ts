@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICaracter } from '@app/models/lettre.model';
+import { ICharacter } from '@app/classes/letter.model';
 import { ReserveService } from '@app/services/reserve.service';
 
 const RACK_SIZE = 7;
@@ -13,7 +13,7 @@ const DEFAULT_HEIGHT = 35;
 export class RackService {
     rackContext: CanvasRenderingContext2D;
 
-    rackLetters: ICaracter[] = [
+    rackLetters: ICharacter[] = [
         { name: ' ', quantity: 0, points: 0, affiche: ' ' },
         { name: ' ', quantity: 0, points: 0, affiche: ' ' },
         { name: ' ', quantity: 0, points: 0, affiche: ' ' },
@@ -26,7 +26,7 @@ export class RackService {
     constructor(private reserveService: ReserveService) {}
 
     fillRack() {
-        this.rackLetters = this.reserveService.getReserve(RACK_SIZE);
+        this.rackLetters = this.reserveService.getLettersFromReserve(RACK_SIZE);
 
         for (let x = 0; x < RACK_SIZE; x++) {
             this.fillRackPortion(x);
@@ -37,10 +37,10 @@ export class RackService {
         const notFound = -1;
         const indexOnRack = this.findLetterPosition(letterToReplace);
         if (indexOnRack !== notFound) {
-            const newCharacters = this.reserveService.getReserve(1);
+            const newCharacters = this.reserveService.getLettersFromReserve(1);
             if (newCharacters.length !== 0) {
                 if (!onRackOnly) {
-                    this.reserveService.replaceLetter(this.rackLetters[indexOnRack].name);
+                    this.reserveService.addLetterInReserve(this.rackLetters[indexOnRack].name);
                 }
                 this.rackLetters[indexOnRack] = newCharacters[0];
                 this.fillRackPortion(indexOnRack);
@@ -58,7 +58,7 @@ export class RackService {
     }
 
     checkLettersAvailability(limit: number): boolean {
-        return this.reserveService.getNumberOfAvailableLetter() > limit;
+        return this.reserveService.getQuantityOfAvailableLetters() > limit;
     }
 
     countLetterOccurrences(letterToCheck: string, letters: string[]): number {
