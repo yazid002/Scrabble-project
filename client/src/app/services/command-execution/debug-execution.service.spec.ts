@@ -12,4 +12,12 @@ describe('DebugExecutionService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
+
+    describe('execute', () => {
+        it(' should return the initial result if no error was threw', () => {
+            const result = service.execute();
+
+            expect(result.body).toEqual('Went through the debug execution service');
+        });
+    });
 });

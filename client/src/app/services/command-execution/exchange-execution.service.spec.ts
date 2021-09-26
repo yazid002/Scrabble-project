@@ -17,7 +17,7 @@ describe('ExchangeExecutionService', () => {
         expect(service).toBeTruthy();
     });
 
-    describe('isLetterOnRack', () => {
+    describe('execute', () => {
         it(' should call exchangeLetters of exchangeServiceSpy', () => {
             const PARAMETERS = ['placer', 'g4h', 'dos'];
 

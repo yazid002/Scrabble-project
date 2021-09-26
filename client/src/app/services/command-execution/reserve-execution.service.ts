@@ -13,8 +13,7 @@ export class ReserveExecutionService {
             body: 'Went through the reserve execution service ',
         };
         for (const letter of this.reserveService.alphabets) {
-            const line = `${letter.name}: ${letter.quantity}
-            \n<br>`;
+            const line = `\n<br>${letter.name}: ${letter.quantity}`;
             result.body += line;
         }
 
