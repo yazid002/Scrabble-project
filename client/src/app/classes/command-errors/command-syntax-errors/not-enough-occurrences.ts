@@ -1,4 +1,4 @@
-import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
+import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-errors/command-syntax-error';
 
 export class NotEnoughOccurrences extends CommandSyntaxError {
     constructor(message: string) {

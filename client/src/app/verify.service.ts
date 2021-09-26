@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { CommandError } from './classes/command-errors/command-error';
+import { CommandSyntaxError } from './classes/command-errors/command-syntax-errors/command-syntax-error';
 import { Point } from './classes/point';
 import { Direction } from './enums/letter-enums';
 import { RackService } from './services/rack.service';
@@ -24,7 +25,7 @@ export class VerifyService {
         const caseRestant = dir === Direction.BOTTOM ? tiles.length - p.row : tiles.length - p.column;
         if (word.length > caseRestant) {
             console.log('je suis rentrée ici');
-            throw new CommandError("Il n'y a pas assez de place pour ecrire ce mot");
+            throw new CommandSyntaxError("Il n'y a pas assez de place pour ecrire ce mot");
             //  return false;
         }
         // const array: boolean[] = [];
@@ -54,7 +55,7 @@ export class VerifyService {
                 }
             } else if (!this.rackService.isLetterOnRack(letter)) {
                 //  return false;
-                throw new CommandError('Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet');
+                throw new CommandSyntaxError('Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet');
             }
             // } && charInBox !== word.charAt(i)) {
             //     console.log('je suis rentrée labas');

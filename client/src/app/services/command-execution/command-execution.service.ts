@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
-import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
-import { InvalidInput } from '@app/classes/command-errors/invalid-input';
+import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-errors/command-syntax-error';
+import { InvalidInput } from '@app/classes/command-errors/invalid-input/invalid-input';
 import { DebugExecutionService } from './debug-execution.service';
 import { ExchangeExecutionService } from './exchange-execution.service';
 import { PassExecutionService } from './pass-execution.service';
@@ -44,7 +44,8 @@ export class CommandExecutionService {
                     // remplacer [a-z] par [A-Za-z]
                     format: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][A-Za-z]{1,15}$',
                     description:
-                        '"!placer &lt;ligne&gt;&lt;colonne&gt;(h|v) &lt;mot&gt;" sans espace à la fin, avec la ligne de a à o, la colonne de 1 à 15',
+                        '"!placer &lt;ligne&gt;&lt;colonne&gt;(h|v) &lt;mot&gt;" sans espace à la fin, avec la ligne de a à o,' +
+                        ' la colonne de 1 à 15 et le mot composé de 1 à 15 caractères',
                 },
             ],
             [

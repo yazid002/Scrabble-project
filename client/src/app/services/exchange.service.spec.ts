@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { InexistentLettersOnRack } from '@app/classes/command-errors/exchange-errors/inexistent-letters-on-rack';
-import { InvalidArgumentsLength } from '@app/classes/command-errors/exchange-errors/invalid-argument-length';
-import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
-import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command';
+import { InexistentLettersOnRack } from '@app/classes/command-errors/command-syntax-errors/inexistent-letters-on-rack';
+import { InvalidArgumentsLength } from '@app/classes/command-errors/command-syntax-errors/invalid-argument-length';
+import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
+import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { ExchangeService } from './exchange.service';
 import { RackService } from './rack.service';
 

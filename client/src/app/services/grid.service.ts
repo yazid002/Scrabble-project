@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
-import { CommandError } from '@app/classes/command-errors/command-error';
-import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
+import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-errors/command-syntax-error';
+import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
 import { ICharacter as ICharacter } from '@app/classes/letter';
 import { Point } from '@app/classes/point';
 import { PosChars } from '@app/classes/pos-chars';
@@ -141,7 +141,7 @@ export class GridService {
                     }, PLACEMENT_DURATION);
                 }
 
-                reject(new CommandError("Ce mot n'existe pas dans le dictionnaire"));
+                reject(new CommandSyntaxError("Ce mot n'existe pas dans le dictionnaire"));
             } else {
                 this.updateTilesLetters(word, coord, direction);
                 resolve(this.rack.replaceWord(word));

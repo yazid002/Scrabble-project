@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { InexistentLettersOnRack } from '@app/classes/command-errors/exchange-errors/inexistent-letters-on-rack';
-import { InvalidArgumentsLength } from '@app/classes/command-errors/exchange-errors/invalid-argument-length';
-import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
-import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command';
+import { InexistentLettersOnRack } from '@app/classes/command-errors/command-syntax-errors/inexistent-letters-on-rack';
+import { InvalidArgumentsLength } from '@app/classes/command-errors/command-syntax-errors/invalid-argument-length';
+import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
+import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { ICharacter } from '@app/classes/letter';
 import { ExchangeLimits } from '@app/enums/exchange-enums';
 import { RackService } from '@app/services/rack.service';
