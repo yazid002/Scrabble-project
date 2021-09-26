@@ -123,6 +123,9 @@ export class GridService {
     }
 
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
+        console.log(word);
+        word = this.dictionaryService.normalizeWord(word);
+        console.log(word);
         const promise = new Promise<void>((resolve, reject) => {
             const posWord = new PosChars(word, new Point(coord.x, coord.y));
             this.validatePlaceFeasibility(posWord, direction);
@@ -188,6 +191,7 @@ export class GridService {
     }
 
     private validatePlaceFeasibility(posChar: PosChars, positions: string): void {
+        this.validateInvalidSymbols(posChar.letter as string);
         this.validateJokersOccurrencesMatch(posChar.letter as string);
         const dir = positions === 'h' ? Direction.RIGHT : Direction.BOTTOM;
         this.verifyService.isFiting(posChar.position as Point, dir, posChar.letter as string);
@@ -200,6 +204,12 @@ export class GridService {
 
         if (upperLettersInWord.length > jokersNumb) {
             throw new NotEnoughOccurrences(` * (lettres blanches) pour représenter les lettres "${upperLettersInWord.join('", "')}" demandées.`);
+        }
+    }
+
+    private validateInvalidSymbols(word: string): void {
+        if (this.dictionaryService.checkInvalidSymbols(word)) {
+            throw new CommandSyntaxError(" Les symboles (-) et (') sont invalides.");
         }
     }
 

@@ -42,7 +42,7 @@ export class CommandExecutionService {
                 {
                     // TO DO: Fait en considérant que la ligne est en minuscule, si cela n'a pas d'importance (maj ou min),
                     // remplacer [a-z] par [A-Za-z]
-                    format: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][A-Za-z]{1,15}$',
+                    format: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][^ ]{1,15}$',
                     description:
                         '"!placer &lt;ligne&gt;&lt;colonne&gt;(h|v) &lt;mot&gt;" sans espace à la fin, avec la ligne de a à o,' +
                         ' la colonne de 1 à 15 et le mot composé de 1 à 15 caractères',
