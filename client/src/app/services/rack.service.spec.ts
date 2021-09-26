@@ -43,12 +43,12 @@ describe('RackService', () => {
 
     describe('isLetterOnRack', () => {
         it('isLetterOnRack should call findLetterPosition', () => {
-            const letterToCheck = 'B';
+            const LETTER_TO_CHECK = 'B';
             // Car findLetterPosition est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const findLetterPositionSpy = spyOn<any>(service, 'findLetterPosition').and.callThrough();
 
-            service.isLetterOnRack(letterToCheck);
+            service.isLetterOnRack(LETTER_TO_CHECK);
 
             // Car findLetterPosition est privée
             // eslint-disable-next-line dot-notation
@@ -59,67 +59,67 @@ describe('RackService', () => {
             // Car findLetterPosition est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'findLetterPosition').and.returnValue(2);
-            const letterToCheck = 'B';
+            const LETTER_TO_CHECK = 'B';
 
-            const result = service.isLetterOnRack(letterToCheck);
+            const result = service.isLetterOnRack(LETTER_TO_CHECK);
 
             expect(result).toBeTrue();
         });
 
         it('should return false', () => {
-            const notFound = -1;
+            const NOT_FOUND = -1;
             // Car findLetterPosition est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'findLetterPosition').and.returnValue(notFound);
-            const letterToCheck = 'Z';
+            spyOn<any>(service, 'findLetterPosition').and.returnValue(NOT_FOUND);
+            const LETTER_TO_CHECK = 'Z';
 
-            const result = service.isLetterOnRack(letterToCheck);
+            const result = service.isLetterOnRack(LETTER_TO_CHECK);
 
             expect(result).toBeFalse();
         });
     });
 
     describe('findLetterPosition', () => {
-        it('should return notFound', () => {
-            const notFound = -1;
-            const letterToCheck = 'Z';
+        it('should return NOT_FOUND', () => {
+            const NOT_FOUND = -1;
+            const LETTER_TO_CHECK = 'Z';
 
             // Car findLetterPosition est privée
             // eslint-disable-next-line dot-notation
-            const result = service['findLetterPosition'](letterToCheck);
+            const result = service['findLetterPosition'](LETTER_TO_CHECK);
 
-            expect(result).toEqual(notFound);
+            expect(result).toEqual(NOT_FOUND);
         });
 
         it('should return the letter position', () => {
-            const position = 0;
-            const letterToCheck = 'A';
+            const POSITION = 0;
+            const LETTER_TO_CHECK = 'A';
 
             // Car findLetterPosition est privée
             // eslint-disable-next-line dot-notation
-            const result = service['findLetterPosition'](letterToCheck);
+            const result = service['findLetterPosition'](LETTER_TO_CHECK);
 
-            expect(result).toEqual(position);
+            expect(result).toEqual(POSITION);
         });
     });
 
     it('findInexistentLettersOnRack should return all lettersToChange that are not on the rack', () => {
-        const lettersToChange: string[] = ['B', 'U', 'D'];
+        const LETTERS_TO_CHANGE: string[] = ['B', 'U', 'D'];
 
         const isLetterOnRackSpy = spyOn(service, 'isLetterOnRack')
-            .withArgs(lettersToChange[0])
+            .withArgs(LETTERS_TO_CHANGE[0])
             .and.returnValue(true)
-            .withArgs(lettersToChange[1])
+            .withArgs(LETTERS_TO_CHANGE[1])
             .and.returnValue(false)
-            .withArgs(lettersToChange[2])
+            .withArgs(LETTERS_TO_CHANGE[2])
             .and.returnValue(true);
 
         const expectedResult = ['U'];
 
         // eslint-disable-next-line dot-notation
-        const result = service['findInexistentLettersOnRack'](lettersToChange);
+        const result = service['findInexistentLettersOnRack'](LETTERS_TO_CHANGE);
 
-        expect(isLetterOnRackSpy).toHaveBeenCalledTimes(lettersToChange.length);
+        expect(isLetterOnRackSpy).toHaveBeenCalledTimes(LETTERS_TO_CHANGE.length);
         expect(result).toEqual(expectedResult);
     });
 
@@ -156,20 +156,20 @@ describe('RackService', () => {
     describe('countLetterOccurrences', () => {
         it('should return the number of occurrences of the specified letter in the array of letters', () => {
             const lettersForTest: string[] = ['B', 'B', 'B', 'G'];
-            const letterToCheck = 'B';
+            const LETTER_TO_CHECK = 'B';
             const expectedResult = 3;
 
-            const result = service.countLetterOccurrences(letterToCheck, lettersForTest);
+            const result = service.countLetterOccurrences(LETTER_TO_CHECK, lettersForTest);
 
             expect(result).toEqual(expectedResult);
         });
 
         it('should return 0 if there is no occurrence of the specified letter', () => {
             const lettersForTest: string[] = ['B', 'B', 'B', 'G'];
-            const letterToCheck = 'C';
+            const LETTER_TO_CHECK = 'C';
             const expectedResult = 0;
 
-            const result = service.countLetterOccurrences(letterToCheck, lettersForTest);
+            const result = service.countLetterOccurrences(LETTER_TO_CHECK, lettersForTest);
 
             expect(result).toEqual(expectedResult);
         });

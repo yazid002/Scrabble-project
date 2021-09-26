@@ -35,7 +35,7 @@ describe('ExchangeService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('validateLetterOccurrencesMatch should call countLetterOccurrences de rackServiceSpy', () => {
+    it('validateLetterOccurrencesMatch should call countLetterOccurrences of rackServiceSpy', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'U', 'D'];
 
