@@ -4,12 +4,9 @@ import { InvalidArgumentsLength } from '@app/classes/command-errors/exchange-err
 import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command';
 import { ICharacter } from '@app/classes/letter';
+import { ExchangeLimits } from '@app/enums/exchange-enums';
 import { RackService } from '@app/services/rack.service';
 
-export enum ExchangeLimits {
-    Min = 1,
-    Max = 7,
-}
 @Injectable({
     providedIn: 'root',
 })
@@ -43,11 +40,6 @@ export class ExchangeService {
         }
     }
 
-    // private findLetterToChangeOnRack(letterToCheck: string): boolean {
-    //     const notFound = -1;
-    //     return this.rackService.findLetterPosition(letterToCheck) !== notFound;
-    // }
-
     private validateLetterOccurrencesMatch(letter: string, letters: string[]): boolean {
         const rackLetters = this.rackService.rackLetters as ICharacter[];
         const rackLettersToStrings: string[] = rackLetters.map((rackLetter) => rackLetter.name);
@@ -61,8 +53,4 @@ export class ExchangeService {
     private findIncoherentOccurrencesMatch(lettersToChange: string[]): string[] {
         return [...new Set(lettersToChange.filter((letter: string) => this.validateLetterOccurrencesMatch(letter, lettersToChange) === false))];
     }
-
-    // private findInexistentLettersOnRack(lettersToChange: string[]): string[] {
-    //     return [...new Set(lettersToChange.filter((letter: string) => this.findLetterToChangeOnRack(letter) === false))];
-    // }
 }
