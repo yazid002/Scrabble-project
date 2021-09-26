@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import * as GAME_SETTINGS from '@app/classes/game-options';
 import { UserSettingsService } from '@app/services/user-settings.service';
 
 @Component({
@@ -8,14 +7,13 @@ import { UserSettingsService } from '@app/services/user-settings.service';
     styleUrls: ['./game-mode-dialog.component.scss'],
 })
 export class GameModeDialogComponent {
-    readonly nameOption = GAME_SETTINGS.NAME_OPTION;
     error: boolean;
     errorMessage: string = '';
 
     constructor(public userSettingsService: UserSettingsService) {}
 
     validateName() {
-        const result = this.userSettingsService.validateName(this.nameOption.userChoice);
+        const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);
         this.error = result.error;
         this.errorMessage = result.errorMessage;
     }
