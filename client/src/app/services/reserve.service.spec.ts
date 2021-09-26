@@ -50,7 +50,7 @@ describe('ReserveService', () => {
 
     describe('findLetterInReserve', () => {
         it(' should call findLetterPosition', () => {
-            const LETTER_TO_CHECK = 'B';
+            const LETTER_TO_CHECK = 'b';
 
             // Car findLetterPosition est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,12 +62,7 @@ describe('ReserveService', () => {
         });
 
         it('should return void if the letter to found is not in the reserve', () => {
-            const NOT_FOUND = -1;
-            const LETTER_TO_CHECK = 'Z';
-
-            // Car findLetterPosition est privée
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'findLetterPosition').and.returnValue(NOT_FOUND);
+            const LETTER_TO_CHECK = 'z';
 
             const result = service.findLetterInReserve(LETTER_TO_CHECK);
 
@@ -76,10 +71,23 @@ describe('ReserveService', () => {
 
         it('should return the letter found', () => {
             const POSITION = 0;
+            const LETTER_TO_CHECK = 'a';
+
+            const result = service.findLetterInReserve(LETTER_TO_CHECK);
+
+            expect(result).toEqual(service.alphabets[POSITION]);
+        });
+
+        it('should return * if the letter specified is in upperCase', () => {
+            const POSITION = 1;
             const LETTER_TO_CHECK = 'A';
-            // Car findLetterPosition est privée
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'findLetterPosition').and.returnValue(POSITION);
+            service.alphabets = [
+                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+                { name: '*', quantity: 0, points: 0, affiche: '*' },
+                { name: '*', quantity: 0, points: 0, affiche: '*' },
+                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+                { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            ];
 
             const result = service.findLetterInReserve(LETTER_TO_CHECK);
 
