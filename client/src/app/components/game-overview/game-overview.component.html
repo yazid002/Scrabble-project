@@ -1,11 +1,16 @@
-<mat-card>
-    <mat-card>
-        <!-- <mat-card-title>Partie {{mode.displayName}}</mat-card-title>
-        <mat-card-subtitle>Mode {{numPlayers.displayName}}</mat-card-subtitle> -->
-        
-    </mat-card>
+<mat-card id="summary">
+    
+    <mat-card-title>Partie {{ numPlayers }}</mat-card-title>
+    <mat-card-subtitle>Mode {{ mode }}</mat-card-subtitle>
+    
     <mat-card id="me">
-        <mat-card-title>{{ player }}</mat-card-title>
-        <mat-card-subtitle>Nom de points: </mat-card-subtitle>
+        <mat-card-title>{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
+        <mat-card-content>Nombre de points: </mat-card-content>
+    </mat-card>
+
+    <mat-card id="otherPlayer">
+        <mat-card-title>{{ userSettingsService.getComputerName() }}</mat-card-title>
+        <mat-card-subtitle>Niveau {{ computerLevel }}</mat-card-subtitle>
+        <mat-card-content>Nombre de points: </mat-card-content>
     </mat-card>
 </mat-card>

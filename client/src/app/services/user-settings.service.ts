@@ -20,6 +20,7 @@ const COMPUTER_LEVEL: IOptionList = {
     settingName: "Niveau de l'ordinateur",
     availableChoices: [{ key: 'beginner', value: 'Débutant' }],
 };
+const COMPUTER_NAMES: string[] = ['Ordi Illetré', 'Dictionnaire en Personne', 'Word Master'];
 const TIMER: IOptionList = {
     settingName: 'Temps maximmal par tour',
     availableChoices: [
@@ -44,7 +45,8 @@ export class UserSettingsService {
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
     nameOption = NAME_OPTION;
-
+    computerName: string;
+    
     validateName(name: string): { error: boolean; errorMessage: string } {
         let error = false;
         let errorMessage = '';
@@ -57,5 +59,12 @@ export class UserSettingsService {
             }
         }
         return { error, errorMessage };
+    }
+    getComputerName(): string {
+        if (!this.computerName) {
+            const nameIndex = Math.floor(Math.random() * Math.floor(COMPUTER_NAMES.length));
+            this.computerName = COMPUTER_NAMES[nameIndex];
+        }
+        return this.computerName;
     }
 }
