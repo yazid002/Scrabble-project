@@ -4,7 +4,3 @@ export interface ICharacter {
     points: number;
     affiche: string;
 }
-export enum Direction {
-    BOTTOM,
-    RIGHT,
-}

@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ICharacter } from '@app/classes/letter.model';
+import { ICharacter } from '@app/classes/letter';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { ReserveService } from '@app/services/reserve.service';
-
-const RACK_SIZE = 7;
-
-const DEFAULT_WIDTH = 245;
-const DEFAULT_HEIGHT = 35;
 
 @Injectable({
     providedIn: 'root',

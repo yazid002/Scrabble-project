@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
 
@@ -200,8 +201,8 @@ describe('RackService', () => {
             const expectedResult = false;
 
             const LIMIT = 10;
-            const FALSE_NUMBER_OF_AVAILABLE_LETTERS = 10;
-            reserveServiceSpy.getQuantityOfAvailableLetters.and.returnValue(FALSE_NUMBER_OF_AVAILABLE_LETTERS);
+            const FAKE_NUMBER_OF_AVAILABLE_LETTERS = 10;
+            reserveServiceSpy.getQuantityOfAvailableLetters.and.returnValue(FAKE_NUMBER_OF_AVAILABLE_LETTERS);
 
             const result = service.checkLettersAvailability(LIMIT);
 
@@ -420,10 +421,10 @@ describe('RackService', () => {
         });
 
         it(' should color pixels on the rack canvas in a specified portion', () => {
-            const RACK_SIZE = 7;
+            // const RACK_SIZE = 7;
 
-            const DEFAULT_WIDTH = 245;
-            const DEFAULT_HEIGHT = 35;
+            // const DEFAULT_WIDTH = 245;
+            // const DEFAULT_HEIGHT = 35;
             const INDEX = 1;
             let imageData = service.rackContext.getImageData((DEFAULT_WIDTH / RACK_SIZE) * INDEX, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT).data;
             const beforeSize = imageData.filter((x) => x !== 0).length;
@@ -439,7 +440,6 @@ describe('RackService', () => {
     });
 
     it(' fillRack should call fillRackPortion as many times as RACK_SIZE', () => {
-        const RACK_SIZE = 7;
         const A_LETTER_IN_RESERVE = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
 
         // Car fillRackPortion est privée

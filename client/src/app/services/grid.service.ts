@@ -3,23 +3,16 @@ import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
-import { Direction, ICharacter as ICharacter } from '@app/classes/letter.model';
+import { ICharacter as ICharacter } from '@app/classes/letter';
 import { Point } from '@app/classes/point';
 import { PosChars } from '@app/classes/pos-chars';
 import { Vec2 } from '@app/classes/vec2';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH, TILE as TILE_STYLE } from '@app/constants/board-constants';
+import { Direction } from '@app/enums/letter-enums';
+import { RackService } from '@app/services/rack.service';
+import { ReserveService } from '@app/services/reserve.service';
+import { WordValidationService } from '@app/services/word-validation.service';
 import { VerifyService } from '@app/verify.service';
-// import { ReserveService } from './reserve.service';
-import { RackService } from './rack.service';
-import { ReserveService } from './reserve.service';
-import { WordValidationService } from './word-validation.service';
-
-// TODO : Avoir un fichier séparé pour les constantes et ne pas les répéter!
-export const DEFAULT_WIDTH = 500;
-export const DEFAULT_HEIGHT = 500;
-const SQUARE_NUMBER = 15;
-const SQUARE_WIDTH = DEFAULT_WIDTH / SQUARE_NUMBER;
-const SQUARE_HEIGHT = DEFAULT_HEIGHT / SQUARE_NUMBER;
-const tile: CaseStyle = { color: 'NavajoWhite', font: '25px serif' };
 
 @Injectable({
     providedIn: 'root',
@@ -37,12 +30,11 @@ export class GridService {
     ) {}
 
     drawGridOutdoor() {
-        this.gridContext.fillStyle = 'PeachPuff';
+        this.changeGridStyle('PeachPuff');
         this.gridContext.fillRect(0, DEFAULT_WIDTH, SQUARE_HEIGHT * (SQUARE_NUMBER + 1), SQUARE_WIDTH * (SQUARE_NUMBER + 1));
         this.gridContext.fillRect(DEFAULT_HEIGHT, 0, SQUARE_HEIGHT * (SQUARE_NUMBER + 1), SQUARE_WIDTH * (SQUARE_NUMBER + 1));
 
-        this.gridContext.fillStyle = 'rgb(0,0,0)';
-        this.gridContext.font = '30px serif';
+        this.changeGridStyle('black', '30px serif');
 
         for (let i = 0; i < SQUARE_NUMBER; i++) {
             const NUMBERS_STEP = i + 1;
@@ -186,7 +178,7 @@ export class GridService {
             }
 
             tiles[x][y].oldStyle = tiles[x][y].style;
-            tiles[x][y].style = tile;
+            tiles[x][y].style = TILE_STYLE;
 
             tiles[x][y].oldText = tiles[x][y].text;
             tiles[x][y].text = word[i].toUpperCase();

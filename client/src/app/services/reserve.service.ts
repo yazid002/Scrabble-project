@@ -1,10 +1,7 @@
-/* eslint-disable eqeqeq */
-/* eslint-disable @typescript-eslint/no-useless-constructor */
 import { Injectable } from '@angular/core';
-import { ICharacter } from '@app/classes/letter.model';
+import { ICharacter } from '@app/classes/letter';
 
 @Injectable({
-    // eslint-disable-next-line prettier/prettier
     providedIn: 'root',
 })
 export class ReserveService {
@@ -57,7 +54,7 @@ export class ReserveService {
             const pos = this.findLetterPosition(reserve[i].name, this.alphabets);
             this.alphabets[pos].quantity -= 1;
             if (this.alphabets[pos].quantity === 0) {
-                availableLetters = availableLetters.filter((elem) => elem.name != this.alphabets[pos].name);
+                availableLetters = availableLetters.filter((elem) => elem.name !== this.alphabets[pos].name);
             }
             i++;
         }

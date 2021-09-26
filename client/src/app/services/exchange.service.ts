@@ -3,7 +3,7 @@ import { InexistentLettersOnRack } from '@app/classes/command-errors/exchange-er
 import { InvalidArgumentsLength } from '@app/classes/command-errors/exchange-errors/invalid-argument-length';
 import { NotEnoughOccurrences } from '@app/classes/command-errors/exchange-errors/not-enough-occurrences';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command';
-import { ICharacter } from '@app/classes/letter.model';
+import { ICharacter } from '@app/classes/letter';
 import { RackService } from '@app/services/rack.service';
 
 export enum ExchangeLimits {

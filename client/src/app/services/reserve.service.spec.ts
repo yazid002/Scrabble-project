@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ICharacter } from '@app/classes/letter.model';
+import { ICharacter } from '@app/classes/letter';
 import { ReserveService } from './reserve.service';
 
 describe('ReserveService', () => {
