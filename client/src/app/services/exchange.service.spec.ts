@@ -18,11 +18,11 @@ describe('ExchangeService', () => {
             'checkLettersAvailability',
         ]);
         rackServiceSpy.rackLetters = [
-            { name: 'A', params: { quantity: 9, points: 1, affiche: 'A' } },
-            { name: 'B', params: { quantity: 2, points: 3, affiche: 'B' } },
-            { name: 'C', params: { quantity: 2, points: 3, affiche: 'C' } },
-            { name: 'D', params: { quantity: 3, points: 2, affiche: 'D' } },
-            { name: 'E', params: { quantity: 15, points: 1, affiche: 'E' } },
+            { name: 'A', quantity: 9, points: 1, affiche: 'A'  },
+            { name: 'B', quantity: 2, points: 3, affiche: 'B'  },
+            { name: 'C', quantity: 2, points: 3, affiche: 'C'  },
+            { name: 'D', quantity: 3, points: 2, affiche: 'D'  },
+            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
         ];
         TestBed.configureTestingModule({
             providers: [{ provide: RackService, useValue: rackServiceSpy }],
@@ -80,11 +80,11 @@ describe('ExchangeService', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'D'];
         rackServiceSpy.rackLetters = [
-            { name: 'A', params: { quantity: 9, points: 1, affiche: 'A' } },
-            { name: 'B', params: { quantity: 0, points: 3, affiche: 'B' } },
-            { name: 'B', params: { quantity: 0, points: 3, affiche: 'B' } },
-            { name: 'D', params: { quantity: 3, points: 2, affiche: 'D' } },
-            { name: 'E', params: { quantity: 15, points: 1, affiche: 'E' } },
+            { name: 'A', quantity: 9, points: 1, affiche: 'A'  },
+            { name: 'B', quantity: 0, points: 3, affiche: 'B'  },
+            { name: 'B', quantity: 0, points: 3, affiche: 'B'  },
+            { name: 'D', quantity: 3, points: 2, affiche: 'D'  },
+            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
         ];
         const rackLettersToStrings = ['A', 'B', 'B', 'D', 'E'];
         rackServiceSpy.countLetterOccurrences
@@ -103,11 +103,11 @@ describe('ExchangeService', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'B', 'D'];
         rackServiceSpy.rackLetters = [
-            { name: 'A', params: { quantity: 9, points: 1, affiche: 'A' } },
-            { name: 'B', params: { quantity: 1, points: 3, affiche: 'B' } },
-            { name: 'C', params: { quantity: 1, points: 3, affiche: 'C' } },
-            { name: 'D', params: { quantity: 3, points: 2, affiche: 'D' } },
-            { name: 'E', params: { quantity: 15, points: 1, affiche: 'E' } },
+            { name: 'A', quantity: 1, points: 3, affiche: 'A' },
+            { name: 'B', quantity: 1, points: 3, affiche: 'B' },
+            { name: 'C', quantity: 1, points: 3, affiche: 'C' },
+            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
         ];
         const rackLettersToStrings = ['A', 'B', 'C', 'D', 'E'];
         rackServiceSpy.countLetterOccurrences
