@@ -1,7 +1,10 @@
 <mat-card id="summary">
     
     <mat-card-title>Partie {{ numPlayers }}</mat-card-title>
-    <mat-card-subtitle>Mode {{ mode }}</mat-card-subtitle>
+    <mat-card-title-group>
+        <mat-card-subtitle>Mode {{ mode }}</mat-card-subtitle>
+        <mat-card-subtitle>Temps par tours {{ mode }}</mat-card-subtitle>
+    </mat-card-title-group>
     
     <mat-card id="me">
         <mat-card-title>{{ userSettingsService.nameOption.userChoice }}</mat-card-title>

@@ -46,7 +46,7 @@ export class UserSettingsService {
     };
     nameOption = NAME_OPTION;
     computerName: string;
-    
+
     validateName(name: string): { error: boolean; errorMessage: string } {
         let error = false;
         let errorMessage = '';
@@ -61,7 +61,7 @@ export class UserSettingsService {
         return { error, errorMessage };
     }
     getComputerName(): string {
-        if (!this.computerName) {
+        while (!this.computerName || this.computerName === this.nameOption.userChoice) {
             const nameIndex = Math.floor(Math.random() * Math.floor(COMPUTER_NAMES.length));
             this.computerName = COMPUTER_NAMES[nameIndex];
         }
