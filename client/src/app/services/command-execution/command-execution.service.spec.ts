@@ -25,7 +25,9 @@ describe('CommandExecutionService', () => {
     });
     it('should throw an error if a valid command is entered, but with bad parameters', () => {
         const badParams = 'placer d';
-        expect(() => { service.interpretCommand(badParams) }).toThrowError();
+        expect(() => {
+            service.interpretCommand(badParams);
+        }).toThrowError();
     });
 
     it('should return an IChat object when executeCommand() is called with a valid command', () => {
@@ -33,8 +35,8 @@ describe('CommandExecutionService', () => {
             from: string;
             body: string;
         }
-        let command = '!debug';
-        let response: IChat = service.executeCommand(command);
+        const command = '!debug';
+        const response: IChat = service.executeCommand(command);
         expect(response).toBeDefined();
     });
 });

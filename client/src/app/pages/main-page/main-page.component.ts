@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Message } from '@app/classes/message';
 import { GameModeDialogComponent } from '@app/components/dialogs/game-mode-dialog/game-mode-dialog.component';
 import { CommunicationService } from '@app/services/communication.service';
-import {  UserSettingsService } from '@app/services/user-settings.service';
+import { UserSettingsService } from '@app/services/user-settings.service';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -14,14 +14,14 @@ import { map } from 'rxjs/operators';
 })
 export class MainPageComponent {
     readonly title: string = 'LOG2990';
-    
+
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     constructor(
         public dialog: MatDialog,
         private readonly communicationService: CommunicationService,
         public userSettingsService: UserSettingsService,
     ) {}
-    
+
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
             title: 'Hello from the client',

@@ -11,7 +11,7 @@ describe('ChatboxComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ChatboxComponent],
-            providers: [CommandExecutionService, ChatService]
+            providers: [CommandExecutionService, ChatService],
         }).compileComponents();
     });
 
