@@ -10,6 +10,7 @@ export class GameOverviewComponent implements OnInit {
     mode: string;
     numPlayers: string;
     computerLevel: string;
+    timer: string;
     constructor(public userSettingsService: UserSettingsService) {}
     ngOnInit(): void {
         console.log('In the game overview');
@@ -22,11 +23,17 @@ export class GameOverviewComponent implements OnInit {
         const computerLevel = this.userSettingsService.settings.computerLevel.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.computerLevel.currentChoiceKey,
         );
+
+        const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
+            (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
+        );
         console.log(mode, numPlayers, computerLevel);
-        if (mode && numPlayers && computerLevel) {
+
+        if (mode && numPlayers && computerLevel && timer) {
             this.mode = mode.value;
             this.numPlayers = numPlayers.value;
             this.computerLevel = computerLevel.value;
+            this.timer = timer.value;
         }
     }
 }
