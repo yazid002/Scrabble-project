@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
-
 import { ChatboxComponent } from './chatbox.component';
 
 describe('ChatboxComponent', () => {
@@ -11,7 +10,7 @@ describe('ChatboxComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ChatboxComponent],
-            providers: [CommandExecutionService, ChatService]
+            providers: [CommandExecutionService, ChatService],
         }).compileComponents();
     });
 
@@ -40,10 +39,10 @@ describe('ChatboxComponent', () => {
         component.onSubmit();
         expect(component.messages.length).toEqual(numMessageInit + 1);
     });
-    it('should add two messages to the message list onSubmit if input is a command', () => {
-        component.inputBox = '!resersve';
+    it('should add two messages to the message list onSubmit if input is a command', async () => {
+        component.inputBox = '!reserve';
         const numMessageInit: number = component.messages.length;
-        component.onSubmit();
+        await component.onSubmit();
         expect(component.messages.length).toEqual(numMessageInit + 2);
     });
 });

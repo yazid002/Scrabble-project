@@ -14,7 +14,8 @@ export class CommandExecutionService {
     constructor(
         private reserveExecutionService: ReserveExecutionService,
         private placeExecutionService: PlaceExecutionService,
-        private debugExecutionService: DebugExecutionService,
+        public debugExecutionService: DebugExecutionService,
+
         private passExecutionService: PassExecutionService,
         private exchangeExecutionService: ExchangeExecutionService,
     ) {}

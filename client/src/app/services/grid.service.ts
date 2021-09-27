@@ -124,14 +124,10 @@ export class GridService {
     }
 
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
-        console.log(word);
         word = this.dictionaryService.normalizeWord(word);
-        console.log(word);
+
         const promise = new Promise<void>((resolve, reject) => {
             const posWord = new PosChars(word, new Point(coord.x, coord.y));
-            console.log('first move: ', this.isFirstMoveValid());
-
-            console.log(tiles);
 
             this.validatePlaceFeasibility(posWord, direction);
             this.writeWord(word, coord, direction);
