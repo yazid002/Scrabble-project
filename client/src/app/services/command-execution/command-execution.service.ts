@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IChat, SENDER } from '@app/classes/chat';
-import { CommandError } from '@app/classes/command-errors/command-error';
+import { IChat } from '@app/classes/chat';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
-import { InvalidInput } from '@app/classes/command-errors/invalid-input';
 import { DebugExecutionService } from './debug-execution.service';
 import { ExchangeExecutionService } from './exchange-execution.service';
 import { PassExecutionService } from './pass-execution.service';
@@ -20,10 +18,16 @@ export class CommandExecutionService {
         private passExecutionService: PassExecutionService,
         private exchangeExecutionService: ExchangeExecutionService,
     ) {}
-    interpretCommand(command: string): IChat {
+    interpretCommand(command: string) {
+        this.findCommand(command);
+    }
+    executeCommand(command: string): IChat {
+        const functionToExecute: () => IChat = this.findCommand(command);
+        return functionToExecute();
+    }
+    private findCommand(command: string): () => IChat {
         /**
-         * Interprets the command given in parameter and returns whether or not a command was executed.
-         * If No command was executed, the command was invalid
+         * Interprets the command given in parameter and returns a response from the right execution service
          */
 
         /*
@@ -36,70 +40,81 @@ export class CommandExecutionService {
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '');
 
-        const commandFormatMapping: Map<string, { format: string; description: string }> = new Map([
+        const parameters: string[] = command.split(' ');
+        const commandFormatMapping: Map<string, { format: string; description: string; command: () => IChat }> = new Map([
             [
                 'placer',
                 {
                     // TO DO: Fait en considérant que la ligne est en minuscule, si cela n'a pas d'importance (maj ou min),
                     // remplacer [a-z] par [A-Za-z]
                     format: '^placer[\\s][a-z]+[0-9]+(h|v)[\\s][A-Za-z]+$',
-                    description: '"!placer &lt;ligne&gt;&lt;colonne&gt;(h|v) &lt;mot&gt;" sans espace entre la ligne, la colonne et la direction',
+                    description: '"!placer <ligne><colonne>(h|v) <mot>" sans espace entre la ligne, la colonne et la direction',
+                    command: () => {
+                        return this.placeExecutionService.execute(parameters);
+                    },
                 },
             ],
             [
                 'echanger',
                 {
                     format: '^echanger[\\s][a-z]+$',
-                    description: '"!echanger &lt;arguments&gt;" sans majuscule ni espace entre les lettres à échanger',
+                    description: '"!echanger <arguments>" sans majuscule ni espace entre les lettres à échanger',
+                    command: () => {
+                        return this.exchangeExecutionService.execute(parameters);
+                    },
                 },
             ],
-            ['passer', { format: '^passer$', description: '"!passer" sans majuscule ni espace' }],
-            ['debug', { format: '^debug$', description: '"!debug" sans majuscule ni espace' }],
-            ['reserve', { format: '^reserve$', description: '"!reserve" sans majuscule ni espace' }],
+            [
+                'passer',
+                {
+                    format: '^passer$',
+                    description: '"!passer" sans majuscule ni espace',
+                    command: () => {
+                        return this.passExecutionService.execute();
+                    },
+                },
+            ],
+            [
+                'debug',
+                {
+                    format: '^debug$',
+                    description: '"!debug" sans majuscule ni espace',
+                    command: () => {
+                        return this.debugExecutionService.execute();
+                    },
+                },
+            ],
+            [
+                'reserve',
+                {
+                    format: '^reserve$',
+                    description: '"!reserve" sans majuscule ni espace',
+                    command: () => {
+                        return this.reserveExecutionService.execute();
+                    },
+                },
+            ],
         ]);
 
-        const parameters: string[] = command.split(' ');
+        const commandToExecute: () => IChat = this.validateParametersFormat(
+            command,
+            commandFormatMapping.get(parameters[0]) as { format: string; description: string; command: () => IChat },
+        );
 
-        const result: IChat = {
-            from: SENDER.computer,
-            body: 'Went through the command execution service',
-        };
-
-        try {
-            switch (parameters[0]) {
-                case 'placer':
-                    this.validateParametersFormat(command, commandFormatMapping.get('placer') as { format: string; description: string });
-                    return this.placeExecutionService.execute(parameters);
-                case 'echanger':
-                    this.validateParametersFormat(command, commandFormatMapping.get('echanger') as { format: string; description: string });
-                    return this.exchangeExecutionService.execute(parameters);
-                case 'passer':
-                    this.validateParametersFormat(command, commandFormatMapping.get('passer') as { format: string; description: string });
-                    return this.passExecutionService.execute();
-                case 'debug':
-                    this.validateParametersFormat(command, commandFormatMapping.get('debug') as { format: string; description: string });
-                    return this.debugExecutionService.execute();
-                case 'reserve':
-                    this.validateParametersFormat(command, commandFormatMapping.get('reserve') as { format: string; description: string });
-                    return this.reserveExecutionService.execute();
-                default:
-                    throw new InvalidInput('Les commandes disponibles sont "placer", "echanger", "passer", "debug" et "reserve"');
-            }
-        } catch (error) {
-            if (error instanceof CommandError) {
-                result.body = error.message;
-                return result;
-            } else {
-                throw error;
-            }
-        }
+        return commandToExecute;
     }
 
-    private validateParametersFormat(command: string, format: { format: string; description: string }): void {
-        const regexp = new RegExp(format.format);
+    private validateParametersFormat(command: string, format: { format: string; description: string; command: () => IChat }): () => IChat {
+        let regexp: RegExp;
+        try {
+            regexp = new RegExp(format.format);
+        } catch {
+            throw new CommandSyntaxError('Commande Invalide');
+        }
         const test = regexp.test(command);
         if (!test) {
-            throw new CommandSyntaxError(`Le bon format de commande est: ${format.description}.`);
+            throw new CommandSyntaxError(`${format.description}`);
         }
+        return format.command;
     }
 }

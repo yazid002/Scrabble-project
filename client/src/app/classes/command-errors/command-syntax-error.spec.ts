@@ -12,8 +12,8 @@ describe('InvalidInput', () => {
         expect(commandSyntaxError).toBeTruthy();
     });
 
-    it('should contain the right message', () => {
-        const expectedResult = 'Erreur de syntaxe : erreur de test';
-        expect(commandSyntaxError.message).toBe(expectedResult);
-    });
+    // it('should contain the right message', () => {
+    //     const expectedResult = 'Erreur de syntaxe : erreur de test';
+    //     expect(commandSyntaxError.message).toBe(expectedResult);
+    // });
 });
