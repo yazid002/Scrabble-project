@@ -4,6 +4,7 @@ import { GameModeDialogComponent } from '@app/components/dialogs/game-mode-dialo
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { BehaviorSubject } from 'rxjs';
 
+
 @Component({
     selector: 'app-main-page',
     templateUrl: './main-page.component.html',

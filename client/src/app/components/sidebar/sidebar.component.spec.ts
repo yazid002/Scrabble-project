@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatCardModule } from '@angular/material/card';
 import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 describe('SidebarComponent', () => {
@@ -6,8 +7,10 @@ describe('SidebarComponent', () => {
     let fixture: ComponentFixture<SidebarComponent>;
 
     beforeEach(async () => {
+        
         await TestBed.configureTestingModule({
             declarations: [SidebarComponent, GameOverviewComponent],
+            imports: [MatCardModule],
         }).compileComponents();
     });
 

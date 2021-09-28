@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { RouterModule } from '@angular/router';
+import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { of } from 'rxjs';
 
@@ -18,7 +19,7 @@ describe('MainPageComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [RouterTestingModule, MatDialogModule, BrowserAnimationsModule],
+            imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule],
             declarations: [MainPageComponent],
             providers: [
                 {
