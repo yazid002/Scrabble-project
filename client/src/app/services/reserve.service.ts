@@ -89,5 +89,15 @@ export class ReserveService {
         console.log('totaux: ', this.getNbreOfAvailableLetter());
     }
 
-    
+    findLetter(letterToCheck: string): ICaracter | void {
+        let letter = letterToCheck;
+        if (letterToCheck === letterToCheck.toUpperCase()) {
+            letter = '*';
+        }
+        const index = this.findLetterPosition(letter);
+        const notFound = -1;
+        if (index !== notFound) {
+            return this.alphabets[index];
+        }
+    }
 }

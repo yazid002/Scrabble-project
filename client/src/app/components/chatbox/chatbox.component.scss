@@ -1,20 +1,18 @@
 #chat-area {
-    width: 250px;
     height: 100%;
     position: relative;
     bottom: 0;
-    
 }
 
-#header{
+#header {
     width: 100%;
-
+    max-height: 10vh;
 }
 
 #message-history {
     scroll-behavior: auto;
     overflow: auto;
-    max-height: 50vh;
+    height: 75vh;
     width: 100%;
 }
 .from {
@@ -35,11 +33,11 @@
 }
 
 #message-input {
-    height: fit-content;
+    height: 20vh;
     width: 100%;
     margin: 0;
     padding: 0;
-    position: absolute;
+    // position: absolute;
     bottom: 0;
 }
 form {

@@ -25,12 +25,12 @@ export class WordValidationService {
         } else return !wordIsInvalid;
     }
 
-    private checkWordMinLength(minLength: number, wordToCheck: string): boolean {
-        return wordToCheck.length >= minLength;
+    checkWordExists(wordToCheck: string): boolean {
+        return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
 
-    private checkWordExists(wordToCheck: string): boolean {
-        return this.dictionary.words.includes(wordToCheck.toLowerCase());
+    private checkWordMinLength(minLength: number, wordToCheck: string): boolean {
+        return wordToCheck.length >= minLength;
     }
 
     private processWord(wordToProcess: string): string {

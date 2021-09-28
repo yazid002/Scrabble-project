@@ -130,4 +130,13 @@ export class RackService {
     findInexistentLettersOnRack(lettersToChange: string[]): string[] {
         return [...new Set(lettersToChange.filter((letter: string) => this.isLetterOnRack(letter) === false))];
     }
+
+    findWordOnRack(word: string[]): boolean {
+        for (const w of word) {
+            if (!this.isLetterOnRack(w)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
