@@ -1,0 +1,19 @@
+<mat-card id="summary">
+    
+    <mat-card-title>Partie {{ numPlayers }}</mat-card-title>
+    <mat-card-title-group>
+        <mat-card-subtitle>Mode {{ mode }}</mat-card-subtitle>
+        <mat-card-subtitle>Temps par tours {{ timer }}</mat-card-subtitle>
+    </mat-card-title-group>
+    
+    <mat-card id="me">
+        <mat-card-title>{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
+        <mat-card-content>Nombre de points: </mat-card-content>
+    </mat-card>
+
+    <mat-card id="otherPlayer">
+        <mat-card-title>{{ userSettingsService.getComputerName() }}</mat-card-title>
+        <mat-card-subtitle>Niveau {{ computerLevel }}</mat-card-subtitle>
+        <mat-card-content>Nombre de points: </mat-card-content>
+    </mat-card>
+</mat-card>

@@ -1,7 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
-
 import { ChatboxComponent } from './chatbox.component';
 
 describe('ChatboxComponent', () => {
@@ -11,7 +15,8 @@ describe('ChatboxComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ChatboxComponent],
-            providers: [CommandExecutionService, ChatService]
+            providers: [CommandExecutionService, ChatService],
+            imports: [BrowserAnimationsModule, MatCardModule, FormsModule, MatInputModule, MatIconModule],
         }).compileComponents();
     });
 

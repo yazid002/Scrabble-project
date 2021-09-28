@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
+import { CommandError } from '@app/classes/command-errors/command-error';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-error';
+import { GridService } from '@app/services/grid.service';
 
 const BOARD_WIDTH = 15;
 const BOARD_HEIGHT = 15;
@@ -9,6 +11,8 @@ const BOARD_HEIGHT = 15;
     providedIn: 'root',
 })
 export class PlaceExecutionService {
+    constructor(public grid: GridService) {}
+
     execute(parameters: string[]): IChat {
         const POSITION_INDEX = 1;
         const WORD_INDEX = 2;
@@ -25,6 +29,26 @@ export class PlaceExecutionService {
 
         this.checkWordValidity(word, result);
         // À ce point, on devrait appeler la fonction
+        // const VERTICAL = 'v';
+        // const HORIZONTAL = 'h';
+        const DIRECTION_CHAR_POSITION = -1;
+        const VALEUR_A: number = 'a'.charCodeAt(0); // Pour avoir le code ASCII de a
+
+        const direction: string = position.slice(DIRECTION_CHAR_POSITION);
+        const ligne: number = position.charCodeAt(0) - VALEUR_A;
+        const colone = Number(position.replace(/\D/g, ''));
+
+        try {
+            this.grid.placeWord(word, direction, ligne, colone);
+        } catch (error) {
+            if (error instanceof CommandError) {
+                result.body = error.message;
+                return result;
+            } else {
+                throw error;
+            }
+        }
+
         return result;
     }
 
@@ -42,7 +66,7 @@ export class PlaceExecutionService {
         https://stackoverflow.com/questions/1862130/strip-all-non-numeric-characters-from-string-in-javascript
         */
         // Vérifier si les entrées sont valides
-        if (ligne >= BOARD_HEIGHT || colone >= BOARD_WIDTH || ligne < 0 || colone < 0) {
+        if (ligne > BOARD_HEIGHT || colone > BOARD_WIDTH || ligne < 0 || colone < 0) {
             throw new CommandSyntaxError("Line index must be between 1 and 15. Column index must be between 'a' and .'o'");
         }
         if (direction !== VERTICAL && direction !== HORIZONTAL) {

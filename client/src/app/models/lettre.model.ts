@@ -1,9 +1,10 @@
-export interface IParams {
+export interface ICaracter {
+    name: string;
     quantity: number;
     points: number;
     affiche: string;
 }
-export interface ICaracter {
-    name: string;
-    params: IParams;
+export enum Direction {
+    BOTTOM,
+    RIGHT,
 }

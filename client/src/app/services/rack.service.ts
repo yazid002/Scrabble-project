@@ -9,22 +9,20 @@ const DEFAULT_HEIGHT = 35;
 @Injectable({
     providedIn: 'root',
 })
-export class RackService extends ReserveService {
+export class RackService {
     rackContext: CanvasRenderingContext2D;
 
-    rackLetters: ICaracter[] | null = [
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
-        { name: ' ', params: { quantity: 0, points: 0, affiche: ' ' } },
+    rackLetters: ICaracter[] = [
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
+        { name: ' ', quantity: 0, points: 0, affiche: ' ' },
     ];
 
-    constructor(private reserveService: ReserveService) {
-        super();
-    }
+    constructor(private reserveService: ReserveService) {}
 
     fillRack() {
         this.rackLetters = this.reserveService.getReserve(RACK_SIZE);
@@ -44,10 +42,10 @@ export class RackService extends ReserveService {
         if (this.rackLetters != null) {
             this.rackContext.fillStyle = 'rgb(0,0,0)';
             this.rackContext.font = '30px serif';
-            this.rackContext.fillText(this.rackLetters[index].params.affiche, (DEFAULT_WIDTH / RACK_SIZE) * index + 6, DEFAULT_HEIGHT - 8);
+            this.rackContext.fillText(this.rackLetters[index].affiche, (DEFAULT_WIDTH / RACK_SIZE) * index + 6, DEFAULT_HEIGHT - 8);
 
             this.rackContext.font = '10px serif';
-            this.rackContext.fillText(this.rackLetters[index].params.points.toString(), (DEFAULT_WIDTH / RACK_SIZE) * index + 25, DEFAULT_HEIGHT - 1);
+            this.rackContext.fillText(this.rackLetters[index].points.toString(), (DEFAULT_WIDTH / RACK_SIZE) * index + 25, DEFAULT_HEIGHT - 1);
         }
     }
 
@@ -66,6 +64,31 @@ export class RackService extends ReserveService {
         }
     }
 
+    replaceLetterOnRackOnly(letterToReplace: string): void {
+        const notFound = -1;
+        if (this.rackLetters != null) {
+            const indexOnRack = this.findLetterPosition(letterToReplace);
+            if (indexOnRack !== notFound) {
+                const newCharacters = this.reserveService.getReserve(1);
+                if (newCharacters !== null) {
+                    this.rackLetters[indexOnRack] = newCharacters[0];
+                }
+                this.fillRackPortion(indexOnRack);
+            }
+        }
+    }
+
+    findLetter(letterToCheck: string): ICaracter | void {
+        let letter = letterToCheck;
+        if (letterToCheck === letterToCheck.toUpperCase()) {
+            letter = '*';
+        }
+        const index = this.findLetterPosition(letter);
+        const notFound = -1;
+        if (index !== notFound) {
+            return this.rackLetters[index];
+        }
+    }
     countLetterOccurrences(letterToCheck: string, letters: string[]): number {
         const count = letters.reduce((n, letter) => n + Number(letter.toUpperCase() === letterToCheck.toUpperCase()), 0);
         return count;
@@ -84,4 +107,36 @@ export class RackService extends ReserveService {
     // }
 
     // constructor() {}
+
+    isLetterOnRack(letterToCheck: string): boolean {
+        const notFound = -1;
+        return this.findLetterPosition(letterToCheck) !== notFound;
+    }
+
+    replaceWord(word: string) {
+        for (let letter of word) {
+            if (letter === letter.toUpperCase()) {
+                letter = '*';
+            }
+            this.replaceLetterOnRackOnly(letter);
+        }
+    }
+
+    findJokerOnRack(): number {
+        const jokers = this.rackLetters.filter((letter) => letter.name === '*');
+        return jokers.length;
+    }
+
+    findInexistentLettersOnRack(lettersToChange: string[]): string[] {
+        return [...new Set(lettersToChange.filter((letter: string) => this.isLetterOnRack(letter) === false))];
+    }
+
+    findWordOnRack(word: string[]): boolean {
+        for (const w of word) {
+            if (!this.isLetterOnRack(w)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
