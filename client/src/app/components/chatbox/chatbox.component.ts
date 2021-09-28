@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
-
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
-
 
 const MAX_MESSAGE_LENGTH = 512;
 @Component({
@@ -21,10 +19,7 @@ export class ChatboxComponent implements OnInit {
     messages: IChat[] = [];
     readonly possibleSenders = SENDER;
 
-    constructor(
-        public chatService: ChatService,
-        private commandExecutionService: CommandExecutionService,
-    ) {}
+    constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService) {}
 
     ngOnInit(): void {
         this.getMessages();
@@ -43,7 +38,7 @@ export class ChatboxComponent implements OnInit {
             }
         }
     }
-    onSubmit() {
+    async onSubmit() {
         const message: IChat = {
             from: this.possibleSenders.me,
             body: this.inputBox,
@@ -52,7 +47,7 @@ export class ChatboxComponent implements OnInit {
         if (this.inputBox.startsWith('!')) {
             let response: IChat = { from: '', body: '' };
             try {
-                response = this.commandExecutionService.executeCommand(this.inputBox);
+                response = await this.commandExecutionService.executeCommand(this.inputBox);
             } catch (error) {
                 if (error instanceof CommandError) {
                     response = {

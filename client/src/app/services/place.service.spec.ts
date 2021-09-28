@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { PlaceService } from './place.service';
 
 describe('PlaceService', () => {
