@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
-
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
@@ -20,10 +19,7 @@ export class ChatboxComponent implements OnInit {
     messages: IChat[] = [];
     readonly possibleSenders = SENDER;
 
-    constructor(
-        public chatService: ChatService,
-        private commandExecutionService: CommandExecutionService,
-    ) {}
+    constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService) {}
 
     ngOnInit(): void {
         this.getMessages();
