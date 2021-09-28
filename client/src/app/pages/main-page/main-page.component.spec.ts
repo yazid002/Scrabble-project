@@ -1,32 +1,31 @@
-import { Overlay } from '@angular/cdk/overlay';
-import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER } from '@angular/material/dialog';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
+import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
-import { CommunicationService } from '@app/services/communication.service';
 import { of } from 'rxjs';
-import SpyObj = jasmine.SpyObj;
 
+class MatDialogMock {
+    open() {
+        return {
+            afterClosed: () => of({}),
+        };
+    }
+}
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
-    let communicationServiceSpy: SpyObj<CommunicationService>;
 
     beforeEach(async () => {
-        communicationServiceSpy = jasmine.createSpyObj('ExampleService', ['basicGet', 'basicPost']);
-        communicationServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
-        communicationServiceSpy.basicPost.and.returnValue(of());
-
         await TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule, MatDialogModule, BrowserAnimationsModule],
+            imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule],
             declarations: [MainPageComponent],
             providers: [
-                Overlay,
-                MatDialog,
-                MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
-                { provide: CommunicationService, useValue: communicationServiceSpy },
+                {
+                    provide: MatDialog,
+                    useClass: MatDialogMock,
+                },
             ],
         }).compileComponents();
     });
@@ -41,23 +40,10 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it("should have as title 'LOG2990'", () => {
-        expect(component.title).toEqual('LOG2990');
+    it('should open a MatDialog box asking for the number of players', () => {
+        // eslint-disable-next-line -- matDialog is private and we need access for the test
+        const spy = spyOn(component['matDialog'], 'open');
+        component.chooseMode('classic');
+        expect(spy).toHaveBeenCalled();
     });
-
-    it('should call basicGet when calling getMessagesFromServer', () => {
-        component.getMessagesFromServer();
-        expect(communicationServiceSpy.basicGet).toHaveBeenCalled();
-    });
-
-    it('should call basicPost when calling sendTimeToServer', () => {
-        component.sendTimeToServer();
-        expect(communicationServiceSpy.basicPost).toHaveBeenCalled();
-    });
-    // it('should open a MatDialog box asking for the number of players', () => {
-    //     const mode = component.userChoices.classic;
-    //     component.openDialog(mode);
-    //     const popup = document.getElementsByTagName('h2');
-    //     expect(popup.length).toBeGreaterThanOrEqual(1);
-    // });
 });
