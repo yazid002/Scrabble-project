@@ -16,7 +16,6 @@ import { GameModeDialogComponent } from './components/dialogs/game-mode-dialog/g
 import { GameOverviewComponent } from './components/game-overview/game-overview.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
 
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -35,7 +34,6 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         LeaderboardPageComponent,
         ChatboxComponent,
         GameOverviewComponent,
-        
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],
