@@ -30,7 +30,7 @@ export class TimerService {
     }
     private getTimerSettings() {
         const timer = Number(this.userSettingsService.settings.timer.currentChoiceKey);
-        
+
         this.counter.resetValue = timer;
     }
     private decrementTime() {
@@ -42,7 +42,5 @@ export class TimerService {
 
         this.counter.seconds = (this.counter.resetValue - secondsPassed - 1) % MAX_SECONDS;
         this.counter.min = Math.floor(totalMinutes - minutesPassed);
-
-    
     }
 }

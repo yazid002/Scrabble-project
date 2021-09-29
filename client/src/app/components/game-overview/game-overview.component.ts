@@ -14,6 +14,7 @@ export class GameOverviewComponent implements OnInit {
     computerLevel: string;
     timer: string;
     nbLettresChevalet: number = 5;
+
     constructor(public userSettingsService: UserSettingsService, public timerService: TimerService, public reserveService: ReserveService) {}
     ngOnInit(): void {
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
