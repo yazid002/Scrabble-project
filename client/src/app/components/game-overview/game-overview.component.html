@@ -6,21 +6,21 @@
     </mat-card-title-group>
     <mat-card-content>Il y a {{reserveService.getQuantityOfAvailableLetters()}} lettres restantes dans la réserve</mat-card-content>
 
-    <mat-card id="me">
+    <mat-card id="me"  class="activePlayer">
         <mat-card-title>{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
         <mat-card-content>Nombre de points: </mat-card-content>
-        <mat-card-content class="activePlayer">
+        <mat-card-content class="time">
             Votre tour termine dans:
             <strong> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
         </mat-card-content>
         <mat-card-content *ngIf="nbLettresChevalet<7">Il y a {{nbLettresChevalet}} lettres dans votre chevalet</mat-card-content>
     </mat-card>
 
-    <mat-card id="otherPlayer">
+    <mat-card id="otherPlayer"  id="activePlayer">
         <mat-card-title>{{ userSettingsService.getComputerName() }}</mat-card-title>
         <mat-card-subtitle>Niveau {{ computerLevel }}</mat-card-subtitle>
         <mat-card-content>Nombre de points: </mat-card-content>
-        <mat-card-content class="activePlayer">
+        <mat-card-content class="time">
             Votre tour termine dans:
             <strong> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
         </mat-card-content>
