@@ -14,13 +14,12 @@ export class TimerService {
 
     constructor(private userSettingsService: UserSettingsService) {
         this.counter = {
-            min: 2,
+            min: 0,
             seconds: 0,
-            resetValue: 90,
-            totalTimer: 10,
+            resetValue: 0,
+            totalTimer: 0,
         };
         this.getTimerSettings();
-        this.counter.resetValue = 90;
         this.startTimer();
     }
 
