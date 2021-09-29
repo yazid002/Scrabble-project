@@ -1,10 +1,10 @@
 import { Point } from './point';
 
 export class PosChars {
-    lettre?: string;
+    letter?: string;
     position?: Point;
-    constructor(lettre: string, position: Point) {
-        this.lettre = lettre;
+    constructor(letter: string, position: Point) {
+        this.letter = letter;
         this.position = position;
     }
 }

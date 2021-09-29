@@ -18,7 +18,7 @@ export class WordValidationService {
     }
 
     validateWord(minLength: number, wordToCheck: string): string | boolean {
-        const word = this.processWord(wordToCheck);
+        const word = this.normalizeWord(wordToCheck);
         const wordIsInvalid = this.checkInvalidSymbols(word);
         if (!wordIsInvalid) {
             return this.checkWordMinLength(minLength, wordToCheck) && this.checkWordExists(word);
@@ -29,19 +29,16 @@ export class WordValidationService {
         return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
 
-    private checkWordMinLength(minLength: number, wordToCheck: string): boolean {
+    checkWordMinLength(minLength: number, wordToCheck: string): boolean {
         return wordToCheck.length >= minLength;
     }
 
-    private processWord(wordToProcess: string): string {
-        const word = wordToProcess
-            .toLocaleLowerCase()
-            .normalize('NFD')
-            .replace(/\p{Diacritic}/gu, '');
+    normalizeWord(wordToProcess: string): string {
+        const word = wordToProcess.normalize('NFD').replace(/\p{Diacritic}/gu, '');
         return word;
     }
 
-    private checkInvalidSymbols(wordToCheck: string): boolean {
+    checkInvalidSymbols(wordToCheck: string): boolean {
         return this.invalidSymbols.some((symbol) => wordToCheck.includes(symbol));
     }
 }
