@@ -3,7 +3,7 @@ import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { ExchangeService } from '@app/services/exchange.service';
 
-// const COMMAND_INDEX = 0;
+// TODO: METTRE DANS FICHIER DE CONSTANTES;
 const ARGUMENTS_INDEX = 1;
 @Injectable({
     providedIn: 'root',

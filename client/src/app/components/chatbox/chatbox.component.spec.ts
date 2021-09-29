@@ -45,10 +45,10 @@ describe('ChatboxComponent', () => {
         component.onSubmit();
         expect(component.messages.length).toEqual(numMessageInit + 1);
     });
-    it('should add two messages to the message list onSubmit if input is a command', () => {
-        component.inputBox = '!resersve';
+    it('should add two messages to the message list onSubmit if input is a command', async () => {
+        component.inputBox = '!reserve';
         const numMessageInit: number = component.messages.length;
-        component.onSubmit();
+        await component.onSubmit();
         expect(component.messages.length).toEqual(numMessageInit + 2);
     });
 });

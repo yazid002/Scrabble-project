@@ -23,7 +23,7 @@
         <form>
             <div id="textbox-container">
                 <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
-                    <label>{{ error ? errorMessage : 'Tapez un message' }}</label>
+                    <mat-label>{{ error ? errorMessage : 'Tapez un message' }}</mat-label>
                     <input matInput autocomplete="off" [(ngModel)]="inputBox" type="text" name="name" (keyup)="validateFormat()" autofocus />
                 </mat-form-field>
             </div>
