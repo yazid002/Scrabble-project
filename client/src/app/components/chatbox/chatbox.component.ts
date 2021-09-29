@@ -4,7 +4,6 @@ import { CommandError } from '@app/classes/command-errors/command-error';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
-
 const MAX_MESSAGE_LENGTH = 512;
 @Component({
     selector: 'app-chatbox',
