@@ -178,4 +178,9 @@ describe('ChatboxComponent', () => {
 
         expect(scrollToSpy).not.toHaveBeenCalledTimes(1);
     });
+    it('should return an errorMessage if the message length is not valid', () => {
+        component.inputBox = ''; // length is 0 and min length is 1
+        component.validateFormat();
+        expect(component.error).toEqual(true);
+    });
 });
