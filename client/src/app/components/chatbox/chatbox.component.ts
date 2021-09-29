@@ -38,7 +38,7 @@ export class ChatboxComponent implements OnInit {
             }
         }
     }
-    onSubmit() {
+    async onSubmit() {
         const message: IChat = {
             from: this.possibleSenders.me,
             body: this.inputBox,
@@ -47,7 +47,7 @@ export class ChatboxComponent implements OnInit {
         if (this.inputBox.startsWith('!')) {
             let response: IChat = { from: '', body: '' };
             try {
-                response = this.commandExecutionService.executeCommand(this.inputBox);
+                response = await this.commandExecutionService.executeCommand(this.inputBox);
             } catch (error) {
                 if (error instanceof CommandError) {
                     response = {

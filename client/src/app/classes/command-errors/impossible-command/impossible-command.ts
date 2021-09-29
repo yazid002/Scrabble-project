@@ -1,4 +1,4 @@
-import { CommandError } from './command-error';
+import { CommandError } from '@app/classes/command-errors/command-error';
 
 export class ImpossibleCommand extends CommandError {
     constructor(message: string) {

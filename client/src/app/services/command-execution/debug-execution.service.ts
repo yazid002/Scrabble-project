@@ -8,7 +8,7 @@ export class DebugExecutionService {
     execute(): IChat {
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Went throught the debug execution service',
+            body: 'Went through the debug execution service',
         };
 
         return result;

@@ -4,39 +4,34 @@
     </mat-card>
 
     <mat-card id="message-history">
-        <div class="from"  *ngFor="let message of messages">
-
-            <mat-card [ngClass]="possibleSenders.me" *ngIf="message.from===possibleSenders.me" color="primary" [innerHTML]="message.body">
+        <div class="from" *ngFor="let message of messages">
+            <mat-card [ngClass]="possibleSenders.me" *ngIf="message.from === possibleSenders.me" color="primary" [innerHTML]="message.body">
             </mat-card>
-            <mat-card [ngClass]="possibleSenders.computer" *ngIf="message.from===possibleSenders.computer" color="accent" [innerHTML]="message.body">
-                
+            <mat-card
+                [ngClass]="possibleSenders.computer"
+                *ngIf="message.from === possibleSenders.computer"
+                color="accent"
+                [innerHTML]="message.body"
+            >
             </mat-card>
-            <mat-card [ngClass]="possibleSenders.otherPlayer" *ngIf="message.from===possibleSenders.otherPlayer" [innerHTML]="message.body">
-                
+            <mat-card [ngClass]="possibleSenders.otherPlayer" *ngIf="message.from === possibleSenders.otherPlayer" [innerHTML]="message.body">
             </mat-card>
         </div>
     </mat-card>
-    
+
     <mat-card id="message-input">
         <form>
             <div id="textbox-container">
-
-                <mat-form-field appearance="outline" [color]="error? 'warn': 'primary'">
-                    <mat-label>{{error? errorMessage:'Tapez un message'}}</mat-label>
-                    <input matInput autocomplete="off" [(ngModel)]="inputBox"
-                    type="text"
-                    name='name'
-                    (keyup)="validateFormat()" autofocus>
-                   
-
+                <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
+                    <mat-label>{{ error ? errorMessage : 'Tapez un message' }}</mat-label>
+                    <input matInput autocomplete="off" [(ngModel)]="inputBox" type="text" name="name" (keyup)="validateFormat()" autofocus />
                 </mat-form-field>
             </div>
             <div id="button-container">
-
-                <button type="submit" mat-mini-fab color="primary" [disabled]="error" (click)="error? '' : onSubmit()">
+                <button type="submit" mat-mini-fab color="primary" [disabled]="error" (click)="error ? '' : onSubmit()">
                     <mat-icon>send</mat-icon>
                 </button>
             </div>
         </form>
-        </mat-card>
+    </mat-card>
 </div>

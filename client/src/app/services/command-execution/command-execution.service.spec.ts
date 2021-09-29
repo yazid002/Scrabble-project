@@ -30,13 +30,13 @@ describe('CommandExecutionService', () => {
         }).toThrowError();
     });
 
-    it('should return an IChat object when executeCommand() is called with a valid command', () => {
+    it('should return an IChat object when executeCommand() is called with a valid command', async () => {
         interface IChat {
             from: string;
             body: string;
         }
         const command = '!debug';
-        const response: IChat = service.executeCommand(command);
+        const response: IChat = await service.executeCommand(command);
         expect(response).toBeDefined();
     });
 });
