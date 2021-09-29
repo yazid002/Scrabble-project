@@ -22,6 +22,7 @@ export class ChatboxComponent implements OnInit {
 
     ngOnInit(): void {
         this.getMessages();
+        document.getElementsByTagName('input')[0].focus();
     }
     validateFormat() {
         this.error = false;
