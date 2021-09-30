@@ -6,4 +6,5 @@ export interface Case {
     oldText: string;
     style: CaseStyle;
     oldStyle: CaseStyle;
+    //pointFont: string;
 }
