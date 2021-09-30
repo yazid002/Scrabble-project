@@ -151,7 +151,7 @@ export class GridService {
             console.log(tiles);
 
             //     if (!this.dictionaryService.checkWordExists(word) || !this.dictionaryService.checkWordMinLength(2, word)) {
-            const wordValidationParameters = this.checkWordExist(word, coord, direction);
+            const wordValidationParameters = this.checkWordExist(word, coord);
             if (!wordValidationParameters.wordExists) {
                 const PLACEMENT_DURATION = 3000; // 3000 millisecondes soit 3s;
                 for (let i = 0; i < word.length; i++) {
@@ -159,14 +159,13 @@ export class GridService {
                     const y = this.computeCoordByDirection(direction, coord, i).y;
 
                     tiles[x][y].text = tiles[x][y].oldText;
-
                     tiles[x][y].style = tiles[x][y].oldStyle;
                     setTimeout(() => {
                         this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
                     }, PLACEMENT_DURATION);
                 }
 
-                reject(new ImpossibleCommand(`le mot ${wordValidationParameters.inexistentWord} n'existe pas`));
+                reject(new ImpossibleCommand(wordValidationParameters.errorMessage));
             } else {
                 this.updateTilesLetters(word, coord, direction);
                 resolve(this.rack.replaceWord(word));
@@ -187,7 +186,6 @@ export class GridService {
             const x = this.computeCoordByDirection(direction, coord, i).x;
             const y = this.computeCoordByDirection(direction, coord, i).y;
             tiles[x][y].letter = word[i].toLowerCase();
-            tiles[x][y].oldText = '';
         }
     }
 
@@ -213,111 +211,84 @@ export class GridService {
         }
     }
 
-    checkWordExist(word: string, coord: Vec2, direction: string): { wordExists: boolean; inexistentWord: string } {
-        if (direction === 'v') {
-            console.log('direction: ', direction);
-
-            let wordFound = this.findVerticalAdjacentWord(coord);
-            if (this.dictionaryService.checkWordExists(wordFound)) {
-                for (let i = 0; i < word.length; i++) {
-                    wordFound = this.findHorizontalAdjacentWord({ x: coord.x + i, y: coord.y });
-                    if (wordFound.length >= 2) {
-                        if (!this.dictionaryService.checkWordExists(wordFound)) {
-                            return { wordExists: false, inexistentWord: wordFound };
-                        }
-                    }
-                }
-            } else {
-                return { wordExists: false, inexistentWord: wordFound };
-            }
-        } else {
-            console.log('direction: ', direction);
-
-            let wordFound = this.findHorizontalAdjacentWord(coord);
-            if (this.dictionaryService.checkWordExists(wordFound)) {
-                for (let i = 0; i < word.length; i++) {
-                    wordFound = this.findVerticalAdjacentWord({ x: coord.x, y: coord.y + i });
-                    if (wordFound.length >= 2) {
-                        if (!this.dictionaryService.checkWordExists(wordFound)) {
-                            return { wordExists: false, inexistentWord: wordFound };
-                        }
-                    }
-                }
-            } else {
-                return { wordExists: false, inexistentWord: wordFound };
+    checkWordExist(word: string, coord: Vec2): { wordExists: boolean; errorMessage: string } {
+        if (this.isFirstMoveValid()) {
+            if (word.length < 2) {
+                return {
+                    wordExists: false,
+                    errorMessage: `il vous faut former des mots d'une longueur minimale de 2, mais le mot ${word} a une longueur de 1.`,
+                };
             }
         }
-        return { wordExists: true, inexistentWord: '' };
+        let wordFound = '';
+        for (let i = 0; i < word.length; i++) {
+            wordFound = this.findHorizontalAdjacentWord({ x: coord.x + i, y: coord.y });
+            if (wordFound.length >= 2) {
+                if (!this.dictionaryService.checkWordExists(wordFound)) {
+                    return { wordExists: false, errorMessage: `le mot ${wordFound} n'existe pas dans le dictionnaire` };
+                }
+            }
+        }
+        for (let i = 0; i < word.length; i++) {
+            wordFound = this.findVerticalAdjacentWord({ x: coord.x, y: coord.y + i });
+            if (wordFound.length >= 2) {
+                if (!this.dictionaryService.checkWordExists(wordFound)) {
+                    return { wordExists: false, errorMessage: `le mot ${wordFound} n'existe pas dans le dictionnaire` };
+                }
+            }
+        }
+
+        return { wordExists: true, errorMessage: '' };
     }
 
     findVerticalAdjacentWord(coord: Vec2): string {
-        let indiceVersLehaut = coord.x;
-        let indiceVersLeBas = coord.x;
+        let up = coord.x;
+        let down = coord.x;
         let wordFound = '';
 
-        console.log(tiles[indiceVersLehaut][coord.y].text);
-        while (
-            indiceVersLehaut - 1 >= 0 &&
-            tiles[indiceVersLehaut - 1][coord.y].text !== '' &&
-            !['dl', 'tw', 'tl', 'dw'].includes(tiles[indiceVersLehaut - 1][coord.y].text)
-        ) {
-            console.log(tiles[indiceVersLehaut][coord.y].text);
-            indiceVersLehaut--;
-            console.log(indiceVersLehaut);
+        while (up - 1 >= 0 && tiles[up - 1][coord.y].text !== '' && !['dl', 'tw', 'tl', 'dw'].includes(tiles[up - 1][coord.y].text)) {
+            console.log(up);
+            up--;
+            console.log(up);
         }
         while (
-            indiceVersLeBas + 1 <= 15 &&
-            tiles[indiceVersLeBas + 1][coord.y].text !== '' &&
-            !['dl', 'tw', 'tl', 'dw'].includes(tiles[indiceVersLeBas + 1][coord.y].text)
+            down + 1 <= SQUARE_NUMBER &&
+            tiles[down + 1][coord.y].text !== '' &&
+            !['dl', 'tw', 'tl', 'dw'].includes(tiles[down + 1][coord.y].text)
         ) {
-            console.log(tiles[indiceVersLeBas][coord.y].text);
-            indiceVersLeBas++;
-            console.log(indiceVersLeBas);
+            console.log(up);
+            down++;
+            console.log(up);
         }
 
-        for (let i = indiceVersLehaut; i <= indiceVersLeBas; i++) {
+        for (let i = up; i <= down; i++) {
+            console.log(tiles[i][coord.y].text);
             wordFound += tiles[i][coord.y].text;
         }
         console.log(wordFound);
-        return wordFound;
+        return wordFound; // .length > 1 ? wordFound : '';
     }
 
     findHorizontalAdjacentWord(coord: Vec2): string {
-        let indiceVersLaDroite = coord.y;
-        let indiceVersLaGauche = coord.y;
-
+        let right = coord.y;
+        let left = coord.y;
         let wordFound = '';
 
-        console.log(tiles[coord.x][indiceVersLaGauche].text);
-        while (
-            indiceVersLaGauche - 1 >= 0 &&
-            tiles[coord.x][indiceVersLaGauche - 1].text !== '' &&
-            !['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][indiceVersLaGauche - 1].text)
-        ) {
-            console.log(tiles[coord.x][indiceVersLaGauche].text);
-            console.log(indiceVersLaGauche);
-            indiceVersLaGauche--;
-            console.log(indiceVersLaGauche);
+        while (left - 1 >= 0 && tiles[coord.x][left - 1].text !== '' && !['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][left - 1].text)) {
+            left--;
         }
         while (
-            indiceVersLaDroite + 1 <= 15 &&
-            tiles[coord.x][indiceVersLaDroite + 1].text !== '' &&
-            !['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][indiceVersLaDroite + 1].text)
+            right + 1 <= SQUARE_NUMBER &&
+            tiles[coord.x][right + 1].text !== '' &&
+            !['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][right + 1].text)
         ) {
-            console.log(tiles[coord.x][indiceVersLaDroite + 1].text);
-            console.log(['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][indiceVersLaDroite + 1].text));
-            console.log(tiles[coord.x][indiceVersLaDroite].text);
-            console.log(indiceVersLaDroite);
-            indiceVersLaDroite++;
-            console.log(indiceVersLaDroite);
+            right++;
         }
-        for (let i = indiceVersLaGauche; i <= indiceVersLaDroite; i++) {
-            console.log(i);
-            console.log('je ssuis laa');
+        for (let i = left; i <= right; i++) {
             wordFound += tiles[coord.x][i].text;
         }
-        console.log(wordFound);
-        return wordFound;
+
+        return wordFound; // .length > 1 ? wordFound : '';
     }
     changeTileSize(letterStep: number, pointStep: number) {
         // let police: number = +this.tileStyle.font.substring(0, 2);
