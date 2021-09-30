@@ -3,6 +3,7 @@ import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { IOption } from '@app/classes/game-options';
+import { RackService } from '@app/services/rack.service';
 
 @Component({
     selector: 'app-game-overview',
@@ -14,13 +15,15 @@ export class GameOverviewComponent implements OnInit {
     numPlayers: string;
     computerLevel: string;
     timer: string;
-    nbLettersChevalet: number = 5;
     nbLettersReserve: number = 0;
+
+    personIsActive: boolean = false;
 
     constructor(
         public userSettingsService: UserSettingsService,
         public timerService: TimerService,
         public reserveService: ReserveService,
+        public rackService: RackService,
         private cd: ChangeDetectorRef,
     ) {}
     ngOnInit(): void {

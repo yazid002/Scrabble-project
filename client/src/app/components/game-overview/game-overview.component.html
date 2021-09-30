@@ -6,23 +6,23 @@
     </mat-card-title-group>
     <mat-card-content>Il y a {{nbLettersReserve}} lettres restantes dans la réserve</mat-card-content>
 
-    <mat-card id="me"  class="activePlayer">
+    <mat-card id="me" [ngClass]="personIsActive? 'activePlayer':''">
         <mat-card-title>{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
         <mat-card-content>Nombre de points: </mat-card-content>
-        <mat-card-content class="time">
+        <mat-card-content *ngIf="personIsActive">
             Votre tour termine dans:
-            <strong> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
+            <strong class="time"> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
         </mat-card-content>
-        <mat-card-content *ngIf="nbLettersChevalet<7">Il y a {{nbLettersChevalet}} lettres dans votre chevalet</mat-card-content>
+        <mat-card-content *ngIf="rackService.rackLetters.length<7">Il y a {{rackService.rackLetters.length}} lettres dans votre chevalet</mat-card-content>
     </mat-card>
 
-    <mat-card id="otherPlayer"  id="activePlayer">
+    <mat-card id="otherPlayer"  [ngClass]="personIsActive? '':'activePlayer'">
         <mat-card-title>{{ userSettingsService.getComputerName() }}</mat-card-title>
         <mat-card-subtitle>Niveau {{ computerLevel }}</mat-card-subtitle>
         <mat-card-content>Nombre de points: </mat-card-content>
-        <mat-card-content class="time">
-            Votre tour termine dans:
-            <strong> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
+        <mat-card-content *ngIf="!personIsActive">
+            Le tour de votre opposant se termine dans au plus: 
+            <strong  class="time" > {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
         </mat-card-content>
     </mat-card>
 </mat-card>
