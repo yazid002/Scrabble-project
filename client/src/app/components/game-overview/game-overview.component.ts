@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
@@ -24,7 +24,6 @@ export class GameOverviewComponent implements OnInit {
         public timerService: TimerService,
         public reserveService: ReserveService,
         public rackService: RackService,
-        private cd: ChangeDetectorRef,
     ) {}
     ngOnInit(): void {
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
@@ -45,10 +44,10 @@ export class GameOverviewComponent implements OnInit {
         this.getReserveSize();
     }
     private getReserveSize(): void {
-        setTimeout(() => {
-            this.reserveService.getReserveSize().subscribe((size) => (this.nbLettersReserve = size));
-            this.cd.detectChanges();
-        }, 0);
+        const reserveRefreshRate = 1000;
+        setInterval(() => {
+            this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();
+        }, reserveRefreshRate);
     }
     private assignValues(mode: IOption | undefined, numPlayers: IOption | undefined, computerLevel: IOption | undefined, timer: IOption | undefined) {
         if (mode && numPlayers && computerLevel && timer) {
