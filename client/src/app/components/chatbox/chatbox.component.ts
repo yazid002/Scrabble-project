@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
-
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
 const MAX_MESSAGE_LENGTH = 512;
+const MIN_MESSAGE_LENGTH = 1;
 @Component({
     selector: 'app-chatbox',
     templateUrl: './chatbox.component.html',
@@ -15,21 +15,22 @@ export class ChatboxComponent implements OnInit {
     inputBox: string = '';
     error: boolean;
     errorMessage: string = '';
-    minLength: number = 0;
-    maxLength: number = MAX_MESSAGE_LENGTH;
     messages: IChat[] = [];
     readonly possibleSenders = SENDER;
 
-    constructor(
-        public chatService: ChatService,
-        private commandExecutionService: CommandExecutionService,
-    ) {}
+    constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService) {}
 
     ngOnInit(): void {
         this.getMessages();
+        document.getElementsByTagName('input')[0].focus();
     }
     validateFormat() {
         this.error = false;
+        if (this.inputBox.length > MAX_MESSAGE_LENGTH || this.inputBox.length < MIN_MESSAGE_LENGTH) {
+            this.error = true;
+            this.errorMessage = `Min ${MIN_MESSAGE_LENGTH} et max ${MAX_MESSAGE_LENGTH} lettres`;
+            return;
+        }
         if (this.inputBox.startsWith('!')) {
             try {
                 this.commandExecutionService.interpretCommand(this.inputBox);
