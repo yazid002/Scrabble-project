@@ -19,10 +19,10 @@ export class TimerService {
             resetValue: 0,
             totalTimer: 0,
         };
-        this.getTimerSettings();
         this.startTimer();
     }
     startTimer() {
+        this.getTimerSettings();
         const timerIntervalMS = 1000;
         setInterval(() => {
             this.decrementTime();
@@ -40,7 +40,7 @@ export class TimerService {
         const minutesPassed = this.counter.totalTimer / MAX_SECONDS;
         const secondsPassed = this.counter.totalTimer;
 
-        this.counter.seconds = (this.counter.resetValue - secondsPassed - 1) % MAX_SECONDS;
-        this.counter.min = Math.floor(totalMinutes - minutesPassed);
+        this.counter.seconds = (this.counter.resetValue - secondsPassed) % MAX_SECONDS;
+        this.counter.min = Math.max(0, Math.floor(totalMinutes - minutesPassed));
     }
 }
