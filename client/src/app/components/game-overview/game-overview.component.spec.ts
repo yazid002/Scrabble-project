@@ -26,4 +26,15 @@ describe('GameOverviewComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+    it('should let settings unchanged when it cannot find it in the userSettingsService', () => {
+        let undefinedOption: undefined;
+
+        const INITIAL_VALUE = 'Une valeur sans importance';
+
+        component.computerLevel = INITIAL_VALUE;
+        // Car scrollDown est privée
+        // eslint-disable-next-line dot-notation
+        component['assignValues'](undefinedOption, undefinedOption, undefinedOption, undefinedOption);
+        expect(component.computerLevel).toEqual(INITIAL_VALUE);
+    });
 });

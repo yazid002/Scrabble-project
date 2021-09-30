@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
+import { IOption } from '@app/classes/game-options';
 
 @Component({
     selector: 'app-game-overview',
@@ -37,12 +38,7 @@ export class GameOverviewComponent implements OnInit {
             (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
         );
 
-        if (mode && numPlayers && computerLevel && timer) {
-            this.mode = mode.value;
-            this.numPlayers = numPlayers.value;
-            this.computerLevel = computerLevel.value;
-            this.timer = timer.value;
-        }
+        this.assignValues(mode, numPlayers, computerLevel, timer);
         this.getReserveSize();
     }
     private getReserveSize(): void {
@@ -50,5 +46,13 @@ export class GameOverviewComponent implements OnInit {
             this.reserveService.getReserveSize().subscribe((size) => (this.nbLettersReserve = size));
             this.cd.detectChanges();
         }, 0);
+    }
+    private assignValues(mode: IOption | undefined, numPlayers: IOption | undefined, computerLevel: IOption | undefined, timer: IOption | undefined) {
+        if (mode && numPlayers && computerLevel && timer) {
+            this.mode = mode.value;
+            this.numPlayers = numPlayers.value;
+            this.computerLevel = computerLevel.value;
+            this.timer = timer.value;
+        }
     }
 }
