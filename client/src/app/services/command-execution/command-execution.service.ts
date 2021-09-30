@@ -28,12 +28,12 @@ export class CommandExecutionService {
     }
     private findCommand(command: string): () => IChat {
         /**
-         * Interprets the command given in parameter and returns a response from the right execution service
+         * Tente de trouver la bonne commande a exécuter. S'il ne trouve pas la commande, alors la commande * donnée en paramètre n'est pas valide.
          */
 
         /*
-         format command string and 
-         remove accents from letters https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+         Formatter la commande pour avoir un traitement prévisible 
+         Commande trouvés sur:  https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
         */
         command = command
             .replace('!', '')
@@ -46,12 +46,8 @@ export class CommandExecutionService {
             [
                 'placer',
                 {
-                    // TO DO: Fait en considérant que la ligne est en minuscule, si cela n'a pas d'importance (maj ou min),
-                    // remplacer [a-z] par [A-Za-z]
                     format: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][^ ]{1,15}$',
-                    description:
-                        '"!placer &lt;ligne&gt;&lt;colonne&gt;(h|v) &lt;mot&gt;" sans espace à la fin, avec la ligne de a à o,' +
-                        ' la colonne de 1 à 15 et le mot composé de 1 à 15 caractères',
+                    description: 'Ligne(a-o)Colone(1-15)Sens(h|v) mot',
                     command: async () => {
                         return this.placeExecutionService.execute(parameters);
                     },
@@ -61,9 +57,7 @@ export class CommandExecutionService {
                 'echanger',
                 {
                     format: '^echanger[\\s][a-z*]{1,7}$',
-                    description:
-                        '"!echanger &lt;arguments&gt;" sans majuscule ni espace entre les lettres à échanger ni à la fin.' +
-                        ' Indiquez 1 à 7 lettres à échanger',
+                    description: 'l<sub>1</sub>l<sub>2</sub>l<sub>3</sub>...l<sub>n</sub>',
                     command: () => {
                         return this.exchangeExecutionService.execute(parameters);
                     },

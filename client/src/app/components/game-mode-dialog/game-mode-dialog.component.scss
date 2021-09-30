@@ -21,9 +21,6 @@ mat-radio-button{
     margin: 1rem;
 }
 
-// button[aria-disabled=true]{
-//     opacity:0.5;
-// }
 form:invalid{
     button[type=submit]{
         opacity: 0.5;
