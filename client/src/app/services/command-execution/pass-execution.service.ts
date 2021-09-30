@@ -7,7 +7,7 @@ export class PassExecutionService {
     execute(): IChat {
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Went through the debug execution service',
+            body: 'Vous avex passé votre tour',
         };
 
         return result;

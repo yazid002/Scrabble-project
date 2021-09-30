@@ -51,7 +51,7 @@ describe('ExchangeExecutionService', () => {
 
             const result = service.execute(PARAMETERS);
 
-            expect(result.body).toEqual('Went through the exchange execution service');
+            expect(result.body).toEqual('Échangé les lettres avec succès');
         });
     });
 });
