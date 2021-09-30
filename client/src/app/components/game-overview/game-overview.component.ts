@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
@@ -13,9 +13,15 @@ export class GameOverviewComponent implements OnInit {
     numPlayers: string;
     computerLevel: string;
     timer: string;
-    nbLettresChevalet: number = 5;
+    nbLettersChevalet: number = 5;
+    nbLettersReserve: number = 0;
 
-    constructor(public userSettingsService: UserSettingsService, public timerService: TimerService, public reserveService: ReserveService) {}
+    constructor(
+        public userSettingsService: UserSettingsService,
+        public timerService: TimerService,
+        public reserveService: ReserveService,
+        private cd: ChangeDetectorRef,
+    ) {}
     ngOnInit(): void {
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
@@ -37,5 +43,12 @@ export class GameOverviewComponent implements OnInit {
             this.computerLevel = computerLevel.value;
             this.timer = timer.value;
         }
+        this.getReserveSize();
+    }
+    private getReserveSize(): void {
+        setTimeout(() => {
+            this.reserveService.getReserveSize().subscribe((size) => (this.nbLettersReserve = size));
+            this.cd.detectChanges();
+        }, 0);
     }
 }

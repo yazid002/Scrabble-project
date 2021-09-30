@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ICharacter } from '@app/classes/letter';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -36,11 +37,17 @@ export class ReserveService {
     ];
     nbLettersInReserve: number;
     constructor() {
-        this.nbLettersInReserve = this.getQuantityOfAvailableLetters();
+        this.getQuantityOfAvailableLetters();
     }
 
     getQuantityOfAvailableLetters() {
-        return this.alphabets.reduce((total, letter) => total + letter.quantity, 0);
+        this.nbLettersInReserve = this.alphabets.reduce((total, letter) => total + letter.quantity, 0);
+        return this.nbLettersInReserve;
+    }
+
+    getReserveSize(): Observable<number> {
+        const obs = of(this.nbLettersInReserve);
+        return obs;
     }
 
     getLettersFromReserve(requestedQuantity: number): ICharacter[] {
@@ -63,6 +70,7 @@ export class ReserveService {
             }
             i++;
         }
+        this.getQuantityOfAvailableLetters();
         return reserve;
     }
 
