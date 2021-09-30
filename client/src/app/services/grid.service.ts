@@ -253,7 +253,6 @@ export class GridService {
         const pointPolice: number = +this.pointStyle.font.substring(0, 2);
         const police: number = +this.letterStyle.font.substring(0, 2);
 
-
         if (police > minValue) {
             this.changeTileSize(letterStep, pointStep);
 
@@ -261,10 +260,18 @@ export class GridService {
         }
 
         if (pointPolice > minValue) {
-            this.changeTileSize(letterStep,pointStep);
+            this.changeTileSize(letterStep, pointStep);
 
-            console.log('decreasepoint',this.pointStyle.font)
+            console.log('decreasepoint', this.pointStyle.font);
         }
+    }
+
+    isAdjacent(x: number, y: number): boolean {
+        if (tiles[x + 1][y].text !== '' || tiles[x - 1][y].text !== '' || tiles[x][y + 1].text !== '' || tiles[x - 1][y - 1].text !== '') {
+            return true;
+        }
+
+        return false;
     }
 
     private validatePlaceFeasibility(posChar: PosChars, positions: string): void {
