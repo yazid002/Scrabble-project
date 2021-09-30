@@ -7,7 +7,7 @@ import { ICharacter as ICharacter } from '@app/classes/letter';
 import { Point } from '@app/classes/point';
 import { PosChars } from '@app/classes/pos-chars';
 import { Vec2 } from '@app/classes/vec2';
-import { DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH, TILE as TILE_STYLE } from '@app/constants/board-constants';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { Direction } from '@app/enums/letter-enums';
 import { RackService } from '@app/services/rack.service';
 import { ReserveService } from '@app/services/reserve.service';
@@ -18,6 +18,9 @@ import { VerifyService } from '@app/verify.service';
     providedIn: 'root',
 })
 export class GridService {
+    letterStyle: CaseStyle = { color: 'NavajoWhite', font: '15px serif' };
+    pointStyle: CaseStyle = { color: 'NavajoWhite', font: '10px serif' };
+
     gridContext: CanvasRenderingContext2D;
 
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
@@ -78,9 +81,8 @@ export class GridService {
 
         this.drawGridOutdoor();
     }
-
     fillGridPortion(coord: Vec2, letter: string, style: CaseStyle) {
-        const LETTERS_PIXELS_WIDTH_ADJUSTMENT = 7;
+        const LETTERS_PIXELS_WIDTH_ADJUSTMENT = 2;
         const LETTERS_PIXELS_HEIGH_ADJUSTMENT = 22;
         this.gridContext.clearRect(
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
@@ -107,10 +109,24 @@ export class GridService {
 
         this.changeGridStyle('black', style.font);
         this.gridContext.strokeText(
-            letter,
+            letter.toUpperCase(),
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + LETTERS_PIXELS_WIDTH_ADJUSTMENT,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + LETTERS_PIXELS_HEIGH_ADJUSTMENT,
         );
+
+        let character = this.reserveService.findLetterInReserve(letter);
+        console.log(character);
+
+        if (character !== -1 && letter != '') {
+            character = character as ICharacter;
+
+            this.changeGridStyle(this.pointStyle.color, this.pointStyle.font);
+            this.gridContext.strokeText(
+                character.points.toString(),
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + 16,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + 30,
+            );
+        }
 
         this.gridContext.stroke();
     }
@@ -123,13 +139,13 @@ export class GridService {
     }
 
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
-        console.log(word);
         word = this.dictionaryService.normalizeWord(word);
-        console.log(word);
+
         const promise = new Promise<void>((resolve, reject) => {
             const posWord = new PosChars(word, new Point(coord.x, coord.y));
             this.validatePlaceFeasibility(posWord, direction);
             this.writeWord(word, coord, direction);
+            console.log(tiles);
 
             if (!this.dictionaryService.checkWordExists(word) || !this.dictionaryService.checkWordMinLength(2, word)) {
                 const PLACEMENT_DURATION = 3000; // 3000 millisecondes soit 3s;
@@ -140,7 +156,7 @@ export class GridService {
                     tiles[x][y].text = tiles[x][y].oldText;
                     tiles[x][y].style = tiles[x][y].oldStyle;
                     setTimeout(() => {
-                        this.fillGridPortion({ x, y }, tiles[x][y].text.toUpperCase(), tiles[x][y].style);
+                        this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
                     }, PLACEMENT_DURATION);
                 }
 
@@ -181,12 +197,71 @@ export class GridService {
             }
 
             tiles[x][y].oldStyle = tiles[x][y].style;
-            tiles[x][y].style = TILE_STYLE;
+            tiles[x][y].style = this.letterStyle;
 
             tiles[x][y].oldText = tiles[x][y].text;
-            tiles[x][y].text = word[i].toUpperCase();
+            tiles[x][y].text = word[i];
 
             this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
+        }
+    }
+
+    changeTileSize(letterStep: number, pointStep: number) {
+        // let police: number = +this.tileStyle.font.substring(0, 2);
+
+        let police: number = +this.letterStyle.font.substring(0, 2);
+        let pointPolice: number = +this.pointStyle.font.substring(0, 2);
+
+        police += letterStep;
+        pointPolice += pointStep;
+        this.letterStyle.font = police.toString() + 'px serif';
+        this.pointStyle.font = pointPolice.toString() + 'px serif';
+
+        for (let x = 0; x < SQUARE_NUMBER; x++) {
+            for (let y = 0; y < SQUARE_NUMBER; y++) {
+                if (tiles[x][y].letter !== '') {
+                    tiles[x][y].style.font = this.letterStyle.font;
+                    this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
+                    this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
+                }
+            }
+        }
+    }
+
+    increaseTileSize(letterStep: number, pointStep: number, maxValue: number) {
+        const police: number = +this.letterStyle.font.substring(0, 2);
+
+        const pointPolice: number = +this.pointStyle.font.substring(0, 2);
+
+        const pointMaxValue: number = maxValue - 12; // ne marche pas
+
+        if (police < maxValue) {
+            this.changeTileSize(letterStep, pointStep);
+
+            console.log('IncreaseLetter', this.letterStyle.font);
+        }
+
+        if (pointPolice < pointMaxValue) {
+            this.changeTileSize(letterStep, pointStep);
+            console.log('IncreaseLetter', this.pointStyle.font);
+        }
+    }
+
+    decreaseTileSize(letterStep: number, pointStep: number, minValue: number) {
+        const pointPolice: number = +this.pointStyle.font.substring(0, 2);
+        const police: number = +this.letterStyle.font.substring(0, 2);
+
+
+        if (police > minValue) {
+            this.changeTileSize(letterStep, pointStep);
+
+            console.log('deceaseLetter', this.letterStyle.font);
+        }
+
+        if (pointPolice > minValue) {
+            this.changeTileSize(letterStep,pointStep);
+
+            console.log('decreasepoint',this.pointStyle.font)
         }
     }
 
