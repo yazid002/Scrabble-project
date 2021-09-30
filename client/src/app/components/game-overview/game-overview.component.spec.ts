@@ -1,21 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
-import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-describe('SidebarComponent', () => {
-    let component: SidebarComponent;
-    let fixture: ComponentFixture<SidebarComponent>;
+import { UserSettingsService } from '@app/services/user-settings.service';
+import { GameOverviewComponent } from './game-overview.component';
+
+describe('GameOverviewComponent', () => {
+    let component: GameOverviewComponent;
+    let fixture: ComponentFixture<GameOverviewComponent>;
 
     beforeEach(async () => {
-        
         await TestBed.configureTestingModule({
-            declarations: [SidebarComponent, GameOverviewComponent],
+            declarations: [GameOverviewComponent],
             imports: [MatCardModule],
+            providers: [UserSettingsService],
         }).compileComponents();
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(SidebarComponent);
+        fixture = TestBed.createComponent(GameOverviewComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

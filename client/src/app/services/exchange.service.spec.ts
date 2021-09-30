@@ -72,7 +72,7 @@ describe('ExchangeService', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'B', 'D'];
         rackServiceSpy.rackLetters = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+            { name: 'A', quantity: 1, points: 3, affiche: 'A' },
             { name: 'B', quantity: 1, points: 3, affiche: 'B' },
             { name: 'C', quantity: 1, points: 3, affiche: 'C' },
             { name: 'D', quantity: 3, points: 2, affiche: 'D' },

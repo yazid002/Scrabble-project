@@ -12,11 +12,7 @@ export class ChatService {
         const obs = of(this.messages);
         return obs;
     }
-    addMessage(message: string, sender: string): void {
-        const newMessage: IChat = {
-            from: sender,
-            body: message,
-        };
+    addMessage(newMessage: IChat): void {
         this.messages.push(newMessage);
     }
     clear(): void {

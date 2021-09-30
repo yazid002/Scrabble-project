@@ -21,20 +21,20 @@ export class VerifyService {
     }
 
     isFiting(p: Point, dir: Direction, word: string) {
-        console.log('length: ', tiles.length);
+        // console.log('length: ', tiles.length);
         const caseRestant = dir === Direction.BOTTOM ? tiles.length - p.row : tiles.length - p.column;
         if (word.length > caseRestant) {
-            console.log('je suis rentrée ici');
+            // console.log('je suis rentrée ici');
             throw new CommandSyntaxError("Il n'y a pas assez de place pour ecrire ce mot");
             //  return false;
         }
         // const array: boolean[] = [];
         for (let i = 0; i < word.length; i++) {
             const charInBox = dir === Direction.RIGHT ? tiles[p.row][i + p.column].letter : tiles[i + p.row][p.column].letter;
-            console.log('charInBox: ', charInBox);
-            console.log('word.charAt(i): ', word.charAt(i));
-            console.log("charInBox !== ''", charInBox !== '');
-            console.log('charInBox !== word.charAt(i): ', charInBox !== word.charAt(i));
+            // console.log('charInBox: ', charInBox);
+            // console.log('word.charAt(i): ', word.charAt(i));
+            // console.log("charInBox !== ''", charInBox !== '');
+            // console.log('charInBox !== word.charAt(i): ', charInBox !== word.charAt(i));
 
             // if (charInBox !== '') {
             //     if (charInBox === word.charAt(i)) {
@@ -58,7 +58,7 @@ export class VerifyService {
                 throw new CommandSyntaxError('Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet');
             }
             // } && charInBox !== word.charAt(i)) {
-            //     console.log('je suis rentrée labas');
+            //   // console.log('je suis rentrée labas');
             //     return false;
             // }
         }
@@ -68,7 +68,7 @@ export class VerifyService {
         //     }
         // }
         // p.column -= 1;
-        //   console.log(this.verifyAllWords(p, dir, word));
+        // // console.log(this.verifyAllWords(p, dir, word));
 
         return true;
     }
@@ -91,13 +91,13 @@ export class VerifyService {
         // eslint-disable-next-line max-len
         // positioner les index toIndex(fin du mot a extraire pour verifier si tjrs dans le dictionnaire) a la position d'une lettre avec l'expression ternaire(not lambda)
         // par exemple : CANADA au debut sur C, ensuite sur A, ensuite sur N, ...
-        console.log('on est ou ', p.row, p.column);
+        // console.log('on est ou ', p.row, p.column);
         p.row -= 2;
         let fromIndex: number = dir === Direction.BOTTOM ? p.row : p.column;
         let toIndex: number = dir === Direction.BOTTOM ? p.row : p.column;
         let newWord = ''; // le mot a extraire
 
-        console.log('y a quoi dedans : ', tiles[fromIndex - 2][p.column]);
+        // console.log('y a quoi dedans : ', tiles[fromIndex - 2][p.column]);
 
         // reculer fromIndex jusqu'au debut du mot a extraire (jusqu'au un case vide)
         if (dir === Direction.BOTTOM) {
@@ -115,7 +115,7 @@ export class VerifyService {
         }
 
         if (dir === Direction.RIGHT) {
-            console.log(p.row, fromIndex);
+            // console.log(p.row, fromIndex);
             while (fromIndex >= 0 || tiles[p.row][fromIndex].letter !== '') {
                 fromIndex--;
             }
@@ -131,18 +131,18 @@ export class VerifyService {
 
     verifyAllWords(p: Point, dir: Direction, word: string) {
         //  p.column -= 2;
-        console.log('la direction est ', dir.toString());
+        // console.log('la direction est ', dir.toString());
         if (dir === Direction.RIGHT) {
-            console.log('je suis dans le if');
-            console.log('p :', p.row, p.column);
+            // console.log('je suis dans le if');
+            // console.log('p :', p.row, p.column);
             for (let i = p.column; i <= p.column + word.length; i++) {
-                console.log('je suis dans le for');
+                // console.log('je suis dans le for');
                 const newPoint = new Point(p.row, i);
-                console.log('dans dico?: ', this.dictionaryService.checkWordExists(this.getWord(newPoint, dir)));
-                const theWord = this.getWord(newPoint, dir);
+                // console.log('dans dico?: ', this.dictionaryService.checkWordExists(this.getWord(newPoint, dir)));
+                //  const theWord = this.getWord(newPoint, dir);
 
-                console.log('le mot :', theWord);
-                console.log('exist :', this.dictionaryService.checkWordExists(theWord));
+                // console.log('le mot :', theWord);
+                // console.log('exist :', this.dictionaryService.checkWordExists(theWord));
                 if (!this.dictionaryService.checkWordExists(this.getWord(newPoint, dir))) {
                     return false;
                 }
@@ -152,11 +152,11 @@ export class VerifyService {
             for (let i = p.row; i <= word.length; i++) {
                 const newPoint = new Point(i, p.column);
 
-                console.log('dans dico?: ', this.dictionaryService.checkWordExists(this.getWord(newPoint, dir)));
-                const theWord = this.getWord(newPoint, dir);
+                // console.log('dans dico?: ', this.dictionaryService.checkWordExists(this.getWord(newPoint, dir)));
+                // const theWord = this.getWord(newPoint, dir);
 
-                console.log('le mot :', theWord);
-                console.log('exist :', this.dictionaryService.checkWordExists(theWord));
+                // console.log('le mot :', theWord);
+                // console.log('exist :', this.dictionaryService.checkWordExists(theWord));
 
                 if (!this.dictionaryService.checkWordExists(this.getWord(newPoint, dir))) {
                     return false;
@@ -172,8 +172,8 @@ export class VerifyService {
         // } else {
         //     return false;
         // }
-        console.log('isFitting: ', this.isFiting(p, dir, word));
-        console.log('verifyWord: ', this.verifyAllWords(p, dir, word));
+        // console.log('isFitting: ', this.isFiting(p, dir, word));
+        // console.log('verifyWord: ', this.verifyAllWords(p, dir, word));
         return this.isFiting(p, dir, word);
         // && this.verifyAllWords(p, dir, word);
     }

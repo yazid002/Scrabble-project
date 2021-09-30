@@ -15,6 +15,7 @@ export class PlaceExecutionService {
     async execute(parameters: string[]): Promise<IChat> {
         const POSITION_INDEX = 1;
         const WORD_INDEX = 2;
+
         const result: IChat = {
             from: SENDER.computer,
             body: 'Went through the place execution service',

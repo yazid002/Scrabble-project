@@ -3,6 +3,7 @@ import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-errors/command-syntax-error';
 import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
+import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { ICharacter as ICharacter } from '@app/classes/letter';
 import { Point } from '@app/classes/point';
 import { PosChars } from '@app/classes/pos-chars';
@@ -143,6 +144,7 @@ export class GridService {
 
         const promise = new Promise<void>((resolve, reject) => {
             const posWord = new PosChars(word, new Point(coord.x, coord.y));
+
             this.validatePlaceFeasibility(posWord, direction);
             this.writeWord(word, coord, direction);
             console.log(tiles);
@@ -160,7 +162,7 @@ export class GridService {
                     }, PLACEMENT_DURATION);
                 }
 
-                reject(new CommandSyntaxError("Ce mot n'existe pas dans le dictionnaire"));
+                reject(new ImpossibleCommand("Ce mot n'existe pas dans le dictionnaire"));
             } else {
                 this.updateTilesLetters(word, coord, direction);
                 resolve(this.rack.replaceWord(word));
@@ -266,6 +268,12 @@ export class GridService {
     }
 
     private validatePlaceFeasibility(posChar: PosChars, positions: string): void {
+        if (this.isFirstMoveValid()) {
+            this.validateFirstMove(posChar.letter as string, positions, {
+                x: posChar.position?.row as number,
+                y: posChar.position?.column as number,
+            });
+        }
         this.validateInvalidSymbols(posChar.letter as string);
         this.validateJokersOccurrencesMatch(posChar.letter as string);
         const dir = positions === 'h' ? Direction.RIGHT : Direction.BOTTOM;
@@ -280,6 +288,24 @@ export class GridService {
         if (upperLettersInWord.length > jokersNumb) {
             throw new NotEnoughOccurrences(` * (lettres blanches) pour représenter les lettres "${upperLettersInWord.join('", "')}" demandées.`);
         }
+    }
+
+    private validateFirstMove(word: string, direction: string, coord: Vec2): void {
+        const H8_COORD: Vec2 = { x: 7, y: 7 };
+        if (direction === 'h') {
+            if (!(coord.x === H8_COORD.x && coord.y <= H8_COORD.y && coord.y + word.length > H8_COORD.y)) {
+                throw new ImpossibleCommand(' Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8');
+            }
+        }
+        if (direction === 'v') {
+            if (!(coord.y === H8_COORD.y && coord.x <= H8_COORD.x && coord.x + word.length > H8_COORD.x)) {
+                throw new ImpossibleCommand(' Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8');
+            }
+        }
+    }
+
+    private isFirstMoveValid(): boolean {
+        return tiles[7][7].oldText === '';
     }
 
     private validateInvalidSymbols(word: string): void {
