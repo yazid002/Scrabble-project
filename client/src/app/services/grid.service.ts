@@ -108,7 +108,7 @@ export class GridService {
 
         this.changeGridStyle('black', style.font);
         this.gridContext.strokeText(
-            letter,
+            letter.toUpperCase(),
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + LETTERS_PIXELS_WIDTH_ADJUSTMENT,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + LETTERS_PIXELS_HEIGH_ADJUSTMENT,
         );
@@ -132,20 +132,23 @@ export class GridService {
             this.validatePlaceFeasibility(posWord, direction);
             this.writeWord(word, coord, direction);
 
-            if (!this.dictionaryService.checkWordExists(word) || !this.dictionaryService.checkWordMinLength(2, word)) {
+            //     if (!this.dictionaryService.checkWordExists(word) || !this.dictionaryService.checkWordMinLength(2, word)) {
+            const wordValidationParameters = this.checkWordExist(word, coord, direction);
+            if (!wordValidationParameters.wordExists) {
                 const PLACEMENT_DURATION = 3000; // 3000 millisecondes soit 3s;
                 for (let i = 0; i < word.length; i++) {
                     const x = this.computeCoordByDirection(direction, coord, i).x;
                     const y = this.computeCoordByDirection(direction, coord, i).y;
 
                     tiles[x][y].text = tiles[x][y].oldText;
+                    tiles[x][y].oldText = '';
                     tiles[x][y].style = tiles[x][y].oldStyle;
                     setTimeout(() => {
                         this.fillGridPortion({ x, y }, tiles[x][y].text.toUpperCase(), tiles[x][y].style);
                     }, PLACEMENT_DURATION);
                 }
 
-                reject(new ImpossibleCommand("Ce mot n'existe pas dans le dictionnaire"));
+                reject(new ImpossibleCommand(`le mot ${wordValidationParameters.inexistentWord} n'existe pas`));
             } else {
                 this.updateTilesLetters(word, coord, direction);
                 resolve(this.rack.replaceWord(word));
@@ -185,14 +188,122 @@ export class GridService {
             tiles[x][y].style = TILE_STYLE;
 
             tiles[x][y].oldText = tiles[x][y].text;
-            tiles[x][y].text = word[i].toUpperCase();
+            tiles[x][y].text = word[i];
 
             this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
         }
     }
 
+    checkWordExist(word: string, coord: Vec2, direction: string): { wordExists: boolean; inexistentWord: string } {
+        if (direction === 'v') {
+            console.log('direction: ', direction);
+
+            let wordFound = this.findVerticalAdjacentWord(coord);
+            if (this.dictionaryService.checkWordExists(wordFound)) {
+                for (let i = 0; i < word.length; i++) {
+                    wordFound = this.findHorizontalAdjacentWord({ x: coord.x + i, y: coord.y });
+                    if (wordFound.length >= 2) {
+                        if (!this.dictionaryService.checkWordExists(wordFound)) {
+                            return { wordExists: false, inexistentWord: wordFound };
+                        }
+                    }
+                }
+            } else {
+                return { wordExists: false, inexistentWord: wordFound };
+            }
+        } else {
+            console.log('direction: ', direction);
+
+            let wordFound = this.findHorizontalAdjacentWord(coord);
+            if (this.dictionaryService.checkWordExists(wordFound)) {
+                for (let i = 0; i < word.length; i++) {
+                    wordFound = this.findVerticalAdjacentWord({ x: coord.x, y: coord.y + i });
+                    if (wordFound.length >= 2) {
+                        if (!this.dictionaryService.checkWordExists(wordFound)) {
+                            return { wordExists: false, inexistentWord: wordFound };
+                        }
+                    }
+                }
+            } else {
+                return { wordExists: false, inexistentWord: wordFound };
+            }
+        }
+        return { wordExists: true, inexistentWord: '' };
+    }
+
+    findVerticalAdjacentWord(coord: Vec2): string {
+        let indiceVersLehaut = coord.x;
+        let indiceVersLeBas = coord.x;
+        let wordFound = '';
+
+        console.log(tiles[indiceVersLehaut][coord.y].text);
+        while (
+            indiceVersLehaut - 1 >= -1 &&
+            tiles[indiceVersLehaut - 1][coord.y].text !== '' &&
+            !['dl', 'tw', 'tl', 'dw'].includes(tiles[indiceVersLehaut - 1][coord.y].text)
+        ) {
+            console.log(tiles[indiceVersLehaut][coord.y].text);
+            indiceVersLehaut--;
+            console.log(indiceVersLehaut);
+        }
+        while (
+            indiceVersLeBas + 1 <= 15 &&
+            tiles[indiceVersLeBas + 1][coord.y].text !== '' &&
+            !['dl', 'tw', 'tl', 'dw'].includes(tiles[indiceVersLeBas + 1][coord.y].text)
+        ) {
+            console.log(tiles[indiceVersLeBas][coord.y].text);
+            indiceVersLeBas++;
+            console.log(indiceVersLeBas);
+        }
+
+        for (let i = indiceVersLehaut; i <= indiceVersLeBas; i++) {
+            wordFound += tiles[i][coord.y].text;
+        }
+        console.log(wordFound);
+        return wordFound;
+    }
+
+    findHorizontalAdjacentWord(coord: Vec2): string {
+        let indiceVersLaDroite = coord.y;
+        let indiceVersLaGauche = coord.y;
+
+        let wordFound = '';
+
+        console.log(tiles[coord.x][indiceVersLaGauche].text);
+        while (
+            indiceVersLaGauche - 1 >= -1 &&
+            tiles[coord.x][indiceVersLaGauche - 1].text !== '' &&
+            !['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][indiceVersLaGauche - 1].text)
+        ) {
+            console.log(tiles[coord.x][indiceVersLaGauche].text);
+            console.log(indiceVersLaGauche);
+            indiceVersLaGauche--;
+            console.log(indiceVersLaGauche);
+        }
+        while (
+            indiceVersLaDroite + 1 <= 15 &&
+            tiles[coord.x][indiceVersLaDroite + 1].text !== '' &&
+            !['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][indiceVersLaDroite + 1].text)
+        ) {
+            console.log(tiles[coord.x][indiceVersLaDroite + 1].text);
+            console.log(['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][indiceVersLaDroite + 1].text));
+            console.log(tiles[coord.x][indiceVersLaDroite].text);
+            console.log(indiceVersLaDroite);
+            indiceVersLaDroite++;
+            console.log(indiceVersLaDroite);
+        }
+        for (let i = indiceVersLaGauche; i <= indiceVersLaDroite; i++) {
+            console.log(i);
+            console.log('je ssuis laa');
+            wordFound += tiles[coord.x][i].text;
+        }
+        console.log(wordFound);
+        return wordFound;
+    }
+
     private validatePlaceFeasibility(posChar: PosChars, positions: string): void {
         if (this.isFirstMoveValid()) {
+            console.log('firstMove');
             this.validateFirstMove(posChar.letter as string, positions, {
                 x: posChar.position?.row as number,
                 y: posChar.position?.column as number,
