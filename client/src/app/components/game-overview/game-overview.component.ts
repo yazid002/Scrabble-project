@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ReserveService } from '@app/services/reserve.service';
+import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 
 @Component({
@@ -11,7 +13,9 @@ export class GameOverviewComponent implements OnInit {
     numPlayers: string;
     computerLevel: string;
     timer: string;
-    constructor(public userSettingsService: UserSettingsService) {}
+    nbLettresChevalet: number = 5;
+
+    constructor(public userSettingsService: UserSettingsService, public timerService: TimerService, public reserveService: ReserveService) {}
     ngOnInit(): void {
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,

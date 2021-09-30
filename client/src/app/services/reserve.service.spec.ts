@@ -168,7 +168,7 @@ describe('ReserveService', () => {
 
             service.getLettersFromReserve(REQUESTED_QUANTITY);
 
-            expect(getQuantityOfAvailableLettersSpy).toHaveBeenCalledTimes(1);
+            expect(getQuantityOfAvailableLettersSpy).toHaveBeenCalled();
         });
 
         it('should return an empty array if there is no letter available in the reserve', () => {
