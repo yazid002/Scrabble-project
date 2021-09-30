@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
+import { ReserveService } from '@app/services/reserve.service';
+import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { GameOverviewComponent } from './game-overview.component';
 
@@ -11,7 +13,7 @@ describe('GameOverviewComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [GameOverviewComponent],
             imports: [MatCardModule],
-            providers: [UserSettingsService],
+            providers: [UserSettingsService, ReserveService, TimerService],
         }).compileComponents();
     });
 

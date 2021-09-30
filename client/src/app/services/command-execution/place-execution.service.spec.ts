@@ -63,7 +63,7 @@ describe('PlaceExecuteService', () => {
             gridServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
 
             await service.execute(PARAMETERS).then((result) => {
-                expect(result.body).toEqual('Went through the place execution service');
+                expect(result.body).toEqual('Placer le mot avec succès');
             });
         });
 
