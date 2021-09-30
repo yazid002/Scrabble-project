@@ -22,11 +22,11 @@ export class TimerService {
         this.getTimerSettings();
         this.startTimer();
     }
-
     startTimer() {
+        const timerIntervalMS = 1000;
         setInterval(() => {
             this.decrementTime();
-        }, 1000);
+        }, timerIntervalMS);
     }
     private getTimerSettings() {
         const timer = Number(this.userSettingsService.settings.timer.currentChoiceKey);

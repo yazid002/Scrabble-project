@@ -11,6 +11,15 @@ button{
     margin: 5px;
     width: fit-content;
 }
+mat-card{
+    overflow: auto;
+}
+mat-radio-button{
+    margin: auto 1rem;
+}
+.setting{
+    margin: 1rem;
+}
 
 // button[aria-disabled=true]{
 //     opacity:0.5;

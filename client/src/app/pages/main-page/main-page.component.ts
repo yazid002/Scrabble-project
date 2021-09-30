@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { GameModeDialogComponent } from '@app/components/dialogs/game-mode-dialog/game-mode-dialog.component';
+import { GameModeDialogComponent } from '@app/components/game-mode-dialog/game-mode-dialog.component';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { BehaviorSubject } from 'rxjs';
 

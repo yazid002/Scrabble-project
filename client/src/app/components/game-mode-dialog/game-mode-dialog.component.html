@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>Veuillez Choisir le nombre de joueurs</h2>
+
+<!-- {{ userSettingsService.settings|json}} -->
+
+<form (keyup)="validateName()" mat-dialog-content aria-details="w">
+    <mat-card>
+        <div class="setting" *ngFor="let setting of userSettingsService.settings | keyvalue">
+            <!-- {{ setting | json }} -->
+            <mat-card-title>{{ setting.value.setting.settingName }}</mat-card-title>
+            <mat-radio-group [name]="setting.key" [(ngModel)]="setting.value.currentChoiceKey">
+                <mat-radio-button
+                    color="primary"
+                    *ngFor="let choice of setting.value.setting.availableChoices"
+                    [disabled]="choice.disabled"
+                    [value]="choice.key"
+                    [checked]="setting.value.currentChoiceKey === choice.key"
+                    >{{ choice.value }}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div>
+            <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
+                <input
+                    autocomplete="off"
+                    matInput
+                    type="text"
+                    [id]="userSettingsService.nameOption.key"
+                    [name]="userSettingsService.nameOption.key"
+                    [placeholder]="error ? errorMessage : userSettingsService.nameOption.displayName"
+                    required="true"
+                    [(ngModel)]="userSettingsService.nameOption.userChoice"
+                />
+            </mat-form-field>
+        </div>
+        
+        <section id="footer">
+            <button mat-raised-button mat-dialog-close>Retour À l'accueil</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="error" routerLink="game" mat-dialog-close>Jouer</button>
+        </section>
+    </mat-card>
+</form>
