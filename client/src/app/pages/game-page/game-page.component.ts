@@ -14,6 +14,6 @@ export class GamePageComponent {
     }
 
     decreaseSize() {
-        this.gridService.decreaseTileSize(-1, -1, 8);
+        this.gridService.decreaseTileSize(-1, -1, 13);
     }
 }

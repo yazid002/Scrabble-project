@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
@@ -149,7 +150,9 @@ export class GridService {
             this.writeWord(word, coord, direction);
             console.log(tiles);
 
-            if (!this.dictionaryService.checkWordExists(word) || !this.dictionaryService.checkWordMinLength(2, word)) {
+            //     if (!this.dictionaryService.checkWordExists(word) || !this.dictionaryService.checkWordMinLength(2, word)) {
+            const wordValidationParameters = this.checkWordExist(word, coord);
+            if (!wordValidationParameters.wordExists) {
                 const PLACEMENT_DURATION = 3000; // 3000 millisecondes soit 3s;
                 for (let i = 0; i < word.length; i++) {
                     const x = this.computeCoordByDirection(direction, coord, i).x;
@@ -162,7 +165,7 @@ export class GridService {
                     }, PLACEMENT_DURATION);
                 }
 
-                reject(new ImpossibleCommand("Ce mot n'existe pas dans le dictionnaire"));
+                reject(new ImpossibleCommand(wordValidationParameters.errorMessage));
             } else {
                 this.updateTilesLetters(word, coord, direction);
                 resolve(this.rack.replaceWord(word));
@@ -208,11 +211,90 @@ export class GridService {
         }
     }
 
+    checkWordExist(word: string, coord: Vec2): { wordExists: boolean; errorMessage: string } {
+        if (this.isFirstMoveValid()) {
+            if (word.length < 2) {
+                return {
+                    wordExists: false,
+                    errorMessage: `il vous faut former des mots d'une longueur minimale de 2, mais le mot ${word} a une longueur de 1.`,
+                };
+            }
+        }
+        let wordFound = '';
+        for (let i = 0; i < word.length; i++) {
+            wordFound = this.findHorizontalAdjacentWord({ x: coord.x + i, y: coord.y });
+            if (wordFound.length >= 2) {
+                if (!this.dictionaryService.checkWordExists(wordFound)) {
+                    return { wordExists: false, errorMessage: `le mot ${wordFound} n'existe pas dans le dictionnaire` };
+                }
+            }
+        }
+        for (let i = 0; i < word.length; i++) {
+            wordFound = this.findVerticalAdjacentWord({ x: coord.x, y: coord.y + i });
+            if (wordFound.length >= 2) {
+                if (!this.dictionaryService.checkWordExists(wordFound)) {
+                    return { wordExists: false, errorMessage: `le mot ${wordFound} n'existe pas dans le dictionnaire` };
+                }
+            }
+        }
+
+        return { wordExists: true, errorMessage: '' };
+    }
+
+    findVerticalAdjacentWord(coord: Vec2): string {
+        let up = coord.x;
+        let down = coord.x;
+        let wordFound = '';
+
+        while (up - 1 >= 0 && tiles[up - 1][coord.y].text !== '' && !['dl', 'tw', 'tl', 'dw'].includes(tiles[up - 1][coord.y].text)) {
+            console.log(up);
+            up--;
+            console.log(up);
+        }
+        while (
+            down + 1 <= SQUARE_NUMBER &&
+            tiles[down + 1][coord.y].text !== '' &&
+            !['dl', 'tw', 'tl', 'dw'].includes(tiles[down + 1][coord.y].text)
+        ) {
+            console.log(up);
+            down++;
+            console.log(up);
+        }
+
+        for (let i = up; i <= down; i++) {
+            console.log(tiles[i][coord.y].text);
+            wordFound += tiles[i][coord.y].text;
+        }
+        console.log(wordFound);
+        return wordFound; // .length > 1 ? wordFound : '';
+    }
+
+    findHorizontalAdjacentWord(coord: Vec2): string {
+        let right = coord.y;
+        let left = coord.y;
+        let wordFound = '';
+
+        while (left - 1 >= 0 && tiles[coord.x][left - 1].text !== '' && !['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][left - 1].text)) {
+            left--;
+        }
+        while (
+            right + 1 <= SQUARE_NUMBER &&
+            tiles[coord.x][right + 1].text !== '' &&
+            !['dl', 'tw', 'tl', 'dw'].includes(tiles[coord.x][right + 1].text)
+        ) {
+            right++;
+        }
+        for (let i = left; i <= right; i++) {
+            wordFound += tiles[coord.x][i].text;
+        }
+
+        return wordFound; // .length > 1 ? wordFound : '';
+    }
     changeTileSize(letterStep: number, pointStep: number) {
         // let police: number = +this.tileStyle.font.substring(0, 2);
 
-        let police: number = +this.letterStyle.font.substring(0, 2);
-        let pointPolice: number = +this.pointStyle.font.substring(0, 2);
+        let police: number = +this.letterStyle.font.split('px')[0];
+        let pointPolice: number = +this.pointStyle.font.split('px')[0];
 
         police += letterStep;
         pointPolice += pointStep;
@@ -231,9 +313,9 @@ export class GridService {
     }
 
     increaseTileSize(letterStep: number, pointStep: number, maxValue: number) {
-        const police: number = +this.letterStyle.font.substring(0, 2);
+        const police: number = +this.letterStyle.font.split('px')[0];
 
-        const pointPolice: number = +this.pointStyle.font.substring(0, 2);
+        const pointPolice: number = +this.pointStyle.font.split('px')[0];
 
         const pointMaxValue: number = maxValue - 12; // ne marche pas
 
@@ -250,8 +332,8 @@ export class GridService {
     }
 
     decreaseTileSize(letterStep: number, pointStep: number, minValue: number) {
-        const pointPolice: number = +this.pointStyle.font.substring(0, 2);
-        const police: number = +this.letterStyle.font.substring(0, 2);
+        const pointPolice: number = +this.pointStyle.font.split('px')[0];
+        const police: number = +this.letterStyle.font.split('px')[0];
 
         if (police > minValue) {
             this.changeTileSize(letterStep, pointStep);
@@ -264,18 +346,13 @@ export class GridService {
 
             console.log('decreasepoint', this.pointStyle.font);
         }
-    }
-
-    isAdjacent(x: number, y: number): boolean {
-        if (tiles[x + 1][y].text !== '' || tiles[x - 1][y].text !== '' || tiles[x][y + 1].text !== '' || tiles[x - 1][y - 1].text !== '') {
-            return true;
-        }
 
         return false;
     }
 
     private validatePlaceFeasibility(posChar: PosChars, positions: string): void {
         if (this.isFirstMoveValid()) {
+            console.log('firstMove');
             this.validateFirstMove(posChar.letter as string, positions, {
                 x: posChar.position?.row as number,
                 y: posChar.position?.column as number,
@@ -312,7 +389,7 @@ export class GridService {
     }
 
     private isFirstMoveValid(): boolean {
-        return tiles[7][7].oldText === '';
+        return tiles[7][7].letter === '';
     }
 
     private validateInvalidSymbols(word: string): void {
