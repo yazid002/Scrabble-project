@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
+import { IOption } from '@app/classes/game-options';
+import { RackService } from '@app/services/rack.service';
 
 @Component({
     selector: 'app-game-overview',
@@ -13,9 +15,16 @@ export class GameOverviewComponent implements OnInit {
     numPlayers: string;
     computerLevel: string;
     timer: string;
-    nbLettresChevalet: number = 5;
+    nbLettersReserve: number = 0;
 
-    constructor(public userSettingsService: UserSettingsService, public timerService: TimerService, public reserveService: ReserveService) {}
+    personIsActive: boolean = false;
+
+    constructor(
+        public userSettingsService: UserSettingsService,
+        public timerService: TimerService,
+        public reserveService: ReserveService,
+        public rackService: RackService,
+    ) {}
     ngOnInit(): void {
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
@@ -31,6 +40,16 @@ export class GameOverviewComponent implements OnInit {
             (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
         );
 
+        this.assignValues(mode, numPlayers, computerLevel, timer);
+        this.getReserveSize();
+    }
+    private getReserveSize(): void {
+        const reserveRefreshRate = 1000;
+        setInterval(() => {
+            this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();
+        }, reserveRefreshRate);
+    }
+    private assignValues(mode: IOption | undefined, numPlayers: IOption | undefined, computerLevel: IOption | undefined, timer: IOption | undefined) {
         if (mode && numPlayers && computerLevel && timer) {
             this.mode = mode.value;
             this.numPlayers = numPlayers.value;
