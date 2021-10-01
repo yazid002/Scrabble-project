@@ -129,6 +129,20 @@ export class VerifyService {
         return newWord;
     }
 
+    verifyAdjacentLetterExist(p: Point, direction: Direction) {
+        if (direction === Direction.RIGHT) {
+            if (tiles[p.row - 1][p.column].letter !== '' || tiles[p.row + 1][p.column].letter !== '') {
+                return true;
+            }
+        }
+        if (direction === Direction.BOTTOM) {
+            if (tiles[p.row][p.column - 1].letter !== '' || tiles[p.row][p.column + 1].letter !== '') {
+                return true;
+            }
+        }
+        return false;
+    }
+
     verifyAllWords(p: Point, dir: Direction, word: string) {
         //  p.column -= 2;
         // console.log('la direction est ', dir.toString());
@@ -143,7 +157,7 @@ export class VerifyService {
 
                 // console.log('le mot :', theWord);
                 // console.log('exist :', this.dictionaryService.checkWordExists(theWord));
-                if (!this.dictionaryService.checkWordExists(this.getWord(newPoint, dir))) {
+                if (!this.dictionaryService.checkWordExists(this.getWord(newPoint, dir)) && !this.verifyAdjacentLetterExist(p, dir)) {
                     return false;
                 }
             }
@@ -158,7 +172,7 @@ export class VerifyService {
                 // console.log('le mot :', theWord);
                 // console.log('exist :', this.dictionaryService.checkWordExists(theWord));
 
-                if (!this.dictionaryService.checkWordExists(this.getWord(newPoint, dir))) {
+                if (!this.dictionaryService.checkWordExists(this.getWord(newPoint, dir)) && !this.verifyAdjacentLetterExist(p, dir)) {
                     return false;
                 }
             }
