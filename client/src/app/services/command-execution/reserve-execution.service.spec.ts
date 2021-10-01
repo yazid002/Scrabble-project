@@ -25,7 +25,7 @@ describe('ReserveExecutionService', () => {
         it(' should return the quantity of letters for each letter in the reserve', () => {
             const result = service.execute();
 
-            const expectedResult = 'Went through the reserve execution service \n<br>A: 9\n<br>B: 2\n<br>C: 2';
+            const expectedResult = 'Commande reserve exécutée avec succès !\n<br>A: 9\n<br>B: 2\n<br>C: 2';
 
             expect(result.body).toEqual(expectedResult);
         });

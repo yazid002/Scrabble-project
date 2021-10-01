@@ -61,12 +61,13 @@ describe('ReserveService', () => {
             expect(findLetterPositionSpy).toHaveBeenCalled();
         });
 
-        it('should return void if the letter to found is not in the reserve', () => {
+        it('should return notFound if the letter to found is not in the reserve', () => {
+            const notFound = -1;
             const LETTER_TO_CHECK = 'z';
 
             const result = service.findLetterInReserve(LETTER_TO_CHECK);
 
-            expect(result).toEqual(void '');
+            expect(result).toEqual(notFound);
         });
 
         it('should return the letter found', () => {

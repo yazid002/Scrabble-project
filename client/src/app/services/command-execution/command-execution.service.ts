@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IChat } from '@app/classes/chat';
 import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-errors/command-syntax-error';
+import { CommandFormat } from '@app/classes/command-format';
 import { DebugExecutionService } from './debug-execution.service';
 import { ExchangeExecutionService } from './exchange-execution.service';
 import { PassExecutionService } from './pass-execution.service';
@@ -23,10 +24,10 @@ export class CommandExecutionService {
         this.findCommand(command);
     }
     async executeCommand(command: string): Promise<IChat> {
-        const functionToExecute: () => IChat = this.findCommand(command);
+        const functionToExecute: () => Promise<IChat> | IChat = this.findCommand(command);
         return functionToExecute();
     }
-    private findCommand(command: string): () => IChat {
+    private findCommand(command: string): () => Promise<IChat> | IChat {
         /**
          * Interprets the command given in parameter and returns a response from the right execution service
          */
@@ -42,14 +43,15 @@ export class CommandExecutionService {
             .replace(/[\u0300-\u036f]/g, '');
 
         const parameters: string[] = command.split(' ');
-        const commandFormatMapping: Map<string, { format: string; description: string; command: () => Promise<IChat> | IChat }> = new Map([
+        const commandFormatMapping: Map<string, CommandFormat> = new Map([
             [
                 'placer',
                 {
                     // TO DO: Fait en considérant que la ligne est en minuscule, si cela n'a pas d'importance (maj ou min),
                     // remplacer [a-z] par [A-Za-z]
-                    format: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][^ ]{1,15}$',
-                    description:
+                    regex: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][^ ]{1,15}$',
+                    shortDescription: '!placer <ligne><colonne>(h|v) <mot>',
+                    wideDescription:
                         '"!placer &lt;ligne&gt;&lt;colonne&gt;(h|v) &lt;mot&gt;" sans espace à la fin, avec la ligne de a à o,' +
                         ' la colonne de 1 à 15 et le mot composé de 1 à 15 caractères',
                     command: async () => {
@@ -60,8 +62,9 @@ export class CommandExecutionService {
             [
                 'echanger',
                 {
-                    format: '^echanger[\\s][a-z*]{1,7}$',
-                    description:
+                    regex: '^echanger[\\s][a-z*]{1,7}$',
+                    shortDescription: '!echanger <arguments>',
+                    wideDescription:
                         '"!echanger &lt;arguments&gt;" sans majuscule ni espace entre les lettres à échanger ni à la fin.' +
                         ' Indiquez 1 à 7 lettres à échanger',
                     command: () => {
@@ -72,8 +75,9 @@ export class CommandExecutionService {
             [
                 'passer',
                 {
-                    format: '^passer$',
-                    description: '"!passer" sans majuscule ni espace',
+                    regex: '^passer$',
+                    shortDescription: '!passer',
+                    wideDescription: '"!passer" sans majuscule ni espace à la fin',
                     command: () => {
                         return this.passExecutionService.execute();
                     },
@@ -82,8 +86,9 @@ export class CommandExecutionService {
             [
                 'debug',
                 {
-                    format: '^debug$',
-                    description: '"!debug" sans majuscule ni espace',
+                    regex: '^debug$',
+                    shortDescription: '!debug',
+                    wideDescription: '"!debug" sans majuscule ni espace à la fin',
                     command: () => {
                         return this.debugExecutionService.execute();
                     },
@@ -92,8 +97,9 @@ export class CommandExecutionService {
             [
                 'reserve',
                 {
-                    format: '^reserve$',
-                    description: '"!reserve" sans majuscule ni espace',
+                    regex: '^reserve$',
+                    shortDescription: '!reserve',
+                    wideDescription: '"!reserve" sans majuscule ni espace à la fin',
                     command: () => {
                         return this.reserveExecutionService.execute();
                     },
@@ -101,24 +107,24 @@ export class CommandExecutionService {
             ],
         ]);
 
-        const commandToExecute: () => IChat = this.validateParametersFormat(
+        const commandToExecute: () => Promise<IChat> | IChat = this.validateParametersFormat(
             command,
-            commandFormatMapping.get(parameters[0]) as { format: string; description: string; command: () => IChat },
+            commandFormatMapping.get(parameters[0]) as CommandFormat,
         );
 
         return commandToExecute;
     }
 
-    private validateParametersFormat(command: string, format: { format: string; description: string; command: () => IChat }): () => IChat {
+    private validateParametersFormat(command: string, format: CommandFormat): () => Promise<IChat> | IChat {
         let regexp: RegExp;
         try {
-            regexp = new RegExp(format.format);
+            regexp = new RegExp(format.regex);
         } catch {
             throw new CommandSyntaxError('Commande Invalide');
         }
         const test = regexp.test(command);
         if (!test) {
-            throw new CommandSyntaxError(`${format.description}`);
+            throw new CommandSyntaxError(`${format.wideDescription}`);
         }
         return format.command;
     }
