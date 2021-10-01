@@ -20,13 +20,14 @@
         </div>
         <div>
             <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
+                <mat-label>{{error? errorMessage: userSettingsService.nameOption.displayName}}</mat-label>
                 <input
                     autocomplete="off"
                     matInput
                     type="text"
                     [id]="userSettingsService.nameOption.key"
                     [name]="userSettingsService.nameOption.key"
-                    [placeholder]="error ? errorMessage : userSettingsService.nameOption.displayName"
+                    [placeholder]="userSettingsService.nameOption.displayName"
                     required="true"
                     [(ngModel)]="userSettingsService.nameOption.userChoice"
                 />
