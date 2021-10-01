@@ -35,7 +35,7 @@ fdescribe('GridService', () => {
         expect(drawGridOutdoorSpy).toHaveBeenCalledTimes(expectCallTimes);
     });
 
-    it(' drawGrid should call fillGridPortion and StrokeRect ', () => {
+    it(' drawGrid should call fillGridPortion ', () => {
         const expectCallTimes = 225;
         const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
         service.drawGrid();
@@ -43,7 +43,7 @@ fdescribe('GridService', () => {
         expect(fillGridPortionSpy).toHaveBeenCalledTimes(expectCallTimes);
     });
 
-    it(' drawGrid should call fillGridPortion and StrokeRect ', () => {
+    it(' drawGrid should call StrokeRect ', () => {
         const expectCallTimes = 450;
         const strokeTextSpy = spyOn(service.gridContext, 'strokeRect').and.callThrough();
         service.drawGrid();
