@@ -86,10 +86,12 @@ describe('PointsCountingService', () => {
 
     it(' processWordPoints should not call applyBingo if the word points are invalid', () => {
         const wordToCheck = 'ABCABC';
+        const wordCoord = { x: 5, y: 5 };
+        const direction = 'h';
 
         service.getWordBasePoints = jasmine.createSpy().and.returnValue(INVALID_NUMBER);
         const applyBingoSpy = spyOn(service, 'applyBingo').and.callThrough();
-        service.processWordPoints(wordToCheck);
+        service.processWordPoints(wordToCheck, wordCoord, direction);
 
         expect(applyBingoSpy).not.toHaveBeenCalled();
     });
@@ -97,10 +99,12 @@ describe('PointsCountingService', () => {
     it(' processWordPoints should call applyBingo if the word points are valid', () => {
         const wordToCheck = 'ABCABC';
         const wordBasePoints = 14;
+        const wordCoord = { x: 5, y: 5 };
+        const direction = 'h';
 
         service.getWordBasePoints = jasmine.createSpy().and.returnValue(wordBasePoints);
         const applyBingoSpy = spyOn(service, 'applyBingo').and.callThrough();
-        service.processWordPoints(wordToCheck);
+        service.processWordPoints(wordToCheck, wordCoord, direction);
 
         expect(applyBingoSpy).toHaveBeenCalled();
     });

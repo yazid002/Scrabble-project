@@ -17,7 +17,7 @@ describe('DebugExecutionService', () => {
         it(' should return the initial result if no error was threw', () => {
             const result = service.execute();
 
-            expect(result.body).toEqual('Went through the debug execution service');
+            expect(result.body).toEqual('Commande debug exécutée avec succès !');
         });
     });
 });

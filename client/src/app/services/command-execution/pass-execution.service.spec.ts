@@ -12,4 +12,11 @@ describe('PassExecutionService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
+    describe('execute', () => {
+        it(' should return the initial result if no error was threw', () => {
+            const result = service.execute();
+
+            expect(result.body).toEqual('Commande passer exécutée avec succès !');
+        });
+    });
 });

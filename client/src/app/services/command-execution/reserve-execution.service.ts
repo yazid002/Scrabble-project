@@ -10,7 +10,7 @@ export class ReserveExecutionService {
     execute(): IChat {
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Went through the reserve execution service ',
+            body: 'Commande reserve exécutée avec succès !',
         };
         for (const letter of this.reserveService.alphabets) {
             const line = `\n<br>${letter.name}: ${letter.quantity}`;
