@@ -1,19 +1,32 @@
 import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { ReserveService } from '@app/services/reserve.service';
+import { DebugExecutionService } from './debug-execution.service';
+
 @Injectable({
     providedIn: 'root',
 })
 export class ReserveExecutionService {
-    constructor(private reserveService: ReserveService) {}
+    constructor(private reserveService: ReserveService, private debugExecutionService: DebugExecutionService) {}
 
     execute(): IChat {
+        let result: IChat = {
+            from: SENDER.computer,
+            body: 'La commande <strong>reserve</strong> est uniquement disponible lorsque le mode débuguage est activé',
+        };
+        if (this.debugExecutionService.state) {
+            result = this.buildReserveMessage();
+        }
+
+        return result;
+    }
+    private buildReserveMessage() {
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Went through the reserve execution service ',
+            body: '',
         };
         for (const letter of this.reserveService.alphabets) {
-            const line = `\n<br>${letter.name}: ${letter.quantity}`;
+            const line = `${letter.name}: ${letter.quantity}<br>`;
             result.body += line;
         }
 

@@ -36,11 +36,12 @@ export class ReserveService {
     ];
     nbLettersInReserve: number;
     constructor() {
-        this.nbLettersInReserve = this.getQuantityOfAvailableLetters();
+        this.getQuantityOfAvailableLetters();
     }
 
     getQuantityOfAvailableLetters() {
-        return this.alphabets.reduce((total, letter) => total + letter.quantity, 0);
+        this.nbLettersInReserve = this.alphabets.reduce((total, letter) => total + letter.quantity, 0);
+        return this.nbLettersInReserve;
     }
 
     getLettersFromReserve(requestedQuantity: number): ICharacter[] {
@@ -63,6 +64,7 @@ export class ReserveService {
             }
             i++;
         }
+        this.getQuantityOfAvailableLetters();
         return reserve;
     }
 

@@ -22,10 +22,10 @@ describe('ReserveExecutionService', () => {
     });
 
     describe('execute', () => {
-        it(' should return the quantity of letters for each letter in the reserve', () => {
+        it('not display reserve if debug mode is inactive', () => {
             const result = service.execute();
 
-            const expectedResult = 'Went through the reserve execution service \n<br>A: 9\n<br>B: 2\n<br>C: 2';
+            const expectedResult = 'La commande <strong>reserve</strong> est uniquement disponible lorsque le mode débuguage est activé';
 
             expect(result.body).toEqual(expectedResult);
         });
