@@ -57,7 +57,6 @@ export class PointsCountingService {
         for (let i = 0; i < wordToCheck.length; i++) {
             const x = this.verifyService.computeCoordByDirection(direction, coord, i).x;
             const y = this.verifyService.computeCoordByDirection(direction, coord, i).y;
-            //   const character = this.reserveService.findLetterInReserve(wordToCheck[i]) as ICharacter;
             let basePoints = this.getLetterPoints(wordToCheck[i]);
             switch (tiles[x][y].bonus) {
                 case 'tl':
