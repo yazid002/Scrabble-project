@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-errors/command-syntax-error';
+import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
+import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
+import { Dictionary } from '@app/classes/dictionary';
+import { Vec2 } from '@app/classes/vec2';
+import { SQUARE_NUMBER } from '@app/constants/board-constants';
+import { RackService } from '@app/services/rack.service';
 import * as dictionary from 'src/assets/dictionnary.json';
-import { CommandSyntaxError } from './classes/command-errors/command-syntax-errors/command-syntax-error';
-import { NotEnoughOccurrences } from './classes/command-errors/command-syntax-errors/not-enough-occurrences';
-import { ImpossibleCommand } from './classes/command-errors/impossible-command/impossible-command';
-import { Dictionary } from './classes/dictionary';
-import { Vec2 } from './classes/vec2';
-import { SQUARE_NUMBER } from './constants/board-constants';
-import { RackService } from './services/rack.service';
 
 @Injectable({
     providedIn: 'root',

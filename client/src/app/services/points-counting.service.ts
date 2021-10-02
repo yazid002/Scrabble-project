@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { Vec2 } from '@app/classes/vec2';
 import { BINGO_BONUS, BINGO_LENGTH, INVALID_NUMBER } from '@app/constants/board-constants';
-import { VerifyService } from '@app/verify.service';
+import { VerifyService } from '@app/services/verify.service';
 import { ReserveService } from './reserve.service';
 
 @Injectable({
