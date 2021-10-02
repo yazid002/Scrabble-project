@@ -2,9 +2,7 @@
 // pour les fonctions getLetterPoints et getWordPoints
 
 import { Injectable } from '@angular/core';
-import { tiles } from '@app/classes/board';
-import { Vec2 } from '@app/classes/vec2';
-import { VerifyService } from '@app/verify.service';
+import { ICharacter } from '@app/classes/letter';
 import { ReserveService } from './reserve.service';
 
 // A placer dans un fichier de constantes
@@ -16,15 +14,15 @@ export const BINGO_LENGTH = 7;
     providedIn: 'root',
 })
 export class PointsCountingService {
-    reserve: { name: string; params: { quantity: number; points: number; display: string } }[];
+    reserve: ICharacter[];
     wordIsValid: boolean;
     wordToCheck: string;
 
-    constructor(private verifyService: VerifyService, public reserveService: ReserveService) {}
+    constructor(public reserveService: ReserveService) {}
 
     getLetterPoints(letter: string): number {
         const aLetter = this.reserve.find((element) => element.name === letter.toUpperCase());
-        return aLetter?.params.points || INVALID_NUMBER;
+        return aLetter?.points || INVALID_NUMBER;
     }
 
     getWordBasePoints(word: string): number {
@@ -40,46 +38,5 @@ export class PointsCountingService {
 
     applyBingo(wordToCheck: string, basePoints: number): number {
         return wordToCheck.length === BINGO_LENGTH ? basePoints + BINGO_BONUS : basePoints;
-    }
-
-    processWordPoints(wordToCheck: string, coord: Vec2, direction: string): number {
-        let points = this.applyBoardBonuses(wordToCheck, coord, direction);
-
-        points = this.applyBingo(wordToCheck, points);
-
-        return points;
-    }
-
-    applyBoardBonuses(wordToCheck: string, coord: Vec2, direction: string) {
-        let point = 0;
-        let numberOfTW = 0;
-        let numberOfDW = 0;
-        for (let i = 0; i < wordToCheck.length; i++) {
-            const x = this.verifyService.computeCoordByDirection(direction, coord, i).x;
-            const y = this.verifyService.computeCoordByDirection(direction, coord, i).y;
-            let basePoints = this.getLetterPoints(wordToCheck[i]);
-            switch (tiles[x][y].bonus) {
-                case 'tl':
-                    basePoints *= 3;
-                    break;
-                case 'dl':
-                    basePoints *= 2;
-                    break;
-                case 'tw':
-                    numberOfTW++;
-                    break;
-                case 'dw':
-                    numberOfDW++;
-                    break;
-            }
-            point += basePoints;
-        }
-        if (numberOfTW > 0) {
-            point *= numberOfTW * 3;
-        }
-        if (numberOfDW > 0) {
-            point *= numberOfDW * 2;
-        }
-        return point;
     }
 }

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { ICharacter } from '@app/classes/letter';
 import { BINGO_BONUS, PointsCountingService } from './points-counting.service';
 
 // // A placer dans un fichier de constantes
@@ -12,10 +13,10 @@ describe('PointsCountingService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(PointsCountingService);
-        const reserve: { name: string; params: { quantity: number; points: number; display: string } }[] = [
-            { name: 'A', params: { quantity: 9, points: 1, display: 'A' } },
-            { name: 'B', params: { quantity: 2, points: 3, display: 'B' } },
-            { name: 'C', params: { quantity: 2, points: 3, display: 'C' } },
+        const reserve: ICharacter[] = [
+            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
         ];
         service.reserve = reserve;
     });
@@ -71,18 +72,5 @@ describe('PointsCountingService', () => {
         const result = service.applyBingo(wordToCheck, wordBasePoints);
 
         expect(result).toEqual(expectedResult);
-    });
-
-    it(' processWordPoints should call applyBingo if the word points are valid', () => {
-        const wordToCheck = 'ABCABC';
-        const wordBasePoints = 14;
-        const wordCoord = { x: 5, y: 5 };
-        const direction = 'h';
-
-        service.getWordBasePoints = jasmine.createSpy().and.returnValue(wordBasePoints);
-        const applyBingoSpy = spyOn(service, 'applyBingo').and.callThrough();
-        service.processWordPoints(wordToCheck, wordCoord, direction);
-
-        expect(applyBingoSpy).toHaveBeenCalled();
     });
 });
