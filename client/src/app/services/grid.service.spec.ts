@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
-// import { Case } from '@app/classes/case';
 import { CaseStyle } from '@app/classes/case-style';
 import { Vec2 } from '@app/classes/vec2';
 import { SQUARE_NUMBER } from '@app/constants/board-constants';
 import { GridService } from '@app/services/grid.service';
 
-fdescribe('GridService', () => {
+describe('GridService', () => {
     let service: GridService;
     let ctxStub: CanvasRenderingContext2D;
 
