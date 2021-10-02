@@ -121,7 +121,7 @@ describe('GridService', () => {
         const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
         service.changeTileSize(letterStep, pointStep);
 
-        expect(fillGridPortionSpy).toHaveBeenCalledTimes(1);
+        expect(fillGridPortionSpy).toHaveBeenCalled();
     });
 
     it(' increaseTileSize should call changeTileSize if maxValue is not reach  ', () => {

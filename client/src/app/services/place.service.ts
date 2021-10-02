@@ -49,26 +49,21 @@ export class PlaceService {
             } else {
                 this.updateTilesLetters(word, coord, direction);
                 resolve(this.rackService.replaceWord(word));
-                
-                
             }
         });
         return promise;
     }
 
     updateTilesLetters(word: string, coord: Vec2, direction: string): void {
-        console.log('le mot', word);
         for (let i = 0; i < word.length; i++) {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
             const x = computingCoord.x;
             const y = computingCoord.y;
             tiles[x][y].letter = word[i].toLowerCase();
-            console.log('le mot ici', word);
         }
     }
 
     writeWord(word: string, coord: Vec2, direction: string) {
-        console.log('le mot2', word);
         for (let i = 0; i < word.length; i++) {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
             const x = computingCoord.x;
@@ -79,13 +74,7 @@ export class PlaceService {
 
             tiles[x][y].oldText = tiles[x][y].text;
             tiles[x][y].text = word[i];
-            console.log('le mot2 entre', word);
             this.gridService.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
-            console.log('le mot2 fin', word);
         }
     }
-
-    // calculatePlacementPoints(word: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]){
-
-    // }
 }

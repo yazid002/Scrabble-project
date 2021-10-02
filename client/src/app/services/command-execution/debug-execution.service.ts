@@ -5,10 +5,13 @@ import { IChat, SENDER } from '@app/classes/chat';
     providedIn: 'root',
 })
 export class DebugExecutionService {
+    state: boolean = false; // Donne l'état de debug
+
     execute(): IChat {
+        this.state = !this.state;
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Commande debug exécutée avec succès !',
+            body: this.state ? 'affichages de débogage activés' : 'affichages de débogage désactivés',
         };
 
         return result;

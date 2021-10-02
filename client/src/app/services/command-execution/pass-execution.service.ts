@@ -7,7 +7,7 @@ export class PassExecutionService {
     execute(): IChat {
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Commande passer exécutée avec succès !',
+            body: 'Vous avez passé votre tour !',
         };
 
         return result;

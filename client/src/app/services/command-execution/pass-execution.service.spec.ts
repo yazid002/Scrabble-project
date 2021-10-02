@@ -16,7 +16,7 @@ describe('PassExecutionService', () => {
         it(' should return the initial result if no error was threw', () => {
             const result = service.execute();
 
-            expect(result.body).toEqual('Commande passer exécutée avec succès !');
+            expect(result.body).toEqual('Vous avez passé votre tour !');
         });
     });
 });

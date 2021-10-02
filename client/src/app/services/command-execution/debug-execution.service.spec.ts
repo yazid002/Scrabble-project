@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { IChat } from '@app/classes/chat';
 import { DebugExecutionService } from './debug-execution.service';
 
 describe('DebugExecutionService', () => {
@@ -14,10 +15,10 @@ describe('DebugExecutionService', () => {
     });
 
     describe('execute', () => {
-        it(' should return the initial result if no error was threw', () => {
-            const result = service.execute();
+        it(' should return an IChat interface', () => {
+            const result: IChat = service.execute();
 
-            expect(result.body).toEqual('Commande debug exécutée avec succès !');
+            expect(result.body).toBeDefined();
         });
     });
 });

@@ -1,5 +1,12 @@
-mat-card{
-    margin-top:1em;
+mat-card {
+    width: 250px;
+}
+mat-card mat-card {
+    margin-top: 1em;
     justify-content: space-between;
-    
+
+    width: 200px;
+}
+.activePlayer .time {
+    color: red;
 }

@@ -29,12 +29,12 @@ export class CommandExecutionService {
     }
     private findCommand(command: string): () => Promise<IChat> | IChat {
         /**
-         * Interprets the command given in parameter and returns a response from the right execution service
+         * Tente de trouver la bonne commande a exécuter. S'il ne trouve pas la commande, alors la commande * donnée en paramètre n'est pas valide.
          */
 
         /*
-         format command string and 
-         remove accents from letters https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+         Formatter la commande pour avoir un traitement prévisible 
+         Commande trouvés sur:  https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
         */
         command = command
             .replace('!', '')
@@ -47,13 +47,8 @@ export class CommandExecutionService {
             [
                 'placer',
                 {
-                    // TO DO: Fait en considérant que la ligne est en minuscule, si cela n'a pas d'importance (maj ou min),
-                    // remplacer [a-z] par [A-Za-z]
-                    regex: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][^ ]{1,15}$',
-                    shortDescription: '!placer <ligne><colonne>(h|v) <mot>',
-                    wideDescription:
-                        '"!placer &lt;ligne&gt;&lt;colonne&gt;(h|v) &lt;mot&gt;" sans espace à la fin, avec la ligne de a à o,' +
-                        ' la colonne de 1 à 15 et le mot composé de 1 à 15 caractères',
+                    format: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][^ ]{1,15}$',
+                    description: 'Ligne(a-o)Colone(1-15)Sens(h|v) mot',
                     command: async () => {
                         return this.placeExecutionService.execute(parameters);
                     },
@@ -62,11 +57,8 @@ export class CommandExecutionService {
             [
                 'echanger',
                 {
-                    regex: '^echanger[\\s][a-z*]{1,7}$',
-                    shortDescription: '!echanger <arguments>',
-                    wideDescription:
-                        '"!echanger &lt;arguments&gt;" sans majuscule ni espace entre les lettres à échanger ni à la fin.' +
-                        ' Indiquez 1 à 7 lettres à échanger',
+                    format: '^echanger[\\s][a-z*]{1,7}$',
+                    description: 'l<sub>1</sub>l<sub>2</sub>l<sub>3</sub>...l<sub>n</sub>',
                     command: () => {
                         return this.exchangeExecutionService.execute(parameters);
                     },
@@ -75,9 +67,8 @@ export class CommandExecutionService {
             [
                 'passer',
                 {
-                    regex: '^passer$',
-                    shortDescription: '!passer',
-                    wideDescription: '"!passer" sans majuscule ni espace à la fin',
+                    format: '^passer$',
+                    description: '"!passer" sans majuscule ni espace à la fin',
                     command: () => {
                         return this.passExecutionService.execute();
                     },
@@ -86,9 +77,8 @@ export class CommandExecutionService {
             [
                 'debug',
                 {
-                    regex: '^debug$',
-                    shortDescription: '!debug',
-                    wideDescription: '"!debug" sans majuscule ni espace à la fin',
+                    format: '^debug$',
+                    description: '"!debug" sans majuscule ni espace à la fin',
                     command: () => {
                         return this.debugExecutionService.execute();
                     },
@@ -97,9 +87,8 @@ export class CommandExecutionService {
             [
                 'reserve',
                 {
-                    regex: '^reserve$',
-                    shortDescription: '!reserve',
-                    wideDescription: '"!reserve" sans majuscule ni espace à la fin',
+                    format: '^reserve$',
+                    description: '"!reserve" sans majuscule ni espace à la fin',
                     command: () => {
                         return this.reserveExecutionService.execute();
                     },
@@ -118,13 +107,13 @@ export class CommandExecutionService {
     private validateParametersFormat(command: string, format: CommandFormat): () => Promise<IChat> | IChat {
         let regexp: RegExp;
         try {
-            regexp = new RegExp(format.regex);
+            regexp = new RegExp(format.format);
         } catch {
             throw new CommandSyntaxError('Commande Invalide');
         }
         const test = regexp.test(command);
         if (!test) {
-            throw new CommandSyntaxError(`${format.wideDescription}`);
+            throw new CommandSyntaxError(`${format.description}`);
         }
         return format.command;
     }

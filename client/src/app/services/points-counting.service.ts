@@ -73,7 +73,6 @@ export class PointsCountingService {
                     break;
             }
             point += basePoints;
-            console.log('letters base Points: ', point);
         }
         if (numberOfTW > 0) {
             point *= numberOfTW * 3;

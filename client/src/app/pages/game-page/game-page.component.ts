@@ -10,10 +10,14 @@ export class GamePageComponent {
     constructor(public gridService: GridService) {}
 
     increaseSize(): void {
-        this.gridService.increaseTileSize(1, 1, 22);
+        const step = 1;
+        const maxValue = 22;
+        this.gridService.increaseTileSize(step, step, maxValue);
     }
 
     decreaseSize() {
-        this.gridService.decreaseTileSize(-1, -1, 13);
+        const step = -1;
+        const maxValue = 13;
+        this.gridService.decreaseTileSize(step, step, maxValue);
     }
 }

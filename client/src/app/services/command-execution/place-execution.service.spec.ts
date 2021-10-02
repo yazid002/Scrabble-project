@@ -63,7 +63,7 @@ describe('PlaceExecuteService', () => {
             placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
 
             await service.execute(PARAMETERS).then((result) => {
-                expect(result.body).toEqual('Placement de lettres réussi !');
+                expect(result.body).toEqual('Le mot a été placé avec succès !');
             });
         });
 

@@ -1,8 +1,7 @@
 import { IChat } from './chat';
 
 export interface CommandFormat {
-    regex: string;
-    shortDescription: string;
-    wideDescription: string;
+    format: string;
+    description: string;
     command: () => Promise<IChat> | IChat;
 }

@@ -34,17 +34,23 @@ export class ReserveService {
         { name: 'Z', quantity: 1, points: 10, affiche: 'Z' },
         { name: '*', quantity: 2, points: 0, affiche: '*' },
     ];
+    nbLettersInReserve: number;
+    constructor() {
+        this.getQuantityOfAvailableLetters();
+    }
 
     getQuantityOfAvailableLetters() {
-        return this.alphabets.reduce((total, letter) => total + letter.quantity, 0);
+        this.nbLettersInReserve = this.alphabets.reduce((total, letter) => total + letter.quantity, 0);
+        return this.nbLettersInReserve;
     }
 
     getLettersFromReserve(requestedQuantity: number): ICharacter[] {
-        const totalAvailableLetters = this.getQuantityOfAvailableLetters();
+        this.nbLettersInReserve = this.getQuantityOfAvailableLetters();
+
         const filterByQuantity = (letters: ICharacter[]) => letters.filter((letter) => letter.quantity > 0);
         let availableLetters = filterByQuantity(this.alphabets);
         const reserve: ICharacter[] = [];
-        if (totalAvailableLetters < requestedQuantity) {
+        if (this.nbLettersInReserve < requestedQuantity) {
             return reserve;
         }
         let i = 0;
@@ -58,6 +64,7 @@ export class ReserveService {
             }
             i++;
         }
+        this.getQuantityOfAvailableLetters();
         return reserve;
     }
 
