@@ -15,7 +15,7 @@ export class GridService {
 
     gridContext: CanvasRenderingContext2D;
 
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    //private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     constructor(private reserveService: ReserveService) {}
 
@@ -157,17 +157,14 @@ export class GridService {
 
         const pointPolice: number = +this.pointStyle.font.split('px')[0];
 
-        const pointMaxValue: number = maxValue - 12; // ne marche pas
+        const pointMaxValue: number = maxValue - 12;
 
         if (letterPolice < maxValue) {
             this.changeTileSize(letterStep, pointStep);
-
-            console.log('IncreaseLetter', this.letterStyle.font);
         }
 
         if (pointPolice < pointMaxValue) {
             this.changeTileSize(letterStep, pointStep);
-            console.log('IncreaseLetter', this.pointStyle.font);
         }
     }
 
@@ -186,13 +183,15 @@ export class GridService {
 
             console.log('decreasepoint', this.pointStyle.font);
         }
+
+        return false;
     }
 
-    get width(): number {
-        return this.canvasSize.x;
-    }
+    // get width(): number {
+    //     return this.canvasSize.x;
+    // }
 
-    get height(): number {
-        return this.canvasSize.y;
-    }
+    // get height(): number {
+    //     return this.canvasSize.y;
+    // }
 }

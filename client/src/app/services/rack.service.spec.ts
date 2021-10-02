@@ -426,7 +426,7 @@ describe('RackService', () => {
             // const DEFAULT_WIDTH = 245;
             // const DEFAULT_HEIGHT = 35;
             const INDEX = 1;
-            let imageData = service.rackContext.getImageData((DEFAULT_WIDTH / RACK_SIZE) * INDEX, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT).data;
+            let imageData = service.rackContext.getImageData(0, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT).data;
             const beforeSize = imageData.filter((x) => x !== 0).length;
 
             // Car fillRackPortion est privée

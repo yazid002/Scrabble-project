@@ -49,6 +49,8 @@ export class PlaceService {
             } else {
                 this.updateTilesLetters(word, coord, direction);
                 resolve(this.rackService.replaceWord(word));
+                
+                
             }
         });
         return promise;
