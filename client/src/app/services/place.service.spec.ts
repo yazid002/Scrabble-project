@@ -8,6 +8,7 @@ import { GridService } from './grid.service';
 import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
+import { ReserveService } from './reserve.service';
 
 const CANVAS_WIDTH = 500;
 const CANVAS_HEIGHT = 500;
@@ -19,6 +20,7 @@ describe('PlaceService', () => {
     let gridServiceSpy: jasmine.SpyObj<GridService>;
     let ctxStub: CanvasRenderingContext2D;
     let pointsCountingServiceSpy: jasmine.SpyObj<PointsCountingService>;
+    let reserveServiceSpy: jasmine.SpyObj<ReserveService>;
     let wordToCheck: string;
     let coord: Vec2;
     let direction: string;
@@ -58,14 +60,28 @@ describe('PlaceService', () => {
         gridServiceSpy.letterStyle = { color: 'NavajoWhite', font: '15px serif' };
         gridServiceSpy.pointStyle = { color: 'NavajoWhite', font: '10px serif' };
 
-        pointsCountingServiceSpy = jasmine.createSpyObj('PointsCountingService', ['applyBoardBonuses']);
+        pointsCountingServiceSpy = jasmine.createSpyObj('PointsCountingService', ['getWordBasePoints']);
+        reserveServiceSpy = jasmine.createSpyObj('ReserveService', ['getQuantityOfAvailableLetters', 'getLettersFromReserve', 'addLetterInReserve']);
 
+        const alphabets = [
+            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
+            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'F', quantity: 2, points: 4, affiche: 'F' },
+            { name: 'G', quantity: 2, points: 4, affiche: 'G' },
+            { name: 'H', quantity: 2, points: 4, affiche: 'H' },
+        ];
+        reserveServiceSpy.alphabets = alphabets;
+        pointsCountingServiceSpy.reserve = alphabets;
         TestBed.configureTestingModule({
             providers: [
                 { provide: GridService, useValue: gridServiceSpy },
                 { provide: PointsCountingService, useValue: pointsCountingServiceSpy },
                 { provide: RackService, useValue: rackServiceSpy },
                 { provide: VerifyService, useValue: verifyServiceSpy },
+                { provide: ReserveService, useValue: reserveServiceSpy },
             ],
         });
         service = TestBed.inject(PlaceService);

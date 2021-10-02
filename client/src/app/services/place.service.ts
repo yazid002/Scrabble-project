@@ -6,19 +6,22 @@ import { VerifyService } from '@app/services/verify.service';
 import { GridService } from './grid.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
+import { ReserveService } from './reserve.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PlaceService {
-    lettersUsedOnBoard: { letter: string; coord: Vec2 }[];
+    lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+    points: number = 0;
     constructor(
         private rackService: RackService,
         private verifyService: VerifyService,
         private gridService: GridService,
-        public pointsCountingService: PointsCountingService,
+        private pointsCountingService: PointsCountingService,
+        private reserveService: ReserveService,
     ) {
-        this.lettersUsedOnBoard = [];
+        pointsCountingService.reserve = this.reserveService.alphabets;
     }
 
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
@@ -46,6 +49,7 @@ export class PlaceService {
                 reject(new ImpossibleCommand(wordValidationParameters.errorMessage));
             } else {
                 this.updateTilesLetters(word, coord, direction);
+                this.points += this.pointsCountingService.getWordBasePoints(word);
                 resolve(this.rackService.replaceWord(word));
             }
         });

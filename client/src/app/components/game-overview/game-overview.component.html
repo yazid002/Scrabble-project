@@ -8,7 +8,7 @@
 
     <mat-card id="me" [ngClass]="personIsActive ? 'activePlayer' : ''">
         <mat-card-title>{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
-        <mat-card-content>Nombre de points: </mat-card-content>
+        <mat-card-content>Nombre de points: {{ placeService.points }}</mat-card-content>
         <mat-card-content *ngIf="personIsActive">
             Votre tour termine dans:
             <strong class="time"> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
