@@ -3,12 +3,8 @@
 
 import { Injectable } from '@angular/core';
 import { ICharacter } from '@app/classes/letter';
+import { BINGO_BONUS, BINGO_LENGTH, INVALID_NUMBER } from '@app/constants/board-constants';
 import { ReserveService } from './reserve.service';
-
-// A placer dans un fichier de constantes
-export const INVALID_NUMBER = -1;
-export const BINGO_BONUS = 50;
-export const BINGO_LENGTH = 7;
 
 @Injectable({
     providedIn: 'root',

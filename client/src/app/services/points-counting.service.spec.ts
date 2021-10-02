@@ -1,11 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ICharacter } from '@app/classes/letter';
-import { BINGO_BONUS, PointsCountingService } from './points-counting.service';
-
-// // A placer dans un fichier de constantes
-// export const INVALID_NUMBER = -1;
-// export const BINGO_BONUS = 50;
-// export const BINGO_LENGTH = 7;
+import { BINGO_BONUS } from '@app/constants/board-constants';
+import { PointsCountingService } from './points-counting.service';
 
 describe('PointsCountingService', () => {
     let service: PointsCountingService;

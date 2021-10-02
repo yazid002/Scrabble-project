@@ -3,7 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
-import { VerifyService } from '@app/verify.service';
+import { VerifyService } from '@app/services/verify.service';
 import { GridService } from './grid.service';
 import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';

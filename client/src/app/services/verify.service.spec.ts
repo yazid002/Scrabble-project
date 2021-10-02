@@ -1,13 +1,13 @@
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
-import { tiles } from './classes/board';
-import { CommandSyntaxError } from './classes/command-errors/command-syntax-errors/command-syntax-error';
-import { NotEnoughOccurrences } from './classes/command-errors/command-syntax-errors/not-enough-occurrences';
-import { ImpossibleCommand } from './classes/command-errors/impossible-command/impossible-command';
-import { Dictionary } from './classes/dictionary';
-import { Vec2 } from './classes/vec2';
-import { RackService } from './services/rack.service';
-import { VerifyService } from './verify.service';
+import { tiles } from '@app/classes/board';
+import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-errors/command-syntax-error';
+import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
+import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
+import { Dictionary } from '@app/classes/dictionary';
+import { Vec2 } from '@app/classes/vec2';
+import { RackService } from '@app/services/rack.service';
+import { VerifyService } from '@app/services/verify.service';
 
 describe('VerifyService', () => {
     let service: VerifyService;

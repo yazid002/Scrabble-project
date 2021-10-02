@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { Vec2 } from '@app/classes/vec2';
-import { VerifyService } from '@app/verify.service';
+import { VerifyService } from '@app/services/verify.service';
 import { GridService } from './grid.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
@@ -22,9 +22,7 @@ export class PlaceService {
     }
 
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
-        console.log('mot avant ', word);
         word = this.verifyService.normalizeWord(word);
-        console.log('mot apres ', word);
 
         const promise = new Promise<void>((resolve, reject) => {
             this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
