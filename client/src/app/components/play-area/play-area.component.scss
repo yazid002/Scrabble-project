@@ -1,3 +1,13 @@
 #canvas {
     border: 1px solid black;
 }
+
+#rack {
+    position: relative;
+    margin-left: 125px;
+    border: 0.5px solid black;
+}
+
+#buttons {
+    transform: translate(400px, -45px);
+}

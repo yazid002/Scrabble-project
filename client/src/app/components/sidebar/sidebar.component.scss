@@ -5,3 +5,37 @@
     padding: 0 5px 0 5px;
     margin-right: 5px;
 }
+
+.player-box {
+    height: 150px;
+    width: 250px;
+    border: 3px solid black;
+    background-color: burlywood;
+}
+
+.middle {
+    height: 250px;
+}
+
+.player-logo {
+    position: relative;
+    height: 50px;
+    width: 50px;
+    border: 1px solid black;
+}
+
+.name {
+    transform: translate(70px, -40px);
+}
+
+.info {
+    transform: translate(0px, -90px);
+}
+
+.countdown {
+    transform: translate(200px, -100px);
+    height: 25px;
+    width: 50px;
+    border: 1px solid black;
+    background-color: cornsilk;
+}
