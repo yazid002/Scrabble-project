@@ -4,13 +4,9 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { Vec2 } from '@app/classes/vec2';
+import { BINGO_BONUS, BINGO_LENGTH, INVALID_NUMBER } from '@app/constants/board-constants';
 import { VerifyService } from '@app/verify.service';
 import { ReserveService } from './reserve.service';
-
-// A placer dans un fichier de constantes
-export const INVALID_NUMBER = -1;
-export const BINGO_BONUS = 50;
-export const BINGO_LENGTH = 7;
 
 @Injectable({
     providedIn: 'root',

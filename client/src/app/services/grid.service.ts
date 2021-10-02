@@ -15,8 +15,6 @@ export class GridService {
 
     gridContext: CanvasRenderingContext2D;
 
-    //private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-
     constructor(private reserveService: ReserveService) {}
 
     drawGridOutdoor() {
@@ -153,11 +151,12 @@ export class GridService {
     }
 
     increaseTileSize(letterStep: number, pointStep: number, maxValue: number) {
+        const updateMaxValue = 12;
         const letterPolice: number = +this.letterStyle.font.split('px')[0];
 
         const pointPolice: number = +this.pointStyle.font.split('px')[0];
 
-        const pointMaxValue: number = maxValue - 12;
+        const pointMaxValue: number = maxValue - updateMaxValue;
 
         if (letterPolice < maxValue) {
             this.changeTileSize(letterStep, pointStep);
@@ -174,24 +173,12 @@ export class GridService {
 
         if (letterPolice > minValue) {
             this.changeTileSize(letterStep, pointStep);
-
-            console.log('deceaseLetter', this.letterStyle.font);
         }
 
         if (pointPolice > minValue) {
             this.changeTileSize(letterStep, pointStep);
-
-            console.log('decreasepoint', this.pointStyle.font);
         }
 
         return false;
     }
-
-    // get width(): number {
-    //     return this.canvasSize.x;
-    // }
-
-    // get height(): number {
-    //     return this.canvasSize.y;
-    // }
 }

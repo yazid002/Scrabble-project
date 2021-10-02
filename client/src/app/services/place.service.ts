@@ -22,9 +22,7 @@ export class PlaceService {
     }
 
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
-        console.log('mot avant ', word);
         word = this.verifyService.normalizeWord(word);
-        console.log('mot apres ', word);
 
         const promise = new Promise<void>((resolve, reject) => {
             this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
