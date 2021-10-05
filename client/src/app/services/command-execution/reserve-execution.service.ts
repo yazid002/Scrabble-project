@@ -12,7 +12,7 @@ export class ReserveExecutionService {
     execute(): IChat {
         let result: IChat = {
             from: SENDER.computer,
-            body: 'La commande <strong>reserve</strong> est uniquement disponible lorsque le mode débuguage est activé',
+            body: 'La commande <strong>reserve</strong> est uniquement disponible lorsque le mode débogage est activé',
         };
         if (this.debugExecutionService.state) {
             result = this.buildReserveMessage();
@@ -20,7 +20,7 @@ export class ReserveExecutionService {
 
         return result;
     }
-    private buildReserveMessage() {
+    private buildReserveMessage(): IChat {
         const result: IChat = {
             from: SENDER.computer,
             body: '',

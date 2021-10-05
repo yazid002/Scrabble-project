@@ -2,14 +2,12 @@
     <h1 class="header-item">Bienvenue au cours {{ title }}</h1>
     <img src="https://bit.ly/3m206ss" width="400" height="80" alt="Logo Scrabble" />
 
-
     <section class="justified">
         <div>
             <div *ngFor="let mode of userSettingsService.settings.mode.setting.availableChoices">
-                
-                <button mat-raised-button (click)="chooseMode(mode.key)" [disabled]="mode.disabled">{{mode.value}}</button>
+                <button mat-raised-button (click)="chooseMode(mode.key)" [disabled]="mode.disabled">{{ mode.value }}</button>
             </div>
-            <button mat-raised-button [routerLink]="['/leaderboard']" >Meilleurs scores</button>
+            <button mat-raised-button [routerLink]="['/leaderboard']">Meilleurs scores</button>
         </div>
     </section>
 

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { IOption } from '@app/classes/game-options';
+import { PlaceService } from '@app/services/place.service';
+import { RackService } from '@app/services/rack.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
-import { IOption } from '@app/classes/game-options';
-import { RackService } from '@app/services/rack.service';
 
 @Component({
     selector: 'app-game-overview',
@@ -24,6 +25,7 @@ export class GameOverviewComponent implements OnInit {
         public timerService: TimerService,
         public reserveService: ReserveService,
         public rackService: RackService,
+        public placeService: PlaceService,
     ) {}
     ngOnInit(): void {
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(

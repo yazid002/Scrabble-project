@@ -36,7 +36,7 @@ export class ExchangeService {
             throw new InexistentLettersOnRack(`${inexistentLettersOnRack.join(', ')}.`);
         }
         if (incoherentOccurrences.length) {
-            throw new NotEnoughOccurrences(`${incoherentOccurrences.join(', ')}.`);
+            throw new NotEnoughOccurrences(`${incoherentOccurrences.join(', ')} à échanger.`);
         }
     }
 

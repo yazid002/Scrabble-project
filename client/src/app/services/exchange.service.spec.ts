@@ -236,7 +236,7 @@ describe('ExchangeService', () => {
 
         // eslint-disable-next-line dot-notation
         expect(() => service['validateExchangeFeasibility'](lettersToChange)).toThrow(
-            new NotEnoughOccurrences(`${incoherentOccurrences.join(', ')}.`),
+            new NotEnoughOccurrences(`${incoherentOccurrences.join(', ')} à échanger.`),
         );
         expect(findIncoherentOccurrencesMatchSpy).toHaveBeenCalled();
     });

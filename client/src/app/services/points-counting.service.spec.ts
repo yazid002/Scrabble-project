@@ -1,10 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { BINGO_BONUS, INVALID_NUMBER, PointsCountingService } from './points-counting.service';
-
-// // A placer dans un fichier de constantes
-// export const INVALID_NUMBER = -1;
-// export const BINGO_BONUS = 50;
-// export const BINGO_LENGTH = 7;
+import { ICharacter } from '@app/classes/letter';
+import { BINGO_BONUS } from '@app/constants/board-constants';
+import { PointsCountingService } from './points-counting.service';
 
 describe('PointsCountingService', () => {
     let service: PointsCountingService;
@@ -12,10 +9,10 @@ describe('PointsCountingService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(PointsCountingService);
-        const reserve: { name: string; params: { quantity: number; points: number; display: string } }[] = [
-            { name: 'A', params: { quantity: 9, points: 1, display: 'A' } },
-            { name: 'B', params: { quantity: 2, points: 3, display: 'B' } },
-            { name: 'C', params: { quantity: 2, points: 3, display: 'C' } },
+        const reserve: ICharacter[] = [
+            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
         ];
         service.reserve = reserve;
     });
@@ -51,17 +48,6 @@ describe('PointsCountingService', () => {
 
         expect(result).toEqual(expectedResult);
     });
-
-    it(' getWordBasePoints should return the invalid number', () => {
-        const wordToCheck = 'ABC';
-        const expectedResult = INVALID_NUMBER;
-        service.wordIsValid = false;
-
-        const result = service.getWordBasePoints(wordToCheck);
-
-        expect(result).toEqual(expectedResult);
-    });
-
     it(' applyBingo should return the word points with a bonus', () => {
         const wordToCheck = 'ABCABCA';
         const wordBasePoints = 15;
@@ -82,26 +68,5 @@ describe('PointsCountingService', () => {
         const result = service.applyBingo(wordToCheck, wordBasePoints);
 
         expect(result).toEqual(expectedResult);
-    });
-
-    it(' processWordPoints should not call applyBingo if the word points are invalid', () => {
-        const wordToCheck = 'ABCABC';
-
-        service.getWordBasePoints = jasmine.createSpy().and.returnValue(INVALID_NUMBER);
-        const applyBingoSpy = spyOn(service, 'applyBingo').and.callThrough();
-        service.processWordPoints(wordToCheck);
-
-        expect(applyBingoSpy).not.toHaveBeenCalled();
-    });
-
-    it(' processWordPoints should call applyBingo if the word points are valid', () => {
-        const wordToCheck = 'ABCABC';
-        const wordBasePoints = 14;
-
-        service.getWordBasePoints = jasmine.createSpy().and.returnValue(wordBasePoints);
-        const applyBingoSpy = spyOn(service, 'applyBingo').and.callThrough();
-        service.processWordPoints(wordToCheck);
-
-        expect(applyBingoSpy).toHaveBeenCalled();
     });
 });

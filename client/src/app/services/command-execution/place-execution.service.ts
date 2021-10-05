@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Vec2 } from '@app/classes/vec2';
 import { GridService } from '@app/services/grid.service';
+import { PlaceService } from '@app/services/place.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PlaceExecutionService {
-    constructor(public grid: GridService) {}
+    constructor(public grid: GridService, private placeService: PlaceService) {}
 
     async execute(parameters: string[]): Promise<IChat> {
         const POSITION_INDEX = 1;
@@ -15,7 +16,7 @@ export class PlaceExecutionService {
 
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Placer le mot avec succès',
+            body: 'Le mot a été placé avec succès !',
         };
 
         const position: string = parameters[POSITION_INDEX];
@@ -23,7 +24,7 @@ export class PlaceExecutionService {
 
         const extractedParameters = this.extractParameters(position);
 
-        const errorBody = (await this.grid.placeWord(word, extractedParameters.coord, extractedParameters.direction).catch((error: Error) => {
+        const errorBody = (await this.placeService.placeWord(word, extractedParameters.coord, extractedParameters.direction).catch((error: Error) => {
             return error.message;
         })) as string;
 

@@ -2,15 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { Vec2 } from '@app/classes/vec2';
 import { PlaceExecutionService } from '@app/services/command-execution/place-execution.service';
-import { GridService } from '@app/services/grid.service';
+import { PlaceService } from '@app/services/place.service';
 
 describe('PlaceExecuteService', () => {
     let service: PlaceExecutionService;
-    let gridServiceSpy: jasmine.SpyObj<GridService>;
+    let placeServiceSpy: jasmine.SpyObj<PlaceService>;
 
     beforeEach(() => {
-        gridServiceSpy = jasmine.createSpyObj('GridService', ['placeWord']);
-        TestBed.configureTestingModule({ providers: [{ provide: GridService, useValue: gridServiceSpy }] });
+        placeServiceSpy = jasmine.createSpyObj('PlaceService', ['placeWord']);
+        TestBed.configureTestingModule({ providers: [{ provide: PlaceService, useValue: placeServiceSpy }] });
         service = TestBed.inject(PlaceExecutionService);
     });
 
@@ -40,37 +40,37 @@ describe('PlaceExecuteService', () => {
             // Car extractParameters est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const extractParametersSpy = spyOn<any>(service, 'extractParameters').and.callThrough();
-            gridServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
+            placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
 
             service.execute(PARAMETERS);
 
             expect(extractParametersSpy).toHaveBeenCalled();
         });
 
-        it(' should call gridServiceSpy.placeWord', () => {
+        it(' should call placeServiceSpy.placeWord', () => {
             const PARAMETERS = ['placer', 'g15v', 'dos'];
 
-            gridServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
+            placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
 
             service.execute(PARAMETERS);
 
-            expect(gridServiceSpy.placeWord).toHaveBeenCalled();
+            expect(placeServiceSpy.placeWord).toHaveBeenCalled();
         });
 
         it(' should return the initial result if no error was thrown', async () => {
             const PARAMETERS = ['placer', 'g15v', 'dos'];
 
-            gridServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
+            placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
 
             await service.execute(PARAMETERS).then((result) => {
-                expect(result.body).toEqual('Placer le mot avec succès');
+                expect(result.body).toEqual('Le mot a été placé avec succès !');
             });
         });
 
-        it(' should catch and return an error thrown by gridServiceSpy', async () => {
+        it(' should catch and return an error thrown by placeServiceSpy', async () => {
             const PARAMETERS = ['placer', 'g15v', 'd'];
 
-            gridServiceSpy.placeWord.and.returnValue(Promise.reject(new CommandError('Une erreur de test.')));
+            placeServiceSpy.placeWord.and.returnValue(Promise.reject(new CommandError('Une erreur de test.')));
 
             const result = await service.execute(PARAMETERS).then((error) => {
                 return error;
@@ -82,7 +82,7 @@ describe('PlaceExecuteService', () => {
         it(' should propagate the error if it is not a commandError', async () => {
             const PARAMETERS = ['placer', 'g15v', 'd'];
 
-            gridServiceSpy.placeWord.and.throwError(new Error('Une erreur de test.'));
+            placeServiceSpy.placeWord.and.throwError(new Error('Une erreur de test.'));
 
             try {
                 await service.execute(PARAMETERS);

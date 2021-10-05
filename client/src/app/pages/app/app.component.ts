@@ -6,7 +6,4 @@ import { Component } from '@angular/core';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-    /// constructor(private reserveService: ReserveService, private verifyService: VerifyService) {}
-}
+export class AppComponent {}

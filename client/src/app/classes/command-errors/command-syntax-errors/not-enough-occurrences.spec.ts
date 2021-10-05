@@ -13,7 +13,7 @@ describe('InvalidInput', () => {
     });
 
     it('should contain the right message', () => {
-        const expectedResult = "Erreur de syntaxe : Il n'y a pas assez d'occurrences à échanger sur le chevalet pour les lettres: erreur de test";
+        const expectedResult = "Erreur de syntaxe : Il n'y a pas assez d'occurrences sur le chevalet pour les lettres: erreur de test";
         expect(notEnoughOccurrences.message).toBe(expectedResult);
     });
 });
