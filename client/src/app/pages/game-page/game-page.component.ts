@@ -1,6 +1,7 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
+import { ExchangeService } from '@app/services/exchange.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { PlaceSelectionService } from '@app/services/place-selection.service';
@@ -22,6 +23,7 @@ export class GamePageComponent {
         private gameService: GameService,
         private virtualPlayerService: VirtualPlayerService,
         private placeSelectionService: PlaceSelectionService, //  private readonly rackService: RackService,
+        public exchangeService: ExchangeService,
     ) {
         console.log(this.gameService);
         console.log(this.virtualPlayerService);
@@ -82,5 +84,20 @@ export class GamePageComponent {
         const step = -1;
         const maxValue = 13;
         this.gridService.decreaseTileSize(step, step, maxValue);
+    }
+
+    onSubmitExchange() {
+        this.command = this.exchangeService.buildExchangeCommand(this.gameService.players[0].rack);
+        this.chatboxComponent.inputBox = this.command;
+        this.chatboxComponent.fromSelection = true;
+        this.chatboxComponent.onSubmit();
+    }
+
+    disableExchange() {
+        return this.exchangeService.selectedIndexes.length === 0;
+    }
+
+    onCancelExchange() {
+        this.exchangeService.cancelExchange();
     }
 }

@@ -13,7 +13,6 @@ export class PlayAreaComponent implements AfterViewInit {
     @ViewChild('gridCanvas', { static: false }) gridCanvas!: ElementRef<HTMLCanvasElement>;
     @ViewChild('rackCanvas', { static: false }) rackCanvas!: ElementRef<HTMLCanvasElement>;
 
-    exchangeResponse: string = 'NOTHING YET';
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     constructor(
@@ -34,10 +33,8 @@ export class PlayAreaComponent implements AfterViewInit {
     }
 
     // onRackRightClick(event: MouseEvent) {
-    //     console.log(event);
     //     event.preventDefault();
     //     if (event.button === MouseButton.Right) {
-    //         console.log('le bouton est droit');
     //         event.preventDefault();
     //         this.exchangeService.onMouseRightClick(event, this.rackService.rackLetters);
     //     }
