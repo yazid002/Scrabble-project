@@ -64,6 +64,14 @@ export class ExchangeService {
         }
     }
 
+    cancelExchange() {
+        const normalColor = 'NavajoWhite';
+        for (const index of this.selectedIndexes) {
+            this.rackService.fillRackPortion(index, normalColor);
+        }
+        this.selectedIndexes = [];
+    }
+
     buildExchangeCommand(rack: ICharacter[]): string {
         console.log(rack);
         const lettersToExchange = this.getSelectedLetters(rack);

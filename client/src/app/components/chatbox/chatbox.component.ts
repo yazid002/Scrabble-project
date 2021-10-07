@@ -13,11 +13,11 @@ const MIN_MESSAGE_LENGTH = 1;
     styleUrls: ['./chatbox.component.scss'],
 })
 export class ChatboxComponent implements OnInit {
+    fromSelection: boolean = false;
     inputBox: string = '';
     error: boolean;
     errorMessage: string = '';
     messages: IChat[] = [];
-    fromSelection: boolean = false;
     readonly possibleSenders = SENDER;
 
     constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService, private gameService: GameService) {}
@@ -26,7 +26,12 @@ export class ChatboxComponent implements OnInit {
         this.getMessages();
         document.getElementsByTagName('input')[0].focus();
     }
+
+    // getInput(): string {
+    //     return this.selectionInput !== '' ? this.selectionInput : this.inputBox;
+    // }
     validateFormat() {
+        // const input = this.getInput();
         this.error = false;
         if (this.inputBox.length > MAX_MESSAGE_LENGTH || this.inputBox.length < MIN_MESSAGE_LENGTH) {
             this.error = true;

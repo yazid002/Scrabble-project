@@ -1,6 +1,7 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
+import { ExchangeService } from '@app/services/exchange.service';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
@@ -31,7 +32,8 @@ export class GamePageComponent {
         private virtualPlayerService: VirtualPlayerService,
         public roomService: RoomService,
         private gameSyncService: GameSyncService,
-        private placeSelectionService: PlaceSelectionService,
+        private placeSelectionService: PlaceSelectionService, //  private readonly rackService: RackService,
+        public exchangeService: ExchangeService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
@@ -104,5 +106,19 @@ export class GamePageComponent {
             temp += 'joint la salle ';
         }
         this.roomName = temp + this.roomName;
+    }
+    onSubmitExchange() {
+        this.command = this.exchangeService.buildExchangeCommand(this.gameService.players[0].rack);
+        this.chatboxComponent.inputBox = this.command;
+        this.chatboxComponent.fromSelection = true;
+        this.chatboxComponent.onSubmit();
+    }
+
+    disableExchange() {
+        return this.exchangeService.selectedIndexes.length === 0;
+    }
+
+    onCancelExchange() {
+        this.exchangeService.cancelExchange();
     }
 }

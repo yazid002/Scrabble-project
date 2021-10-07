@@ -4,6 +4,10 @@
         <app-play-area class="play-area" tabindex="0"></app-play-area>
         <button id="increaseSize" (click)="increaseSize()">+</button>
         <button id="decreaseSize" (click)="decreaseSize()">-</button>
+        <div *ngIf="!disableExchange()">
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmitExchange()">Echanger</button>
+            <button mat-raised-button color="primary" type="submit" (click)="onCancelExchange()">Annuler</button>
+        </div>
     </section>
     <app-chatbox></app-chatbox>
     <!-- TODO enlever le input et les bouton une fois que le loby est intégré et créé les salles pour nous -->
