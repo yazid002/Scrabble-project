@@ -60,7 +60,7 @@ export class CommandExecutionService {
                     format: '^echanger[\\s][a-z*]{1,7}$',
                     description: 'l<sub>1</sub>l<sub>2</sub>l<sub>3</sub>...l<sub>n</sub>',
                     command: () => {
-                        return this.exchangeExecutionService.execute(parameters);
+                        return this.exchangeExecutionService.execute(parameters, isCalledThoughtChat);
                     },
                 },
             ],
