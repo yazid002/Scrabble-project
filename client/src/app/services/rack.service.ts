@@ -12,13 +12,13 @@ export class RackService {
 
     displayRack() {
         for (let x = 0; x < RACK_SIZE; x++) {
-            this.fillRackPortion(x);
+            this.fillRackPortion(x, 'NavajoWhite');
         }
     }
 
-    replaceLetter(letterToReplace: string, onRackOnly: boolean): void {
+    replaceLetter(letterToReplace: string, onRackOnly: boolean, index?: number): void {
         const notFound = -1;
-        const indexOnRack = this.findLetterPosition(letterToReplace);
+        const indexOnRack = index ? index : this.findLetterPosition(letterToReplace);
         if (indexOnRack !== notFound) {
             const newCharacters = this.reserveService.getLettersFromReserve(1);
             if (newCharacters.length !== 0) {

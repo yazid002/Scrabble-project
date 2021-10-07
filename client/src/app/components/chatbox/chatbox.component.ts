@@ -59,7 +59,6 @@ export class ChatboxComponent implements OnInit {
         if (this.inputBox.startsWith('!')) {
             let response: IChat = { from: '', body: '' };
             try {
-                console.log('chat');
                 response = await this.commandExecutionService.executeCommand(this.inputBox, !this.fromSelection);
             } catch (error) {
                 if (error instanceof CommandError) {

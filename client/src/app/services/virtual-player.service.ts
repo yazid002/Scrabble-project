@@ -83,7 +83,7 @@ export class VirtualPlayerService {
     private exchange() {
         const numberToChange = Math.floor(Math.random() * RACK_SIZE + 1);
         const lettersToChange = this.selectRandomLetterFromRack(numberToChange);
-        this.exchangeService.exchangeLetters(lettersToChange);
+        this.exchangeService.exchangeLetters(lettersToChange, true);
     }
     private place() {
         console.log('virtual player place');

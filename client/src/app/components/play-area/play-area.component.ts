@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/play-area-constants';
+import { ExchangeService } from '@app/services/exchange.service';
 import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
 
@@ -12,9 +13,14 @@ export class PlayAreaComponent implements AfterViewInit {
     @ViewChild('gridCanvas', { static: false }) gridCanvas!: ElementRef<HTMLCanvasElement>;
     @ViewChild('rackCanvas', { static: false }) rackCanvas!: ElementRef<HTMLCanvasElement>;
 
+    exchangeResponse: string = 'NOTHING YET';
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    constructor(private readonly gridService: GridService, private readonly rackService: RackService) {}
+    constructor(
+        private readonly gridService: GridService,
+        private readonly rackService: RackService,
+        public exchangeService: ExchangeService, //   private commandExecutionService: CommandExecutionService,
+    ) {}
 
     ngAfterViewInit(): void {
         this.gridService.gridContext = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -26,6 +32,29 @@ export class PlayAreaComponent implements AfterViewInit {
 
         this.rackCanvas.nativeElement.focus();
     }
+
+    // onRackRightClick(event: MouseEvent) {
+    //     console.log(event);
+    //     event.preventDefault();
+    //     if (event.button === MouseButton.Right) {
+    //         console.log('le bouton est droit');
+    //         event.preventDefault();
+    //         this.exchangeService.onMouseRightClick(event, this.rackService.rackLetters);
+    //     }
+    // }
+
+    // async onSubmitExchange() {
+    //     const command = this.exchangeService.buildExchangeCommand(this.rackService.rackLetters);
+    //     this.exchangeResponse = 'success';
+
+    //     try {
+    //         this.exchangeResponse = (await this.commandExecutionService.executeCommand(command, false)).body;
+    //     } catch (error) {
+    //         if (error instanceof CommandError) {
+    //             this.exchangeResponse = error.message;
+    //         }
+    //     }
+    // }
 
     get width(): number {
         return this.canvasSize.x;
