@@ -5,6 +5,7 @@ import { ExchangeService } from '@app/services/exchange.service';
 import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
+
 @Component({
     selector: 'app-play-area',
     templateUrl: './play-area.component.html',
