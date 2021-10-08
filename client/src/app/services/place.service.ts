@@ -5,8 +5,10 @@ import { Vec2 } from '@app/classes/vec2';
 import { VerifyService } from '@app/services/verify.service';
 import { GridService } from './grid.service';
 import { PointsCountingService } from './points-counting.service';
+import { RackSelectionService } from './rack-selection.service';
 import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
+import { TileSelectionService } from './tile-selection.service';
 
 @Injectable({
     providedIn: 'root',
@@ -20,6 +22,8 @@ export class PlaceService {
         private gridService: GridService,
         private pointsCountingService: PointsCountingService,
         private reserveService: ReserveService,
+        public rackSelectionService: RackSelectionService,
+        public tileSelectionService: TileSelectionService,
     ) {
         pointsCountingService.reserve = this.reserveService.alphabets;
     }
@@ -68,15 +72,7 @@ export class PlaceService {
     writeWord(word: string, coord: Vec2, direction: string) {
         for (let i = 0; i < word.length; i++) {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
-            const x = computingCoord.x;
-            const y = computingCoord.y;
-
-            tiles[x][y].oldStyle = tiles[x][y].style;
-            tiles[x][y].style = this.gridService.letterStyle;
-
-            tiles[x][y].oldText = tiles[x][y].text;
-            tiles[x][y].text = word[i];
-            this.gridService.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
+            this.gridService.writeLetter(word[i], computingCoord);
         }
     }
 }

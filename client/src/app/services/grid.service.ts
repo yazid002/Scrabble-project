@@ -195,4 +195,13 @@ export class GridService {
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsHeighAdjustment,
         );
     }
+
+    writeLetter(letter: string, coord: Vec2): void {
+        tiles[coord.x][coord.y].oldStyle = tiles[coord.x][coord.y].style;
+        tiles[coord.x][coord.y].style = this.letterStyle;
+
+        tiles[coord.x][coord.y].oldText = tiles[coord.x][coord.y].text;
+        tiles[coord.x][coord.y].text = letter;
+        this.fillGridPortion({ x: coord.x, y: coord.y }, tiles[coord.x][coord.y].text, tiles[coord.x][coord.y].style);
+    }
 }
