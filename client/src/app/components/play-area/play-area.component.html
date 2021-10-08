@@ -1,6 +1,6 @@
 <div id="grid-container">
     <p>Scrabble!</p>
-    <canvas id="canvas" #gridCanvas [attr.width]="width" [attr.height]="height"></canvas>
+    <canvas id="canvas" #gridCanvas [attr.width]="width" [attr.height]="height" (click)="onGridClick($event)"></canvas>
     <canvas id="rack" #rackCanvas [attr.width]="245" [attr.height]="35"></canvas>
     <div>
         <hr />

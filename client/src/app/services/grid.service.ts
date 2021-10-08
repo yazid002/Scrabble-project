@@ -181,4 +181,18 @@ export class GridService {
 
         return false;
     }
+
+    drawArrow(direction: boolean, coord: Vec2) {
+        const lettersPixelsWidthAdjustment = 2;
+        const lettersPixelsHeighAdjustment = 22;
+        const arrow = direction === true ? '--->' : '|';
+
+        const fillStyle = 'violet';
+        this.changeGridStyle(fillStyle, '10px serif');
+        this.gridContext.strokeText(
+            arrow,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + lettersPixelsWidthAdjustment,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsHeighAdjustment,
+        );
+    }
 }

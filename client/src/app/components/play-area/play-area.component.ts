@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/play-area-constants';
 import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
+import { TileSelectionService } from '@app/services/tile-selection.service';
 
 @Component({
     selector: 'app-play-area',
@@ -14,7 +15,11 @@ export class PlayAreaComponent implements AfterViewInit {
 
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    constructor(private readonly gridService: GridService, private readonly rackService: RackService) {}
+    constructor(
+        private readonly gridService: GridService,
+        private readonly rackService: RackService,
+        private tileSelectionService: TileSelectionService,
+    ) {}
 
     ngAfterViewInit(): void {
         this.gridService.gridContext = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -25,6 +30,12 @@ export class PlayAreaComponent implements AfterViewInit {
         this.rackService.fillRack();
 
         this.rackCanvas.nativeElement.focus();
+    }
+
+    onGridClick(event: MouseEvent) {
+        event.preventDefault();
+
+        this.tileSelectionService.onTileClick(event);
     }
 
     get width(): number {
