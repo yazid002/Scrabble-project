@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ICharacter } from '@app/classes/letter';
+import { SQUARE_WIDTH } from '@app/constants/board-constants';
 import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
+import { GridService } from './grid.service';
 import { RackService } from './rack.service';
+import { TileSelectionService } from './tile-selection.service';
 
 @Injectable({
     providedIn: 'root',
@@ -11,7 +14,7 @@ export class RackSelectionService {
     selectedIndexesForExchange: number[] = [];
     selectedIndexesForPlacement: number[] = [];
     selectedIndexesForManipulation: number[] = [];
-    constructor(private rackService: RackService) {}
+    constructor(private rackService: RackService, private gridService: GridService, private tileSelectionService: TileSelectionService) {}
 
     getClickIndex(event: MouseEvent, rack: ICharacter[]): number {
         console.log('{ x, y} :', event.offsetX, event.offsetY);
@@ -70,6 +73,22 @@ export class RackSelectionService {
             if (!alreadySelectedForOthers) {
                 this.selectedIndexesForPlacement.push(index);
                 this.rackService.fillRackPortion(index, selectionColor);
+                this.gridService.writeLetter(event.key, {
+                    x: this.tileSelectionService.selectedCoord.y,
+                    y: this.tileSelectionService.selectedCoord.x,
+                });
+                console.log('selectedCoord :', this.tileSelectionService.selectedCoord);
+                console.log(' this.tileSelectionService.direction :', this.tileSelectionService.direction);
+                const nextCoord = this.tileSelectionService.direction
+                    ? { x: this.tileSelectionService.selectedCoord.x + 1, y: this.tileSelectionService.selectedCoord.y }
+                    : { x: this.tileSelectionService.selectedCoord.x, y: this.tileSelectionService.selectedCoord.y + 1 };
+
+                console.log('nextCoord :', nextCoord);
+                this.tileSelectionService.onTileClick({
+                    button: 0,
+                    offsetX: nextCoord.x * SQUARE_WIDTH,
+                    offsetY: nextCoord.y * SQUARE_WIDTH,
+                } as MouseEvent);
             }
         }
     }
