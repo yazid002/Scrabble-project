@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { GridService } from '@app/services/grid.service';
+import { RackSelectionService } from '@app/services/rack-selection.service';
+import { RackService } from '@app/services/rack.service';
 
 @Component({
     selector: 'app-game-page',
@@ -7,7 +9,13 @@ import { GridService } from '@app/services/grid.service';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
-    constructor(public gridService: GridService) {}
+    constructor(public gridService: GridService, public rackSelectionService: RackSelectionService, public rackService: RackService) {}
+
+    // @HostListener('window:keyup', ['$event'])
+    // keyEvent(event: KeyboardEvent) {
+    //     event.preventDefault();
+    //     this.rackSelectionService.onKeyBoardClick(event, this.rackService.rackLetters);
+    // }
 
     increaseSize(): void {
         const step = 1;

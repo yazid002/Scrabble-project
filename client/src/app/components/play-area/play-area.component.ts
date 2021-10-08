@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/play-area-constants';
 import { GridService } from '@app/services/grid.service';
+import { RackSelectionService } from '@app/services/rack-selection.service';
 import { RackService } from '@app/services/rack.service';
 import { TileSelectionService } from '@app/services/tile-selection.service';
 
@@ -19,7 +20,15 @@ export class PlayAreaComponent implements AfterViewInit {
         private readonly gridService: GridService,
         private readonly rackService: RackService,
         private tileSelectionService: TileSelectionService,
+        public rackSelectionService: RackSelectionService,
     ) {}
+
+    @HostListener('keyup', ['$event'])
+    onKeyBoardClick(event: KeyboardEvent) {
+        console.log(event);
+        event.preventDefault();
+        this.rackSelectionService.onKeyBoardClick(event, this.rackService.rackLetters);
+    }
 
     ngAfterViewInit(): void {
         this.gridService.gridContext = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;

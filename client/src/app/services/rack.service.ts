@@ -25,21 +25,24 @@ export class RackService {
         this.rackLetters = this.reserveService.getLettersFromReserve(RACK_SIZE);
 
         for (let x = 0; x < RACK_SIZE; x++) {
-            this.fillRackPortion(x);
+            this.fillRackPortion(x, 'NavajoWhite');
         }
     }
 
-    replaceLetter(letterToReplace: string, onRackOnly: boolean): void {
+    replaceLetter(letterToReplace: string, onRackOnly: boolean, index?: number): void {
         const notFound = -1;
-        const indexOnRack = this.findLetterPosition(letterToReplace);
+        const indexOnRack = index ? index : this.findLetterPosition(letterToReplace);
         if (indexOnRack !== notFound) {
             const newCharacters = this.reserveService.getLettersFromReserve(1);
+            console.log('last character ', this.rackLetters[indexOnRack]);
+            console.log('newCharacters ', newCharacters);
             if (newCharacters.length !== 0) {
                 if (!onRackOnly) {
                     this.reserveService.addLetterInReserve(this.rackLetters[indexOnRack].name);
                 }
+                console.log('indexOnRack ', indexOnRack);
                 this.rackLetters[indexOnRack] = newCharacters[0];
-                this.fillRackPortion(indexOnRack);
+                this.fillRackPortion(indexOnRack, 'NavajoWhite');
             }
         }
     }
@@ -76,11 +79,7 @@ export class RackService {
         return this.findLetterPosition(letterToCheck) !== notFound;
     }
 
-    private findLetterPosition(letterToCheck: string): number {
-        return this.rackLetters.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
-    }
-
-    private fillRackPortion(index: number) {
+    fillRackPortion(index: number, color: string) {
         const LETTERS_PIXELS_WIDTH_ADJUSTMENT = 6;
         const LETTERS_PIXELS_HEIGH_ADJUSTMENT = 8;
         const POINTS_PIXELS_WIDTH_ADJUSTMENT = 25;
@@ -89,7 +88,7 @@ export class RackService {
         this.rackContext.clearRect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.rect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.stroke();
-        this.rackContext.fillStyle = 'NavajoWhite';
+        this.rackContext.fillStyle = color;
         this.rackContext.fillRect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.fillStyle = 'rgb(0,0,0)';
         this.rackContext.font = '30px serif';
@@ -107,6 +106,10 @@ export class RackService {
                 DEFAULT_HEIGHT - POINTS_PIXELS_HEIGH_ADJUSTMENT,
             );
         }
+    }
+
+    findLetterPosition(letterToCheck: string): number {
+        return this.rackLetters.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
     }
 
     // TODO: ENLEVER SI ON EN A PAS BESOIN
