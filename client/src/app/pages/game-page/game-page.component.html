@@ -4,6 +4,10 @@
         <app-play-area class="play-area" tabindex="0"></app-play-area>
         <button id="increaseSize" (click)="increaseSize()">+</button>
         <button id="decreaseSize" (click)="decreaseSize()">-</button>
+        <div *ngIf="!disablePlacement()">
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement()">Placer</button>
+            <button mat-raised-button color="primary" type="submit" (click)="onCancelPlacement()">Annuler</button>
+        </div>
     </section>
     <app-chatbox></app-chatbox>
 </div>

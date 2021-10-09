@@ -54,6 +54,7 @@ export class PlaceService {
             } else {
                 this.updateTilesLetters(word, coord, direction);
                 this.points += this.pointsCountingService.getWordBasePoints(word);
+                this.tileSelectionService.selectedIndexesForPlacement = [];
                 resolve(this.rackService.replaceWord(word));
             }
         });

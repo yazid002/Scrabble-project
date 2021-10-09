@@ -12,6 +12,7 @@ const MIN_MESSAGE_LENGTH = 1;
     styleUrls: ['./chatbox.component.scss'],
 })
 export class ChatboxComponent implements OnInit {
+    fromSelection: boolean = false;
     inputBox: string = '';
     error: boolean;
     errorMessage: string = '';
@@ -24,7 +25,12 @@ export class ChatboxComponent implements OnInit {
         this.getMessages();
         document.getElementsByTagName('input')[0].focus();
     }
+
+    // getInput(): string {
+    //     return this.selectionInput !== '' ? this.selectionInput : this.inputBox;
+    // }
     validateFormat() {
+        // const input = this.getInput();
         this.error = false;
         if (this.inputBox.length > MAX_MESSAGE_LENGTH || this.inputBox.length < MIN_MESSAGE_LENGTH) {
             this.error = true;
@@ -65,6 +71,7 @@ export class ChatboxComponent implements OnInit {
         }
 
         this.inputBox = '';
+        this.fromSelection = false;
         this.scrollDown();
     }
     private scrollDown() {

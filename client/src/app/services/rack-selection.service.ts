@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { tiles } from '@app/classes/board';
 import { ICharacter } from '@app/classes/letter';
 import { SQUARE_WIDTH } from '@app/constants/board-constants';
 import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
@@ -28,9 +29,9 @@ export class RackSelectionService {
         return notFound;
     }
 
-    getSelectedLetters(rack: ICharacter[]): string[] {
+    getSelectedLetters(rack: ICharacter[], selectedIndexes: number[]): string[] {
         const selectedLetters = [];
-        for (const index of this.selectedIndexes) {
+        for (const index of selectedIndexes) {
             selectedLetters.push(rack[index].name.toLocaleLowerCase());
         }
         console.log(selectedLetters);
@@ -105,5 +106,47 @@ export class RackSelectionService {
             }
         }
         return notFound;
+    }
+
+    // onPlacementCancel() {
+    //     this.tileSelectionService.cancelPlacement();
+    // }
+
+    buildPlacementCommand(rack: ICharacter[]): string {
+        console.log(rack);
+        const lettersToPlace = this.getSelectedLetters(rack, this.selectedIndexesForPlacement);
+        return `!placer ${String.fromCharCode(this.tileSelectionService.selectedIndexesForPlacement[0].y + 'A'.charCodeAt(0)).toLowerCase()}${
+            this.tileSelectionService.selectedIndexesForPlacement[0].x + 1
+        }${this.tileSelectionService.direction ? 'h' : 'v'} ${lettersToPlace.join('')}`;
+    }
+
+    cancelPlacement() {
+        const normalColor = 'NavajoWhite';
+        //  this.tileSelectionService.selectedIndexesForPlacement.pop();
+        console.log('length 1: ', this.tileSelectionService.selectedIndexesForPlacement.length);
+        console.log('length 2: ', this.selectedIndexesForPlacement.length);
+        if (this.tileSelectionService.selectedIndexesForPlacement.length > this.selectedIndexesForPlacement.length) {
+            const length = this.tileSelectionService.selectedIndexesForPlacement.length;
+            const coord = this.tileSelectionService.selectedIndexesForPlacement[length - 1];
+            tiles[coord.y][coord.x].style.color = tiles[coord.y][coord.x].oldStyle.color;
+            tiles[coord.y][coord.x].text = tiles[coord.y][coord.x].oldText;
+            this.gridService.fillGridPortion({ x: coord.y, y: coord.x }, tiles[coord.y][coord.x].text, tiles[coord.y][coord.x].style);
+            this.tileSelectionService.selectedIndexesForPlacement.pop();
+            console.log(this.tileSelectionService.selectedIndexesForPlacement.length);
+        }
+        console.log('length 1: ', this.tileSelectionService.selectedIndexesForPlacement.length);
+        console.log('length 2: ', this.selectedIndexesForPlacement.length);
+        if (this.tileSelectionService.selectedIndexesForPlacement.length > 0) {
+            const length = this.tileSelectionService.selectedIndexesForPlacement.length;
+            const coord = this.tileSelectionService.selectedIndexesForPlacement[length - 1];
+            tiles[coord.y][coord.x].style.color = tiles[coord.y][coord.x].oldStyle.color;
+            tiles[coord.y][coord.x].text = tiles[coord.y][coord.x].oldText;
+            this.gridService.fillGridPortion({ x: coord.y, y: coord.x }, tiles[coord.y][coord.x].text, tiles[coord.y][coord.x].style);
+            this.rackService.fillRackPortion(this.selectedIndexesForPlacement[length - 1], normalColor);
+            this.tileSelectionService.selectedIndexesForPlacement.pop();
+            this.selectedIndexesForPlacement.pop();
+        }
+        console.log('length 1: ', this.tileSelectionService.selectedIndexesForPlacement.length);
+        console.log('length 2: ', this.selectedIndexesForPlacement.length);
     }
 }

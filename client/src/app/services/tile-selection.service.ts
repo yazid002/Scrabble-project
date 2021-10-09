@@ -10,6 +10,8 @@ import { GridService } from '@app/services/grid.service';
 export class TileSelectionService {
     selectedCoord: Vec2 = { x: -1, y: -1 };
     direction: boolean = true;
+    selectedIndexesForPlacement: Vec2[] = [];
+
     constructor(private gridService: GridService) {}
 
     getClickIndex(event: MouseEvent): Vec2 {
@@ -35,6 +37,7 @@ export class TileSelectionService {
         const coord = this.getClickIndex(event);
         if (this.selectedCoord.x === notFound && this.selectedCoord.y === notFound) {
             this.selectedCoord = coord;
+            this.selectedIndexesForPlacement.push(this.selectedCoord);
             tiles[this.selectedCoord.y][this.selectedCoord.x].oldStyle.color = tiles[this.selectedCoord.y][this.selectedCoord.x].style.color;
             tiles[this.selectedCoord.y][this.selectedCoord.x].style.color = 'red';
         } else if (coord.x !== this.selectedCoord.x || coord.y !== this.selectedCoord.y) {
@@ -48,9 +51,12 @@ export class TileSelectionService {
             this.gridService.gridContext.strokeRect(coord.y * SQUARE_WIDTH, coord.x * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
 
             this.selectedCoord = coord;
+            this.selectedIndexesForPlacement.push(this.selectedCoord);
             tiles[this.selectedCoord.y][this.selectedCoord.x].oldStyle.color = tiles[this.selectedCoord.y][this.selectedCoord.x].style.color;
             tiles[this.selectedCoord.y][this.selectedCoord.x].style.color = 'red';
         } else {
+            tiles[this.selectedCoord.y][this.selectedCoord.x].oldStyle.color = tiles[this.selectedCoord.y][this.selectedCoord.x].style.color;
+            tiles[this.selectedCoord.y][this.selectedCoord.x].style.color = 'red';
             this.direction = !this.direction;
         }
 
@@ -67,5 +73,16 @@ export class TileSelectionService {
             SQUARE_WIDTH,
         );
         this.gridService.drawArrow(this.direction, { x: this.selectedCoord.y, y: this.selectedCoord.x });
+    }
+
+    cancelPlacement() {
+        for (const coord of this.selectedIndexesForPlacement) {
+            tiles[coord.y][coord.x].style.color = tiles[coord.y][coord.x].oldStyle.color;
+            //  tiles[coord.y][coord.x].text = tiles[coord.y][coord.x].oldText;
+
+            this.gridService.fillGridPortion({ x: coord.y, y: coord.x }, tiles[coord.y][coord.x].oldText, tiles[coord.y][coord.x].style);
+            this.gridService.gridContext.strokeRect(coord.y * SQUARE_WIDTH, coord.x * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
+        }
+        this.selectedIndexesForPlacement = [];
     }
 }

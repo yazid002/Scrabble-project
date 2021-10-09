@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { GridService } from '@app/services/grid.service';
 import { RackSelectionService } from '@app/services/rack-selection.service';
 import { RackService } from '@app/services/rack.service';
@@ -9,13 +10,37 @@ import { RackService } from '@app/services/rack.service';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
-    constructor(public gridService: GridService, public rackSelectionService: RackSelectionService, public rackService: RackService) {}
+    @ViewChild(ChatboxComponent) chatboxComponent: ChatboxComponent;
+
+    command: string = '';
+
+    constructor(
+        public gridService: GridService,
+        public rackSelectionService: RackSelectionService,
+        public rackService: RackService, //  private tileSelectionService: TileSelectionService,
+    ) {}
 
     // @HostListener('window:keyup', ['$event'])
     // keyEvent(event: KeyboardEvent) {
     //     event.preventDefault();
     //     this.rackSelectionService.onKeyBoardClick(event, this.rackService.rackLetters);
     // }
+
+    onSubmitPlacement() {
+        this.command = this.rackSelectionService.buildPlacementCommand(this.rackService.rackLetters);
+        console.log(this.command);
+        this.chatboxComponent.inputBox = this.command;
+        this.chatboxComponent.fromSelection = true;
+        this.chatboxComponent.onSubmit();
+    }
+
+    disablePlacement() {
+        return this.rackSelectionService.selectedIndexesForPlacement.length === 0;
+    }
+
+    onCancelPlacement() {
+        this.rackSelectionService.cancelPlacement();
+    }
 
     increaseSize(): void {
         const step = 1;
