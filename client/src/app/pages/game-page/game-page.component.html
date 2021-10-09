@@ -13,6 +13,10 @@
             <button mat-raised-button color="primary" type="submit" (click)="onSubmitRightManipulation()">Vers la droite</button> -->
             <button mat-raised-button color="primary" type="submit" (click)="onCancelManipulation(selectionType.Rack)">Annuler</button>
         </div>
+        <div *ngIf="!disablePlacement()">
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement()">Placer</button>
+            <button mat-raised-button color="primary" type="submit" (click)="onCancelPlacement()">Annuler</button>
+        </div>
     </section>
     <app-chatbox></app-chatbox>
     <!-- TODO enlever le input et les bouton une fois que le loby est intégré et créé les salles pour nous -->

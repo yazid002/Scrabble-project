@@ -136,6 +136,14 @@ export class GamePageComponent {
         return this.exchangeService.selectedIndexes.length === 0 || this.reserveService.getQuantityOfAvailableLetters() < ExchangeLimits.Max;
     }
 
+    disablePlacement() {
+        return this.placeSelectionService.selectedRackIndexesForPlacement.length === 0;
+    }
+
+    onCancelPlacement() {
+        return this.placeSelectionService.cancelPlacement();
+    }
+
     onCancelExchange(selectionType: SelectionType) {
         this.selectionManager.getSelectionType(selectionType);
         this.receptor = this.playAreaComponent.rackCanvas.nativeElement;
