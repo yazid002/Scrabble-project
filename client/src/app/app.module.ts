@@ -14,6 +14,7 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { ChatboxComponent } from './components/chatbox/chatbox.component';
 import { GameModeDialogComponent } from './components/game-mode-dialog/game-mode-dialog.component';
 import { GameOverviewComponent } from './components/game-overview/game-overview.component';
+import { LobbyComponent } from './lobby/lobby.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
 
 /**
@@ -34,6 +35,7 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         LeaderboardPageComponent,
         ChatboxComponent,
         GameOverviewComponent,
+        LobbyComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],

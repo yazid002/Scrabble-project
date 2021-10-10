@@ -12,7 +12,7 @@ const NUM_PLAYERS: IOptionList = {
     settingName: 'Nombre de joueurs',
     availableChoices: [
         { key: 'solo', value: 'Solo' },
-        { key: 'multiplayer', value: 'Multijoueurs', disabled: true },
+        { key: 'multiplayer', value: 'Multijoueurs' },
     ],
 };
 
@@ -22,7 +22,7 @@ const COMPUTER_LEVEL: IOptionList = {
 };
 const COMPUTER_NAMES: string[] = ['Ordi Illetré', 'Dictionnaire en Personne', 'Word Master'];
 const TIMER: IOptionList = {
-    settingName: 'Temps maximmal par tour',
+    settingName: 'Temps maximal par tour',
     availableChoices: [
         { key: '60', value: '1m' },
         { key: '90', value: '1m30s' },
