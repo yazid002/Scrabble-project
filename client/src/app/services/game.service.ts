@@ -15,6 +15,7 @@ export class GameService {
     players: Player[] = [];
     currentTurn: number;
     timerDone: Subscription;
+    turnDone: Subscription;
     constructor(private userSettingsService: UserSettingsService, private reserveService: ReserveService, private timerService: TimerService) {
         this.initializePlayers();
         this.randomTurn();
@@ -22,7 +23,10 @@ export class GameService {
             this.changeTurn();
         });
     }
-
+    
+    changeTurn() {
+        this.currentTurn = (this.currentTurn + 1) % 2;
+    }
     private initializePlayers() {
         const realPlayer: Player = {
             id: REAL_PLAYER,
@@ -40,9 +44,7 @@ export class GameService {
         this.players.push(computer);
     }
     private randomTurn() {
-        this.currentTurn = Math.floor(Math.random());
+        this.currentTurn = Math.floor(2 * Math.random());
     }
-    private changeTurn() {
-        this.currentTurn = (this.currentTurn + 1) % 2;
-    }
+
 }

@@ -7,12 +7,13 @@ import { ICharacter } from '@app/classes/letter';
 import { ExchangeLimits } from '@app/enums/exchange-enums';
 import { RackService } from '@app/services/rack.service';
 import { GameService } from './game.service';
+import { TimerService } from './timer.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ExchangeService {
-    constructor(private rackService: RackService, private gameService: GameService) {}
+    constructor(private rackService: RackService, private gameService: GameService, private timerService: TimerService) {}
 
     exchangeLetters(lettersToChange: string[]): void {
         this.validateExchangeFeasibility(lettersToChange);
@@ -20,6 +21,8 @@ export class ExchangeService {
         for (const letter of lettersToChange) {
             this.rackService.replaceLetter(letter, false);
         }
+        this.gameService.changeTurn();
+        this.timerService.resetTimer();
     }
 
     private validateExchangeFeasibility(lettersToChange: string[]): void {

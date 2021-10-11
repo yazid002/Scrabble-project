@@ -3,10 +3,12 @@ import { tiles } from '@app/classes/board';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { Vec2 } from '@app/classes/vec2';
 import { VerifyService } from '@app/services/verify.service';
+import { GameService } from './game.service';
 import { GridService } from './grid.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
+import { TimerService } from './timer.service';
 
 @Injectable({
     providedIn: 'root',
@@ -20,6 +22,8 @@ export class PlaceService {
         private gridService: GridService,
         private pointsCountingService: PointsCountingService,
         private reserveService: ReserveService,
+        private gameService: GameService,
+        private timerService: TimerService,
     ) {
         pointsCountingService.reserve = this.reserveService.alphabets;
     }
@@ -51,6 +55,9 @@ export class PlaceService {
                 this.updateTilesLetters(word, coord, direction);
                 this.points += this.pointsCountingService.getWordBasePoints(word);
                 resolve(this.rackService.replaceWord(word));
+
+                this.gameService.changeTurn();
+                this.timerService.resetTimer();
             }
         });
         return promise;

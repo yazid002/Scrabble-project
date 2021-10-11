@@ -30,6 +30,9 @@ export class TimerService {
             this.decrementTime();
         }, timerIntervalMS);
     }
+    resetTimer() {
+        this.counter.totalTimer = this.counter.resetValue;
+    }
     private getTimerSettings() {
         const timer = Number(this.userSettingsService.settings.timer.currentChoiceKey);
 
