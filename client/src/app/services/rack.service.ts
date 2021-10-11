@@ -12,7 +12,7 @@ export class RackService {
 
     
 
-    constructor(private reserveService: ReserveService, private gameService: GameService) {
+    constructor(private reserveService: ReserveService, public gameService: GameService) {
         console.log(this.gameService);
 
     }

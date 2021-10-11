@@ -47,7 +47,7 @@ describe('PlaceService', () => {
             'findInexistentLettersOnRack',
             'replaceWord',
         ]);
-        rackServiceSpy.rackLetters = [
+        rackServiceSpy.gameService.players[0].rack = [
             { name: 'A', quantity: 9, points: 1, affiche: 'A' },
             { name: 'B', quantity: 2, points: 3, affiche: 'B' },
             { name: 'C', quantity: 2, points: 3, affiche: 'C' },

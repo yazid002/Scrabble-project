@@ -2,12 +2,16 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
+import { GameService, REAL_PLAYER } from '@app/services/game.service';
 import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
+import { Player } from '@app/classes/player';
+
 
 describe('RackService', () => {
     let service: RackService;
     let reserveServiceSpy: jasmine.SpyObj<ReserveService>;
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
     let ctxStub: CanvasRenderingContext2D;
 
     const CANVAS_WIDTH = 500;
@@ -15,6 +19,21 @@ describe('RackService', () => {
 
     beforeEach(() => {
         reserveServiceSpy = jasmine.createSpyObj('ReserveService', ['getQuantityOfAvailableLetters', 'getLettersFromReserve', 'addLetterInReserve']);
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers']);
+        gameServiceSpy.currentTurn = REAL_PLAYER;
+        const player: Player = {
+            id: REAL_PLAYER,
+            name: 'Random name',
+            rack: [
+                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+                { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+                { name: 'C', quantity: 2, points: 3, affiche: 'C' },
+                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+                { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            ],
+            points: 0,
+        };
+        gameServiceSpy.players = [player];
         reserveServiceSpy.alphabets = [
             { name: 'A', quantity: 9, points: 1, affiche: 'A' },
             { name: 'B', quantity: 2, points: 3, affiche: 'B' },
@@ -27,13 +46,7 @@ describe('RackService', () => {
         ];
         TestBed.configureTestingModule({ providers: [{ provide: ReserveService, useValue: reserveServiceSpy }] });
         service = TestBed.inject(RackService);
-        service.rackLetters = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-        ];
+        
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         service.rackContext = ctxStub;
     });
@@ -126,7 +139,7 @@ describe('RackService', () => {
 
     describe('findJokersNumberOnRack', () => {
         it('should return the number of jokers on Rack', () => {
-            service.rackLetters = [
+            service.gameService.players[REAL_PLAYER].rack = [
                 { name: 'A', quantity: 9, points: 1, affiche: 'A' },
                 { name: '*', quantity: 0, points: 0, affiche: '*' },
                 { name: '*', quantity: 0, points: 0, affiche: '*' },
@@ -141,7 +154,7 @@ describe('RackService', () => {
         });
 
         it('should return 0 if there is no joker on Rack', () => {
-            service.rackLetters = [
+            service.gameService.players[REAL_PLAYER].rack = [
                 { name: 'A', quantity: 9, points: 1, affiche: 'A' },
                 { name: 'D', quantity: 3, points: 2, affiche: 'D' },
                 { name: 'E', quantity: 15, points: 1, affiche: 'E' },
@@ -226,7 +239,7 @@ describe('RackService', () => {
 
         it('should also replace *', () => {
             const wordToReplace = '*';
-            service.rackLetters = [
+            service.gameService.players[REAL_PLAYER].rack = [
                 { name: 'A', quantity: 9, points: 1, affiche: 'A' },
                 { name: '*', quantity: 0, points: 0, affiche: '*' },
                 { name: '*', quantity: 0, points: 0, affiche: '*' },
@@ -237,12 +250,12 @@ describe('RackService', () => {
             // Car replaceLetter est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'replaceLetter').and.callFake(() => {
-                service.rackLetters[1] = { name: 'D', quantity: 3, points: 2, affiche: 'D' };
+                service.gameService.players[REAL_PLAYER].rack[1] = { name: 'D', quantity: 3, points: 2, affiche: 'D' };
             });
 
             service.replaceWord(wordToReplace);
 
-            expect(service.rackLetters[1].name).not.toEqual(wordToReplace);
+            expect(service.gameService.players[REAL_PLAYER].rack[1].name).not.toEqual(wordToReplace);
         });
     });
 
@@ -309,7 +322,7 @@ describe('RackService', () => {
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](LETTER_TO_REPLACE, true);
 
-            expect(service.rackLetters[INDEX_OF_LETTER_TO_REPLACE_ON_RACK]).toEqual(REPLACEMENT_LETTER);
+            expect(service.gameService.players[REAL_PLAYER].rack[INDEX_OF_LETTER_TO_REPLACE_ON_RACK]).toEqual(REPLACEMENT_LETTER);
         });
 
         it('should call findLetterPosition if the rackLetters is not null', () => {
@@ -437,31 +450,5 @@ describe('RackService', () => {
             const afterSize = imageData.filter((x) => x !== 0).length;
             expect(afterSize).toBeGreaterThan(beforeSize);
         });
-    });
-
-    it(' fillRack should call fillRackPortion as many times as RACK_SIZE', () => {
-        const A_LETTER_IN_RESERVE = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
-
-        // Car fillRackPortion est privée
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();
-        reserveServiceSpy.getLettersFromReserve.and.returnValue([A_LETTER_IN_RESERVE]);
-
-        // Car fillRackPortion est privée
-        // eslint-disable-next-line dot-notation
-        service['fillRack']();
-
-        expect(fillRackPortionSpy).toHaveBeenCalledTimes(RACK_SIZE);
-    });
-
-    it(' fillRack should call reserveServiceSpy.getLettersFromReserve once', () => {
-        const A_LETTER_IN_RESERVE = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
-        reserveServiceSpy.getLettersFromReserve.and.returnValue([A_LETTER_IN_RESERVE]);
-
-        // Car fillRackPortion est privée
-        // eslint-disable-next-line dot-notation
-        service['fillRack']();
-
-        expect(reserveServiceSpy.getLettersFromReserve).toHaveBeenCalledTimes(1);
     });
 });
