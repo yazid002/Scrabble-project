@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Output } from '@angular/core';
 import { UserSettingsService } from './user-settings.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class TimerService {
+    @Output() timerDone = new BehaviorSubject<boolean>(true);
     counter: {
         min: number;
         seconds: number;
@@ -23,7 +25,7 @@ export class TimerService {
     }
     startTimer() {
         this.getTimerSettings();
-        const timerIntervalMS = 1000;
+        const timerIntervalMS = 200;
         setInterval(() => {
             this.decrementTime();
         }, timerIntervalMS);
@@ -42,5 +44,8 @@ export class TimerService {
 
         this.counter.seconds = (this.counter.resetValue - secondsPassed) % MAX_SECONDS;
         this.counter.min = Math.max(0, Math.floor(totalMinutes - minutesPassed));
+        if (this.counter.totalTimer === 0) {
+            this.timerDone.next(true);
+        }
     }
 }
