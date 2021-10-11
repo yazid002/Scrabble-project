@@ -6,12 +6,13 @@ import { ImpossibleCommand } from '@app/classes/command-errors/impossible-comman
 import { ICharacter } from '@app/classes/letter';
 import { ExchangeLimits } from '@app/enums/exchange-enums';
 import { RackService } from '@app/services/rack.service';
+import { GameService } from './game.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ExchangeService {
-    constructor(private rackService: RackService) {}
+    constructor(private rackService: RackService, private gameService: GameService) {}
 
     exchangeLetters(lettersToChange: string[]): void {
         this.validateExchangeFeasibility(lettersToChange);
@@ -41,7 +42,7 @@ export class ExchangeService {
     }
 
     private validateLetterOccurrencesMatch(letter: string, letters: string[]): boolean {
-        const rackLetters = this.rackService.rackLetters as ICharacter[];
+        const rackLetters = this.gameService.players[this.gameService.currentTurn].rack as ICharacter[];
         const rackLettersToStrings: string[] = rackLetters.map((rackLetter) => rackLetter.name);
         return this.rackService.countLetterOccurrences(letter, letters) <= this.rackService.countLetterOccurrences(letter, rackLettersToStrings);
     }
