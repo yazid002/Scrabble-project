@@ -6,7 +6,7 @@ import { TimerService } from '../timer.service';
     providedIn: 'root',
 })
 export class PassExecutionService {
-    constructor(private gameService: GameService, private timerService: TimerService){}
+    constructor(private gameService: GameService, private timerService: TimerService) {}
     execute(): IChat {
         const result: IChat = {
             from: SENDER.computer,
