@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { LobbyComponent } from '@app/lobby/lobby.component';
 import { UserSettingsService } from '@app/services/user-settings.service';
 @Component({
     selector: 'app-game-mode-dialog',
@@ -18,13 +17,22 @@ export class GameModeDialogComponent {
         this.error = result.error;
         this.errorMessage = result.errorMessage;
     }
-
-    openLobby(modeKey: string) {
-        this.userSettingsService.settings.numPlayers.currentChoiceKey = modeKey;
-        this.openDialog();
+    numPlayerChoice() {
+        const numPlayers = this.userSettingsService.settings.numPlayers.setting.availableChoices.find(
+            (key) => key.key === this.userSettingsService.settings.numPlayers.currentChoiceKey,
+        );
+        if (numPlayers?.key === 'multiplayer') {
+            return true;
+        } else if (numPlayers?.key === 'solo') {
+            return false;
+        } else return undefined;
     }
+    // openLobby(modeKey: string) {
+    //     this.userSettingsService.settings.numPlayers.currentChoiceKey = modeKey;
+    //     this.openDialog();
+    // }
 
-    private openDialog() {
-        this.matDialog.open(LobbyComponent);
-    }
+    // private openDialog() {
+    //     this.matDialog.open(LobbyComponent);
+    // }
 }

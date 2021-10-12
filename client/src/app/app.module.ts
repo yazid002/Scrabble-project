@@ -16,6 +16,7 @@ import { GameModeDialogComponent } from './components/game-mode-dialog/game-mode
 import { GameOverviewComponent } from './components/game-overview/game-overview.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
+import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -36,6 +37,7 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         ChatboxComponent,
         GameOverviewComponent,
         LobbyComponent,
+        SwitchDialogComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],
