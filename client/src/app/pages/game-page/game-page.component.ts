@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
+import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
     selector: 'app-game-page',
@@ -8,8 +9,9 @@ import { GridService } from '@app/services/grid.service';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
-    constructor(public gridService: GridService, private gameService: GameService) {
+    constructor(public gridService: GridService, private gameService: GameService, private virtualPlayerService: VirtualPlayerService) {
         console.log(this.gameService);
+        console.log(this.virtualPlayerService);
     }
 
     increaseSize(): void {

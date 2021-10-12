@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Output } from '@angular/core';
 import { Player } from '@app/classes/player';
 import { RACK_SIZE } from '@app/constants/rack-constants';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
 
 export const REAL_PLAYER = 0;
-export const COMPUTER = 0;
+export const COMPUTER = 1;
 @Injectable({
     providedIn: 'root',
 })
 export class GameService {
+    @Output() virtualPlaySignal = new BehaviorSubject<boolean>(true);
     players: Player[] = [];
     currentTurn: number;
     timerDone: Subscription;
@@ -23,9 +24,13 @@ export class GameService {
             this.changeTurn();
         });
     }
-    
+
     changeTurn() {
         this.currentTurn = (this.currentTurn + 1) % 2;
+        if (this.currentTurn === COMPUTER) {
+            console.log("signal emited");
+            this.virtualPlaySignal.next(true);
+        }
     }
     private initializePlayers() {
         const realPlayer: Player = {
@@ -46,5 +51,4 @@ export class GameService {
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
     }
-
 }
