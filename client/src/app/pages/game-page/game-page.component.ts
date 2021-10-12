@@ -93,6 +93,22 @@ export class GamePageComponent {
         }
     }
 
+    @HostListener('window:wheel', ['$event'])
+    onMouseWheel(event: WheelEvent) {
+        console.log('mouseWheel : ', event.deltaY, event.bubbles);
+        let keyEvent: KeyboardEvent;
+        if (event.deltaY > 0) {
+            keyEvent = {
+                key: 'ArrowRight',
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+        } else {
+            keyEvent = { key: 'ArrowLeft', preventDefault: () => void '' } as KeyboardEvent;
+        }
+
+        this.onKeyBoardClick(keyEvent);
+    }
+
     onSubmitPlacement() {
         // this.command = this.rackSelectionService.buildPlacementCommand(this.rackService.rackLetters);
         this.command = this.placeSelectionService.command;
