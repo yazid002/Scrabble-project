@@ -62,18 +62,51 @@ export class RackLettersManipulationService {
 
     onKeyBoardClick(event: KeyboardEvent, rack: ICharacter[]) {
         const selectionColor = 'violet';
-        const index = this.getIndexFromKey(event, rack);
-        const included = this.selectedIndexes.includes(index);
 
-        console.log(this.selectedIndexes);
-        console.log(included);
+        console.log('code ', event.code);
+        console.log('key ', event.key);
 
-        if (!included && index !== -1) {
-            this.cancelManipulation();
-            this.selectedIndexes[0] = index;
-            this.rackService.fillRackPortion(index, selectionColor);
+        if (event.key === 'ArrowRight') {
+            this.deplaceToTheRight(rack);
+        } else if (event.key === 'ArrowLeft') {
+            this.deplaceToTheLeft(rack);
+        } else {
+            const index = this.getIndexFromKey(event, rack);
+            const included = this.selectedIndexes.includes(index);
+
             console.log(this.selectedIndexes);
+            console.log(included);
+            if (!included && index !== -1) {
+                this.cancelManipulation();
+                this.selectedIndexes[0] = index;
+                this.rackService.fillRackPortion(index, selectionColor);
+                console.log(this.selectedIndexes);
+            }
         }
+
+        // switch (event.key) {
+        //     case 'ArrowRight':
+        //         this.deplaceToTheRight(rack);
+        //         break;
+
+        //     case 'ArrowLeft':
+        //         this.deplaceToTheRight(rack);
+        //         break;
+
+        //     default:
+        //         const index = this.getIndexFromKey(event, rack);
+        //         const included = this.selectedIndexes.includes(index);
+
+        //         console.log(this.selectedIndexes);
+        //         console.log(included);
+        //         if (!included && index !== -1) {
+        //             this.cancelManipulation();
+        //             this.selectedIndexes[0] = index;
+        //             this.rackService.fillRackPortion(index, selectionColor);
+        //             console.log(this.selectedIndexes);
+        //         }
+        //         break;
+        // }
     }
 
     cancelManipulation() {
@@ -104,5 +137,33 @@ export class RackLettersManipulationService {
         }
         console.log(selectedLetters);
         return selectedLetters;
+    }
+
+    deplaceToTheRight(rack: ICharacter[]) {
+        let toIndex = this.selectedIndexes[0] + 1;
+        if (this.selectedIndexes[0] === rack.length - 1) {
+            toIndex = 0;
+        }
+
+        const temp = rack[this.selectedIndexes[0]];
+        rack[this.selectedIndexes[0]] = rack[toIndex];
+        rack[toIndex] = temp;
+        this.cancelManipulation();
+        const click = { offsetX: toIndex * (DEFAULT_WIDTH / RACK_SIZE) + 1 } as MouseEvent;
+        this.onMouseLeftClick(click, rack);
+    }
+
+    deplaceToTheLeft(rack: ICharacter[]) {
+        let toIndex = this.selectedIndexes[0] - 1;
+        if (this.selectedIndexes[0] === 0) {
+            toIndex = rack.length - 1;
+        }
+
+        const temp = rack[this.selectedIndexes[0]];
+        rack[this.selectedIndexes[0]] = rack[toIndex];
+        rack[toIndex] = temp;
+        this.cancelManipulation();
+        const click = { offsetX: toIndex * (DEFAULT_WIDTH / RACK_SIZE) + 1 } as MouseEvent;
+        this.onMouseLeftClick(click, rack);
     }
 }

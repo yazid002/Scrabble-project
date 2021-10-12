@@ -62,7 +62,7 @@ export class GamePageComponent {
             }
             // this.receptor = {} as HTMLElement;
         } else if (this.receptor === this.playAreaComponent.rackCanvas.nativeElement) {
-            if (this.rackService.isLetterOnRack(event.key)) {
+            if (this.rackService.isLetterOnRack(event.key) || event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
                 this.rackLettersManipulationService.onKeyBoardClick(event, this.gameService.players[0].rack);
             } else {
                 this.rackLettersManipulationService.cancelManipulation();
