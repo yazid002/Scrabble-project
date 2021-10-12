@@ -1,11 +1,13 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
+import { ExchangeLimits } from '@app/enums/exchange-enums';
 import { ExchangeService } from '@app/services/exchange.service';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { PlaceSelectionService } from '@app/services/place-selection.service';
+import { ReserveService } from '@app/services/reserve.service';
 import { Room, RoomService } from '@app/services/room.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
@@ -34,6 +36,7 @@ export class GamePageComponent {
         private gameSyncService: GameSyncService,
         private placeSelectionService: PlaceSelectionService, //  private readonly rackService: RackService,
         public exchangeService: ExchangeService,
+        public reserveService: ReserveService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
@@ -72,6 +75,18 @@ export class GamePageComponent {
             console.log('je suis la');
             this.placeSelectionService.cancelPlacement();
             this.receptor = {} as HTMLElement;
+        }
+    }
+
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent) {
+        event.preventDefault();
+        console.log('{ x, y} :', event.offsetX, event.offsetY, event.target);
+        console.log('this.playArea.nativeElement : ', this.playAreaComponent.rackCanvas.nativeElement);
+        if (event.target !== this.playAreaComponent.rackCanvas.nativeElement) {
+            this.exchangeService.cancelExchange();
+        } else {
+            this.exchangeService.onMouseRightClick(event, this.gameService.players[0].rack);
         }
     }
 
@@ -115,7 +130,7 @@ export class GamePageComponent {
     }
 
     disableExchange() {
-        return this.exchangeService.selectedIndexes.length === 0;
+        return this.exchangeService.selectedIndexes.length === 0 || this.reserveService.getQuantityOfAvailableLetters() < ExchangeLimits.Max;
     }
 
     onCancelExchange() {
