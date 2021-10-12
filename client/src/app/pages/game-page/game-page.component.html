@@ -8,6 +8,12 @@
             <button mat-raised-button color="primary" type="submit" (click)="onSubmitExchange()">Echanger</button>
             <button mat-raised-button color="primary" type="submit" (click)="onCancelExchange()">Annuler</button>
         </div>
+        <div *ngIf="!disableManipulation()">
+            <!-- <button mat-raised-button color="primary" type="submit" (click)="onSubmitLeftManipulation()">Vers la gauche</button>
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmitRightManipulation()">Vers la droite</button> -->
+            <button mat-raised-button color="primary" type="submit" (click)="onCancelManipulation()">Annuler</button>
+        </div>
     </section>
-    <app-chatbox></app-chatbox>
+
+    <app-chatbox #chatbox></app-chatbox>
 </div>
