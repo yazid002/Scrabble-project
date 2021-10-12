@@ -81,6 +81,15 @@ describe('ChatboxComponent', () => {
         expect(commandExecutionServiceSpy.interpretCommand).toHaveBeenCalledTimes(executedTimes);
     });
 
+    it('validateFormat should return error message if not your turn', () => {
+        gameServiceSpy.currentTurn = 1;
+        component.inputBox = '!resersve';
+        component.validateFormat();
+        const expectedResult = 'Attendez votre tour';
+        expect(component.errorMessage).toContain(expectedResult);
+        expect(component.error).toBeTrue();
+    });
+
     // On teste le contraire du if
     it('validateFormat should not call commandExecutionServiceSpy.interpretCommand if the body does not start with !', () => {
         component.inputBox = 'resersve';
