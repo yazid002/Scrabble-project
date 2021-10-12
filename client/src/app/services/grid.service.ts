@@ -3,7 +3,7 @@ import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
 import { ICharacter as ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
-import { DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
+import { bonuses, DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { ReserveService } from '@app/services/reserve.service';
 
 @Injectable({
@@ -141,11 +141,13 @@ export class GridService {
 
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                if (tiles[x][y].letter !== '') {
+                if (!bonuses.includes(tiles[x][y].text) && tiles[x][y].text !== '') {
                     tiles[x][y].style.font = this.letterStyle.font;
                     this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
+
+                console.log(tiles);
             }
         }
     }
@@ -183,25 +185,38 @@ export class GridService {
     }
 
     drawArrow(direction: boolean, coord: Vec2) {
-        const lettersPixelsWidthAdjustment = 2;
-        const lettersPixelsHeighAdjustment = 22;
-        const arrow = direction === true ? '--->' : '|';
+        const img = document.getElementById('img') as HTMLImageElement;
+        const img2 = document.getElementById('img2') as HTMLImageElement;
+
+        // const lettersPixelsWidthAdjustment = 2;
+        // const lettersPixelsHeighAdjustment = 22;
+        const arrow = direction === true ? img : img2;
 
         const fillStyle = 'violet';
         this.changeGridStyle(fillStyle, '10px serif');
-        this.gridContext.strokeText(
-            arrow,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + lettersPixelsWidthAdjustment,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsHeighAdjustment,
-        );
+        // this.gridContext.strokeText(
+        //     arrow,
+        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + lettersPixelsWidthAdjustment,
+        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsHeighAdjustment,
+        // );
+
+        this.gridContext.drawImage(arrow, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x, 13.33, 13.33);
     }
 
-    writeLetter(letter: string, coord: Vec2): void {
-        tiles[coord.x][coord.y].oldStyle = tiles[coord.x][coord.y].style;
-        tiles[coord.x][coord.y].style = this.letterStyle;
+    writeLetter(letter: string, coord: Vec2, ifCalledthoughChat: boolean): void {
+        if (ifCalledthoughChat) {
+            tiles[coord.x][coord.y].oldStyle.color = tiles[coord.x][coord.y].style.color;
+        }
 
         tiles[coord.x][coord.y].oldText = tiles[coord.x][coord.y].text;
+
+        console.log('letterStyle1 :', this.letterStyle);
+        tiles[coord.x][coord.y].style.font = this.letterStyle.font;
+        tiles[coord.x][coord.y].style.color = this.letterStyle.color;
+        console.log('letterStyle2 :', tiles[coord.x][coord.y].style);
+
         tiles[coord.x][coord.y].text = letter;
         this.fillGridPortion({ x: coord.x, y: coord.y }, tiles[coord.x][coord.y].text, tiles[coord.x][coord.y].style);
+        console.log('testvalid', tiles);
     }
 }

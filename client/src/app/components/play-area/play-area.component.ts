@@ -27,7 +27,7 @@ export class PlayAreaComponent implements AfterViewInit {
     onKeyBoardClick(event: KeyboardEvent) {
         console.log(event);
         event.preventDefault();
-        this.rackSelectionService.onKeyBoardClick(event, this.rackService.rackLetters);
+        this.rackSelectionService.onKeyBoardClick(event, this.rackService.rackLetters, false);
     }
 
     ngAfterViewInit(): void {
@@ -44,7 +44,7 @@ export class PlayAreaComponent implements AfterViewInit {
     onGridClick(event: MouseEvent) {
         event.preventDefault();
 
-        this.tileSelectionService.onTileClick(event);
+        this.tileSelectionService.onTileClick(event, true, this.rackSelectionService.selectedIndexesForPlacement);
     }
 
     get width(): number {

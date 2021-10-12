@@ -28,12 +28,14 @@ export class PlaceService {
         pointsCountingService.reserve = this.reserveService.alphabets;
     }
 
-    async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
+    async placeWord(word: string, coord: Vec2, direction: string, isCalledThoughtChat: boolean): Promise<void> {
         word = this.verifyService.normalizeWord(word);
 
         const promise = new Promise<void>((resolve, reject) => {
             this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
-            this.writeWord(word, coord, direction);
+            if (isCalledThoughtChat) {
+                this.writeWord(word, coord, direction, isCalledThoughtChat);
+            }
 
             const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
             if (!wordValidationParameters.wordExists) {
@@ -42,12 +44,18 @@ export class PlaceService {
                     const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
                     const x = computingCoord.x;
                     const y = computingCoord.y;
+                    console.log('quand je place: ', tiles[x][y]);
 
                     tiles[x][y].text = tiles[x][y].oldText;
-                    tiles[x][y].style = tiles[x][y].oldStyle;
+                    tiles[x][y].style.color = tiles[x][y].oldStyle.color;
+                    tiles[x][y].style.font = tiles[x][y].oldStyle.font;
                     setTimeout(() => {
                         this.gridService.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
                     }, placementDuration);
+
+                    if (!isCalledThoughtChat) {
+                        this.rackSelectionService.cancelPlacement();
+                    }
                 }
 
                 reject(new ImpossibleCommand(wordValidationParameters.errorMessage));
@@ -55,7 +63,14 @@ export class PlaceService {
                 this.updateTilesLetters(word, coord, direction);
                 this.points += this.pointsCountingService.getWordBasePoints(word);
                 this.tileSelectionService.selectedIndexesForPlacement = [];
+                this.rackSelectionService.selectedIndexesForPlacement = [];
+                this.rackSelectionService.wordToVerify = [];
                 resolve(this.rackService.replaceWord(word));
+                console.log('this.rackSelectionService.selectedIndexesForPlacement : ', this.rackSelectionService.selectedIndexesForPlacement);
+                console.log(
+                    'this.rackSelectionService.tileSelectionService.selectedIndexesForPlacement : ',
+                    this.rackSelectionService.tileSelectionService.selectedIndexesForPlacement,
+                );
             }
         });
         return promise;
@@ -70,10 +85,10 @@ export class PlaceService {
         }
     }
 
-    writeWord(word: string, coord: Vec2, direction: string) {
+    writeWord(word: string, coord: Vec2, direction: string, isCalledThoughtChat: boolean) {
         for (let i = 0; i < word.length; i++) {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
-            this.gridService.writeLetter(word[i], computingCoord);
+            this.gridService.writeLetter(word[i], computingCoord, isCalledThoughtChat);
         }
     }
 }
