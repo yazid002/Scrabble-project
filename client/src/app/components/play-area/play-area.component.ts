@@ -33,25 +33,13 @@ export class PlayAreaComponent implements AfterViewInit {
     }
 
     // onRackRightClick(event: MouseEvent) {
+    //     console.log('{ x, y} :', event.offsetX, event.offsetY, event.target);
+    //     console.log(event.target === this.rackCanvas.nativeElement);
+
     //     event.preventDefault();
-    //     if (event.button === MouseButton.Right) {
-    //         event.preventDefault();
-    //         this.exchangeService.onMouseRightClick(event, this.rackService.rackLetters);
-    //     }
-    // }
 
-    // async onSubmitExchange() {
-    //     const command = this.exchangeService.buildExchangeCommand(this.rackService.rackLetters);
-    //     this.exchangeResponse = 'success';
-
-    //     try {
-    //         this.exchangeResponse = (await this.commandExecutionService.executeCommand(command, false)).body;
-    //     } catch (error) {
-    //         if (error instanceof CommandError) {
-    //             this.exchangeResponse = error.message;
-    //         }
-    //     }
-    // }
+    //     this.exchangeService.onMouseRightClick(event, this.rackService.rackLetters);
+    // }(contextmenu)="onRackRightClick($event)"
 
     get width(): number {
         return this.canvasSize.x;

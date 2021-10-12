@@ -1,10 +1,12 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
+import { ExchangeLimits } from '@app/enums/exchange-enums';
 import { ExchangeService } from '@app/services/exchange.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { PlaceSelectionService } from '@app/services/place-selection.service';
+import { ReserveService } from '@app/services/reserve.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -24,6 +26,7 @@ export class GamePageComponent {
         private virtualPlayerService: VirtualPlayerService,
         private placeSelectionService: PlaceSelectionService, //  private readonly rackService: RackService,
         public exchangeService: ExchangeService,
+        public reserveService: ReserveService,
     ) {
         console.log(this.gameService);
         console.log(this.virtualPlayerService);
@@ -65,6 +68,18 @@ export class GamePageComponent {
         }
     }
 
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent) {
+        event.preventDefault();
+        console.log('{ x, y} :', event.offsetX, event.offsetY, event.target);
+        console.log('this.playArea.nativeElement : ', this.playAreaComponent.rackCanvas.nativeElement);
+        if (event.target !== this.playAreaComponent.rackCanvas.nativeElement) {
+            this.exchangeService.cancelExchange();
+        } else {
+            this.exchangeService.onMouseRightClick(event, this.gameService.players[0].rack);
+        }
+    }
+
     onSubmitPlacement() {
         // this.command = this.rackSelectionService.buildPlacementCommand(this.rackService.rackLetters);
         this.command = this.placeSelectionService.command;
@@ -94,7 +109,7 @@ export class GamePageComponent {
     }
 
     disableExchange() {
-        return this.exchangeService.selectedIndexes.length === 0;
+        return this.exchangeService.selectedIndexes.length === 0 || this.reserveService.getQuantityOfAvailableLetters() < ExchangeLimits.Max;
     }
 
     onCancelExchange() {
