@@ -18,7 +18,7 @@ describe('ExchangeService', () => {
             'checkLettersAvailability',
             'findInexistentLettersOnRack',
         ]);
-        rackServiceSpy.rackLetters = [
+        rackServiceSpy.gameService.players[0].rack = [
             { name: 'A', quantity: 9, points: 1, affiche: 'A' },
             { name: 'B', quantity: 2, points: 3, affiche: 'B' },
             { name: 'C', quantity: 2, points: 3, affiche: 'C' },
@@ -48,7 +48,7 @@ describe('ExchangeService', () => {
     it('validateLetterOccurrencesMatch should return true if the letterToChange has same or less occurrence number in command and on rack', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'D'];
-        rackServiceSpy.rackLetters = [
+        rackServiceSpy.gameService.players[0].rack = [
             { name: 'A', quantity: 9, points: 1, affiche: 'A' },
             { name: 'B', quantity: 0, points: 3, affiche: 'B' },
             { name: 'B', quantity: 0, points: 3, affiche: 'B' },
@@ -71,7 +71,7 @@ describe('ExchangeService', () => {
     it('validateLetterOccurrencesMatch should return false if the letterToChange has more occurrence number in command and on rack', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'B', 'D'];
-        rackServiceSpy.rackLetters = [
+        rackServiceSpy.gameService.players[0].rack = [
             { name: 'A', quantity: 1, points: 3, affiche: 'A' },
             { name: 'B', quantity: 1, points: 3, affiche: 'B' },
             { name: 'C', quantity: 1, points: 3, affiche: 'C' },

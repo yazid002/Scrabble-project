@@ -22,7 +22,7 @@ export class PlayAreaComponent implements AfterViewInit {
         this.gridService.drawGrid();
         this.gridCanvas.nativeElement.focus();
         this.rackService.rackContext = this.rackCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.rackService.fillRack();
+        this.rackService.displayRack();
 
         this.rackCanvas.nativeElement.focus();
     }

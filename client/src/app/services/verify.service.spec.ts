@@ -15,13 +15,13 @@ describe('VerifyService', () => {
 
     beforeEach(() => {
         rackServiceSpy = jasmine.createSpyObj('RackService', ['findJokersNumberOnRack', 'isLetterOnRack']);
-        rackServiceSpy.rackLetters = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-        ];
+        // rackServiceSpy.rackLetters = [
+        //     { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+        //     { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+        //     { name: 'C', quantity: 2, points: 3, affiche: 'C' },
+        //     { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+        //     { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+        // ];
 
         TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }] });
         service = TestBed.inject(VerifyService);
