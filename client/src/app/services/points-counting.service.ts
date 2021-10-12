@@ -20,8 +20,11 @@ export class PointsCountingService {
     constructor(private verifyService: VerifyService, public reserveService: ReserveService) {}
 
     getLetterPoints(letter: string): number {
-        const aLetter = this.reserve.find((element) => element.name === letter.toUpperCase());
-        return aLetter?.points || INVALID_NUMBER;
+        const aLetter = this.reserveService.findLetterInReserve(letter);
+        if (aLetter !== INVALID_NUMBER) {
+            return (aLetter as ICharacter).points;
+        }
+        return INVALID_NUMBER;
     }
 
     getWordBasePoints(word: string): number {
