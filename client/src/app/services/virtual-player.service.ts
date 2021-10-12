@@ -18,8 +18,9 @@ export class VirtualPlayerService {
     private play() {
         const TURN_TIME = 3000;
         setTimeout(() => {
+            const oneOfTenProbability = 10;
             console.log('Virtual player playing');
-            const randomNumber = Math.floor(10 * Math.random());
+            const randomNumber = Math.floor(oneOfTenProbability * Math.random());
             if (randomNumber === 0) {
                 this.skip();
             } else if (randomNumber === 1) {
@@ -29,7 +30,6 @@ export class VirtualPlayerService {
             }
             this.gameService.changeTurn();
             this.timerService.resetTimer();
-
         }, TURN_TIME);
     }
 
