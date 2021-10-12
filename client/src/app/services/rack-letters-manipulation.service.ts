@@ -10,13 +10,32 @@ export class RackLettersManipulationService {
     selectedIndexes: number[] = [];
     //  selectedLetters: string[] = [];
     selectedIndex: number = -1;
+    shiftKey: boolean = false;
     constructor(private rackService: RackService) {}
 
     getIndexFromKey(event: KeyboardEvent, rack: ICharacter[]) {
         const notFound = -1;
-        const letterToFound = event.key === event.key.toUpperCase() ? '*' : event.key;
+
+        const letterToFound = event.key;
+
+        console.log(letterToFound);
+
+        console.log(event.shiftKey);
 
         const selectedLetters = this.getSelectedLetters(rack);
+
+        if (event.shiftKey) {
+            this.shiftKey = true;
+        }
+        if (event.key === 'Shift') {
+            if (this.shiftKey) {
+                this.shiftKey = false;
+                return this.selectedIndexes[0];
+            } else {
+                return this.cancelManipulation();
+            }
+        }
+
         console.log('f1 :', selectedLetters);
 
         const lastOccurrence = selectedLetters.lastIndexOf(letterToFound);
@@ -28,6 +47,7 @@ export class RackLettersManipulationService {
         }
 
         console.log('i : ', i);
+        console.log('this.selectedIndexes[lastOccurrence] : ', this.selectedIndexes[lastOccurrence]);
 
         while (i < rack.length) {
             console.log('i2 : ', i);
@@ -116,6 +136,7 @@ export class RackLettersManipulationService {
         }
 
         this.selectedIndexes = [];
+        return -1;
     }
 
     getMouseClickIndex(event: MouseEvent, rack: ICharacter[]): number {
