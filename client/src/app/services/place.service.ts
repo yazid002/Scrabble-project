@@ -70,6 +70,7 @@ export class PlaceService {
                     const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
                     const x = computingCoord.x;
                     const y = computingCoord.y;
+                    console.log('quand je place: ', tiles[x][y]);
 
                     tiles[y][x].text = tiles[y][x].oldText;
                     tiles[y][x].style.color = tiles[y][x].oldStyle.color;
@@ -131,11 +132,10 @@ export class PlaceService {
         }
     }
 
-    writeWord(word: string, coord: Vec2, direction: string, throughChat: boolean) {
+    writeWord(word: string, coord: Vec2, direction: string, isCalledThoughtChat: boolean) {
         for (let i = 0; i < word.length; i++) {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
-
-            this.gridService.writeLetter(word[i], computingCoord, throughChat);
+            this.gridService.writeLetter(word[i], computingCoord, isCalledThoughtChat);
         }
     }
 }

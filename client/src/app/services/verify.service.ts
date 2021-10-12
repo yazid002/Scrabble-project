@@ -5,7 +5,7 @@ import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
-import { SQUARE_NUMBER } from '@app/constants/board-constants';
+import { bonuses, SQUARE_NUMBER } from '@app/constants/board-constants';
 import { RackService } from '@app/services/rack.service';
 import * as dictionary from 'src/assets/dictionnary.json';
 
@@ -68,6 +68,14 @@ export class VerifyService {
 
         while (i < word.length && coord.y + i < SQUARE_NUMBER) {
             wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
+
+            // for (let i = 0; i < wordFound.length; i++) {
+            //     if (wordFound[i] === '*') {
+            //         wordFound[i] =
+            //     }
+
+            // }
+
             i++;
             if (wordFound.length >= 2) {
                 if (!this.isWordInDictionary(wordFound)) {
@@ -146,7 +154,7 @@ export class VerifyService {
             wordFound += tiles[i][coord.x].text;
         }
 
-        if (this.bonuses.includes(wordFound)) {
+        if (bonuses.includes(wordFound)) {
             wordFound = '';
         }
         return wordFound;
@@ -170,7 +178,7 @@ export class VerifyService {
         for (let i = left; i <= right; i++) {
             wordFound += tiles[coord.y][i].text;
         }
-        if (this.bonuses.includes(wordFound)) {
+        if (bonuses.includes(wordFound)) {
             wordFound = '';
         }
         return wordFound;

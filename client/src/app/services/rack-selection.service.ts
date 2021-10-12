@@ -15,7 +15,8 @@ export class RackSelectionService {
     selectedIndexesForExchange: number[] = [];
     selectedIndexesForPlacement: number[] = [];
     selectedIndexesForManipulation: number[] = [];
-    constructor(private rackService: RackService, private gridService: GridService, private tileSelectionService: TileSelectionService) {}
+    wordToVerify: string[] = [];
+    constructor(private rackService: RackService, private gridService: GridService, public tileSelectionService: TileSelectionService) {}
 
     getClickIndex(event: MouseEvent, rack: ICharacter[]): number {
         console.log('{ x, y} :', event.offsetX, event.offsetY);
@@ -62,7 +63,7 @@ export class RackSelectionService {
         }
     }
 
-    onKeyBoardClick(event: KeyboardEvent, rack: ICharacter[]) {
+    onKeyBoardClick(event: KeyboardEvent, rack: ICharacter[], isCalledThoughtChat: boolean) {
         const notFound = -1;
         const selectionColor = 'red';
 
@@ -74,10 +75,17 @@ export class RackSelectionService {
             if (!alreadySelectedForOthers) {
                 this.selectedIndexesForPlacement.push(index);
                 this.rackService.fillRackPortion(index, selectionColor);
-                this.gridService.writeLetter(event.key, {
-                    x: this.tileSelectionService.selectedCoord.y,
-                    y: this.tileSelectionService.selectedCoord.x,
-                });
+                console.log('test', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
+                this.gridService.writeLetter(
+                    event.key,
+                    {
+                        x: this.tileSelectionService.selectedCoord.y,
+                        y: this.tileSelectionService.selectedCoord.x,
+                    },
+                    isCalledThoughtChat,
+                );
+                console.log('quand je click :', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
+                //  this.gridService.fillGridPortion()
                 console.log('selectedCoord :', this.tileSelectionService.selectedCoord);
                 console.log(' this.tileSelectionService.direction :', this.tileSelectionService.direction);
                 const nextCoord = this.tileSelectionService.direction
@@ -85,11 +93,16 @@ export class RackSelectionService {
                     : { x: this.tileSelectionService.selectedCoord.x, y: this.tileSelectionService.selectedCoord.y + 1 };
 
                 console.log('nextCoord :', nextCoord);
-                this.tileSelectionService.onTileClick({
-                    button: 0,
-                    offsetX: nextCoord.x * SQUARE_WIDTH,
-                    offsetY: nextCoord.y * SQUARE_WIDTH,
-                } as MouseEvent);
+                this.tileSelectionService.onTileClick(
+                    {
+                        button: 0,
+                        offsetX: nextCoord.x * SQUARE_WIDTH,
+                        offsetY: nextCoord.y * SQUARE_WIDTH,
+                    } as MouseEvent,
+                    false,
+
+                    this.selectedIndexesForPlacement,
+                );
             }
         }
     }
@@ -101,6 +114,7 @@ export class RackSelectionService {
         for (let i = 0; i < rack.length; i++) {
             if (rack[i].name === letterToFound) {
                 if (!this.selectedIndexesForPlacement.includes(i)) {
+                    this.wordToVerify.push(event.key);
                     return i;
                 }
             }
@@ -114,10 +128,9 @@ export class RackSelectionService {
 
     buildPlacementCommand(rack: ICharacter[]): string {
         console.log(rack);
-        const lettersToPlace = this.getSelectedLetters(rack, this.selectedIndexesForPlacement);
         return `!placer ${String.fromCharCode(this.tileSelectionService.selectedIndexesForPlacement[0].y + 'A'.charCodeAt(0)).toLowerCase()}${
             this.tileSelectionService.selectedIndexesForPlacement[0].x + 1
-        }${this.tileSelectionService.direction ? 'h' : 'v'} ${lettersToPlace.join('')}`;
+        }${this.tileSelectionService.direction ? 'h' : 'v'} ${this.wordToVerify.join('')}`;
     }
 
     cancelPlacement() {
@@ -143,8 +156,11 @@ export class RackSelectionService {
             tiles[coord.y][coord.x].text = tiles[coord.y][coord.x].oldText;
             this.gridService.fillGridPortion({ x: coord.y, y: coord.x }, tiles[coord.y][coord.x].text, tiles[coord.y][coord.x].style);
             this.rackService.fillRackPortion(this.selectedIndexesForPlacement[length - 1], normalColor);
+            console.log('avant', this.selectedIndexesForPlacement);
+
             this.tileSelectionService.selectedIndexesForPlacement.pop();
             this.selectedIndexesForPlacement.pop();
+            this.wordToVerify.pop();
         }
         console.log('length 1: ', this.tileSelectionService.selectedIndexesForPlacement.length);
         console.log('length 2: ', this.selectedIndexesForPlacement.length);
