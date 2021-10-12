@@ -28,7 +28,6 @@ export class GameService {
     changeTurn() {
         this.currentTurn = (this.currentTurn + 1) % 2;
         if (this.currentTurn === COMPUTER) {
-            console.log("signal emited");
             this.virtualPlaySignal.next(true);
         }
     }

@@ -7,7 +7,6 @@ import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
 import { Player } from '@app/classes/player';
 
-
 describe('RackService', () => {
     let service: RackService;
     let reserveServiceSpy: jasmine.SpyObj<ReserveService>;
@@ -46,7 +45,7 @@ describe('RackService', () => {
         ];
         TestBed.configureTestingModule({ providers: [{ provide: ReserveService, useValue: reserveServiceSpy }] });
         service = TestBed.inject(RackService);
-        
+
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         service.rackContext = ctxStub;
     });

@@ -9,15 +9,9 @@ import { GameService, REAL_PLAYER } from './game.service';
 })
 export class RackService {
     rackContext: CanvasRenderingContext2D;
-
-    
-
     constructor(private reserveService: ReserveService, public gameService: GameService) {
         console.log(this.gameService);
-
     }
-
-    
 
     displayRack() {
         for (let x = 0; x < RACK_SIZE; x++) {
@@ -72,7 +66,7 @@ export class RackService {
         return this.findLetterPosition(letterToCheck) !== notFound;
     }
 
-    private findLetterPosition(letterToCheck: string): number {
+    findLetterPosition(letterToCheck: string): number {
         return this.gameService.players[this.gameService.currentTurn].rack.findIndex(
             (letter) => letter.name === letterToCheck.toUpperCase(),
         ) as number;
@@ -107,29 +101,4 @@ export class RackService {
         }
     }
 
-    // TODO: ENLEVER SI ON EN A PAS BESOIN
-    // private findWordOnRack(word: string[]): boolean {
-    //     for (const w of word) {
-    //         if (!this.isLetterOnRack(w)) {
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // }
-
-    // findLetter(letterToCheck: string): ICaracter | void {
-    //     let letter = letterToCheck;
-    //     if (letterToCheck === letterToCheck.toUpperCase()) {
-    //         letter = '*';
-    //     }
-    //     const index = this.findLetterPosition(letter);
-    //     const notFound = -1;
-    //     if (index !== notFound) {
-    //         return this.rackLetters[index];
-    //     }
-    // }
-
-    // private findLetterOccurrence(letterToCheck: string): ICaracter[] {
-    //     return this.rackLetters?.filter((letter) => letter.name === letterToCheck.toUpperCase()) as ICaracter[];
-    // }
 }
