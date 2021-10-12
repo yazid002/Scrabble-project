@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { ReserveService } from '@app/services/reserve.service';
 import { GameService, REAL_PLAYER } from './game.service';
@@ -9,15 +8,9 @@ import { GameService, REAL_PLAYER } from './game.service';
 })
 export class RackService {
     rackContext: CanvasRenderingContext2D;
-
-    
-
     constructor(private reserveService: ReserveService, public gameService: GameService) {
         console.log(this.gameService);
-
     }
-
-    
 
     displayRack() {
         for (let x = 0; x < RACK_SIZE; x++) {

@@ -4,13 +4,32 @@ import { InvalidArgumentsLength } from '@app/classes/command-errors/command-synt
 import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { ExchangeService } from './exchange.service';
+import { GameService, REAL_PLAYER } from './game.service';
 import { RackService } from './rack.service';
 
 describe('ExchangeService', () => {
     let service: ExchangeService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
 
     beforeEach(() => {
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
+        gameServiceSpy.currentTurn = REAL_PLAYER;
+        gameServiceSpy.players = [
+            {
+                id: REAL_PLAYER,
+                name: 'Random name',
+                rack: [
+                    { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+                    { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+                    { name: 'C', quantity: 2, points: 3, affiche: 'C' },
+                    { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+                    { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                ],
+                points: 0,
+            },
+        ];
+
         rackServiceSpy = jasmine.createSpyObj('RackService', [
             'replaceLetter',
             'findLetterPosition',
@@ -18,15 +37,12 @@ describe('ExchangeService', () => {
             'checkLettersAvailability',
             'findInexistentLettersOnRack',
         ]);
-        rackServiceSpy.gameService.players[0].rack = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-        ];
+        rackServiceSpy.gameService = gameServiceSpy;
         TestBed.configureTestingModule({
-            providers: [{ provide: RackService, useValue: rackServiceSpy }],
+            providers: [
+                { provide: RackService, useValue: rackServiceSpy },
+                { provide: GameService, useValue: gameServiceSpy },
+            ],
         });
         service = TestBed.inject(ExchangeService);
     });
