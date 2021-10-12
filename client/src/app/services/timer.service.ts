@@ -25,7 +25,7 @@ export class TimerService {
     }
     startTimer() {
         this.getTimerSettings();
-        const timerIntervalMS = 200;
+        const timerIntervalMS = 1000;
         setInterval(() => {
             this.decrementTime();
         }, timerIntervalMS);
