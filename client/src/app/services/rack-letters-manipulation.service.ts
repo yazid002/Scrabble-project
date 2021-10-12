@@ -52,7 +52,9 @@ export class RackLettersManipulationService {
         console.log(this.selectedIndexes);
         console.log(included);
         if (!included && index !== -1) {
-            this.selectedIndexes.push(index);
+            this.cancelManipulation();
+
+            this.selectedIndexes[0] = index;
             this.rackService.fillRackPortion(index, selectionColor);
             console.log(this.selectedIndexes);
         }
@@ -67,7 +69,8 @@ export class RackLettersManipulationService {
         console.log(included);
 
         if (!included && index !== -1) {
-            this.selectedIndexes.push(index);
+            this.cancelManipulation();
+            this.selectedIndexes[0] = index;
             this.rackService.fillRackPortion(index, selectionColor);
             console.log(this.selectedIndexes);
         }
@@ -97,7 +100,7 @@ export class RackLettersManipulationService {
     getSelectedLetters(rack: ICharacter[]): string[] {
         const selectedLetters = [];
         for (const index of this.selectedIndexes) {
-            selectedLetters.push(rack[index].name.toLocaleLowerCase());
+            selectedLetters[0] = rack[index].name.toLocaleLowerCase();
         }
         console.log(selectedLetters);
         return selectedLetters;
