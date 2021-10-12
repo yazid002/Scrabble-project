@@ -31,6 +31,7 @@ export class PlaceService {
 
         const promise = new Promise<void>((resolve, reject) => {
             this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
+            console.log(this.lettersUsedOnBoard);
             this.writeWord(word, coord, direction);
 
             const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
@@ -50,8 +51,8 @@ export class PlaceService {
 
                 reject(new ImpossibleCommand(wordValidationParameters.errorMessage));
             } else {
+                this.points += this.pointsCountingService.processWordPoints(word, coord, direction, this.lettersUsedOnBoard);
                 this.updateTilesLetters(word, coord, direction);
-                this.points += this.pointsCountingService.getWordBasePoints(word);
                 resolve(this.rackService.replaceWord(word));
 
                 this.timerService.resetTimer();
@@ -66,6 +67,7 @@ export class PlaceService {
             const x = computingCoord.x;
             const y = computingCoord.y;
             tiles[x][y].letter = word[i].toLowerCase();
+            tiles[x][y].bonus = 'x';
         }
     }
 
