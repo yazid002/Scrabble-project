@@ -12,13 +12,13 @@ export const COMPUTER = 1;
     providedIn: 'root',
 })
 export class GameService {
-    @Output() virtualPlaySignal = new BehaviorSubject<boolean>(true);
+    @Output() otherPlayerSignal = new BehaviorSubject<boolean>(true);
     players: Player[] = [];
     currentTurn: number;
     timerDone: Subscription;
     turnDone: Subscription;
     constructor(private userSettingsService: UserSettingsService, private reserveService: ReserveService, private timerService: TimerService) {
-        this.initializePlayers();
+        this.startGame();
         this.randomTurn();
         this.timerDone = this.timerService.timerDone.subscribe(() => {
             this.changeTurn();
@@ -28,10 +28,23 @@ export class GameService {
     changeTurn() {
         this.currentTurn = (this.currentTurn + 1) % 2;
         if (this.currentTurn === COMPUTER) {
-            this.virtualPlaySignal.next(true);
+            this.otherPlayerSignal.next(true);
         }
     }
-    private initializePlayers() {
+    getNumPlayerInstructions(key: string): () => void {
+        const numPlayerMap: Map<string, () => void> = new Map([
+            ['solo', () => this.initSoloPlayers()],
+            ['multiplayer', () => this.initMultiPlayers()],
+        ]);
+
+        const makePlayers = numPlayerMap.get(key) as () => void;
+        return makePlayers;
+    }
+    private startGame() {
+        const makePlayers = this.getNumPlayerInstructions(this.userSettingsService.settings.numPlayers.currentChoiceKey);
+        makePlayers();
+    }
+    private initSoloPlayers() {
         const realPlayer: Player = {
             id: REAL_PLAYER,
             name: this.userSettingsService.nameOption.userChoice,
@@ -47,6 +60,7 @@ export class GameService {
         };
         this.players.push(computer);
     }
+    private initMultiPlayers() {}
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
     }

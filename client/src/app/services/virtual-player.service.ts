@@ -11,7 +11,7 @@ import { TimerService } from './timer.service';
 export class VirtualPlayerService {
     virtualPlayerSignal: Subscription;
     constructor(private gameService: GameService, private exchangeService: ExchangeService, private timerService: TimerService) {
-        this.virtualPlayerSignal = this.gameService.virtualPlaySignal.subscribe(() => {
+        this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe(() => {
             this.play();
         });
     }
