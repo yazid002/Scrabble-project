@@ -5,7 +5,6 @@ import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-co
 import { GameService, REAL_PLAYER } from '@app/services/game.service';
 import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
-import { Player } from '@app/classes/player';
 
 describe('RackService', () => {
     let service: RackService;
@@ -20,19 +19,25 @@ describe('RackService', () => {
         reserveServiceSpy = jasmine.createSpyObj('ReserveService', ['getQuantityOfAvailableLetters', 'getLettersFromReserve', 'addLetterInReserve']);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers']);
         gameServiceSpy.currentTurn = REAL_PLAYER;
-        const player: Player = {
-            id: REAL_PLAYER,
-            name: 'Random name',
-            rack: [
-                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-                { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            ],
-            points: 0,
-        };
-        gameServiceSpy.players = [player];
+        gameServiceSpy.players = [
+            {
+                id: REAL_PLAYER,
+                name: 'Random name',
+                rack: [
+                    { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+                    { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+                    { name: 'C', quantity: 2, points: 3, affiche: 'C' },
+                    { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+                    { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                ],
+                points: 0,
+            },
+        ];
+        TestBed.configureTestingModule({
+            providers: [{ provide: GameService, useValue: gameServiceSpy }],
+        });
+        // const player: Player =
+        // gameServiceSpy.players = [player];
         reserveServiceSpy.alphabets = [
             { name: 'A', quantity: 9, points: 1, affiche: 'A' },
             { name: 'B', quantity: 2, points: 3, affiche: 'B' },
@@ -96,7 +101,6 @@ describe('RackService', () => {
         it('should return NOT_FOUND', () => {
             const NOT_FOUND = -1;
             const LETTER_TO_CHECK = 'Z';
-
             // Car findLetterPosition est privée
             // eslint-disable-next-line dot-notation
             const result = service['findLetterPosition'](LETTER_TO_CHECK);

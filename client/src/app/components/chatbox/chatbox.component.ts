@@ -35,7 +35,7 @@ export class ChatboxComponent implements OnInit {
         if (this.inputBox.startsWith('!')) {
             if (this.gameService.currentTurn !== REAL_PLAYER) {
                 this.error = true;
-                this.errorMessage = 'Attendez votre tours';
+                this.errorMessage = 'Attendez votre tour';
                 return;
             }
             try {

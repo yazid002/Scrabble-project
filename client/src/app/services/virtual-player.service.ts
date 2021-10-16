@@ -11,31 +11,27 @@ import { TimerService } from './timer.service';
 export class VirtualPlayerService {
     virtualPlayerSignal: Subscription;
     constructor(private gameService: GameService, private exchangeService: ExchangeService, private timerService: TimerService) {
-        this.virtualPlayerSignal = this.gameService.virtualPlaySignal.subscribe(() => {
+        this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe(() => {
             this.play();
         });
     }
     private play() {
         const TURN_TIME = 3000;
+        let skipped = false;
         setTimeout(() => {
-            console.log('Virtual player playing');
-            const randomNumber = Math.floor(10 * Math.random());
+            const oneOfTenProbability = 10;
+            const randomNumber = Math.floor(oneOfTenProbability * Math.random());
             if (randomNumber === 0) {
-                this.skip();
+                skipped = true;
             } else if (randomNumber === 1) {
                 this.exchange();
             } else {
                 this.place();
             }
-            this.gameService.changeTurn();
-            this.timerService.resetTimer();
-
+            this.timerService.resetTimer(skipped);
         }, TURN_TIME);
     }
 
-    private skip() {
-        console.log('Skipping turn');
-    }
     private selectRandomLetterFromRack(numberOfLetters: number): string[] {
         const lettersToChange: string[] = [];
         const numbersPicked: number[] = [];
@@ -59,7 +55,6 @@ export class VirtualPlayerService {
         return lettersToChange;
     }
     private exchange() {
-        console.log('virtual player exchange');
         const numberToChange = Math.floor(Math.random() * RACK_SIZE + 1);
         const lettersToChange = this.selectRandomLetterFromRack(numberToChange);
         this.exchangeService.exchangeLetters(lettersToChange);

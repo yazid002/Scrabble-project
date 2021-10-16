@@ -21,7 +21,6 @@ export class ExchangeService {
         for (const letter of lettersToChange) {
             this.rackService.replaceLetter(letter, false);
         }
-        this.gameService.changeTurn();
         this.timerService.resetTimer();
     }
 
