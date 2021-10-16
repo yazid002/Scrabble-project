@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
     providedIn: 'root',
 })
 export class TimerService {
-    @Output() timerDone = new BehaviorSubject<boolean>(true);
+    @Output() timerDone = new BehaviorSubject<boolean>(true); // value of boolean represents wheter or not the player skips his turn
     counter: {
         min: number;
         seconds: number;
@@ -30,9 +30,9 @@ export class TimerService {
             this.decrementTime();
         }, timerIntervalMS);
     }
-    resetTimer() {
+    resetTimer(skipped: boolean = false) {
         this.counter.totalTimer = this.counter.resetValue;
-        this.timerDone.next(false);
+        this.timerDone.next(skipped);
     }
     private getTimerSettings() {
         const timer = Number(this.userSettingsService.settings.timer.currentChoiceKey);

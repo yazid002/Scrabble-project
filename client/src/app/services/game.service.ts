@@ -27,21 +27,20 @@ export class GameService {
         });
     }
 
-    changeTurn(skipped: boolean) {
+    private changeTurn(skipped: boolean) {
         if (skipped) {
             this.skipCounter++;
         } else {
             this.skipCounter = 0;
         }
         if (this.skipCounter < MAX_SKIPS) {
-            
             this.currentTurn = (this.currentTurn + 1) % 2;
             if (this.currentTurn === COMPUTER) {
                 this.otherPlayerSignal.next(true);
             }
         }
     }
-    getNumPlayerInstructions(key: string): () => void {
+    private getNumPlayerInstructions(key: string): () => void {
         const numPlayerMap: Map<string, () => void> = new Map([
             ['solo', () => this.initSoloPlayers()],
             ['multiplayer', () => this.initMultiPlayers()],

@@ -13,14 +13,14 @@ fdescribe('TimerService', () => {
         expect(service).toBeTruthy();
     });
     it('should emit an event when timer hits zero', () => {
-        let value = false;
-        service.timerDone.next(value);
+        let skipped = false;
+        service.timerDone.next(skipped);
         service.counter.totalTimer = service.counter.resetValue - 1;
         service.timerDone.subscribe((val) => {
-            value = val;
+            skipped = val;
         });
         // eslint-disable-next-line dot-notation
         service['decrementTime']();
-        expect(value).toBe(true);
+        expect(skipped).toBe(true);
     });
 });
