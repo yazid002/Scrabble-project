@@ -153,4 +153,7 @@ export class GamePageComponent {
     get selectionType(): typeof SelectionType {
         return SelectionType;
     }
+    randomNumber() {
+        this.gridService.randomizeBonus(0, 3);
+    }
 }
