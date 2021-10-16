@@ -46,8 +46,18 @@ button {
 mat-card {
     width: 250px;
 }
+
+#summary {
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#name {
+    margin-top: 15px;
+}
 mat-card-title-group {
-    margin-top: 25px;
+    margin-top: 20px;
 }
 
 mat-card mat-card {
