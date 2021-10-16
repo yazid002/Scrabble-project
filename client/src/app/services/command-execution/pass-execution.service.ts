@@ -13,8 +13,9 @@ export class PassExecutionService {
             body: 'Vous avez passé votre tour !',
         };
 
-        this.gameService.changeTurn();
         this.timerService.resetTimer();
+        const skipped = true;
+        this.gameService.changeTurn(skipped);
 
         return result;
     }

@@ -56,8 +56,9 @@ export class PlaceService {
                 this.points += this.pointsCountingService.getWordBasePoints(word);
                 resolve(this.rackService.replaceWord(word));
 
-                this.gameService.changeTurn();
                 this.timerService.resetTimer();
+                const skipped = false;
+                this.gameService.changeTurn(skipped);
             }
         });
         return promise;

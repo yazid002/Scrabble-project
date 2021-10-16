@@ -8,6 +8,7 @@ import { UserSettingsService } from './user-settings.service';
 
 export const REAL_PLAYER = 0;
 export const COMPUTER = 1;
+const MAX_SKIPS = 6;
 @Injectable({
     providedIn: 'root',
 })
@@ -17,18 +18,25 @@ export class GameService {
     currentTurn: number;
     timerDone: Subscription;
     turnDone: Subscription;
+    skipCounter: number = 0;
     constructor(private userSettingsService: UserSettingsService, private reserveService: ReserveService, private timerService: TimerService) {
         this.startGame();
         this.randomTurn();
-        this.timerDone = this.timerService.timerDone.subscribe(() => {
-            this.changeTurn();
+        this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {
+            this.changeTurn(skipped);
         });
     }
 
-    changeTurn() {
-        this.currentTurn = (this.currentTurn + 1) % 2;
-        if (this.currentTurn === COMPUTER) {
-            this.otherPlayerSignal.next(true);
+    changeTurn(skipped: boolean) {
+        if (skipped) {
+            this.skipCounter++;
+        }
+        if (this.skipCounter < MAX_SKIPS) {
+            
+            this.currentTurn = (this.currentTurn + 1) % 2;
+            if (this.currentTurn === COMPUTER) {
+                this.virtualPlaySignal.next(true);
+            }
         }
     }
     getNumPlayerInstructions(key: string): () => void {
