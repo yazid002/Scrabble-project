@@ -30,12 +30,14 @@ export class GameService {
     changeTurn(skipped: boolean) {
         if (skipped) {
             this.skipCounter++;
+        } else {
+            this.skipCounter = 0;
         }
         if (this.skipCounter < MAX_SKIPS) {
             
             this.currentTurn = (this.currentTurn + 1) % 2;
             if (this.currentTurn === COMPUTER) {
-                this.virtualPlaySignal.next(true);
+                this.otherPlayerSignal.next(true);
             }
         }
     }

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
-import { GameService } from '../game.service';
+// import { GameService } from '../game.service';
 import { TimerService } from '../timer.service';
 @Injectable({
     providedIn: 'root',
 })
 export class PassExecutionService {
-    constructor(private gameService: GameService, private timerService: TimerService) {}
+    constructor(/*private gameService: GameService,*/ private timerService: TimerService) {}
     execute(): IChat {
         const result: IChat = {
             from: SENDER.computer,
@@ -14,8 +14,8 @@ export class PassExecutionService {
         };
 
         this.timerService.resetTimer();
-        const skipped = true;
-        this.gameService.changeTurn(skipped);
+        // const skipped = true;
+        // this.gameService.changeTurn(skipped);
 
         return result;
     }

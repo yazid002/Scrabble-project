@@ -3,7 +3,7 @@ import { tiles } from '@app/classes/board';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { Vec2 } from '@app/classes/vec2';
 import { VerifyService } from '@app/services/verify.service';
-import { GameService } from './game.service';
+// import { GameService } from './game.service';
 import { GridService } from './grid.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
@@ -22,7 +22,7 @@ export class PlaceService {
         private gridService: GridService,
         private pointsCountingService: PointsCountingService,
         private reserveService: ReserveService,
-        private gameService: GameService,
+        // private gameService: GameService,
         private timerService: TimerService,
     ) {
         pointsCountingService.reserve = this.reserveService.alphabets;
@@ -57,8 +57,8 @@ export class PlaceService {
                 resolve(this.rackService.replaceWord(word));
 
                 this.timerService.resetTimer();
-                const skipped = false;
-                this.gameService.changeTurn(skipped);
+                // const skipped = false;
+                // this.gameService.changeTurn(skipped);
             }
         });
         return promise;

@@ -17,21 +17,21 @@ export class VirtualPlayerService {
     }
     private play() {
         const TURN_TIME = 3000;
-        let skipped = false;
+        // let skipped = false;
         setTimeout(() => {
             const oneOfTenProbability = 10;
             console.log('Virtual player playing');
             const randomNumber = Math.floor(oneOfTenProbability * Math.random());
             if (randomNumber === 0) {
                 this.skip();
-                skipped = true;
+                // skipped = true;
             } else if (randomNumber === 1) {
                 this.exchange();
             } else {
                 this.place();
             }
             this.timerService.resetTimer();
-            this.gameService.changeTurn(skipped);
+            // this.gameService.changeTurn(skipped);
 
         }, TURN_TIME);
     }

@@ -22,8 +22,8 @@ export class ExchangeService {
             this.rackService.replaceLetter(letter, false);
         }
         this.timerService.resetTimer();
-        const skipped = false;
-        this.gameService.changeTurn(skipped);
+        // const skipped = false;
+        // this.gameService.changeTurn(skipped);
     }
 
     private validateExchangeFeasibility(lettersToChange: string[]): void {
