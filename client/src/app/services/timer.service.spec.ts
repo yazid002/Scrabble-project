@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TimerService } from './timer.service';
 
-fdescribe('TimerService', () => {
+describe('TimerService', () => {
     let service: TimerService;
 
     beforeEach(() => {

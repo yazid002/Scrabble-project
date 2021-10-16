@@ -55,8 +55,6 @@ export class PlaceService {
                 resolve(this.rackService.replaceWord(word));
 
                 this.timerService.resetTimer();
-                // const skipped = false;
-                // this.gameService.changeTurn(skipped);
             }
         });
         return promise;
