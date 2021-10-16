@@ -91,6 +91,9 @@ export class VerifyService {
 
         return { x, y };
     }
+    isWordInDictionary(wordToCheck: string): boolean {
+        return this.dictionary.words.includes(wordToCheck.toLowerCase());
+    }
 
     validatePlaceFeasibility(word: string, coord: Vec2, direction: string): { letter: string; coord: Vec2 }[] {
         if (this.isFirstMove()) {
@@ -208,10 +211,6 @@ export class VerifyService {
 
     private isLetterOnBoardTheSame(letterOnBoard: string, letterToPlace: string): boolean {
         return letterOnBoard === letterToPlace;
-    }
-
-    private isWordInDictionary(wordToCheck: string): boolean {
-        return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
 
     private validateJokersOccurrencesMatch(word: string): void {

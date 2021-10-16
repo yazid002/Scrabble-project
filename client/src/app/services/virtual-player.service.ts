@@ -1,16 +1,24 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
+import { tiles } from '@app/classes/board';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
 import { ExchangeService } from './exchange.service';
 import { COMPUTER, GameService } from './game.service';
 import { TimerService } from './timer.service';
+import { VerifyService } from './verify.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class VirtualPlayerService {
     virtualPlayerSignal: Subscription;
-    constructor(private gameService: GameService, private exchangeService: ExchangeService, private timerService: TimerService) {
+    constructor(
+        private gameService: GameService,
+        private exchangeService: ExchangeService,
+        private timerService: TimerService,
+        private verifyService: VerifyService,
+    ) {
         this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe(() => {
             this.play();
         });
@@ -61,5 +69,89 @@ export class VirtualPlayerService {
     }
     private place() {
         console.log('virtual player place');
+
+        this.makePossibilities();
+    }
+    private makePossibilities() {
+        const gridCombos = this.getLetterCombosFromGrid();
+        const possibilities: string[] = [];
+        const rackCombos: string[] = this.makeRackCombos();
+        console.log('grid', gridCombos);
+        console.log('rackCombos', rackCombos);
+        // Add 1 or more letters from the rack to the begining and end of every grid 'chuncks'
+        for (const rackCombo of rackCombos) {
+            for (const gridCombo of gridCombos) {
+                let word = rackCombo + gridCombo;
+                if (this.verifyService.isWordInDictionary(word)) {
+                    possibilities.push(word);
+                }
+                word = gridCombo + rackCombo;
+                if (this.verifyService.isWordInDictionary(word)) {
+                    possibilities.push(word);
+                }
+            }
+        }
+        console.log('possibilities', possibilities);
+    }
+    private makeRackCombos(): string[] {
+        const combos: string[] = [];
+        const computerRack: string[] = [];
+        for (const rackLetter of this.gameService.players[COMPUTER].rack) {
+            computerRack.push(rackLetter.name);
+        }
+        console.log('rack', computerRack);
+        const numPossibilites = Math.pow(2, computerRack.length);
+        for (let counter = 1; counter < numPossibilites; counter++) {
+            let temp = '';
+            let tempCounter = counter;
+            for (let index = computerRack.length - 1; index >= 0; index--) {
+                if (tempCounter >= Math.pow(2, index)) {
+                    temp += computerRack[index];
+                    tempCounter -= Math.pow(2, index);
+                }
+            }
+            combos.push(temp);
+        }
+
+        return combos;
+    }
+    private getLetterCombosFromGrid(): string[] {
+        /**
+         * Get all letters on grid that are touching. They will be considered as a chunk later since we can't shuffle them
+         */
+        console.log(tiles);
+        const EMPTY = '';
+        let temp: string = EMPTY;
+        const possibilities: string[] = [];
+        // get all horizontal possibilities
+        for (const line of tiles) {
+            for (const letter of line) {
+                if (letter.letter !== EMPTY) {
+                    temp += letter.letter;
+                } else {
+                    if (temp !== EMPTY) {
+                        possibilities.push(temp);
+                        temp = EMPTY;
+                    }
+                }
+            }
+        }
+        temp = EMPTY;
+        // get all vertival possibilitier
+        for (let col = 0; col < tiles[0].length; col++) {
+            // eslint-disable-next-line @typescript-eslint/prefer-for-of
+            for (let line = 0; line < tiles.length; line++) {
+                if (tiles[line][col].letter !== EMPTY) {
+                    temp += tiles[line][col].letter;
+                } else {
+                    if (temp !== EMPTY) {
+                        possibilities.push(temp);
+                        temp = EMPTY;
+                    }
+                }
+            }
+        }
+        console.log(possibilities);
+        return possibilities;
     }
 }
