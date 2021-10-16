@@ -93,9 +93,16 @@ export class VirtualPlayerService {
         // Add 1 or more letters from the rack to the begining and end of every grid 'chuncks'
         for (const rackCombo of rackCombos) {
             for (const gridCombo of gridCombos) {
-                const lin = gridCombo.direction === 'horizontal' ? gridCombo.coord.y - rackCombo.length : gridCombo.coord.y - 1;
-                const col = gridCombo.direction === 'vertical' ? gridCombo.coord.x - rackCombo.length + 1 : gridCombo.coord.x;
-                const word: WordNCoord = { word: `${rackCombo}${gridCombo.word}`, coord: { x: lin, y: col }, direction: gridCombo.direction };
+                let lin = 0;
+                let col = 0;
+                if (gridCombo.direction === 'vertical') {
+                    lin = gridCombo.coord.y - rackCombo.length;
+                    col = gridCombo.coord.x;
+                } else {
+                    lin = gridCombo.coord.y;
+                    col = gridCombo.coord.x - rackCombo.length;
+                }
+                const word: WordNCoord = { word: `${rackCombo}${gridCombo.word}`, coord: { x: col, y: lin }, direction: gridCombo.direction };
                 word.word = word.word.toLowerCase();
                 let valid = false;
                 if (this.verifyService.isWordInDictionary(word.word)) {
