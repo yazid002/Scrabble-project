@@ -1,12 +1,21 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { Vec2 } from '@app/classes/vec2';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
 import { ExchangeService } from './exchange.service';
 import { COMPUTER, GameService } from './game.service';
+import { PlaceService } from './place.service';
 import { TimerService } from './timer.service';
 import { VerifyService } from './verify.service';
+
+type Direction = 'horizontal' | 'vertical';
+interface WordNCoord {
+    word: string;
+    coord: Vec2;
+    direction: Direction;
+}
 
 @Injectable({
     providedIn: 'root',
@@ -18,10 +27,13 @@ export class VirtualPlayerService {
         private exchangeService: ExchangeService,
         private timerService: TimerService,
         private verifyService: VerifyService,
+        private placeService: PlaceService,
     ) {
         this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe(() => {
             this.play();
         });
+        console.log(this.verifyService);
+        console.log(this.placeService);
     }
     private play() {
         const TURN_TIME = 3000;
@@ -74,24 +86,35 @@ export class VirtualPlayerService {
     }
     private makePossibilities() {
         const gridCombos = this.getLetterCombosFromGrid();
-        const possibilities: string[] = [];
+        const possibilities: WordNCoord[] = [];
         const rackCombos: string[] = this.makeRackCombos();
-        console.log('grid', gridCombos);
-        console.log('rackCombos', rackCombos);
+        // console.log('grid', gridCombos);
+        // console.log('rackCombos', rackCombos);
         // Add 1 or more letters from the rack to the begining and end of every grid 'chuncks'
         for (const rackCombo of rackCombos) {
             for (const gridCombo of gridCombos) {
-                let word = rackCombo + gridCombo;
-                if (this.verifyService.isWordInDictionary(word)) {
-                    possibilities.push(word);
-                }
-                word = gridCombo + rackCombo;
-                if (this.verifyService.isWordInDictionary(word)) {
-                    possibilities.push(word);
+                const lin = gridCombo.direction === 'horizontal' ? gridCombo.coord.y - rackCombo.length : gridCombo.coord.y - 1;
+                const col = gridCombo.direction === 'vertical' ? gridCombo.coord.x - rackCombo.length + 1 : gridCombo.coord.x;
+                const word: WordNCoord = { word: `${rackCombo}${gridCombo.word}`, coord: { x: lin, y: col }, direction: gridCombo.direction };
+                word.word = word.word.toLowerCase();
+                let valid = false;
+                if (this.verifyService.isWordInDictionary(word.word)) {
+                    console.log(word);
+                    try {
+                        valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction);
+
+                        if (valid) {
+                            possibilities.push(word);
+
+                            console.log('possibilities', possibilities);
+                            return;
+                        }
+                    } catch (error) {
+                        console.log(error);
+                    }
                 }
             }
         }
-        console.log('possibilities', possibilities);
     }
     private makeRackCombos(): string[] {
         const combos: string[] = [];
@@ -99,7 +122,7 @@ export class VirtualPlayerService {
         for (const rackLetter of this.gameService.players[COMPUTER].rack) {
             computerRack.push(rackLetter.name);
         }
-        console.log('rack', computerRack);
+        // console.log('rack', computerRack);
         const numPossibilites = Math.pow(2, computerRack.length);
         for (let counter = 1; counter < numPossibilites; counter++) {
             let temp = '';
@@ -115,43 +138,59 @@ export class VirtualPlayerService {
 
         return combos;
     }
-    private getLetterCombosFromGrid(): string[] {
+    private getLetterCombosFromGrid(): WordNCoord[] {
         /**
          * Get all letters on grid that are touching. They will be considered as a chunk later since we can't shuffle them
          */
-        console.log(tiles);
+        // console.log(tiles);
         const EMPTY = '';
-        let temp: string = EMPTY;
-        const possibilities: string[] = [];
+        let tempWord = EMPTY;
+        let x = 0;
+        let y = 0;
+        const possibilities: WordNCoord[] = [];
         // get all horizontal possibilities
-        for (const line of tiles) {
-            for (const letter of line) {
-                if (letter.letter !== EMPTY) {
-                    temp += letter.letter;
-                } else {
-                    if (temp !== EMPTY) {
-                        possibilities.push(temp);
-                        temp = EMPTY;
+        for (let line = 0; line < tiles.length; line++) {
+            for (let col = 0; col < tiles[line].length; col++) {
+                // eslint-disable-next-line @typescript-eslint/prefer-for-of
+                if (tiles[line][col].letter !== EMPTY) {
+                    if (tempWord === EMPTY) {
+                        x = col;
+                        y = line;
                     }
+                    tempWord += tiles[line][col].letter;
+                } else {
+                    if (tempWord !== EMPTY) {
+                        const temp: WordNCoord = { word: tempWord, coord: { x, y }, direction: 'horizontal' };
+                        // console.log('letter do add', temp);
+                        possibilities.push(temp);
+                    }
+                    tempWord = EMPTY;
                 }
             }
         }
-        temp = EMPTY;
+
         // get all vertival possibilitier
         for (let col = 0; col < tiles[0].length; col++) {
             // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let line = 0; line < tiles.length; line++) {
                 if (tiles[line][col].letter !== EMPTY) {
-                    temp += tiles[line][col].letter;
-                } else {
-                    if (temp !== EMPTY) {
-                        possibilities.push(temp);
-                        temp = EMPTY;
+                    if (tempWord === EMPTY) {
+                        x = col;
+                        y = line;
                     }
+                    tempWord += tiles[line][col].letter;
+                } else {
+                    if (tempWord !== EMPTY) {
+                        const temp: WordNCoord = { word: tempWord, coord: { x, y }, direction: 'vertical' };
+                        console.log('letter do add', temp);
+                        possibilities.push(temp);
+                    }
+                    tempWord = EMPTY;
                 }
             }
         }
-        console.log(possibilities);
+
+        // console.log(possibilities);
         return possibilities;
     }
 }

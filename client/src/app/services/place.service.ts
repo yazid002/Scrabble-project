@@ -25,7 +25,23 @@ export class PlaceService {
     ) {
         pointsCountingService.reserve = this.reserveService.alphabets;
     }
+    placeWordInstant(word: string, coord: Vec2, direction: string): boolean {
+        word = this.verifyService.normalizeWord(word);
 
+        this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
+
+        const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
+        if (wordValidationParameters.wordExists) {
+            this.writeWord(word, coord, direction);
+            this.updateTilesLetters(word, coord, direction);
+            this.points += this.pointsCountingService.getWordBasePoints(word);
+            this.rackService.replaceWord(word);
+
+            // this.timerService.resetTimer();
+        }
+
+        return wordValidationParameters.wordExists;
+    }
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
         word = this.verifyService.normalizeWord(word);
 
