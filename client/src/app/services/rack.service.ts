@@ -31,6 +31,7 @@ export class RackService {
 
     replaceLetter(letterToReplace: string, onRackOnly: boolean, index?: number): void {
         const notFound = -1;
+        const color = 'NavajoWhite';
         const indexOnRack = index ? index : this.findLetterPosition(letterToReplace);
         if (indexOnRack !== notFound) {
             const newCharacters = this.reserveService.getLettersFromReserve(1);
@@ -42,7 +43,7 @@ export class RackService {
                 }
                 console.log('indexOnRack ', indexOnRack);
                 this.rackLetters[indexOnRack] = newCharacters[0];
-                this.fillRackPortion(indexOnRack, 'NavajoWhite');
+                this.fillRackPortion(indexOnRack, color);
             }
         }
     }

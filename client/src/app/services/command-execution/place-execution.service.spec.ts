@@ -42,7 +42,7 @@ describe('PlaceExecuteService', () => {
             const extractParametersSpy = spyOn<any>(service, 'extractParameters').and.callThrough();
             placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
 
-            service.execute(PARAMETERS);
+            service.execute(PARAMETERS, true);
 
             expect(extractParametersSpy).toHaveBeenCalled();
         });
@@ -52,7 +52,7 @@ describe('PlaceExecuteService', () => {
 
             placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
 
-            service.execute(PARAMETERS);
+            service.execute(PARAMETERS, true);
 
             expect(placeServiceSpy.placeWord).toHaveBeenCalled();
         });
@@ -62,7 +62,7 @@ describe('PlaceExecuteService', () => {
 
             placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
 
-            await service.execute(PARAMETERS).then((result) => {
+            await service.execute(PARAMETERS, true).then((result) => {
                 expect(result.body).toEqual('Le mot a été placé avec succès !');
             });
         });
@@ -72,7 +72,7 @@ describe('PlaceExecuteService', () => {
 
             placeServiceSpy.placeWord.and.returnValue(Promise.reject(new CommandError('Une erreur de test.')));
 
-            const result = await service.execute(PARAMETERS).then((error) => {
+            const result = await service.execute(PARAMETERS, true).then((error) => {
                 return error;
             });
 
@@ -85,7 +85,7 @@ describe('PlaceExecuteService', () => {
             placeServiceSpy.placeWord.and.throwError(new Error('Une erreur de test.'));
 
             try {
-                await service.execute(PARAMETERS);
+                await service.execute(PARAMETERS, true);
             } catch (error) {
                 expect(error).toEqual(new Error('Une erreur de test.'));
             }

@@ -157,7 +157,7 @@ export class GridService {
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
 
-                console.log(tiles);
+                //  console.log(tiles);
             }
         }
     }
@@ -229,17 +229,13 @@ export class GridService {
         this.fillGridPortion({ x: coord.x, y: coord.y }, tiles[coord.x][coord.y].text, tiles[coord.x][coord.y].style);
         console.log('testvalid', tiles);
     }
-
-
-
-    //https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+    // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 
     getRandomIntInclusive(min: number, max: number): number {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    
 
     randomizeIndex(minNumber: number, maxNumber: number): number {
         do {
@@ -266,6 +262,6 @@ export class GridService {
             }
         }
 
-        console.log(tiles);
+        // console.log(tiles);
     }
 }
