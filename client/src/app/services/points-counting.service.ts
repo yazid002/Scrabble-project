@@ -13,13 +13,32 @@ import { VerifyService } from './verify.service';
     providedIn: 'root',
 })
 export class PointsCountingService {
-    reserve: ICharacter[];
-    wordIsValid: boolean;
-    wordToCheck: string;
+    letterBonusesMapping: Map<string, (basePoints: number) => number> = new Map([
+        [
+            'dl',
+            (basePoints: number) => {
+                return basePoints * 2;
+            },
+        ],
+        [
+            'tl',
+            (basePoints: number) => {
+                return basePoints * 3;
+            },
+        ],
+    ]);
 
     constructor(private verifyService: VerifyService, public reserveService: ReserveService) {}
 
-    getLetterPoints(letter: string): number {
+    processWordPoints(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): number {
+        let points = this.applyBoardBonuses(wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        points = this.applyBingo(wordToCheck, points);
+
+        return points;
+    }
+
+    private getLetterPoints(letter: string): number {
         const aLetter = this.reserveService.findLetterInReserve(letter);
         if (aLetter !== INVALID_NUMBER) {
             return (aLetter as ICharacter).points;
@@ -27,22 +46,11 @@ export class PointsCountingService {
         return INVALID_NUMBER;
     }
 
-    getWordBasePoints(word: string): number {
-        return word
-            .split('')
-            .map((letter) => {
-                return this.getLetterPoints(letter);
-            })
-            .reduce((firstPoint: number, secondPoint: number) => {
-                return firstPoint + secondPoint;
-            });
-    }
-
-    applyBingo(wordToCheck: string, basePoints: number): number {
+    private applyBingo(wordToCheck: string, basePoints: number): number {
         return wordToCheck.length === BINGO_LENGTH ? basePoints + BINGO_BONUS : basePoints;
     }
 
-    applyBoardBonuses(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]) {
+    private applyBoardBonuses(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]) {
         let point = 0;
         let numberOfTW = 0;
         let numberOfDW = 0;
@@ -51,42 +59,23 @@ export class PointsCountingService {
             const y = this.verifyService.computeCoordByDirection(direction, coord, i).y;
             let basePoints = 0;
             const length = lettersUsedOnBoard.filter((letter) => letter.coord.x === x && letter.coord.y === y);
-            console.log(' le tableau et son length : ', length);
             if (length.length === 0) {
                 basePoints = this.getLetterPoints(wordToCheck[i]);
-            }
-            console.log('basePoints : ', basePoints);
+                const letterPoints = this.letterBonusesMapping.get(tiles[x][y].bonus) as (basePoints: number) => number;
+                point += letterPoints ? letterPoints(basePoints) : basePoints;
 
-            switch (tiles[x][y].bonus) {
-                case 'tl':
-                    basePoints *= 3;
-                    break;
-                case 'dl':
-                    basePoints *= 2;
-                    break;
-                case 'tw':
-                    numberOfTW++;
-                    break;
-                case 'dw':
-                    numberOfDW++;
-                    break;
+                switch (tiles[x][y].bonus) {
+                    case 'tw':
+                        numberOfTW++;
+                        break;
+                    case 'dw':
+                        numberOfDW++;
+                        break;
+                }
             }
-            point += basePoints;
         }
-        if (numberOfTW > 0) {
-            point *= numberOfTW * 3;
-        }
-        if (numberOfDW > 0) {
-            point *= numberOfDW * 2;
-        }
+        point *= numberOfTW ? numberOfTW * 3 : 1;
+        point *= numberOfDW ? numberOfDW * 2 : 1;
         return point;
-    }
-
-    processWordPoints(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): number {
-        let points = this.applyBoardBonuses(wordToCheck, coord, direction, lettersUsedOnBoard);
-
-        points = this.applyBingo(wordToCheck, points);
-
-        return points;
     }
 }

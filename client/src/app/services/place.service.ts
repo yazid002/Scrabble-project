@@ -6,7 +6,6 @@ import { VerifyService } from '@app/services/verify.service';
 import { GridService } from './grid.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
-import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 
 @Injectable({
@@ -20,18 +19,14 @@ export class PlaceService {
         private verifyService: VerifyService,
         private gridService: GridService,
         private pointsCountingService: PointsCountingService,
-        private reserveService: ReserveService,
         private timerService: TimerService,
-    ) {
-        pointsCountingService.reserve = this.reserveService.alphabets;
-    }
+    ) {}
 
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
         word = this.verifyService.normalizeWord(word);
 
         const promise = new Promise<void>((resolve, reject) => {
             this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
-            console.log(this.lettersUsedOnBoard);
             this.writeWord(word, coord, direction);
 
             const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
