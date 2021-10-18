@@ -274,7 +274,7 @@ export class GridService {
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
 
-                console.log(tiles);
+                //  console.log(tiles);
             }
         }
     }

@@ -14,8 +14,8 @@ import { PlayAreaComponent } from '@app/components/play-area/play-area.component
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { GridService } from '@app/services/grid.service';
-import { GamePageComponent } from './game-page.component';
 import { of } from 'rxjs';
+import { GamePageComponent } from './game-page.component';
 
 class MatDialogMock {
     open() {
