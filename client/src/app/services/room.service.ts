@@ -20,7 +20,8 @@ export class RoomService {
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
             // Send our message to the other players
             console.log('message emited');
-            this.socket.emit('roomMessage', message);
+            // socket.broadcast.to('game').emit('message', 'nice game');
+            this.socket.emit('roomMessage', this.socket.id, message);
         });
     }
     configureBaseSocketFeatures() {
@@ -33,9 +34,9 @@ export class RoomService {
     configureRoomCommunication() {
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un membre de la salle
         this.socket.emit('joinRoom');
-        this.socket.on('roomMessage', (broadcastMessage: string) => {
+        this.socket.on('roomMessage', (id: string, broadcastMessage: string) => {
             const message: IChat = { from: SENDER.otherPlayer, body: broadcastMessage };
-
+            if (id === this.socket.id) return;
             this.chatService.messages.push(message);
             console.log('Message received');
         });
