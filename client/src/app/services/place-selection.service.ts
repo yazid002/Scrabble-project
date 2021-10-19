@@ -84,19 +84,27 @@ export class PlaceSelectionService {
             console.log('index :', index);
             if (index !== notFound) {
                 this.selectedRackIndexesForPlacement.push(index);
+
                 this.rackService.fillRackPortion(index, selectionColor);
                 this.selectedTilesForPlacement.push(this.selectedCoord);
-                this.gridService.changeGridStyle(undefined, undefined, selectionColor);
+                // this.gridService.changeGridStyle(undefined, undefined, selectionColor);
+                this.gridService.squareLineWidth = 2;
+                this.gridService.squareColor = selectionColor;
                 this.gridService.writeLetter(event.key, this.selectedCoord);
+                this.gridService.drawGridPortionBorder(selectionColor, this.selectedCoord, 2);
                 const nextCoord = this.direction
                     ? { x: this.selectedCoord.x, y: this.selectedCoord.y + 1 }
                     : { x: this.selectedCoord.x + 1, y: this.selectedCoord.y };
+                this.gridService.drawGridPortionBorder(selectionColor, nextCoord, 2);
                 console.log('nextCoord :', nextCoord);
-                this.onBoardClick({
-                    button: 0,
-                    offsetX: nextCoord.y * SQUARE_WIDTH,
-                    offsetY: nextCoord.x * SQUARE_WIDTH,
-                } as MouseEvent);
+                this.onBoardClick(
+                    {
+                        button: 0,
+                        offsetX: nextCoord.y * SQUARE_WIDTH,
+                        offsetY: nextCoord.x * SQUARE_WIDTH,
+                    } as MouseEvent,
+                    false,
+                );
             }
         } else if (event.key === 'Backspace') {
             this.cancelUniqueSelectionFromRack();
@@ -111,7 +119,7 @@ export class PlaceSelectionService {
         this.selectedRackIndexesForPlacement.pop();
     }
 
-    onBoardClick(event: MouseEvent) {
+    onBoardClick(event: MouseEvent, shouldChangeDirection: boolean) {
         const notFound = { x: -1, y: -1 };
         const coord = this.getClickCoords(event);
         if (coord.x !== notFound.x && coord.y !== notFound.y) {
@@ -124,7 +132,9 @@ export class PlaceSelectionService {
                 this.selectedCoord = coord;
             } else {
                 // on clique sur une autre case apres avoir déja cliqué une premiere fois
-                this.direction = true;
+                if (shouldChangeDirection) {
+                    this.direction = true;
+                }
                 this.gridService.removeArrow(this.selectedCoord);
                 this.selectedCoord = coord;
             }

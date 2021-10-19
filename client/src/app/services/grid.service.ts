@@ -12,6 +12,8 @@ import { ReserveService } from '@app/services/reserve.service';
 export class GridService {
     letterStyle: CaseStyle = { color: 'NavajoWhite', font: '15px serif' };
     pointStyle: CaseStyle = { color: 'NavajoWhite', font: '10px serif' };
+    squareColor: string = 'black';
+    squareLineWidth: number = 0;
 
     gridContext: CanvasRenderingContext2D;
 
@@ -28,6 +30,10 @@ export class GridService {
 
         tiles[coord.x][coord.y].oldText = tiles[coord.x][coord.y].text;
         tiles[coord.x][coord.y].text = letter;
+        // this.squareColor = 'black';
+        // this.squareLineWidth = 1;
+        // this.squareLineWidth = 1;
+        // this.squareColor = 'red';
         this.fillGridPortion({ x: coord.x, y: coord.y }, tiles[coord.x][coord.y].text, tiles[coord.x][coord.y].style);
         console.log('testvalid', tiles);
     }
@@ -54,6 +60,8 @@ export class GridService {
         //     DEFAULT_WIDTH / SQUARE_NUMBER,
         //     DEFAULT_WIDTH / SQUARE_NUMBER,
         // );
+        this.squareColor = 'black';
+        this.squareLineWidth = 0;
         this.fillGridPortion(coord, tiles[coord.x][coord.y].text, tiles[coord.x][coord.y].style);
     }
 
@@ -102,8 +110,10 @@ export class GridService {
         this.gridContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
+                this.squareColor = 'black';
+                this.squareLineWidth = 0;
                 this.fillGridPortion({ x, y }, tiles[y][x].text, tiles[y][x].style);
-                this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
+                //  this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
             }
         }
         this.drawGridOutdoor();
@@ -121,9 +131,9 @@ export class GridService {
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
-        const strokeStyle = 'black';
-        const lineWidth = 1;
-        this.changeGridStyle(style.color, undefined, strokeStyle, lineWidth);
+        //  const strokeStyle = 'black';
+        //  const lineWidth = this.squareLineWidth;
+        this.changeGridStyle(style.color, undefined, this.squareColor, this.squareLineWidth);
 
         this.gridContext.fillRect(
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
@@ -138,6 +148,9 @@ export class GridService {
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
+
+        // console.log('squareLineWidth ', this.squareLineWidth);
+        //  this.drawGridPortionBorder(this.squareColor, coord, 2);
 
         const fillStyle = 'black';
         this.changeGridStyle(fillStyle, style.font);
@@ -163,6 +176,25 @@ export class GridService {
         this.gridContext.stroke();
     }
 
+    drawGridPortionBorder(borderColor: string, coord: Vec2, width: number): void {
+        this.changeGridStyle(borderColor, undefined, this.squareColor, width);
+
+        // this.gridContext.strokeRect(
+        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + width,
+        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + width,
+        //     DEFAULT_WIDTH / SQUARE_NUMBER - width,
+        //     DEFAULT_WIDTH / SQUARE_NUMBER - width,
+        // );
+        this.gridContext.beginPath();
+        this.gridContext.moveTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x);
+        this.gridContext.lineTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + DEFAULT_WIDTH / SQUARE_NUMBER);
+        this.gridContext.lineTo(
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + DEFAULT_WIDTH / SQUARE_NUMBER,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + DEFAULT_WIDTH / SQUARE_NUMBER,
+        );
+        this.gridContext.lineTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + DEFAULT_WIDTH / SQUARE_NUMBER, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x);
+    }
+
     changeGridStyle(fillStyle?: string, font?: string, strokeStyle?: string, lineWidth?: number): void {
         this.gridContext.fillStyle = fillStyle as string;
         this.gridContext.font = font as string;
@@ -183,6 +215,8 @@ export class GridService {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
                 if (tiles[x][y].letter !== '') {
                     tiles[x][y].style.font = this.letterStyle.font;
+                    this.squareColor = 'black';
+                    this.squareLineWidth = 0;
                     this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
