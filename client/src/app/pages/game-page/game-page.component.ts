@@ -1,8 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
+import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { GridService } from '@app/services/grid.service';
 import { RackSelectionService } from '@app/services/rack-selection.service';
 import { RackService } from '@app/services/rack.service';
+import { TileSelectionService } from '@app/services/tile-selection.service';
 
 @Component({
     selector: 'app-game-page',
@@ -11,20 +13,46 @@ import { RackService } from '@app/services/rack.service';
 })
 export class GamePageComponent {
     @ViewChild(ChatboxComponent) chatboxComponent: ChatboxComponent;
+    @ViewChild(PlayAreaComponent) playAreaComponent: PlayAreaComponent;
 
     command: string = '';
+    receptor: HTMLElement;
 
     constructor(
         public gridService: GridService,
         public rackSelectionService: RackSelectionService,
-        public rackService: RackService, //  private tileSelectionService: TileSelectionService,
+        public rackService: RackService,
+        private tileSelectionService: TileSelectionService,
     ) {}
 
-    // @HostListener('window:keyup', ['$event'])
-    // keyEvent(event: KeyboardEvent) {
-    //     event.preventDefault();
-    //     this.rackSelectionService.onKeyBoardClick(event, this.rackService.rackLetters);
-    // }
+    @HostListener('keyup', ['$event'])
+    onKeyBoardClick(event: KeyboardEvent) {
+        event.preventDefault();
+        console.log('{ x, y} :', event.target);
+        console.log('this.playArea.nativeElement : ', this.playAreaComponent.gridCanvas.nativeElement);
+
+        if (event.key === 'Enter') {
+            if (!this.disablePlacement()) {
+                this.onSubmitPlacement();
+            }
+        } else if (this.receptor === this.playAreaComponent.gridCanvas.nativeElement) {
+            this.rackSelectionService.onKeyBoardClick(event, this.rackService.rackLetters, false);
+        }
+    }
+
+    @HostListener('click', ['$event'])
+    onGridClick(event: MouseEvent) {
+        event.preventDefault();
+        console.log('{ x, y} :', event.target);
+        console.log('this.playArea.nativeElement : ', this.playAreaComponent.gridCanvas.nativeElement);
+        if (event.target !== this.playAreaComponent.gridCanvas.nativeElement) {
+            this.receptor = {} as HTMLElement;
+            this.rackSelectionService.cancelAllPlacement();
+        } else {
+            this.receptor = this.playAreaComponent.gridCanvas.nativeElement;
+            this.tileSelectionService.onTileClick(event, true, this.rackSelectionService.selectedIndexesForPlacement);
+        }
+    }
 
     onSubmitPlacement() {
         this.command = this.rackSelectionService.buildPlacementCommand(this.rackService.rackLetters);

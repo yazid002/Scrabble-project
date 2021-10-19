@@ -67,42 +67,48 @@ export class RackSelectionService {
         const notFound = -1;
         const selectionColor = 'red';
 
-        const index = this.getIndexFromKey(event, rack);
+        if (event.key === 'Escape') {
+            this.cancelAllPlacement();
+        } else if (event.key === 'Backspace') {
+            this.cancelPlacement();
+        } else {
+            const index = this.getIndexFromKey(event, rack);
 
-        const alreadySelectedForOthers = this.selectedIndexesForExchange.includes(index) || this.selectedIndexesForManipulation.includes(index);
+            const alreadySelectedForOthers = this.selectedIndexesForExchange.includes(index) || this.selectedIndexesForManipulation.includes(index);
 
-        if (index !== notFound) {
-            if (!alreadySelectedForOthers) {
-                this.selectedIndexesForPlacement.push(index);
-                this.rackService.fillRackPortion(index, selectionColor);
-                //    console.log('test', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
-                this.gridService.writeLetter(
-                    event.key,
-                    {
-                        x: this.tileSelectionService.selectedCoord.y,
-                        y: this.tileSelectionService.selectedCoord.x,
-                    },
-                    isCalledThoughtChat,
-                );
-                //  console.log('quand je click :', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
-                //  this.gridService.fillGridPortion()
-                //  console.log('selectedCoord :', this.tileSelectionService.selectedCoord);
-                //  console.log(' this.tileSelectionService.direction :', this.tileSelectionService.direction);
-                const nextCoord = this.tileSelectionService.direction
-                    ? { x: this.tileSelectionService.selectedCoord.x + 1, y: this.tileSelectionService.selectedCoord.y }
-                    : { x: this.tileSelectionService.selectedCoord.x, y: this.tileSelectionService.selectedCoord.y + 1 };
+            if (index !== notFound) {
+                if (!alreadySelectedForOthers) {
+                    this.selectedIndexesForPlacement.push(index);
+                    this.rackService.fillRackPortion(index, selectionColor);
+                    //    console.log('test', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
+                    this.gridService.writeLetter(
+                        event.key,
+                        {
+                            x: this.tileSelectionService.selectedCoord.y,
+                            y: this.tileSelectionService.selectedCoord.x,
+                        },
+                        isCalledThoughtChat,
+                    );
+                    //  console.log('quand je click :', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
+                    // this.gridService.fillGridPortion()
+                    //  console.log('selectedCoord :', this.tileSelectionService.selectedCoord);
+                    //  console.log(' this.tileSelectionService.direction :', this.tileSelectionService.direction);
+                    const nextCoord = this.tileSelectionService.direction
+                        ? { x: this.tileSelectionService.selectedCoord.x + 1, y: this.tileSelectionService.selectedCoord.y }
+                        : { x: this.tileSelectionService.selectedCoord.x, y: this.tileSelectionService.selectedCoord.y + 1 };
 
-                console.log('nextCoord :', nextCoord);
-                this.tileSelectionService.onTileClick(
-                    {
-                        button: 0,
-                        offsetX: nextCoord.x * SQUARE_WIDTH,
-                        offsetY: nextCoord.y * SQUARE_WIDTH,
-                    } as MouseEvent,
-                    false,
+                    console.log('nextCoord :', nextCoord);
+                    this.tileSelectionService.onTileClick(
+                        {
+                            button: 0,
+                            offsetX: nextCoord.x * SQUARE_WIDTH,
+                            offsetY: nextCoord.y * SQUARE_WIDTH,
+                        } as MouseEvent,
+                        false,
 
-                    this.selectedIndexesForPlacement,
-                );
+                        this.selectedIndexesForPlacement,
+                    );
+                }
             }
         }
     }
@@ -164,5 +170,13 @@ export class RackSelectionService {
         }
         console.log('length 1: ', this.tileSelectionService.selectedIndexesForPlacement.length);
         console.log('length 2: ', this.selectedIndexesForPlacement.length);
+    }
+
+    cancelAllPlacement() {
+        let i = this.tileSelectionService.selectedIndexesForPlacement.length;
+        while (i > 0) {
+            this.cancelPlacement();
+            i--;
+        }
     }
 }
