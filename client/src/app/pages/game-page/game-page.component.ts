@@ -9,9 +9,11 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
-    constructor(public gridService: GridService, private gameService: GameService, private virtualPlayerService: VirtualPlayerService) {
-        console.log(this.gameService);
-        console.log(this.virtualPlayerService);
+    // TODO verifier si les services en parametre sont utilises ou doivent en private
+    constructor(public gridService: GridService, public gameService: GameService, public virtualPlayerService: VirtualPlayerService) {
+        // TODO a enlever
+        // console.log(this.gameService);
+        // console.log(this.virtualPlayerService);
     }
 
     increaseSize(): void {
