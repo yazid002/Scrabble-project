@@ -96,15 +96,16 @@ export class PlaceService {
     writeWord(word: string, coord: Vec2, direction: string) {
         for (let i = 0; i < word.length; i++) {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
-            const x = computingCoord.x;
-            const y = computingCoord.y;
+            // const x = computingCoord.x;
+            // const y = computingCoord.y;
 
-            tiles[y][x].oldStyle = tiles[y][x].style;
-            tiles[y][x].style = this.gridService.letterStyle;
+            // tiles[x][y].oldStyle = tiles[x][y].style;
+            // tiles[x][y].style = this.gridService.letterStyle;
 
-            tiles[y][x].oldText = tiles[y][x].text;
-            tiles[y][x].text = word[i];
-            this.gridService.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style);
+            // tiles[x][y].oldText = tiles[x][y].text;
+            // tiles[x][y].text = word[i];
+            // this.gridService.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
+            this.gridService.writeLetter(word[i], computingCoord);
         }
     }
 }

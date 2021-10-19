@@ -69,7 +69,7 @@ export class RackService {
         ) as number;
     }
 
-    private fillRackPortion(index: number) {
+    fillRackPortion(index: number, color: string = 'NavajoWhite') {
         const LETTERS_PIXELS_WIDTH_ADJUSTMENT = 6;
         const LETTERS_PIXELS_HEIGH_ADJUSTMENT = 8;
         const POINTS_PIXELS_WIDTH_ADJUSTMENT = 25;
@@ -78,7 +78,7 @@ export class RackService {
         this.rackContext.clearRect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.rect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.stroke();
-        this.rackContext.fillStyle = 'NavajoWhite';
+        this.rackContext.fillStyle = color;
         this.rackContext.fillRect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.fillStyle = 'rgb(0,0,0)';
         this.rackContext.font = '30px serif';

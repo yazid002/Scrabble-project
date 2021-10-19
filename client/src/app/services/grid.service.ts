@@ -17,6 +17,46 @@ export class GridService {
 
     constructor(private reserveService: ReserveService) {}
 
+    writeLetter(letter: string, coord: Vec2): void {
+        tiles[coord.x][coord.y].oldStyle.color = tiles[coord.x][coord.y].style.color;
+        tiles[coord.x][coord.y].oldStyle.font = tiles[coord.x][coord.y].style.font;
+
+        console.log('letterStyle1 :', this.letterStyle);
+        tiles[coord.x][coord.y].style.font = this.letterStyle.font;
+        tiles[coord.x][coord.y].style.color = this.letterStyle.color;
+        console.log('letterStyle2 :', tiles[coord.x][coord.y].style);
+
+        tiles[coord.x][coord.y].oldText = tiles[coord.x][coord.y].text;
+        tiles[coord.x][coord.y].text = letter;
+        this.fillGridPortion({ x: coord.x, y: coord.y }, tiles[coord.x][coord.y].text, tiles[coord.x][coord.y].style);
+        console.log('testvalid', tiles);
+    }
+
+    drawArrow(direction: boolean, coord: Vec2) {
+        const img = document.getElementById('img') as HTMLImageElement;
+        const img2 = document.getElementById('img2') as HTMLImageElement;
+
+        const arrow = direction === true ? img : img2;
+
+        const fillStyle = 'violet';
+        this.changeGridStyle(fillStyle, '10px serif');
+
+        this.gridContext.drawImage(arrow, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x, 13.33, 13.33);
+    }
+
+    removeArrow(coord: Vec2) {
+        // const strokeStyle = 'black';
+        // this.changeGridStyle(tiles[coord.x][coord.y].style.color, undefined, strokeStyle);
+        // this.gridContext.fillRect((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x, 13.33, 13.33);
+        // this.gridContext.strokeRect(
+        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+        //     DEFAULT_WIDTH / SQUARE_NUMBER,
+        //     DEFAULT_WIDTH / SQUARE_NUMBER,
+        // );
+        this.fillGridPortion(coord, tiles[coord.x][coord.y].text, tiles[coord.x][coord.y].style);
+    }
+
     drawGridOutdoor() {
         this.changeGridStyle('PeachPuff');
         this.gridContext.fillRect(0, DEFAULT_WIDTH, SQUARE_HEIGHT * (SQUARE_NUMBER + 1), SQUARE_WIDTH * (SQUARE_NUMBER + 1));

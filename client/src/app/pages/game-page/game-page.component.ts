@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { GameSyncService } from '@app/services/game-sync.service';
+import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
-import { RoomService, Room } from '@app/services/room.service';
+import { PlaceSelectionService } from '@app/services/place-selection.service';
+import { Room, RoomService } from '@app/services/room.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -17,13 +19,24 @@ export class GamePageComponent {
     rooms: Room[];
     constructor(
         public gridService: GridService,
-
+        private gameService: GameService,
         private virtualPlayerService: VirtualPlayerService,
         public roomService: RoomService,
         private gameSyncService: GameSyncService,
+        private placeSelectionService: PlaceSelectionService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
+    }
+
+    @HostListener('keyup', ['$event'])
+    onKeyBoardClick(event: KeyboardEvent) {
+        this.placeSelectionService.onKeyBoardClick(event, this.gameService.players[0].rack);
+    }
+
+    @HostListener('click', ['$event'])
+    onLeftClick(event: MouseEvent) {
+        this.placeSelectionService.onBoardClick(event);
     }
 
     increaseSize(): void {
