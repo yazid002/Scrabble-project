@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
+import { PlaceSelectionService } from '@app/services/place-selection.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -9,11 +10,30 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
-    // TODO verifier si les services en parametre sont utilises ou doivent en private
-    constructor(public gridService: GridService, public gameService: GameService, public virtualPlayerService: VirtualPlayerService) {
-        // TODO a enlever
-        // console.log(this.gameService);
-        // console.log(this.virtualPlayerService);
+    constructor(
+        public gridService: GridService,
+        private gameService: GameService,
+        private virtualPlayerService: VirtualPlayerService,
+        private placeSelectionService: PlaceSelectionService, //  private readonly rackService: RackService,
+    ) {
+        console.log(this.gameService);
+        console.log(this.virtualPlayerService);
+    }
+
+    @HostListener('keyup', ['$event'])
+    onKeyBoardClick(event: KeyboardEvent) {
+        //   this.placeSelectionService.getClickIndex(event, this.gameService.players[0].rack);
+        //  this.placeSelectionService.getClickCoords(event);
+        this.placeSelectionService.onKeyBoardClick(event, this.gameService.players[0].rack);
+    }
+
+    @HostListener('click', ['$event'])
+    onLeftClick(event: MouseEvent) {
+        this.placeSelectionService.onBoardClick(event);
+
+        // this.placeSelectionService.getClickIndex(event, this.gameService.players[0].rack);
+        // this.placeSelectionService.getClickCoords(event);
+        //  this.placeSelectionService.getIndexFromKey(event, this.gameService.players[0].rack);
     }
 
     increaseSize(): void {

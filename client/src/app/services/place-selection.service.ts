@@ -1,0 +1,145 @@
+import { Injectable } from '@angular/core';
+import { tiles } from '@app/classes/board';
+import { ICharacter } from '@app/classes/letter';
+import { Vec2 } from '@app/classes/vec2';
+import { SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
+import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
+import { GridService } from './grid.service';
+import { RackService } from './rack.service';
+
+@Injectable({
+    providedIn: 'root',
+})
+export class PlaceSelectionService {
+    selectedCoord: Vec2 = { x: -1, y: -1 };
+    direction: boolean = true;
+    selectedTilesForPlacement: Vec2[] = [];
+    selectedRackIndexesForPlacement: number[] = [];
+    wordToVerify: string[] = [];
+
+    constructor(public gridService: GridService, private rackService: RackService) {}
+
+    getClickIndex(event: MouseEvent, rack: ICharacter[]): number {
+        console.log('click on rack { x, y} :', event.offsetX, event.offsetY);
+        const notFound = -1;
+        for (let i = 0; i < rack.length; i++) {
+            if (event.offsetX >= i * (DEFAULT_WIDTH / RACK_SIZE) && event.offsetX < (i + 1) * (DEFAULT_WIDTH / RACK_SIZE)) {
+                console.log(i);
+                return i;
+            }
+        }
+        return notFound;
+    }
+
+    getClickCoords(event: MouseEvent): Vec2 {
+        const notFound = -1;
+        for (let x = 0; x < SQUARE_NUMBER; x++) {
+            for (let y = 0; y < SQUARE_NUMBER; y++) {
+                if (
+                    event.offsetX >= x * SQUARE_WIDTH &&
+                    event.offsetX < (x + 1) * SQUARE_WIDTH &&
+                    event.offsetY >= y * SQUARE_HEIGHT &&
+                    event.offsetY < (y + 1) * SQUARE_HEIGHT
+                ) {
+                    console.log('click on board { x, y} :', x, y);
+                    return { x: y, y: x };
+                }
+            }
+        }
+        return { x: notFound, y: notFound };
+    }
+
+    getIndexOnRackFromKey(event: KeyboardEvent, rack: ICharacter[]) {
+        const notFound = -1;
+        const regexp = new RegExp('^[A-Z]$');
+        const letterToFound = regexp.test(event.key) ? '*' : event.key.toUpperCase();
+
+        console.log(letterToFound);
+        for (let i = 0; i < rack.length; i++) {
+            if (rack[i].name === letterToFound) {
+                if (!this.selectedRackIndexesForPlacement.includes(i)) {
+                    this.wordToVerify.push(event.key);
+                    return i;
+                }
+            }
+        }
+        return notFound;
+    }
+
+    buildPlacementCommand(rack: ICharacter[]): string {
+        console.log(rack);
+        return `!placer ${String.fromCharCode(this.selectedTilesForPlacement[0].y + 'A'.charCodeAt(0)).toLowerCase()}${
+            this.selectedTilesForPlacement[0].x + 1
+        }${this.direction ? 'h' : 'v'} ${this.wordToVerify.join('')}`;
+    }
+
+    onKeyBoardClick(event: KeyboardEvent, rack: ICharacter[]) {
+        console.log(rack);
+        const notFound = -1;
+        const selectionColor = 'red';
+        const regexp = new RegExp('^[a-zA-Z]$');
+        if (regexp.test(event.key)) {
+            console.log('je suis rentrée');
+            const index = this.getIndexOnRackFromKey(event, rack);
+            console.log('index :', index);
+            if (index !== notFound) {
+                this.selectedRackIndexesForPlacement.push(index);
+                this.rackService.fillRackPortion(index, selectionColor);
+                this.selectedTilesForPlacement.push(this.selectedCoord);
+                this.gridService.changeGridStyle(undefined, undefined, selectionColor);
+                this.gridService.writeLetter(event.key, this.selectedCoord);
+                const nextCoord = this.direction
+                    ? { x: this.selectedCoord.x, y: this.selectedCoord.y + 1 }
+                    : { x: this.selectedCoord.x + 1, y: this.selectedCoord.y };
+                console.log('nextCoord :', nextCoord);
+                this.onBoardClick({
+                    button: 0,
+                    offsetX: nextCoord.y * SQUARE_WIDTH,
+                    offsetY: nextCoord.x * SQUARE_WIDTH,
+                } as MouseEvent);
+            }
+        } else if (event.key === 'Backspace') {
+            this.cancelUniqueSelectionFromRack();
+            this.cancelUniqueBoardClick();
+        }
+    }
+
+    cancelUniqueSelectionFromRack() {
+        console.log(this.selectedRackIndexesForPlacement);
+        const normalColor = 'NavajoWhite';
+        this.rackService.fillRackPortion(this.selectedRackIndexesForPlacement[this.selectedRackIndexesForPlacement.length - 1], normalColor);
+        this.selectedRackIndexesForPlacement.pop();
+    }
+
+    onBoardClick(event: MouseEvent) {
+        const notFound = { x: -1, y: -1 };
+        const coord = this.getClickCoords(event);
+        if (coord.x !== notFound.x && coord.y !== notFound.y) {
+            if (coord.x === this.selectedCoord.x && coord.y === this.selectedCoord.y) {
+                // on clique sur le même, on change de direction
+                this.gridService.removeArrow(this.selectedCoord);
+                this.direction = !this.direction;
+            } else if (this.selectedCoord.x === notFound.x && this.selectedCoord.y === notFound.y) {
+                // on clique pour la premiere fois
+                this.selectedCoord = coord;
+            } else {
+                // on clique sur une autre case apres avoir déja cliqué une premiere fois
+                this.direction = true;
+                this.gridService.removeArrow(this.selectedCoord);
+                this.selectedCoord = coord;
+            }
+            this.gridService.drawArrow(this.direction, this.selectedCoord);
+        }
+    }
+
+    cancelUniqueBoardClick() {
+        this.gridService.changeGridStyle(undefined, undefined, 'black');
+        this.gridService.removeArrow(this.selectedCoord);
+        const coord = this.selectedTilesForPlacement.pop();
+        if (coord) {
+            tiles[coord.x][coord.y].text = tiles[coord.x][coord.y].oldText;
+            tiles[coord.x][coord.y].style = tiles[coord.x][coord.y].oldStyle;
+            this.gridService.fillGridPortion(coord, tiles[coord.x][coord.y].text, tiles[coord.x][coord.y].style);
+        }
+    }
+}
