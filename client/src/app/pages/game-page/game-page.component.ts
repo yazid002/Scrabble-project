@@ -36,7 +36,11 @@ export class GamePageComponent {
 
     @HostListener('click', ['$event'])
     onLeftClick(event: MouseEvent) {
-        this.placeSelectionService.onBoardClick(event);
+        this.placeSelectionService.onBoardClick(event, true);
+
+        // this.placeSelectionService.getClickIndex(event, this.gameService.players[0].rack);
+        // this.placeSelectionService.getClickCoords(event);
+        //  this.placeSelectionService.getIndexFromKey(event, this.gameService.players[0].rack);
     }
 
     increaseSize(): void {
