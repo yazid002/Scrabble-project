@@ -69,6 +69,9 @@ export class GameService {
         };
         this.players.push(computer);
     }
+
+    // TODO: Commenter pour le merge, a enlever si non utilisé
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     private initMultiPlayers() {}
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
