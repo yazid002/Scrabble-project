@@ -9,7 +9,6 @@ export class ChatService {
     @Output() messageSent = new BehaviorSubject<string>('');
     messages: IChat[] = [];
 
-
     getMessages(): Observable<IChat[]> {
         const obs = of(this.messages);
         return obs;

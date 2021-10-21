@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
-import { TimerService } from '../timer.service';
+import { TimerService } from '@app/services/timer.service';
 
 @Injectable({
     providedIn: 'root',

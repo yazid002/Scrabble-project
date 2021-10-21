@@ -10,6 +10,7 @@ import { ChatService } from './chat.service';
 export class RoomService {
     urlString: string;
     socket: Socket;
+    roomId: string;
     chatServiceSubscription: Subscription;
 
     constructor(private chatService: ChatService) {
@@ -21,7 +22,7 @@ export class RoomService {
             // Send our message to the other players
             console.log('message emited');
             // socket.broadcast.to('game').emit('message', 'nice game');
-            this.socket.emit('roomMessage', this.socket.id, message);
+            this.socket.emit('roomMessage', this.roomId, this.socket.id, message);
         });
     }
     configureBaseSocketFeatures() {
@@ -33,12 +34,21 @@ export class RoomService {
 
     configureRoomCommunication() {
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un membre de la salle
-        this.socket.emit('joinRoom');
+        this.joinRoom('patate'); // TODO : quand le lobby sera bien créé, on peut join une room plus approprié
         this.socket.on('roomMessage', (id: string, broadcastMessage: string) => {
             const message: IChat = { from: SENDER.otherPlayer, body: broadcastMessage };
             if (id === this.socket.id) return;
             this.chatService.messages.push(message);
             console.log('Message received');
         });
+    }
+
+    joinRoom(roomId: string) {
+        this.socket.emit('joinRoom', roomId);
+        this.roomId = roomId;
+    }
+    createRoom() {
+        this.socket.emit('joinRoom');
+        this.roomId = this.socket.id;
     }
 }

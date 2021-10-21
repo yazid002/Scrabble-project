@@ -1,10 +1,11 @@
-import * as io from 'socket.io';
 import * as http from 'http';
+import * as io from 'socket.io';
 
 export class SocketManager {
     // Class inspired from Nikolay's socket communication example
     private sio: io.Server;
-    private room: string = 'serverRoom';
+    
+    
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
@@ -27,13 +28,23 @@ export class SocketManager {
                 this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
             });
 
-            socket.on('joinRoom', () => {
-                socket.join(this.room);
+            socket.on('joinRoom', (roomId?: string) => {
+                /** server makes socket join room and creates the room if necessary
+                 * @param roomId: provide a roomId to join a specific room or do not provide a roomId and a room will be created from your socket id
+                 */
+                if (roomId) {
+                    socket.join(roomId);
+                } else {
+                    socket.join(socket.id);
+                }
             });
-
-            socket.on('roomMessage', (id: string, message: string) => {
+            
+            
+            socket.on('roomMessage', (roomId: string, userId: string, message: string) => {
                 // socket.broadcast.to('joinRoom').emit("roomMessage", `${socket.id} : ${message}`);
-                this.sio.to(this.room).emit('roomMessage', id, message);
+                
+                this.sio.to(roomId).emit('roomMessage', userId, message);
+                
             });
 
             socket.on('disconnect', (reason) => {
