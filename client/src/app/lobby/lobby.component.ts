@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
-import { GameModeDialogComponent } from '@app/components/game-mode-dialog/game-mode-dialog.component';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { SwitchDialogComponent } from './../components/switch-dialog/switch-dialog.component';
 
@@ -28,6 +27,8 @@ export class LobbyComponent implements OnInit {
         { name: 'Game3', index: 3, turnDuration: '2 minutes', isAvailable: true },
     ];
 
+    // listRooms: RoomService[] = [];
+
     // headers: string[] = ['Game', 'turnDuration', 'Number of players'];
     constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService) {}
     ngOnInit(): void {
@@ -45,11 +46,10 @@ export class LobbyComponent implements OnInit {
         );
         this.assignValues(name, mode, numPlayers, timer);
     }
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-    // ngOnInit(): void {}
-    openDialog() {
-        this.matDialog.open(GameModeDialogComponent);
-    }
+
+    // openDialog() {
+    //     this.matDialog.open(GameModeDialogComponent);
+    // }
 
     openSwitchDialog() {
         this.matDialog.open(SwitchDialogComponent);
