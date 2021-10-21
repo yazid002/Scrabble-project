@@ -1,7 +1,8 @@
-import * as http from 'http';
 import * as io from 'socket.io';
+import * as http from 'http';
 
 export class SocketManager {
+    // Class inspired from Nikolay's socket communication example
     private sio: io.Server;
     private room: string = 'serverRoom';
     constructor(server: http.Server) {
@@ -30,8 +31,9 @@ export class SocketManager {
                 socket.join(this.room);
             });
 
-            socket.on('roomMessage', (message: string) => {
-                this.sio.to(this.room).emit('roomMessage', `${socket.id} : ${message}`);
+            socket.on('roomMessage', (id: string, message: string) => {
+                // socket.broadcast.to('joinRoom').emit("roomMessage", `${socket.id} : ${message}`);
+                this.sio.to(this.room).emit('roomMessage', id, message);
             });
 
             socket.on('disconnect', (reason) => {
