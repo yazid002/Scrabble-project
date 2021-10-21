@@ -2,7 +2,6 @@ import * as http from 'http';
 import * as io from 'socket.io';
 
 export class SocketManager {
-    // Class inspired from Nikolay's socket communication example
     private sio: io.Server;
     
     
