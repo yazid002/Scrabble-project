@@ -10,7 +10,7 @@ export class SocketManager {
     }
 
     handleSockets(): void {
-        this.sio.on('connection', (socket) => {
+        this.sio.on('connection', (socket: io.Socket) => {
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             // message initial
             socket.emit('hello', 'Hello World!');
@@ -46,7 +46,7 @@ export class SocketManager {
                 
             });
 
-            socket.on('disconnect', (reason) => {
+            socket.on('disconnect', (reason: string) => {
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
             });
