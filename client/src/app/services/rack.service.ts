@@ -9,7 +9,8 @@ import { GameService, REAL_PLAYER } from './game.service';
 export class RackService {
     rackContext: CanvasRenderingContext2D;
     constructor(private reserveService: ReserveService, public gameService: GameService) {
-        console.log(this.gameService);
+        // TODO: Commenter pour le merge, à enlever
+        //  console.log(this.gameService);
     }
 
     displayRack() {

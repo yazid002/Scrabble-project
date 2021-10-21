@@ -10,6 +10,7 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
+    // TODO verifier si les services en parametre sont utilises ou doivent en private
     constructor(
         public gridService: GridService,
         private gameService: GameService,

@@ -60,6 +60,7 @@ export class VirtualPlayerService {
         this.exchangeService.exchangeLetters(lettersToChange);
     }
     private place() {
-        console.log('virtual player place');
+        // TODO: commenter pour le merge, a enlever
+        //  console.log('virtual player place');
     }
 }
