@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IOption } from '@app/classes/game-options';
+import { COMPUTER as COMPUTER_INDEX, GameService, REAL_PLAYER as REAL_PLAYER_INDEX } from '@app/services/game.service';
 import { PlaceService } from '@app/services/place.service';
-import { RackService } from '@app/services/rack.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
@@ -16,16 +16,15 @@ export class GameOverviewComponent implements OnInit {
     numPlayers: string;
     computerLevel: string;
     timer: string;
+    computerIndex = COMPUTER_INDEX;
+    realPlayerIndex = REAL_PLAYER_INDEX;
     nbLettersReserve: number = 0;
-
-    personIsActive: boolean = false;
-
     constructor(
         public userSettingsService: UserSettingsService,
         public timerService: TimerService,
         public reserveService: ReserveService,
-        public rackService: RackService,
         public placeService: PlaceService,
+        public gameService: GameService,
     ) {}
     ngOnInit(): void {
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
+import { RoomService } from '@app/services/room.service';
+import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
     selector: 'app-game-page',
@@ -7,7 +10,17 @@ import { GridService } from '@app/services/grid.service';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
-    constructor(public gridService: GridService) {}
+    // TODO verifier si les services en parametre sont utilises ou doivent en private
+    constructor(
+        public gridService: GridService,
+        private gameService: GameService,
+        private virtualPlayerService: VirtualPlayerService,
+        private roomService: RoomService,
+    ) {
+        console.log(this.gameService);
+        console.log(this.virtualPlayerService);
+        console.log(this.roomService);
+    }
 
     increaseSize(): void {
         const step = 1;
