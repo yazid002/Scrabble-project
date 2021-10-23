@@ -1,5 +1,5 @@
 import { Injectable, Output } from '@angular/core';
-import { IChat } from '@app/classes/chat';
+import { IChat, SENDER } from '@app/classes/chat';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Injectable({
@@ -15,6 +15,7 @@ export class ChatService {
     }
     addMessage(newMessage: IChat): void {
         this.messages.push(newMessage);
+        if (newMessage.body.startsWith('!') || newMessage.from !== SENDER.me) return;
         this.messageSent.next(newMessage.body);
     }
     clear(): void {

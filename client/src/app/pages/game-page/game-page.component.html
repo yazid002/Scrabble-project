@@ -1,4 +1,7 @@
 <div class="container">
+    <!-- TODO enlever le input et les bouton une fois que le loby est intégré et créé les salles pour nous -->
+    <input type="text" (keyUp.enter)="goInRoom()" [(ngModel)]="roomName">
+    <input type="checkbox" [(ngModel)]="isMaster">
     <app-sidebar></app-sidebar>
     <section class="play-area-container">
         <app-play-area class="play-area" tabindex="0"></app-play-area>
