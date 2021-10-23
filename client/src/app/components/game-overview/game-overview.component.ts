@@ -57,7 +57,7 @@ export class GameOverviewComponent implements OnInit {
         if (mode && numPlayers && computerLevel && timer) {
             this.mode = mode.value;
             this.numPlayers = numPlayers.value;
-            this.computerLevel = computerLevel.value;
+            this.computerLevel = this.numPlayers === 'solo' ? computerLevel.value : '';
             this.timer = timer.value;
         }
     }
