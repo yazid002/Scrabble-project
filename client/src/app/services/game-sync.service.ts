@@ -53,13 +53,17 @@ export class GameSyncService {
         this.sendGameStateSignal.next(gameState);
     }
     private getGameState(): GameState {
+        const tempGrid: Case[][] = tiles;
+        for (let i = 0; i < tiles.length; i++) {
+            tempGrid[i] = tiles[i];
+        }
         const gameState: GameState = {
             players: this.gameService.players,
             alphabetReserve: this.reserveService.alphabets,
             currentTurn: this.gameService.currentTurn,
             skipCounter: this.gameService.skipCounter,
             timer: this.timerService.counter.totalTimer,
-            grid: tiles,
+            grid: tempGrid,
         };
         return gameState;
     }

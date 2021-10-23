@@ -90,7 +90,7 @@ export class GameService {
         //make computer just two have two players
         const computer: Player = {
             id: COMPUTER,
-            name: this.userSettingsService.computerName,
+            name: this.userSettingsService.getComputerName(),
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
         };
