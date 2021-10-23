@@ -5,7 +5,6 @@ import { io, Socket } from 'socket.io-client';
 import { ChatService } from './chat.service';
 import { GameSyncService, GameState } from './game-sync.service';
 
-
 @Injectable({
     providedIn: 'root',
 })
@@ -40,7 +39,7 @@ export class RoomService {
 
     configureRoomCommunication() {
         // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un membre de la salle
-       // this.joinRoom('patate'); // TODO : quand le lobby sera bien créé, on peut join une room plus approprié
+        // this.joinRoom('patate'); // TODO : quand le lobby sera bien créé, on peut join une room plus approprié
         this.socket.on('roomMessage', (id: string, broadcastMessage: string) => {
             const message: IChat = { from: SENDER.otherPlayer, body: broadcastMessage };
             if (id === this.socket.id || !broadcastMessage) return;

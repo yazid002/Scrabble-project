@@ -44,16 +44,14 @@ export class GameService {
         if (this.skipCounter < MAX_SKIPS) {
             this.currentTurn = (this.currentTurn + 1) % 2;
             if (this.currentTurn === OTHER_PLAYER) {
-
                 this.nextPlayer();
             }
         }
     }
     private nextPlayer() {
-        console.log("nextplayer signal emited in gameService");
+        console.log('nextplayer signal emited in gameService');
         this.otherPlayerSignal.next(this.numPlayers);
     }
-    
 
     private getNumPlayerInstructions(numPlayer: string): InstructionSet {
         const numPlayerMap: Map<string, InstructionSet> = new Map([
@@ -87,7 +85,7 @@ export class GameService {
         };
         this.players.push(realPlayer);
 
-        //make computer just two have two players
+        // make computer just two have two players
         const computer: Player = {
             id: COMPUTER,
             name: this.userSettingsService.getComputerName(),

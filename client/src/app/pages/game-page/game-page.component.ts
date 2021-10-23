@@ -39,7 +39,7 @@ export class GamePageComponent {
     }
     // TODO enlever goInRoom une fois que le loby est intégré et créé les salles pour nous
     goInRoom() {
-        let temp: string = 'Vous avez ';
+        let temp = 'Vous avez ';
         if (this.isMaster) {
             this.roomService.createRoom(this.roomName);
             temp += 'créé la salle ';

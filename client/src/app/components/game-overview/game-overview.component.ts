@@ -43,14 +43,13 @@ export class GameOverviewComponent implements OnInit {
         );
 
         this.assignValues(mode, numPlayers, computerLevel, timer);
-        
+
         this.updateData();
     }
     private updateData(): void {
         const reserveRefreshRate = 1000;
         setInterval(() => {
             this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();
-
         }, reserveRefreshRate);
     }
     private assignValues(mode: IOption | undefined, numPlayers: IOption | undefined, computerLevel: IOption | undefined, timer: IOption | undefined) {
@@ -61,5 +60,4 @@ export class GameOverviewComponent implements OnInit {
             this.timer = timer.value;
         }
     }
-    
 }
