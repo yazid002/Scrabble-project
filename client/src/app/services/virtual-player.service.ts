@@ -39,7 +39,7 @@ export class VirtualPlayerService {
         const TURN_TIME = 3000;
         let skipped = false;
         setTimeout(() => {
-            const oneOfTenProbability = 10;
+            const oneOfTenProbability = 100; // TODO should be 10, but peut to 100 to easely test place
             const randomNumber = Math.floor(oneOfTenProbability * Math.random());
             if (randomNumber === 0) {
                 skipped = true;
