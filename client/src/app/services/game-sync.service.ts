@@ -22,6 +22,7 @@ export interface GameState {
 export class GameSyncService {
     @Output() sendGameStateSignal: BehaviorSubject<GameState>;
     @Output() sendAbandonSignal: BehaviorSubject<string>;
+    private alreadySynced: boolean;
     sendOtherPlayerTrigger: Subscription;
     abandonTrigger: Subscription;
     isMasterClient: boolean;
@@ -40,6 +41,8 @@ export class GameSyncService {
         this.abandonTrigger = this.gameService.abandonSignal.subscribe((reason: string) => {
             this.sendAbandonSignal.next(reason);
         });
+
+        this.alreadySynced = false;
     }
     receiveFromServer(gameState: GameState) {
         this.reserveService.alphabets = gameState.alphabetReserve;
@@ -52,6 +55,10 @@ export class GameSyncService {
         }
         this.gridService.drawGrid();
         console.log('receiving data from server!', this.getGameState());
+        if (!this.alreadySynced) {
+            this.alreadySynced = true;
+            this.sendToServer();
+        }
     }
     sendToServer() {
         const gameState = this.getGameState();

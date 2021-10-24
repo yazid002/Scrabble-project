@@ -1,4 +1,11 @@
 <div class="container">
+    <app-sidebar></app-sidebar>
+    <section class="play-area-container">
+        <app-play-area class="play-area" tabindex="0"></app-play-area>
+        <button id="increaseSize" (click)="increaseSize()">+</button>
+        <button id="decreaseSize" (click)="decreaseSize()">-</button>
+    </section>
+    <app-chatbox></app-chatbox>
     <!-- TODO enlever le input et les bouton une fois que le loby est intégré et créé les salles pour nous -->
     <div>
         
@@ -7,11 +14,4 @@
         Is Master Player
         <input type="checkbox" [(ngModel)]="isMaster">
     </div>
-    <app-sidebar></app-sidebar>
-    <section class="play-area-container">
-        <app-play-area class="play-area" tabindex="0"></app-play-area>
-        <button id="increaseSize" (click)="increaseSize()">+</button>
-        <button id="decreaseSize" (click)="decreaseSize()">-</button>
-    </section>
-    <app-chatbox></app-chatbox>
 </div>

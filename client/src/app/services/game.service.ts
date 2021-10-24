@@ -36,7 +36,9 @@ export class GameService {
     }
     convertGameToSolo() {
         this.numPlayers = 'solo';
-        this.changeTurn(false);
+        if (this.currentTurn === OTHER_PLAYER) {
+            this.otherPlayerSignal.next(this.numPlayers);
+        }
     }
     quitGame() {
         this.abandonSignal.next('abandon');
