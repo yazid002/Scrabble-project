@@ -46,6 +46,6 @@ export class PlaceExecutionService {
         Pris sur: 
         https://stackoverflow.com/questions/1862130/strip-all-non-numeric-characters-from-string-in-javascript
         */
-        return { direction, coord: { x: line, y: column } };
+        return { direction, coord: { y: line, x: column } };
     }
 }
