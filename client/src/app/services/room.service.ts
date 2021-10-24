@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { ChatService } from './chat.service';
 import { GameSyncService, GameState } from './game-sync.service';
+import { GameService } from './game.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,8 +15,9 @@ export class RoomService {
     roomId: string;
     chatServiceSubscription: Subscription;
     gameStateSubscription: Subscription;
+    abandonSubscription: Subscription;
 
-    constructor(private chatService: ChatService, private gameSyncService: GameSyncService) {
+    constructor(private chatService: ChatService, private gameSyncService: GameSyncService, private gameService: GameService) {
         this.urlString = `http://${window.location.hostname}:5020`;
         this.socket = io(this.urlString);
         this.configureBaseSocketFeatures();
@@ -28,6 +30,9 @@ export class RoomService {
         });
         this.gameStateSubscription = this.gameSyncService.sendGameStateSignal.subscribe((gameState: GameState) => {
             this.socket.emit('syncGameData', this.roomId, this.socket.id, gameState);
+        });
+        this.abandonSubscription = this.gameSyncService.sendAbandonSignal.subscribe(() => {
+            this.socket.emit('abandon', this.roomId, this.socket.id);
         });
     }
     configureBaseSocketFeatures() {
@@ -50,6 +55,11 @@ export class RoomService {
             if (id === this.socket.id) return;
             this.gameSyncService.receiveFromServer(gameState);
         });
+        this.socket.on('abandon', (id: string) => {
+            if (id === this.socket.id) return;
+            this.gameService.convertGameToSolo();
+        });
+        
     }
 
     joinRoom(roomId: string) {

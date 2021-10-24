@@ -42,6 +42,9 @@ export class SocketManager {
                 }
                 this.rooms = [...new Set(this.rooms)]; // Remove possible duplicates
             });
+            socket.on('abandon', (roomId: string, userId: string) => {
+                this.sio.to(roomId).emit('abandon', userId);
+            });
 
             socket.on('roomMessage', (roomId: string, userId: string, message: string) => {
                 // socket.broadcast.to('joinRoom').emit("roomMessage", `${socket.id} : ${message}`);

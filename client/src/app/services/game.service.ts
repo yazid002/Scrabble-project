@@ -18,6 +18,7 @@ const MAX_SKIPS = 6;
 })
 export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
+    @Output() abandonSignal = new BehaviorSubject<string>('');
 
     players: Player[] = [];
     currentTurn: number;
@@ -33,7 +34,13 @@ export class GameService {
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
     }
-
+    convertGameToSolo() {
+        this.numPlayers = 'solo';
+        this.changeTurn(false);
+    }
+    quitGame() {
+        this.abandonSignal.next('abandon');
+    }
     private changeTurn(skipped: boolean): void {
         console.log('Changeturn');
         if (skipped) {

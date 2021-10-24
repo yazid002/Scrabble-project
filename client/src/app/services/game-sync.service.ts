@@ -21,7 +21,9 @@ export interface GameState {
 })
 export class GameSyncService {
     @Output() sendGameStateSignal: BehaviorSubject<GameState>;
+    @Output() sendAbandonSignal: BehaviorSubject<string>;
     sendOtherPlayerTrigger: Subscription;
+    abandonTrigger: Subscription;
     isMasterClient: boolean;
     constructor(
         private gameService: GameService,
@@ -30,9 +32,13 @@ export class GameSyncService {
         private gridService: GridService,
     ) {
         this.sendGameStateSignal = new BehaviorSubject<GameState>(this.getGameState());
+        this.sendAbandonSignal = new BehaviorSubject<string>('');
         this.sendOtherPlayerTrigger = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
             if (numPlayers !== 'multiplayer') return;
             this.sendToServer();
+        });
+        this.abandonTrigger = this.gameService.abandonSignal.subscribe((reason: string) => {
+            this.sendAbandonSignal.next(reason);
         });
     }
     receiveFromServer(gameState: GameState) {

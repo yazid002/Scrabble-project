@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { GameService } from '@app/services/game.service';
 
 @Component({
-  selector: 'app-quit-confirmation-dialog',
-  templateUrl: './quit-confirmation-dialog.component.html',
-  styleUrls: ['./quit-confirmation-dialog.component.scss']
+    selector: 'app-quit-confirmation-dialog',
+    templateUrl: './quit-confirmation-dialog.component.html',
+    styleUrls: ['./quit-confirmation-dialog.component.scss'],
 })
-export class QuitConfirmationDialogComponent implements OnInit {
+export class QuitConfirmationDialogComponent {
+    constructor(private gameService: GameService) {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+    
+    quitGame() {
+        this.gameService.quitGame();
+    }
 }
