@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { SwitchDialogComponent } from './../components/switch-dialog/switch-dialog.component';
-
 export interface Game {
     name: string;
     index: number;
@@ -21,13 +20,15 @@ export class LobbyComponent implements OnInit {
     mode: string;
     timer: string;
     personIsActive: boolean = false;
+    // listRooms: RoomService[] = [
+    //     { urlString: 'http://localhost:5020', socket: io('http://localhost:5020'), roomId: 'room1', chatServiceSubscription: '' },
+    // ];
+
     listGames: Game[] = [
         { name: 'Game1', index: 1, turnDuration: '1 minute', isAvailable: true },
         { name: 'Game2', index: 2, turnDuration: '1.5minute', isAvailable: true },
         { name: 'Game3', index: 3, turnDuration: '2 minutes', isAvailable: true },
     ];
-
-    // listRooms: RoomService[] = [];
 
     // headers: string[] = ['Game', 'turnDuration', 'Number of players'];
     constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService) {}

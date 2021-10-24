@@ -14,9 +14,9 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { ChatboxComponent } from './components/chatbox/chatbox.component';
 import { GameModeDialogComponent } from './components/game-mode-dialog/game-mode-dialog.component';
 import { GameOverviewComponent } from './components/game-overview/game-overview.component';
+import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
-import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.component';
 
 /**
  * Main module that is used in main.ts.
