@@ -110,23 +110,23 @@ export class VerifyService {
     }
 
     private findVerticalAdjacentWord(coord: Vec2): string {
-        let up = coord.x;
-        let down = coord.x;
+        let up = coord.y;
+        let down = coord.y;
         let wordFound = '';
 
-        if (this.bonuses.includes(tiles[coord.x][coord.y].text)) {
+        if (this.bonuses.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
 
-        while (up > 0 && tiles[up - 1][coord.y].text !== '' && !this.bonuses.includes(tiles[up - 1][coord.y].text)) {
+        while (up > 0 && tiles[up - 1][coord.x].text !== '' && !this.bonuses.includes(tiles[up - 1][coord.x].text)) {
             up--;
         }
-        while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.y].text !== '' && !this.bonuses.includes(tiles[down + 1][coord.y].text)) {
+        while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.x].text !== '' && !this.bonuses.includes(tiles[down + 1][coord.x].text)) {
             down++;
         }
 
         for (let i = up; i <= down; i++) {
-            wordFound += tiles[i][coord.y].text;
+            wordFound += tiles[i][coord.x].text;
         }
 
         if (this.bonuses.includes(wordFound)) {
@@ -136,22 +136,22 @@ export class VerifyService {
     }
 
     private findHorizontalAdjacentWord(coord: Vec2): string {
-        let right = coord.y;
-        let left = coord.y;
+        let right = coord.x;
+        let left = coord.x;
         let wordFound = '';
 
-        if (this.bonuses.includes(tiles[coord.x][coord.y].text)) {
+        if (this.bonuses.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
 
-        while (left > 0 && tiles[coord.x][left - 1].text !== '' && !this.bonuses.includes(tiles[coord.x][left - 1].text)) {
+        while (left > 0 && tiles[coord.y][left - 1].text !== '' && !this.bonuses.includes(tiles[coord.y][left - 1].text)) {
             left--;
         }
-        while (right < SQUARE_NUMBER - 1 && tiles[coord.x][right + 1].text !== '' && !this.bonuses.includes(tiles[coord.x][right + 1].text)) {
+        while (right < SQUARE_NUMBER - 1 && tiles[coord.y][right + 1].text !== '' && !this.bonuses.includes(tiles[coord.y][right + 1].text)) {
             right++;
         }
         for (let i = left; i <= right; i++) {
-            wordFound += tiles[coord.x][i].text;
+            wordFound += tiles[coord.y][i].text;
         }
         if (this.bonuses.includes(wordFound)) {
             wordFound = '';
