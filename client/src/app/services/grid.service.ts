@@ -62,7 +62,7 @@ export class GridService {
         this.gridContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
+                this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style);
                 this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
             }
         }
@@ -75,8 +75,8 @@ export class GridService {
         const pointsPixelsWidthAdjustment = 16;
         const pointsPixelsHeighAdjustment = 30;
         this.gridContext.clearRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
@@ -86,15 +86,15 @@ export class GridService {
         this.changeGridStyle(style.color, undefined, strokeStyle, lineWidth);
 
         this.gridContext.fillRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
         this.gridContext.strokeRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
@@ -103,8 +103,8 @@ export class GridService {
         this.changeGridStyle(fillStyle, style.font);
         this.gridContext.strokeText(
             letter.toUpperCase(),
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + lettersPixelsWidthAdjustment,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsHeighAdjustment,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsWidthAdjustment,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + lettersPixelsHeighAdjustment,
         );
 
         let character = this.reserveService.findLetterInReserve(letter);
@@ -115,8 +115,8 @@ export class GridService {
             this.changeGridStyle(this.pointStyle.color, this.pointStyle.font);
             this.gridContext.strokeText(
                 character.points.toString(),
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + pointsPixelsWidthAdjustment,
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + pointsPixelsHeighAdjustment,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + pointsPixelsWidthAdjustment,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + pointsPixelsHeighAdjustment,
             );
         }
 
@@ -141,9 +141,9 @@ export class GridService {
 
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                if (tiles[x][y].letter !== '') {
-                    tiles[x][y].style.font = this.letterStyle.font;
-                    this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
+                if (tiles[y][x].letter !== '') {
+                    tiles[y][x].style.font = this.letterStyle.font;
+                    this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style);
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
             }

@@ -116,7 +116,7 @@ describe('GridService', () => {
         const y = 4;
         const letterStep = 1;
         const pointStep = 1;
-        tiles[x][y].letter = 'a';
+        tiles[y][x].letter = 'a';
 
         const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
         service.changeTileSize(letterStep, pointStep);

@@ -167,7 +167,7 @@ export class VirtualPlayerService {
                     tempWord += tiles[line][col].letter;
                 } else {
                     if (tempWord !== EMPTY) {
-                        const temp: WordNCoord = { word: tempWord, coord: { x, y }, direction: 'horizontal' };
+                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'horizontal' };
                         // console.log('letter do add', temp);
                         possibilities.push(temp);
                     }
@@ -188,7 +188,7 @@ export class VirtualPlayerService {
                     tempWord += tiles[line][col].letter;
                 } else {
                     if (tempWord !== EMPTY) {
-                        const temp: WordNCoord = { word: tempWord, coord: { x, y }, direction: 'vertical' };
+                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'vertical' };
                         console.log('letter do add', temp);
                         possibilities.push(temp);
                     }
