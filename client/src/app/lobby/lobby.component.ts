@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
-import { RoomService } from '@app/services/room.service';
+import { Room } from '@app/services/room.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
+import { QuitMultiplayerDialogComponent } from './../components/quit-multiplayer-dialog/quit-multiplayer-dialog.component';
 import { SwitchDialogComponent } from './../components/switch-dialog/switch-dialog.component';
 export interface Game {
     name: string;
@@ -21,14 +22,12 @@ export class LobbyComponent implements OnInit {
     mode: string;
     timer: string;
     personIsActive: boolean = false;
-    listRooms: RoomService[] = [];
 
-    listGames: Game[] = [
-        { name: 'Game1', index: 1, turnDuration: '1 minute', isAvailable: true },
-        { name: 'Game2', index: 2, turnDuration: '1.5minute', isAvailable: true },
-        { name: 'Game3', index: 3, turnDuration: '2 minutes', isAvailable: true },
+    rooms: Room[] = [
+        { id: 'Game 1', settings: { mode: 'classique', timer: '1 minute' } },
+        { id: 'Game 2', settings: { mode: 'classique', timer: '1 minute' } },
+        { id: 'Game 3', settings: { mode: 'classique', timer: '1 minute' } },
     ];
-
     // headers: string[] = ['Game', 'turnDuration', 'Number of players'];
     constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService) {}
     ngOnInit(): void {
@@ -47,9 +46,9 @@ export class LobbyComponent implements OnInit {
         this.assignValues(name, mode, numPlayers, timer);
     }
 
-    // openDialog() {
-    //     this.matDialog.open(GameModeDialogComponent);
-    // }
+    openQuitMultiplayerDialog() {
+        this.matDialog.open(QuitMultiplayerDialogComponent);
+    }
 
     openSwitchDialog() {
         this.matDialog.open(SwitchDialogComponent);

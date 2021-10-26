@@ -26,11 +26,11 @@
     <mat-card-title style="margin-top: 5px">Rooms available : </mat-card-title>
     <mat-divider id="divider"></mat-divider>
     <mat-list class="content">
-        <mat-list-item *ngFor="let game of listGames" class="item">
-            <h3 matLine>{{ game.name }}</h3>
-            <p matLine>
-                {{ game.turnDuration }}
-            </p>
+        <mat-list-item *ngFor="let room of rooms" class="room">
+            <h3 matLine>Game : {{ room.id }}</h3>
+            <p matLine>Mode : {{ room.settings.mode }}</p>
+            <p matLine>Timer : {{ room.settings.timer }}</p>
+            <button mat-raised-button color="basic" id="join_button">Join</button>
             <mat-divider></mat-divider>
         </mat-list-item>
     </mat-list>
@@ -40,9 +40,9 @@
         </th>
     </table> -->
     <div class="footer">
-        <button mat-raised-button mat-dialog-close routerLink="home" id="back_button"><span>Back</span></button>
+        <button mat-raised-button mat-dialog-close (click)="openQuitMultiplayerDialog()" id="back_button"><span>Back</span></button>
         <button mat-raised-button color="primary" mat-dialog-close (click)="openSwitchDialog()" id="solo_button">Switch to Solo</button>
-        <button mat-raised-button color="primary" mat-dialog-close id="join_button">Join</button>
+        <!-- <button mat-raised-button color="primary" mat-dialog-close id="join_button">Join</button> -->
         <mat-slide-toggle color="primary" class="bonus">Bonus</mat-slide-toggle>
 
         <!-- <button mat-raised-button color="primary" type="submit" [disabled]="error" routerLink="game" mat-dialog-close>Join</button> -->

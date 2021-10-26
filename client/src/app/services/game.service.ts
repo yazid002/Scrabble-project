@@ -8,16 +8,23 @@ import { UserSettingsService } from './user-settings.service';
 
 export const REAL_PLAYER = 0;
 export const COMPUTER = 1;
+export const OTHER_PLAYER = 1;
+interface InstructionSet {
+    init: () => void;
+}
 const MAX_SKIPS = 6;
 @Injectable({
     providedIn: 'root',
 })
 export class GameService {
-    @Output() otherPlayerSignal = new BehaviorSubject<boolean>(true);
+    @Output() otherPlayerSignal = new BehaviorSubject<string>('');
+    @Output() abandonSignal = new BehaviorSubject<string>('');
+
     players: Player[] = [];
     currentTurn: number;
     timerDone: Subscription;
     turnDone: Subscription;
+    numPlayers: string;
     skipCounter: number = 0;
     constructor(private userSettingsService: UserSettingsService, private reserveService: ReserveService, private timerService: TimerService) {
         this.startGame();
@@ -25,9 +32,19 @@ export class GameService {
         this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {
             this.changeTurn(skipped);
         });
+        this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
     }
-
-    private changeTurn(skipped: boolean) {
+    convertGameToSolo() {
+        this.numPlayers = 'solo';
+        if (this.currentTurn === OTHER_PLAYER) {
+            this.otherPlayerSignal.next(this.numPlayers);
+        }
+    }
+    quitGame() {
+        this.abandonSignal.next('abandon');
+    }
+    private changeTurn(skipped: boolean): void {
+        console.log('Changeturn');
         if (skipped) {
             this.skipCounter++;
         } else {
@@ -35,25 +52,40 @@ export class GameService {
         }
         if (this.skipCounter < MAX_SKIPS) {
             this.currentTurn = (this.currentTurn + 1) % 2;
-            if (this.currentTurn === COMPUTER) {
-                this.otherPlayerSignal.next(true);
+            if (this.currentTurn === OTHER_PLAYER) {
+                this.nextPlayer();
             }
         }
     }
-    private getNumPlayerInstructions(key: string): () => void {
-        const numPlayerMap: Map<string, () => void> = new Map([
-            ['solo', () => this.initSoloPlayers()],
-            ['multiplayer', () => this.initMultiPlayers()],
+    private nextPlayer() {
+        console.log('nextplayer signal emited in gameService');
+        this.otherPlayerSignal.next(this.numPlayers);
+    }
+
+    private getNumPlayerInstructions(numPlayer: string): InstructionSet {
+        const numPlayerMap: Map<string, InstructionSet> = new Map([
+            [
+                'solo',
+                {
+                    init: () => this.initSoloPlayers(),
+                },
+            ],
+            [
+                'multiplayer',
+                {
+                    init: () => this.initMultiPlayers(),
+                },
+            ],
         ]);
 
-        const makePlayers = numPlayerMap.get(key) as () => void;
+        const makePlayers = numPlayerMap.get(numPlayer) as InstructionSet;
         return makePlayers;
     }
     private startGame() {
         const makePlayers = this.getNumPlayerInstructions(this.userSettingsService.settings.numPlayers.currentChoiceKey);
-        makePlayers();
+        makePlayers.init();
     }
-    private initSoloPlayers() {
+    private initMainPlayer() {
         const realPlayer: Player = {
             id: REAL_PLAYER,
             name: this.userSettingsService.nameOption.userChoice,
@@ -61,6 +93,18 @@ export class GameService {
             points: 0,
         };
         this.players.push(realPlayer);
+
+        // make computer just two have two players
+        const computer: Player = {
+            id: COMPUTER,
+            name: this.userSettingsService.getComputerName(),
+            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
+            points: 0,
+        };
+        this.players.push(computer);
+    }
+    private initSoloPlayers() {
+        this.initMainPlayer();
         const computer: Player = {
             id: COMPUTER,
             name: this.userSettingsService.computerName,
@@ -70,9 +114,11 @@ export class GameService {
         this.players.push(computer);
     }
 
-    // TODO: Commenter pour le merge, a enlever si non utilisé
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private initMultiPlayers() {}
+    private initMultiPlayers() {
+        this.initMainPlayer();
+
+        // TODO init other player
+    }
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
     }

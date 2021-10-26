@@ -27,12 +27,4 @@ export class GameModeDialogComponent {
             return false;
         } else return undefined;
     }
-    // openLobby(modeKey: string) {
-    //     this.userSettingsService.settings.numPlayers.currentChoiceKey = modeKey;
-    //     this.openDialog();
-    // }
-
-    // private openDialog() {
-    //     this.matDialog.open(LobbyComponent);
-    // }
 }

@@ -1,15 +1,21 @@
 import * as http from 'http';
 import * as io from 'socket.io';
 
-export class SocketManager {
-    private sio: io.Server;
+interface Room {
+    id: string;
+    settings: { mode: string; timer: string };
+}
 
+export class SocketManager {
+    rooms: Room[] = [];
+    private sio: io.Server;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
 
     handleSockets(): void {
         this.sio.on('connection', (socket: io.Socket) => {
+            this.sio.emit('rooms', this.rooms);
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             // message initial
             socket.emit('hello', 'Hello World!');
@@ -26,22 +32,40 @@ export class SocketManager {
                 this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
             });
 
-            socket.on('joinRoom', (roomId?: string) => {
-                /** server makes socket join room and creates the room if necessary
+            socket.on('joinRoom', (roomId: string) => {
+                /** server makes socket join room
                  *
-                 * @param roomId: provide a roomId to join a specific room or do not provide a roomId and a room will be created from your socket id
+                 * @param roomId: provide a roomId to join a specific room
                  */
-                if (roomId) {
-                    socket.join(roomId);
-                } else {
-                    socket.join(socket.id);
-                }
+
+                socket.join(roomId);
+                this.sio.to(roomId).emit('askMasterSync');
+            });
+
+            socket.on('createRoom', (settings: { mode: string; timer: string }) => {
+                const room: Room = {
+                    id: socket.id,
+                    settings,
+                };
+                socket.join(room.id);
+                this.rooms.push(room);
+                this.rooms = [...new Set(this.rooms)]; // Remove possible duplicates
+                console.log('Created room', socket.id);
+                this.sio.emit('rooms', this.rooms);
+            });
+
+            socket.on('abandon', (roomId: string, userId: string) => {
+                this.sio.to(roomId).emit('abandon', userId);
             });
 
             socket.on('roomMessage', (roomId: string, userId: string, message: string) => {
                 // socket.broadcast.to('joinRoom').emit("roomMessage", `${socket.id} : ${message}`);
 
                 this.sio.to(roomId).emit('roomMessage', userId, message);
+            });
+            socket.on('syncGameData', (roomId: string, userId: string, gameState: GameState) => {
+                console.log('Received sync signal from client in room ' + roomId);
+                this.sio.to(roomId).emit('syncGameData', userId, gameState);
             });
 
             socket.on('disconnect', (reason: string) => {
