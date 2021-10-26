@@ -22,10 +22,10 @@ export interface GameState {
 export class GameSyncService {
     @Output() sendGameStateSignal: BehaviorSubject<GameState>;
     @Output() sendAbandonSignal: BehaviorSubject<string>;
-    private alreadySynced: boolean;
     sendOtherPlayerTrigger: Subscription;
     abandonTrigger: Subscription;
     isMasterClient: boolean;
+    private alreadySynced: boolean;
     constructor(
         private gameService: GameService,
         private reserveService: ReserveService,

@@ -3,9 +3,13 @@ import { IChat, SENDER } from '@app/classes/chat';
 import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { ChatService } from './chat.service';
-import { GameSyncService, GameState } from './game-sync.service';
+import { GameState, GameSyncService } from './game-sync.service';
 import { GameService } from './game.service';
-
+import { UserSettingsService } from './user-settings.service';
+export interface Room {
+    id: string;
+    settings: { mode: string; timer: string };
+}
 @Injectable({
     providedIn: 'root',
 })
@@ -16,8 +20,14 @@ export class RoomService {
     chatServiceSubscription: Subscription;
     gameStateSubscription: Subscription;
     abandonSubscription: Subscription;
+    rooms: Room[];
 
-    constructor(private chatService: ChatService, private gameSyncService: GameSyncService, private gameService: GameService) {
+    constructor(
+        private chatService: ChatService,
+        private gameSyncService: GameSyncService,
+        private gameService: GameService,
+        private userSettingsService: UserSettingsService,
+    ) {
         this.urlString = `http://${window.location.hostname}:5020`;
         this.socket = io(this.urlString);
         this.configureBaseSocketFeatures();
@@ -34,6 +44,7 @@ export class RoomService {
         this.abandonSubscription = this.gameSyncService.sendAbandonSignal.subscribe(() => {
             this.socket.emit('abandon', this.roomId, this.socket.id);
         });
+        this.rooms = [];
     }
     configureBaseSocketFeatures() {
         // Afficher l'identifiant du Socket dans l'interface
@@ -59,7 +70,13 @@ export class RoomService {
             if (id === this.socket.id) return;
             this.gameService.convertGameToSolo();
         });
-        
+        this.socket.on('askMasterSync', () => {
+            if (!this.gameSyncService.isMasterClient) return;
+            this.gameSyncService.sendToServer();
+        });
+        this.socket.on('rooms', (rooms: Room[]) => {
+            this.rooms = rooms;
+        });
     }
 
     joinRoom(roomId: string) {
@@ -67,10 +84,10 @@ export class RoomService {
         this.roomId = roomId;
         this.gameSyncService.isMasterClient = false;
     }
-    createRoom(name: string) {
-        this.socket.emit('joinRoom', name);
-        this.roomId = name; // TODO when lobby is complete, set to this.socket.id;
+    createRoom() {
+        const settings = this.userSettingsService.getSettings();
+        this.socket.emit('createRoom', settings);
+        this.roomId = this.socket.id; // TODO when lobby is complete, set to this.socket.id;
         this.gameSyncService.isMasterClient = true;
-        this.gameSyncService.sendToServer();
     }
 }

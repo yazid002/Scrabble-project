@@ -67,4 +67,9 @@ export class UserSettingsService {
         }
         return this.computerName;
     }
+    getSettings(): { mode: string; timer: string } {
+        const mode = this.settings.mode.currentChoiceKey;
+        const timer = this.settings.timer.currentChoiceKey;
+        return { mode, timer };
+    }
 }

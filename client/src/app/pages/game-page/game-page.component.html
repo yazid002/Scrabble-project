@@ -7,11 +7,17 @@
     </section>
     <app-chatbox></app-chatbox>
     <!-- TODO enlever le input et les bouton une fois que le loby est intégré et créé les salles pour nous -->
-    <div>
+    <section id="temporary">
         
         <input type="text" (keyUp.enter)="goInRoom()" placeholder="Nom de la salle" [(ngModel)]="roomName">
         <br>
         Is Master Player
         <input type="checkbox" [(ngModel)]="isMaster">
-    </div>
+        <br>
+        <div *ngFor="let room of rooms">
+            <h1>{{room.id}}</h1><br>
+            <h2>{{room.settings.mode}}</h2><br>
+            <h2>{{room.settings.timer}}</h2>
+        </div>
+    </section>
 </div>

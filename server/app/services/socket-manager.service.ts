@@ -1,9 +1,14 @@
+import { GameState } from '@app/classes/game-state';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { GameState } from '@app/classes/game-state';
+
+interface Room {
+    id: string;
+    settings: { mode: string; timer: string };
+}
 
 export class SocketManager {
-    rooms: string[] = [];
+    rooms: Room[] = [];
     private sio: io.Server;
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
@@ -11,6 +16,7 @@ export class SocketManager {
 
     handleSockets(): void {
         this.sio.on('connection', (socket: io.Socket) => {
+            this.sio.emit('rooms', this.rooms);
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             // message initial
             socket.emit('hello', 'Hello World!');
@@ -27,21 +33,28 @@ export class SocketManager {
                 this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
             });
 
-            socket.on('joinRoom', (roomId?: string) => {
-                /** server makes socket join room and creates the room if necessary
+            socket.on('joinRoom', (roomId: string) => {
+                /** server makes socket join room
                  *
-                 * @param roomId: provide a roomId to join a specific room or do not provide a roomId and a room will be created from your socket id
-                */
-                
-                if (roomId) {
-                    socket.join(roomId);
-                    this.rooms.push(roomId);
-                } else {
-                    socket.join(socket.id);
-                    this.rooms.push(socket.id);
-                }
-                this.rooms = [...new Set(this.rooms)]; // Remove possible duplicates
+                 * @param roomId: provide a roomId to join a specific room
+                 */
+
+                socket.join(roomId);
+                this.sio.to(roomId).emit('askMasterSync');
             });
+
+            socket.on('createRoom', (settings: { mode: string; timer: string }) => {
+                const room: Room = {
+                    id: socket.id,
+                    settings,
+                };
+                socket.join(room.id);
+                this.rooms.push(room);
+                this.rooms = [...new Set(this.rooms)]; // Remove possible duplicates
+                console.log('Created room', socket.id);
+                this.sio.emit('rooms', this.rooms);
+            });
+
             socket.on('abandon', (roomId: string, userId: string) => {
                 this.sio.to(roomId).emit('abandon', userId);
             });
@@ -59,6 +72,7 @@ export class SocketManager {
             socket.on('disconnect', (reason: string) => {
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
+                
             });
         });
 
