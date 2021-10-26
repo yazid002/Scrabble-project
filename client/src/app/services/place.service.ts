@@ -6,7 +6,9 @@ import { VerifyService } from '@app/services/verify.service';
 import { GridService } from './grid.service';
 import { PlaceSelectionService } from './place-selection.service';
 import { PointsCountingService } from './points-counting.service';
+import { RackSelectionService } from './rack-selection.service';
 import { RackService } from './rack.service';
+import { TileSelectionService } from './tile-selection.service';
 import { TimerService } from './timer.service';
 
 @Injectable({
@@ -22,7 +24,12 @@ export class PlaceService {
         private pointsCountingService: PointsCountingService,
         private timerService: TimerService,
         private placeSelectionService: PlaceSelectionService,
-    ) {}
+        //  private reserveService: ReserveService,
+        public rackSelectionService: RackSelectionService,
+        public tileSelectionService: TileSelectionService,
+    ) {
+        //  pointsCountingService.reserve = this.reserveService.alphabets;
+    }
 
     async placeWord(word: string, coord: Vec2, direction: string, isCalledThoughtChat: boolean): Promise<void> {
         word = this.verifyService.normalizeWord(word);
@@ -48,6 +55,7 @@ export class PlaceService {
                     const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
                     const x = computingCoord.x;
                     const y = computingCoord.y;
+                    console.log('quand je place: ', tiles[x][y]);
 
                     tiles[x][y].text = tiles[x][y].oldText;
                     tiles[x][y].style.color = tiles[x][y].oldStyle.color;

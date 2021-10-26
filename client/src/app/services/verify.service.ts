@@ -5,7 +5,7 @@ import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
-import { SQUARE_NUMBER } from '@app/constants/board-constants';
+import { bonuses, SQUARE_NUMBER } from '@app/constants/board-constants';
 import { RackService } from '@app/services/rack.service';
 import * as dictionary from 'src/assets/dictionnary.json';
 
@@ -68,6 +68,15 @@ export class VerifyService {
 
         while (i < word.length && coord.y + i < SQUARE_NUMBER) {
             wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
+            console.log('wordFound horizontal ', wordFound);
+
+            // for (let i = 0; i < wordFound.length; i++) {
+            //     if (wordFound[i] === '*') {
+            //         wordFound[i] =
+            //     }
+
+            // }
+
             i++;
             if (wordFound.length >= 2) {
                 if (!this.isWordInDictionary(wordFound)) {
@@ -77,7 +86,9 @@ export class VerifyService {
         }
         i = 0;
         while (i < word.length && coord.x + i < SQUARE_NUMBER) {
+            console.log('wordFound coord vertical ', { x: coord.x + i, y: coord.y });
             wordFound = this.findVerticalAdjacentWord({ x: coord.x + i, y: coord.y });
+            console.log('wordFound vertical ', wordFound);
             i++;
             if (wordFound.length >= 2) {
                 if (!this.isWordInDictionary(wordFound)) {
@@ -128,14 +139,14 @@ export class VerifyService {
         let down = coord.x;
         let wordFound = '';
 
-        if (this.bonuses.includes(tiles[coord.x][coord.y].text)) {
+        if (bonuses.includes(tiles[coord.x][coord.y].text)) {
             return wordFound;
         }
 
-        while (up > 0 && tiles[up - 1][coord.y].text !== '' && !this.bonuses.includes(tiles[up - 1][coord.y].text)) {
+        while (up > 0 && tiles[up - 1][coord.y].text !== '' && !bonuses.includes(tiles[up - 1][coord.y].text)) {
             up--;
         }
-        while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.y].text !== '' && !this.bonuses.includes(tiles[down + 1][coord.y].text)) {
+        while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.y].text !== '' && !bonuses.includes(tiles[down + 1][coord.y].text)) {
             down++;
         }
 
@@ -143,7 +154,7 @@ export class VerifyService {
             wordFound += tiles[i][coord.y].text;
         }
 
-        if (this.bonuses.includes(wordFound)) {
+        if (bonuses.includes(wordFound)) {
             wordFound = '';
         }
         return wordFound;
@@ -154,20 +165,20 @@ export class VerifyService {
         let left = coord.y;
         let wordFound = '';
 
-        if (this.bonuses.includes(tiles[coord.x][coord.y].text)) {
+        if (bonuses.includes(tiles[coord.x][coord.y].text)) {
             return wordFound;
         }
 
-        while (left > 0 && tiles[coord.x][left - 1].text !== '' && !this.bonuses.includes(tiles[coord.x][left - 1].text)) {
+        while (left > 0 && tiles[coord.x][left - 1].text !== '' && !bonuses.includes(tiles[coord.x][left - 1].text)) {
             left--;
         }
-        while (right < SQUARE_NUMBER - 1 && tiles[coord.x][right + 1].text !== '' && !this.bonuses.includes(tiles[coord.x][right + 1].text)) {
+        while (right < SQUARE_NUMBER - 1 && tiles[coord.x][right + 1].text !== '' && !bonuses.includes(tiles[coord.x][right + 1].text)) {
             right++;
         }
         for (let i = left; i <= right; i++) {
             wordFound += tiles[coord.x][i].text;
         }
-        if (this.bonuses.includes(wordFound)) {
+        if (bonuses.includes(wordFound)) {
             wordFound = '';
         }
         return wordFound;

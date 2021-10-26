@@ -239,7 +239,7 @@ export class PlaceSelectionService {
         if (coord) {
             // console.log('dehors');
             this.gridService.border.squareborder = 'black';
-            //  this.gridService.removeArrow(this.selectedCoord);
+            this.gridService.removeArrow(this.selectedCoord);
             tiles[coord.x][coord.y].text = tiles[coord.x][coord.y].oldText;
             tiles[coord.x][coord.y].style.color = tiles[coord.x][coord.y].oldStyle.color;
             this.gridService.border.squareborder = 'black';
@@ -249,8 +249,15 @@ export class PlaceSelectionService {
                 tiles[coord.x][coord.y].style.color as string,
                 tiles[coord.x][coord.y].style.font as string,
             );
+            if (this.direction) {
+                this.selectedCoord.y -= 1;
+            } else {
+                this.selectedCoord.x -= 1;
+            }
+            this.gridService.drawArrow(this.direction, this.selectedCoord);
         }
         if (this.selectedTilesForPlacement.length === 0) {
+            this.gridService.removeArrow(this.selectedCoord);
             this.selectedCoord.x = -1;
             this.selectedCoord.y = -1;
         }

@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { ExchangeLimits } from '@app/enums/exchange-enums';
@@ -17,7 +17,7 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent {
+export class GamePageComponent implements AfterViewInit {
     @ViewChild(ChatboxComponent) chatboxComponent: ChatboxComponent;
     @ViewChild(PlayAreaComponent) playAreaComponent: PlayAreaComponent;
     receptor: HTMLElement = {} as HTMLElement;
@@ -28,12 +28,12 @@ export class GamePageComponent {
         public gridService: GridService,
         private gameService: GameService,
         private virtualPlayerService: VirtualPlayerService,
-        private placeSelectionService: PlaceSelectionService, //  private readonly rackService: RackService,
-        public exchangeService: ExchangeService,
-        public reserveService: ReserveService,
-        //    private readonly rackService: RackService,
-        public rackLettersManipulationService: RackLettersManipulationService,
-        public selectionManager: SelectionManagerService,
+        private placeSelectionService: PlaceSelectionService,
+        private exchangeService: ExchangeService,
+        private reserveService: ReserveService,
+
+        private rackLettersManipulationService: RackLettersManipulationService,
+        private selectionManager: SelectionManagerService,
     ) {
         console.log(this.gameService);
         console.log(this.virtualPlayerService);
@@ -58,26 +58,40 @@ export class GamePageComponent {
 
     @HostListener('window:wheel', ['$event'])
     onMouseWheel(event: WheelEvent) {
-        console.log('mouseWheel : ', event.deltaY, event.bubbles);
-        let keyEvent: KeyboardEvent;
-        if (event.deltaY > 0) {
-            keyEvent = {
-                key: 'ArrowRight',
-                preventDefault: () => void '',
-            } as KeyboardEvent;
-        } else {
-            keyEvent = { key: 'ArrowLeft', preventDefault: () => void '' } as KeyboardEvent;
-        }
-
-        this.onKeyBoardClick(keyEvent);
+        this.selectionManager.onMouseWheel(event);
     }
 
-    onSubmitPlacement() {
-        this.command = this.placeSelectionService.command;
-        console.log('la commande ici', this.command);
-        this.chatboxComponent.inputBox = this.command;
-        this.chatboxComponent.fromSelection = true;
-        this.chatboxComponent.onSubmit();
+    ngAfterViewInit(): void {
+        this.selectionManager.chatboxComponent = this.chatboxComponent;
+        console.log('kkkjhjh ', this.chatboxComponent);
+    }
+
+    onSubmitPlacement(selectionType: SelectionType) {
+        this.selectionManager.getSelectionType(selectionType);
+        // this.command = this.placeSelectionService.command;
+        // console.log('la commande ici', this.command);
+        // this.chatboxComponent.inputBox = this.command;
+        // this.chatboxComponent.fromSelection = true;
+        // this.chatboxComponent.onSubmit();
+        //  this.selectionManager.onSubmitPlacement();
+        const keyEvent = {
+            key: 'Enter',
+            preventDefault: () => void '',
+        } as KeyboardEvent;
+        this.selectionManager.onKeyBoardClick(keyEvent);
+    }
+
+    disablePlacement() {
+        return this.placeSelectionService.selectedRackIndexesForPlacement.length === 0;
+    }
+
+    onCancelPlacement(selectionType: SelectionType) {
+        this.selectionManager.getSelectionType(selectionType);
+        const keyEvent = {
+            key: 'Escape',
+            preventDefault: () => void '',
+        } as KeyboardEvent;
+        this.selectionManager.onKeyBoardClick(keyEvent);
     }
 
     increaseSize(): void {

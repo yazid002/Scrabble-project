@@ -13,6 +13,10 @@
             <button mat-raised-button color="primary" type="submit" (click)="onSubmitRightManipulation()">Vers la droite</button> -->
             <button mat-raised-button color="primary" type="submit" (click)="onCancelManipulation(selectionType.Rack)">Annuler</button>
         </div>
+        <div *ngIf="!disablePlacement()">
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement(selectionType.Grid)">Placer</button>
+            <button mat-raised-button color="primary" type="submit" (click)="onCancelPlacement(selectionType.Grid)">Annuler</button>
+        </div>
     </section>
 
     <app-chatbox #chatbox></app-chatbox>

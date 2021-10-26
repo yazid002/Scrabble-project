@@ -29,6 +29,7 @@ export class PlayAreaComponent implements AfterViewInit {
             this.selectionManager.getSelectionType(SelectionType.Grid);
         } else if (event.target === this.rackCanvas.nativeElement) {
             this.selectionManager.getSelectionType(SelectionType.Rack);
+            console.log('play ', this.selectionManager.selectionType);
         } else {
             this.selectionManager.getSelectionType(SelectionType.None);
         }
@@ -37,6 +38,8 @@ export class PlayAreaComponent implements AfterViewInit {
     // (click)="this.selectionManager.getSelectionType(selectionType.Rack)"
     //      (click)="this.selectionManager.getSelectionType(selectionType.Grid)"
     ngAfterViewInit(): void {
+        const min = 0;
+        const max = 3;
         this.gridService.gridContext = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
 
         this.gridService.drawGrid();
@@ -45,6 +48,7 @@ export class PlayAreaComponent implements AfterViewInit {
         this.rackService.displayRack();
 
         this.rackCanvas.nativeElement.focus();
+        this.gridService.randomizeBonus(min, max);
     }
 
     // onRackRightClick(event: MouseEvent) {
