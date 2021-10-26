@@ -3,8 +3,7 @@ import * as io from 'socket.io';
 
 export class SocketManager {
     private sio: io.Server;
-    
-    
+
     constructor(server: http.Server) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
@@ -29,6 +28,7 @@ export class SocketManager {
 
             socket.on('joinRoom', (roomId?: string) => {
                 /** server makes socket join room and creates the room if necessary
+                 *
                  * @param roomId: provide a roomId to join a specific room or do not provide a roomId and a room will be created from your socket id
                  */
                 if (roomId) {
@@ -37,13 +37,11 @@ export class SocketManager {
                     socket.join(socket.id);
                 }
             });
-            
-            
+
             socket.on('roomMessage', (roomId: string, userId: string, message: string) => {
                 // socket.broadcast.to('joinRoom').emit("roomMessage", `${socket.id} : ${message}`);
-                
+
                 this.sio.to(roomId).emit('roomMessage', userId, message);
-                
             });
 
             socket.on('disconnect', (reason: string) => {

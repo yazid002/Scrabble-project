@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
+import { RoomService } from '@app/services/room.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { SwitchDialogComponent } from './../components/switch-dialog/switch-dialog.component';
 export interface Game {
@@ -20,9 +21,7 @@ export class LobbyComponent implements OnInit {
     mode: string;
     timer: string;
     personIsActive: boolean = false;
-    // listRooms: RoomService[] = [
-    //     { urlString: 'http://localhost:5020', socket: io('http://localhost:5020'), roomId: 'room1', chatServiceSubscription: '' },
-    // ];
+    listRooms: RoomService[] = [];
 
     listGames: Game[] = [
         { name: 'Game1', index: 1, turnDuration: '1 minute', isAvailable: true },
