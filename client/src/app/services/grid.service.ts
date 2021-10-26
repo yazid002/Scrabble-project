@@ -18,7 +18,8 @@ export class GridService {
         { text: 'dl', color: 'LightSkyBlue', quantity: 24 },
     ];
 
-    randomBonusIndex: number;
+    randomBonusIndex: number = 0;
+    isChecked: boolean = false;
 
     letterStyle: CaseStyle = { color: 'NavajoWhite', font: '15px serif' };
     pointStyle: CaseStyle = { color: 'NavajoWhite', font: '10px serif' };
@@ -247,18 +248,23 @@ export class GridService {
 
     randomizeBonus(min: number, max: number): void {
         let index: number;
+        if (!this.isChecked) {
+            return;
+        }
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                if (tiles[y][x].bonus !== 'xx') {
-                    index = this.randomizeIndex(min, max);
-                    tiles[y][x].bonus = this.bonusOnGrid[index].text;
-                    tiles[y][x].text = this.bonusOnGrid[index].text;
-                    tiles[y][x].style.color = this.bonusOnGrid[index].color;
-
-                    this.fillGridPortion({ x, y }, tiles[y][x].text, tiles[y][x].style);
-                    this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
-                    this.bonusOnGrid[index].quantity--;
+                if (tiles[y][x].bonus === 'xx') {
+                    continue;
                 }
+
+                index = this.randomizeIndex(min, max);
+                tiles[y][x].bonus = this.bonusOnGrid[index].text;
+                tiles[y][x].text = this.bonusOnGrid[index].text;
+                tiles[y][x].style.color = this.bonusOnGrid[index].color;
+
+                this.fillGridPortion({ x, y }, tiles[y][x].text, tiles[y][x].style);
+                this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
+                this.bonusOnGrid[index].quantity--;
             }
         }
 
