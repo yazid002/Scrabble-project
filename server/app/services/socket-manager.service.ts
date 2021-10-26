@@ -19,18 +19,11 @@ export class SocketManager {
             this.sio.emit('rooms', this.rooms);
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
             // message initial
-            socket.emit('hello', 'Hello World!');
 
-            socket.on('message', (message: string) => {
-                console.log(message);
-            });
+
             socket.on('validate', (word: string) => {
                 const isValid = word.length > 5;
                 socket.emit('wordValidated', isValid);
-            });
-
-            socket.on('broadcastAll', (message: string) => {
-                this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
             });
 
             socket.on('joinRoom', (roomId: string) => {
