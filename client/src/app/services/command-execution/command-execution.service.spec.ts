@@ -36,7 +36,7 @@ describe('CommandExecutionService', () => {
             body: string;
         }
         const command = '!debug';
-        const response: IChat = await service.executeCommand(command);
+        const response: IChat = await service.executeCommand(command, true);
         expect(response).toBeDefined();
     });
 });
