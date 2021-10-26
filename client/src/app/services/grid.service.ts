@@ -18,7 +18,8 @@ export class GridService {
         { text: 'dl', color: 'LightSkyBlue', quantity: 24 },
     ];
 
-    randomBonusIndex: number;
+    randomBonusIndex: number = 0;
+    isChecked: boolean = false;
 
     letterStyle: CaseStyle = { color: 'NavajoWhite', font: '15px serif' };
     pointStyle: CaseStyle = { color: 'NavajoWhite', font: '10px serif' };
@@ -222,13 +223,6 @@ export class GridService {
 
     drawGridPortionBorder(borderColor: string, coord: Vec2, width: number): void {
         this.changeGridStyle(borderColor, undefined, this.squareColor, width);
-
-        // this.gridContext.strokeRect(
-        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + width,
-        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + width,
-        //     DEFAULT_WIDTH / SQUARE_NUMBER - width,
-        //     DEFAULT_WIDTH / SQUARE_NUMBER - width,
-        // );
         this.gridContext.beginPath();
         this.gridContext.moveTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + 5, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + 5);
         this.gridContext.lineTo(
@@ -246,14 +240,12 @@ export class GridService {
         this.gridContext.lineTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + 5, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + 5);
         this.gridContext.stroke();
     }
-
     changeGridStyle(fillStyle?: string, font?: string, strokeStyle?: string, lineWidth?: number): void {
         this.gridContext.fillStyle = fillStyle as string;
         this.gridContext.font = font as string;
         this.gridContext.strokeStyle = strokeStyle as string;
         this.gridContext.lineWidth = lineWidth as number;
     }
-
     changeTileSize(letterStep: number, pointStep: number) {
         const letterFont = this.letterStyle.font as string;
         const pointFont = this.pointStyle.font as string;
@@ -273,12 +265,9 @@ export class GridService {
                     this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
-
-                //  console.log(tiles);
             }
         }
     }
-
     increaseTileSize(letterStep: number, pointStep: number, maxValue: number) {
         const letterFont = this.letterStyle.font as string;
         const pointFont = this.pointStyle.font as string;
@@ -332,18 +321,23 @@ export class GridService {
     }
     randomizeBonus(min: number, max: number): void {
         let index: number;
+        if (!this.isChecked) {
+            return;
+        }
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                if (tiles[y][x].bonus !== 'xx') {
-                    index = this.randomizeIndex(min, max);
-                    tiles[y][x].bonus = this.bonusOnGrid[index].text;
-                    tiles[y][x].text = this.bonusOnGrid[index].text;
-                    tiles[y][x].style.color = this.bonusOnGrid[index].color;
-
-                    this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
-                    this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
-                    this.bonusOnGrid[index].quantity--;
+                if (tiles[y][x].bonus === 'xx') {
+                    continue;
                 }
+
+                index = this.randomizeIndex(min, max);
+                tiles[y][x].bonus = this.bonusOnGrid[index].text;
+                tiles[y][x].text = this.bonusOnGrid[index].text;
+                tiles[y][x].style.color = this.bonusOnGrid[index].color;
+
+                this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
+                this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
+                this.bonusOnGrid[index].quantity--;
             }
         }
     }
