@@ -5,13 +5,13 @@
         <button id="increaseSize" (click)="increaseSize()">+</button>
         <button id="decreaseSize" (click)="decreaseSize()">-</button>
         <div *ngIf="!disableExchange()">
-            <button mat-raised-button color="primary" type="submit" (click)="onSubmitExchange()">Echanger</button>
-            <button mat-raised-button color="primary" type="submit" (click)="onCancelExchange()">Annuler</button>
+            <button id="exchange" mat-raised-button color="primary" type="submit" (click)="onSubmitExchange(selectionType.Rack)">Echanger</button>
+            <button id="exchange" mat-raised-button color="primary" type="submit" (click)="onCancelExchange(selectionType.Rack)">Annuler</button>
         </div>
         <div *ngIf="!disableManipulation()">
             <!-- <button mat-raised-button color="primary" type="submit" (click)="onSubmitLeftManipulation()">Vers la gauche</button>
             <button mat-raised-button color="primary" type="submit" (click)="onSubmitRightManipulation()">Vers la droite</button> -->
-            <button mat-raised-button color="primary" type="submit" (click)="onCancelManipulation()">Annuler</button>
+            <button mat-raised-button color="primary" type="submit" (click)="onCancelManipulation(selectionType.Rack)">Annuler</button>
         </div>
     </section>
 
