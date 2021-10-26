@@ -75,7 +75,7 @@ export class RackSelectionService {
             if (!alreadySelectedForOthers) {
                 this.selectedIndexesForPlacement.push(index);
                 this.rackService.fillRackPortion(index, selectionColor);
-                console.log('test', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
+                //    console.log('test', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
                 this.gridService.writeLetter(
                     event.key,
                     {
@@ -84,10 +84,10 @@ export class RackSelectionService {
                     },
                     isCalledThoughtChat,
                 );
-                console.log('quand je click :', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
+                //  console.log('quand je click :', tiles[this.tileSelectionService.selectedCoord.y][this.tileSelectionService.selectedCoord.x]);
                 //  this.gridService.fillGridPortion()
-                console.log('selectedCoord :', this.tileSelectionService.selectedCoord);
-                console.log(' this.tileSelectionService.direction :', this.tileSelectionService.direction);
+                //  console.log('selectedCoord :', this.tileSelectionService.selectedCoord);
+                //  console.log(' this.tileSelectionService.direction :', this.tileSelectionService.direction);
                 const nextCoord = this.tileSelectionService.direction
                     ? { x: this.tileSelectionService.selectedCoord.x + 1, y: this.tileSelectionService.selectedCoord.y }
                     : { x: this.tileSelectionService.selectedCoord.x, y: this.tileSelectionService.selectedCoord.y + 1 };

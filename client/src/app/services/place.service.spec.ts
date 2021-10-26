@@ -54,7 +54,7 @@ describe('PlaceService', () => {
             { name: 'D', quantity: 3, points: 2, affiche: 'D' },
             { name: 'E', quantity: 15, points: 1, affiche: 'E' },
         ];
-        gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion']);
+        gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion', 'writeLetter']);
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         gridServiceSpy.gridContext = ctxStub;
         gridServiceSpy.letterStyle = { color: 'NavajoWhite', font: '15px serif' };
@@ -103,7 +103,7 @@ describe('PlaceService', () => {
     describe('writeWord', () => {
         it(' should call verifyServiceSpy.computeCoordByDirection', () => {
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
-            service.writeWord(wordToCheck, coord, direction);
+            service.writeWord(wordToCheck, coord, direction, true);
             expect(verifyServiceSpy.computeCoordByDirection).toHaveBeenCalledTimes(wordToCheck.length);
         });
     });
@@ -115,7 +115,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             // spyOn(service, 'isLetterOnRack');
-            await service.placeWord(wordToCheck, coord, direction);
+            await service.placeWord(wordToCheck, coord, direction, true);
             expect(verifyServiceSpy.validatePlaceFeasibility).toHaveBeenCalledTimes(1);
         });
 
@@ -125,7 +125,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
 
-            await service.placeWord(wordToCheck, coord, direction);
+            await service.placeWord(wordToCheck, coord, direction, true);
 
             expect(verifyServiceSpy.validatePlaceFeasibility).toHaveBeenCalledTimes(1);
         });
@@ -137,7 +137,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             const writeWordSpy = spyOn(service, 'writeWord').and.callThrough();
 
-            await service.placeWord(wordToCheck, coord, direction);
+            await service.placeWord(wordToCheck, coord, direction, true);
 
             expect(writeWordSpy).toHaveBeenCalledTimes(1);
         });
@@ -148,7 +148,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
 
-            await service.placeWord(wordToCheck, coord, direction);
+            await service.placeWord(wordToCheck, coord, direction, true);
 
             expect(verifyServiceSpy.checkAllWordsExist).toHaveBeenCalledTimes(1);
         });
@@ -159,7 +159,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
 
-            const result = await service.placeWord(wordToCheck, coord, direction).catch((error) => {
+            const result = await service.placeWord(wordToCheck, coord, direction, true).catch((error) => {
                 return error;
             });
 
@@ -174,7 +174,7 @@ describe('PlaceService', () => {
 
             const updateTilesLettersSpy = spyOn(service, 'updateTilesLetters').and.callThrough();
 
-            await service.placeWord(wordToCheck, coord, direction);
+            await service.placeWord(wordToCheck, coord, direction, true);
 
             expect(updateTilesLettersSpy).toHaveBeenCalled();
         });
@@ -187,7 +187,7 @@ describe('PlaceService', () => {
 
             const updateTilesLettersSpy = spyOn(service, 'updateTilesLetters').and.callThrough();
 
-            await service.placeWord(wordToCheck, coord, direction);
+            await service.placeWord(wordToCheck, coord, direction, true);
 
             expect(updateTilesLettersSpy).toHaveBeenCalled();
         });
@@ -199,7 +199,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
 
-            service.placeWord(wordToCheck, coord, direction).catch((error) => {
+            service.placeWord(wordToCheck, coord, direction, true).catch((error) => {
                 return error;
             });
             tick(placementDuration);
