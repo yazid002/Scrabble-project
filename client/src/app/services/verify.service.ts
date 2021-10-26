@@ -16,6 +16,7 @@ export class VerifyService {
     dictionary: Dictionary = dictionary as Dictionary;
     invalidSymbols: string[] = ['-', "'"];
     bonuses: string[] = ['dl', 'tw', 'tl', 'dw'];
+
     constructor(private rackService: RackService) {}
 
     isFitting(coord: Vec2, direction: string, word: string): { letter: string; coord: Vec2 }[] {
