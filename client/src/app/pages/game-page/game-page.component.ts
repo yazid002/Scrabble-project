@@ -25,9 +25,9 @@ export class GamePageComponent {
         console.log(this.virtualPlayerService);
         console.log(this.roomService);
         console.log(this.gameSyncService);
-        setInterval(()=>{
+        setInterval(() => {
             this.rooms = this.roomService.rooms;
-        },1000)
+        }, 1000);
     }
 
     increaseSize(): void {

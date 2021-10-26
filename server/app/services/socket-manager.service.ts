@@ -2,7 +2,7 @@ import { GameState } from '@app/classes/game-state';
 import * as http from 'http';
 import * as io from 'socket.io';
 
-interface Room {
+export interface Room {
     id: string;
     settings: { mode: string; timer: string };
 }
@@ -72,7 +72,7 @@ export class SocketManager {
             socket.on('disconnect', (reason: string) => {
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
-                
+
             });
         });
 

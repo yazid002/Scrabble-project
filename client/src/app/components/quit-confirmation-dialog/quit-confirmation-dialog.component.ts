@@ -9,7 +9,6 @@ import { GameService } from '@app/services/game.service';
 export class QuitConfirmationDialogComponent {
     constructor(private gameService: GameService) {}
 
-    
     quitGame() {
         this.gameService.quitGame();
     }
