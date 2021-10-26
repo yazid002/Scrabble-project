@@ -56,7 +56,12 @@ export class PlaceService {
                         if (!isCalledThoughtChat) {
                             this.placeSelectionService.cancelPlacement();
                         } else {
-                            this.gridService.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style.color, tiles[x][y].style.font);
+                            this.gridService.fillGridPortion(
+                                { x, y },
+                                tiles[x][y].text,
+                                tiles[x][y].style.color as string,
+                                tiles[x][y].style.font as string,
+                            );
                         }
                     }, placementDuration);
                     // if (!isCalledThoughtChat) {

@@ -78,7 +78,7 @@ export class PlaceSelectionService {
     onKeyBoardClick(event: KeyboardEvent, rack: ICharacter[]) {
         // // console.log(rack);
         const notFound = -1;
-        const selectionColor = 'red';
+        const selectionColor = 'darkorchid';
         const regexp = new RegExp('^[a-zA-Z]$');
         const eventKey = this.verifyService.normalizeWord(event.key);
         // console.log('le key normalisé ', eventKey);
@@ -94,6 +94,8 @@ export class PlaceSelectionService {
                 // this.gridService.changeGridStyle(undefined, undefined, selectionColor);
                 // this.gridService.squareLineWidth = 1;
                 // this.gridService.squareColor = selectionColor;
+                this.gridService.squareColor = selectionColor;
+                this.gridService.border.squareborder = 'darkorchid';
                 this.gridService.writeLetter(eventKey, this.selectedCoord, false);
                 //    this.gridService.drawGridPortionBorder(selectionColor, this.selectedCoord, 2);
                 const nextCoord = this.direction
@@ -236,14 +238,16 @@ export class PlaceSelectionService {
         // }
         if (coord) {
             // console.log('dehors');
+            this.gridService.border.squareborder = 'black';
             //  this.gridService.removeArrow(this.selectedCoord);
             tiles[coord.x][coord.y].text = tiles[coord.x][coord.y].oldText;
             tiles[coord.x][coord.y].style.color = tiles[coord.x][coord.y].oldStyle.color;
+            this.gridService.border.squareborder = 'black';
             this.gridService.fillGridPortion(
                 coord,
                 tiles[coord.x][coord.y].text,
-                tiles[coord.x][coord.y].style.color,
-                tiles[coord.x][coord.y].style.font,
+                tiles[coord.x][coord.y].style.color as string,
+                tiles[coord.x][coord.y].style.font as string,
             );
         }
         if (this.selectedTilesForPlacement.length === 0) {
