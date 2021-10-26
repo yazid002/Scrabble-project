@@ -1,3 +1,4 @@
+import { GameState } from '@app/classes/game-state';
 import * as http from 'http';
 import * as io from 'socket.io';
 

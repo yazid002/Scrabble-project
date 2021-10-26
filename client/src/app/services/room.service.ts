@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
@@ -27,6 +28,7 @@ export class RoomService {
         private gameSyncService: GameSyncService,
         private gameService: GameService,
         private userSettingsService: UserSettingsService,
+        private router: Router,
     ) {
         this.urlString = `http://${window.location.hostname}:5020`;
         this.socket = io(this.urlString);
@@ -71,6 +73,7 @@ export class RoomService {
             this.gameService.convertGameToSolo();
         });
         this.socket.on('askMasterSync', () => {
+            this.router.navigateByUrl('/game');
             if (!this.gameSyncService.isMasterClient) return;
             this.gameSyncService.sendToServer();
         });
@@ -89,5 +92,6 @@ export class RoomService {
         this.socket.emit('createRoom', settings);
         this.roomId = this.socket.id; // TODO when lobby is complete, set to this.socket.id;
         this.gameSyncService.isMasterClient = true;
+        return this.roomId;
     }
 }

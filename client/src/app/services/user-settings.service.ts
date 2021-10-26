@@ -12,7 +12,7 @@ const NUM_PLAYERS: IOptionList = {
     settingName: 'Nombre de joueurs',
     availableChoices: [
         { key: 'solo', value: 'Solo' },
-        { key: 'multiplayer', value: 'Multijoueurs' },
+        { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
     ],
 };
 

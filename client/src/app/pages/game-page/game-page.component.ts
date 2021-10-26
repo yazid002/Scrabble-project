@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GridService } from '@app/services/grid.service';
-import { Room, RoomService } from '@app/services/room.service';
+import { RoomService } from '@app/services/room.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -14,20 +14,17 @@ export class GamePageComponent {
     // TODO enlever le roomName et isMaster une fois que le loby est intégré et créé les salles pour nous
     roomName: string = '';
     isMaster: boolean = false;
-    rooms: Room[];
+
     constructor(
         public gridService: GridService,
 
         private virtualPlayerService: VirtualPlayerService,
-        private roomService: RoomService,
+        public roomService: RoomService,
         private gameSyncService: GameSyncService,
     ) {
         console.log(this.virtualPlayerService);
         console.log(this.roomService);
         console.log(this.gameSyncService);
-        setInterval(() => {
-            this.rooms = this.roomService.rooms;
-        }, 1000);
     }
 
     increaseSize(): void {

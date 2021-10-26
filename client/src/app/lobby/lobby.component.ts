@@ -1,16 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
-import { Room } from '@app/services/room.service';
+import { RoomService } from '@app/services/room.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { QuitMultiplayerDialogComponent } from './../components/quit-multiplayer-dialog/quit-multiplayer-dialog.component';
 import { SwitchDialogComponent } from './../components/switch-dialog/switch-dialog.component';
-export interface Game {
-    name: string;
-    index: number;
-    turnDuration: string;
-    isAvailable: boolean;
-}
 @Component({
     selector: 'app-lobby',
     templateUrl: './lobby.component.html',
@@ -23,14 +17,21 @@ export class LobbyComponent implements OnInit {
     timer: string;
     personIsActive: boolean = false;
 
-    rooms: Room[] = [
-        { id: 'Game 1', settings: { mode: 'classique', timer: '1 minute' } },
-        { id: 'Game 2', settings: { mode: 'classique', timer: '1 minute' } },
-        { id: 'Game 3', settings: { mode: 'classique', timer: '1 minute' } },
-    ];
+    roomName: string = '';
+    isMaster: boolean = false;
+
+    // rooms: Room[] = [];
     // headers: string[] = ['Game', 'turnDuration', 'Number of players'];
-    constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService) {}
+    constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, public roomService: RoomService) {
+        // setInterval(() => {
+        //     this.roomService.rooms;
+        // }, 1000);
+    }
     ngOnInit(): void {
+        console.log('allo');
+        setTimeout(() => {
+            this.goInRoom();
+        }, 1000);
         const name = this.userSettingsService.nameOption.userChoice;
         if (!localStorage.getItem('test')) localStorage.setItem('test', name);
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
@@ -44,6 +45,21 @@ export class LobbyComponent implements OnInit {
             (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
         );
         this.assignValues(name, mode, numPlayers, timer);
+    }
+
+    goInRoom(id?: string) {
+        let temp = 'Vous avez ';
+        if (id) {
+            this.roomService.roomId = id;
+
+            this.roomService.joinRoom(this.roomName);
+            temp += 'créé une salle ';
+        } else {
+            this.isMaster = true;
+            this.roomName = this.roomService.createRoom();
+            temp += 'join la salle ';
+        }
+        this.roomName = temp + this.roomName;
     }
 
     openQuitMultiplayerDialog() {

@@ -26,14 +26,15 @@
     <mat-card-title style="margin-top: 5px">Rooms available : </mat-card-title>
     <mat-divider id="divider"></mat-divider>
     <mat-list class="content">
-        <mat-list-item *ngFor="let room of rooms" class="room">
+        <mat-list-item *ngFor="let room of roomService.rooms" class="room">
             <h3 matLine>Game : {{ room.id }}</h3>
             <p matLine>Mode : {{ room.settings.mode }}</p>
             <p matLine>Timer : {{ room.settings.timer }}</p>
-            <button mat-raised-button color="basic" id="join_button">Join</button>
+            <button mat-raised-button color="basic" (click)="goInRoom(room.id)" routerLink="game" id="join_button">Join</button>
             <mat-divider></mat-divider>
         </mat-list-item>
     </mat-list>
+
     <!-- <table mat-table>
         <th *ngFor="let column of headers">
             {{ column }}
