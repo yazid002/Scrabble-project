@@ -21,13 +21,13 @@ export class CommandExecutionService {
         private exchangeExecutionService: ExchangeExecutionService,
     ) {}
     interpretCommand(command: string) {
-        this.findCommand(command);
+        this.findCommand(command, true);
     }
-    async executeCommand(command: string): Promise<IChat> {
-        const functionToExecute: () => Promise<IChat> | IChat = this.findCommand(command);
+    async executeCommand(command: string, isCalledThoughtChat: boolean): Promise<IChat> {
+        const functionToExecute: () => Promise<IChat> | IChat = this.findCommand(command, isCalledThoughtChat);
         return functionToExecute();
     }
-    private findCommand(command: string): () => Promise<IChat> | IChat {
+    private findCommand(command: string, isCalledThoughtChat: boolean): () => Promise<IChat> | IChat {
         /**
          * Tente de trouver la bonne commande a exécuter. S'il ne trouve pas la commande, alors la commande * donnée en paramètre n'est pas valide.
          */
@@ -50,7 +50,7 @@ export class CommandExecutionService {
                     format: '^placer[\\s][a-o]{1}([0-9]{1}|1[0-5]{1})(h|v)[\\s][^ ]{1,15}$',
                     description: 'Ligne(a-o)Colone(1-15)Sens(h|v) mot',
                     command: async () => {
-                        return this.placeExecutionService.execute(parameters);
+                        return this.placeExecutionService.execute(parameters, isCalledThoughtChat);
                     },
                 },
             ],

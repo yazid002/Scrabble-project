@@ -16,13 +16,14 @@ export class VerifyService {
     dictionary: Dictionary = dictionary as Dictionary;
     invalidSymbols: string[] = ['-', "'"];
     bonuses: string[] = ['dl', 'tw', 'tl', 'dw'];
-
+    success: boolean = true;
     constructor(private rackService: RackService) {}
 
     isFitting(coord: Vec2, direction: string, word: string): { letter: string; coord: Vec2 }[] {
         const remainingCases = direction === 'h' ? tiles.length - coord.x : tiles.length - coord.y;
 
         if (word.length > remainingCases) {
+            this.success = false;
             throw new ImpossibleCommand("Il n'y a pas assez de place pour écrire ce mot");
         }
 
@@ -35,10 +36,12 @@ export class VerifyService {
             const letter = word.charAt(i) === word.charAt(i).toUpperCase() ? '*' : word.charAt(i);
             if (!this.isCaseEmpty(charInBox)) {
                 if (!this.isLetterOnBoardTheSame(charInBox, letter)) {
+                    this.success = false;
                     throw new ImpossibleCommand("Il y a déjà une lettre dans l'une des cases ciblées.");
                 }
                 lettersUsedOnBoard.push({ letter, coord: { y, x } });
             } else if (!this.rackService.isLetterOnRack(letter)) {
+                this.success = false;
                 throw new ImpossibleCommand('Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet');
             }
         }
@@ -101,6 +104,7 @@ export class VerifyService {
             this.validateFirstMove(word, direction, coord);
         } else {
             if (!this.hasAdjacent(word, coord, direction)) {
+                this.success = false;
                 throw new ImpossibleCommand('Vous devez placer un mot ayant au moins une lettre adjacente aux lettres du plateau de jeu.');
             }
         }
@@ -108,6 +112,18 @@ export class VerifyService {
         this.validateJokersOccurrencesMatch(word);
         const lettersUsedOnBoard = this.isFitting(coord, direction, word);
         return lettersUsedOnBoard;
+    }
+
+    validateFirstMove(word: string, direction: string, coord: Vec2): void {
+        const h8Coord: Vec2 = { x: 7, y: 7 };
+        const valid =
+            direction === 'h'
+                ? coord.x === h8Coord.x && coord.y <= h8Coord.y && coord.y + word.length > h8Coord.y
+                : coord.y === h8Coord.y && coord.x <= h8Coord.x && coord.x + word.length > h8Coord.x;
+        if (!valid) {
+            this.success = false;
+            throw new ImpossibleCommand(' Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8');
+        }
     }
 
     private findVerticalAdjacentWord(coord: Vec2): string {
@@ -221,21 +237,10 @@ export class VerifyService {
         const jokersNumb = this.rackService.findJokersNumberOnRack();
 
         if (upperLettersInWord.length > jokersNumb) {
+            this.success = false;
             throw new NotEnoughOccurrences(` * (lettres blanches) représentant les lettres "${upperLettersInWord.join('", "')}" demandées.`);
         }
     }
-
-    private validateFirstMove(word: string, direction: string, coord: Vec2): void {
-        const h8Coord: Vec2 = { x: 7, y: 7 };
-        const valid =
-            direction === 'h'
-                ? coord.x === h8Coord.x && coord.y <= h8Coord.y && coord.y + word.length > h8Coord.y
-                : coord.y === h8Coord.y && coord.x <= h8Coord.x && coord.x + word.length > h8Coord.x;
-        if (!valid) {
-            throw new ImpossibleCommand(' Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8');
-        }
-    }
-
     private isFirstMove(): boolean {
         const h8Coord: Vec2 = { x: 7, y: 7 };
         return tiles[h8Coord.x][h8Coord.y].letter === '';
@@ -244,6 +249,7 @@ export class VerifyService {
     private validateInvalidSymbols(word: string): void {
         const invalid = this.invalidSymbols.some((symbol) => word.includes(symbol));
         if (invalid) {
+            this.success = false;
             throw new CommandSyntaxError("Les symboles (-) et (') sont invalides.");
         }
     }

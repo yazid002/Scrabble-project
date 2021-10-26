@@ -17,6 +17,7 @@ export class ChatboxComponent implements OnInit {
     error: boolean;
     errorMessage: string = '';
     messages: IChat[] = [];
+    fromSelection: boolean = false;
     readonly possibleSenders = SENDER;
 
     constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService, private gameService: GameService) {}
@@ -58,7 +59,8 @@ export class ChatboxComponent implements OnInit {
         if (this.inputBox.startsWith('!')) {
             let response: IChat = { from: '', body: '' };
             try {
-                response = await this.commandExecutionService.executeCommand(this.inputBox);
+                console.log('chat');
+                response = await this.commandExecutionService.executeCommand(this.inputBox, !this.fromSelection);
             } catch (error) {
                 if (error instanceof CommandError) {
                     response = {
@@ -71,6 +73,7 @@ export class ChatboxComponent implements OnInit {
         }
 
         this.inputBox = '';
+        this.fromSelection = false;
         this.scrollDown();
     }
     private scrollDown() {

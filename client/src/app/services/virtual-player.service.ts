@@ -114,7 +114,7 @@ export class VirtualPlayerService {
                 if (this.verifyService.isWordInDictionary(word.word)) {
                     console.log(word);
                     try {
-                        valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction);
+                        valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction, true);
 
                         if (valid) {
                             possibilities.push(word);

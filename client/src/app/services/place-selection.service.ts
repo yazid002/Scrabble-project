@@ -6,6 +6,7 @@ import { SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board
 import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { GridService } from './grid.service';
 import { RackService } from './rack.service';
+import { VerifyService } from './verify.service';
 
 @Injectable({
     providedIn: 'root',
@@ -16,15 +17,16 @@ export class PlaceSelectionService {
     selectedTilesForPlacement: Vec2[] = [];
     selectedRackIndexesForPlacement: number[] = [];
     wordToVerify: string[] = [];
+    command: string = '';
 
-    constructor(public gridService: GridService, private rackService: RackService) {}
+    constructor(public gridService: GridService, private verifyService: VerifyService, private rackService: RackService) {}
 
     getClickIndex(event: MouseEvent, rack: ICharacter[]): number {
-        console.log('click on rack { x, y} :', event.offsetX, event.offsetY);
+        // // console.log('click on rack { x, y} :', event.offsetX, event.offsetY);
         const notFound = -1;
         for (let i = 0; i < rack.length; i++) {
             if (event.offsetX >= i * (DEFAULT_WIDTH / RACK_SIZE) && event.offsetX < (i + 1) * (DEFAULT_WIDTH / RACK_SIZE)) {
-                console.log(i);
+                // // console.log(i);
                 return i;
             }
         }
@@ -49,16 +51,16 @@ export class PlaceSelectionService {
         return { x: notFound, y: notFound };
     }
 
-    getIndexOnRackFromKey(event: KeyboardEvent, rack: ICharacter[]) {
+    getIndexOnRackFromKey(eventKey: string, rack: ICharacter[]) {
         const notFound = -1;
         const regexp = new RegExp('^[A-Z]$');
-        const letterToFound = regexp.test(event.key) ? '*' : event.key.toUpperCase();
+        const letterToFound = regexp.test(eventKey) ? '*' : eventKey.toUpperCase();
 
-        console.log(letterToFound);
+        // // console.log(letterToFound);
         for (let i = 0; i < rack.length; i++) {
             if (rack[i].name === letterToFound) {
                 if (!this.selectedRackIndexesForPlacement.includes(i)) {
-                    this.wordToVerify.push(event.key);
+                    this.wordToVerify.push(eventKey);
                     return i;
                 }
             }
@@ -67,89 +69,186 @@ export class PlaceSelectionService {
     }
 
     buildPlacementCommand(rack: ICharacter[]): string {
-        console.log(rack);
+        // // console.log(rack);
         return `!placer ${String.fromCharCode(this.selectedTilesForPlacement[0].y + 'A'.charCodeAt(0)).toLowerCase()}${
             this.selectedTilesForPlacement[0].x + 1
         }${this.direction ? 'h' : 'v'} ${this.wordToVerify.join('')}`;
     }
 
     onKeyBoardClick(event: KeyboardEvent, rack: ICharacter[]) {
-        console.log(rack);
+        // // console.log(rack);
         const notFound = -1;
         const selectionColor = 'red';
         const regexp = new RegExp('^[a-zA-Z]$');
-        if (regexp.test(event.key)) {
-            console.log('je suis rentrée');
-            const index = this.getIndexOnRackFromKey(event, rack);
-            console.log('index :', index);
+        const eventKey = this.verifyService.normalizeWord(event.key);
+        // console.log('le key normalisé ', eventKey);
+        if (regexp.test(eventKey)) {
+            // console.log('je suis rentrée');
+            const index = this.getIndexOnRackFromKey(eventKey, rack);
+            // console.log('index :', index);
             if (index !== notFound) {
                 this.selectedRackIndexesForPlacement.push(index);
 
                 this.rackService.fillRackPortion(index, selectionColor);
                 this.selectedTilesForPlacement.push(this.selectedCoord);
                 // this.gridService.changeGridStyle(undefined, undefined, selectionColor);
-                //this.gridService.squareLineWidth = 2;
-                this.gridService.squareColor = selectionColor;
-                this.gridService.writeLetter(event.key, this.selectedCoord);
-                this.gridService.drawGridPortionBorder(selectionColor, this.selectedCoord, 2);
+                // this.gridService.squareLineWidth = 1;
+                // this.gridService.squareColor = selectionColor;
+                this.gridService.writeLetter(eventKey, this.selectedCoord, false);
+                //    this.gridService.drawGridPortionBorder(selectionColor, this.selectedCoord, 2);
                 const nextCoord = this.direction
                     ? { x: this.selectedCoord.x + 1, y: this.selectedCoord.y }
                     : { x: this.selectedCoord.x, y: this.selectedCoord.y + 1 };
-                this.gridService.drawGridPortionBorder(selectionColor, nextCoord, 2);
-                console.log('nextCoord :', nextCoord);
-                this.onBoardClick(
-                    {
-                        button: 0,
-                        offsetX: nextCoord.x * SQUARE_WIDTH,
-                        offsetY: nextCoord.y * SQUARE_WIDTH,
-                    } as MouseEvent,
-                    false,
-                );
+                //  this.gridService.drawGridPortionBorder(selectionColor, nextCoord, 2);
+                // // console.log('nextCoord :', nextCoord);
+                if (tiles[nextCoord.x][nextCoord.y].text === '' || tiles[nextCoord.x][nextCoord.y].text.length === 2) {
+                    this.onBoardClick(
+                        {
+                            button: 0,
+                            offsetX: nextCoord.x * SQUARE_WIDTH,
+                            offsetY: nextCoord.y * SQUARE_WIDTH,
+                        } as MouseEvent,
+                        false,
+                    );
+                }
             }
-        } else if (event.key === 'Backspace') {
+        } else
+            switch (event.key) {
+                case 'Backspace': {
+                    this.cancelUniqueSelectionFromRack();
+                    this.cancelUniqueBoardClick();
+
+                    break;
+                }
+                case 'Enter': {
+                    this.command = this.buildPlacementCommand(rack);
+                    // console.log('la commande ', this.command);
+
+                    break;
+                }
+                case 'Escape': {
+                    this.cancelPlacement();
+
+                    break;
+                }
+                // No default
+            }
+    }
+
+    cancelUniqueSelectionFromRack() {
+        // console.log(this.selectedRackIndexesForPlacement);
+        const toRemove = this.selectedRackIndexesForPlacement.pop();
+        this.wordToVerify.pop();
+        // console.log(toRemove);
+        if (toRemove === undefined) {
+            // console.log('dedans');
+
+            return;
+        }
+        const normalColor = 'NavajoWhite';
+        this.rackService.fillRackPortion(toRemove as number, normalColor);
+    }
+
+    cancelPlacement() {
+        // if (this.selectedTilesForPlacement.length === 0 && this.selectedCoord.x !== -1) {
+        //     this.gridService.removeArrow(this.selectedCoord);
+        // }
+        // console.log(this.selectedCoord);
+        while (this.selectedCoord.x !== -1) {
             this.cancelUniqueSelectionFromRack();
             this.cancelUniqueBoardClick();
         }
     }
 
-    cancelUniqueSelectionFromRack() {
-        console.log(this.selectedRackIndexesForPlacement);
-        const normalColor = 'NavajoWhite';
-        this.rackService.fillRackPortion(this.selectedRackIndexesForPlacement[this.selectedRackIndexesForPlacement.length - 1], normalColor);
-        this.selectedRackIndexesForPlacement.pop();
-    }
-
     onBoardClick(event: MouseEvent, shouldChangeDirection: boolean) {
         const notFound = { x: -1, y: -1 };
         const coord = this.getClickCoords(event);
-        if (coord.x !== notFound.x && coord.y !== notFound.y) {
+        if (tiles[7][7].text.length === 2 && (coord.x !== 7 || coord.y !== 7)) {
+            return;
+        }
+        if (!(tiles[coord.x][coord.y].text === '' || tiles[coord.x][coord.y].text.length === 2)) {
+            return;
+        }
+
+        if (!(this.selectedRackIndexesForPlacement.length === 0 || !shouldChangeDirection === true)) {
+            return;
+        }
+        if (!(coord.x !== notFound.x && coord.y !== notFound.y)) {
+            return;
+        }
+
+        if (this.selectedCoord.x === notFound.x && this.selectedCoord.y === notFound.y) {
+            // on clique pour la premiere fois
+            this.selectedCoord = coord;
+        } else if (coord.x !== this.selectedCoord.x || coord.y !== this.selectedCoord.y) {
+            // on clique sur une autre case apres avoir déja cliqué une premiere fois
+            if (shouldChangeDirection) {
+                this.direction = true;
+            }
+            //  if (!(this.selectedCoord.x === notFound.x && this.selectedCoord.y === notFound.y)) {
+            this.gridService.removeArrow(this.selectedCoord);
+            // }
+
+            this.selectedCoord = coord;
+        } else {
+            // on clique sur le même, on change de direction
+            this.direction = !this.direction;
+            this.gridService.removeArrow(this.selectedCoord);
+        }
+        this.gridService.drawArrow(this.direction, this.selectedCoord);
+
+        /*  if (coord.x !== notFound.x && coord.y !== notFound.y) {
             if (coord.x === this.selectedCoord.x && coord.y === this.selectedCoord.y) {
                 // on clique sur le même, on change de direction
                 this.gridService.removeArrow(this.selectedCoord);
-                this.direction = !this.direction;
+                if (!shouldChangeDirection) {
+                    this.direction = !this.direction;
+                }
             } else if (this.selectedCoord.x === notFound.x && this.selectedCoord.y === notFound.y) {
                 // on clique pour la premiere fois
                 this.selectedCoord = coord;
             } else {
+                //
                 // on clique sur une autre case apres avoir déja cliqué une premiere fois
                 if (shouldChangeDirection) {
                     this.direction = true;
                 }
                 this.gridService.removeArrow(this.selectedCoord);
                 this.selectedCoord = coord;
+
+                // if (this.selectedRackIndexesForPlacement.length === 0) {
+
+                //  }
+                //  }
             }
             this.gridService.drawArrow(this.direction, this.selectedCoord);
-        }
+        }*/
     }
 
     cancelUniqueBoardClick() {
-        this.gridService.changeGridStyle(undefined, undefined, 'black');
-        this.gridService.removeArrow(this.selectedCoord);
+        // console.log(this.selectedTilesForPlacement);
         const coord = this.selectedTilesForPlacement.pop();
+        if (this.selectedTilesForPlacement.length === 0 && this.selectedCoord.x !== -1) {
+            this.gridService.removeArrow(this.selectedCoord);
+        }
+        // else if (this.selectedCoord.x !== -1) {
+        //     this.gridService.removeArrow(this.selectedCoord);
+        // }
         if (coord) {
+            // console.log('dehors');
+            //  this.gridService.removeArrow(this.selectedCoord);
             tiles[coord.y][coord.x].text = tiles[coord.y][coord.x].oldText;
-            tiles[coord.y][coord.x].style = tiles[coord.y][coord.x].oldStyle;
-            this.gridService.fillGridPortion(coord, tiles[coord.y][coord.x].text, tiles[coord.y][coord.x].style);
+            tiles[coord.y][coord.x].style.color = tiles[coord.y][coord.x].oldStyle.color;
+            this.gridService.fillGridPortion(
+                coord,
+                tiles[coord.y][coord.x].text,
+                tiles[coord.y][coord.x].style.color,
+                tiles[coord.y][coord.x].style.font,
+            );
+        }
+        if (this.selectedTilesForPlacement.length === 0) {
+            this.selectedCoord.x = -1;
+            this.selectedCoord.y = -1;
         }
     }
 }

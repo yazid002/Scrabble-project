@@ -19,7 +19,9 @@ export class GridService {
 
     constructor(private reserveService: ReserveService) {}
 
-    writeLetter(letter: string, coord: Vec2): void {
+    writeLetter(letter: string, coord: Vec2, throughChat: boolean): void {
+        console.log(throughChat);
+        //   if (throughChat) {
         tiles[coord.y][coord.x].oldStyle.color = tiles[coord.y][coord.x].style.color;
         tiles[coord.y][coord.x].oldStyle.font = tiles[coord.y][coord.x].style.font;
 
@@ -30,11 +32,20 @@ export class GridService {
 
         tiles[coord.y][coord.x].oldText = tiles[coord.y][coord.x].text;
         tiles[coord.y][coord.x].text = letter;
+        this.fillGridPortion(
+            { x: coord.x, y: coord.y },
+            tiles[coord.y][coord.x].text,
+            tiles[coord.y][coord.x].style.color,
+            tiles[coord.y][coord.x].style.font,
+        );
+        // } else {
+        //     this.fillGridPortion({ x: coord.x, y: coord.y }, letter, this.letterStyle);
+        // }
+
         // this.squareColor = 'black';
         // this.squareLineWidth = 1;
         // this.squareLineWidth = 1;
         // this.squareColor = 'red';
-        this.fillGridPortion({ x: coord.x, y: coord.y }, tiles[coord.y][coord.x].text, tiles[coord.y][coord.x].style);
         console.log('testvalid', tiles);
     }
 
@@ -44,8 +55,9 @@ export class GridService {
 
         const arrow = direction === true ? img : img2;
 
-        const fillStyle = 'violet';
-        this.changeGridStyle(fillStyle, '10px serif');
+        // const fillStyle = 'violet';
+        // this.changeGridStyle(fillStyle, '10px serif');
+        // tiles[coord.x][coord.y].oldStyle = tiles[coord.x][coord.y].style;
 
         this.gridContext.drawImage(arrow, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y, 13.33, 13.33);
     }
@@ -60,9 +72,12 @@ export class GridService {
         //     DEFAULT_WIDTH / SQUARE_NUMBER,
         //     DEFAULT_WIDTH / SQUARE_NUMBER,
         // );
-        this.squareColor = 'black';
-        this.squareLineWidth = 0;
-        this.fillGridPortion(coord, tiles[coord.y][coord.x].text, tiles[coord.y][coord.x].style);
+        // this.squareColor = 'black';
+        // this.squareLineWidth = 0;
+        //  tiles[coord.x][coord.y].style = tiles[coord.x][coord.y].oldStyle;
+        this.fillGridPortion(coord, tiles[coord.y][coord.x].text, tiles[coord.y][coord.x].style.color, tiles[coord.y][coord.x].style.font);
+
+        // console.log(coord);
     }
 
     drawGridOutdoor() {
@@ -110,16 +125,18 @@ export class GridService {
         this.gridContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                this.squareColor = 'black';
-                this.squareLineWidth = 0;
-                this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style);
-                // this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
+                // this.squareColor = 'black';
+                // this.squareLineWidth = 0;
+                this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color, tiles[y][x].style.font);
+                //  this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
             }
         }
         this.drawGridOutdoor();
     }
 
-    fillGridPortion(coord: Vec2, letter: string, style: CaseStyle) {
+    fillGridPortion(coord: Vec2, letter: string, color: string, font: string) {
+        console.log('le style de la case : ', letter, color);
+
         const lettersPixelsWidthAdjustment = 2;
         const lettersPixelsHeighAdjustment = 22;
         const pointsPixelsWidthAdjustment = 16;
@@ -133,7 +150,7 @@ export class GridService {
 
         //  const strokeStyle = 'black';
         //  const lineWidth = this.squareLineWidth;
-        this.changeGridStyle(style.color, undefined, this.squareColor, this.squareLineWidth);
+        this.changeGridStyle(color, undefined, this.squareColor, this.squareLineWidth);
 
         this.gridContext.fillRect(
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
@@ -149,11 +166,10 @@ export class GridService {
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
-        // console.log('squareLineWidth ', this.squareLineWidth);
         //  this.drawGridPortionBorder(this.squareColor, coord, 2);
 
         const fillStyle = 'black';
-        this.changeGridStyle(fillStyle, style.font);
+        this.changeGridStyle(fillStyle, font);
         this.gridContext.strokeText(
             letter.toUpperCase(),
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsWidthAdjustment,
@@ -186,13 +202,20 @@ export class GridService {
         //     DEFAULT_WIDTH / SQUARE_NUMBER - width,
         // );
         this.gridContext.beginPath();
-        this.gridContext.moveTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y);
-        this.gridContext.lineTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + DEFAULT_WIDTH / SQUARE_NUMBER);
+        this.gridContext.moveTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + 5, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + 5);
         this.gridContext.lineTo(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + DEFAULT_WIDTH / SQUARE_NUMBER,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + DEFAULT_WIDTH / SQUARE_NUMBER,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + 5,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + DEFAULT_WIDTH / SQUARE_NUMBER - 5,
         );
-        this.gridContext.lineTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + DEFAULT_WIDTH / SQUARE_NUMBER, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y);
+        this.gridContext.lineTo(
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + DEFAULT_WIDTH / SQUARE_NUMBER - 5,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + DEFAULT_WIDTH / SQUARE_NUMBER - 5,
+        );
+        this.gridContext.lineTo(
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + DEFAULT_WIDTH / SQUARE_NUMBER - 5,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + 5,
+        );
+        this.gridContext.stroke();
     }
 
     changeGridStyle(fillStyle?: string, font?: string, strokeStyle?: string, lineWidth?: number): void {
@@ -215,9 +238,9 @@ export class GridService {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
                 if (tiles[y][x].letter !== '') {
                     tiles[y][x].style.font = this.letterStyle.font;
-                    this.squareColor = 'black';
-                    this.squareLineWidth = 0;
-                    this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style);
+                    // this.squareColor = 'black';
+                    // this.squareLineWidth = 0;
+                    this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color, tiles[y][x].style.font);
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
             }
