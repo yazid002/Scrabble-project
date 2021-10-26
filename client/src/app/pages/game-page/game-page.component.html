@@ -4,8 +4,6 @@
         <app-play-area class="play-area" tabindex="0"></app-play-area>
         <button id="increaseSize" (click)="increaseSize()">+</button>
         <button id="decreaseSize" (click)="decreaseSize()">-</button>
-        <button id="random" (click)="randomNumber()">random</button>
-
 
         <div *ngIf="!disablePlacement()">
             <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement()">Placer</button>

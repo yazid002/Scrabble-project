@@ -53,8 +53,4 @@ export class GamePageComponent {
         const maxValue = 13;
         this.gridService.decreaseTileSize(step, step, maxValue);
     }
-
-    randomNumber() {
-        this.gridService.randomizeBonus(0, 3);
-    }
 }

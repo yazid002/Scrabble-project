@@ -18,7 +18,8 @@ export class GridService {
         { text: 'dl', color: 'LightSkyBlue', quantity: 24 },
     ];
 
-    randomBonusIndex: number;
+    randomBonusIndex: number = 0;
+    isChecked: boolean = false;
 
     letterStyle: CaseStyle = { color: 'NavajoWhite', font: '15px serif' };
     pointStyle: CaseStyle = { color: 'NavajoWhite', font: '10px serif' };
@@ -229,17 +230,13 @@ export class GridService {
         this.fillGridPortion({ x: coord.x, y: coord.y }, tiles[coord.x][coord.y].text, tiles[coord.x][coord.y].style);
         console.log('testvalid', tiles);
     }
-
-
-
-    //https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+    // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 
     getRandomIntInclusive(min: number, max: number): number {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    
 
     randomizeIndex(minNumber: number, maxNumber: number): number {
         do {
@@ -251,18 +248,23 @@ export class GridService {
 
     randomizeBonus(min: number, max: number): void {
         let index: number;
+        if (!this.isChecked) {
+            return;
+        }
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                if (tiles[y][x].bonus !== 'xx') {
-                    index = this.randomizeIndex(min, max);
-                    tiles[y][x].bonus = this.bonusOnGrid[index].text;
-                    tiles[y][x].text = this.bonusOnGrid[index].text;
-                    tiles[y][x].style.color = this.bonusOnGrid[index].color;
-
-                    this.fillGridPortion({ x, y }, tiles[y][x].text, tiles[y][x].style);
-                    this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
-                    this.bonusOnGrid[index].quantity--;
+                if (tiles[y][x].bonus === 'xx') {
+                    continue;
                 }
+
+                index = this.randomizeIndex(min, max);
+                tiles[y][x].bonus = this.bonusOnGrid[index].text;
+                tiles[y][x].text = this.bonusOnGrid[index].text;
+                tiles[y][x].style.color = this.bonusOnGrid[index].color;
+
+                this.fillGridPortion({ x, y }, tiles[y][x].text, tiles[y][x].style);
+                this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
+                this.bonusOnGrid[index].quantity--;
             }
         }
 
