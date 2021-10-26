@@ -2,15 +2,16 @@ import { Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { ExchangeLimits } from '@app/enums/exchange-enums';
+import { SelectionType } from '@app/enums/selection-enum';
 import { ExchangeService } from '@app/services/exchange.service';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { PlaceSelectionService } from '@app/services/place-selection.service';
 import { RackLettersManipulationService } from '@app/services/rack-letters-manipulation.service';
-import { RackService } from '@app/services/rack.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { Room, RoomService } from '@app/services/room.service';
+import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -29,6 +30,7 @@ export class GamePageComponent {
 
     receptor: HTMLElement = {} as HTMLElement;
     command: string = '';
+    //  selectionType: typeof SelectionType;
 
     constructor(
         public gridService: GridService,
@@ -39,8 +41,9 @@ export class GamePageComponent {
         private placeSelectionService: PlaceSelectionService, //  private readonly rackService: RackService,
         public exchangeService: ExchangeService,
         public reserveService: ReserveService,
-        private readonly rackService: RackService,
+        //    private readonly rackService: RackService,
         public rackLettersManipulationService: RackLettersManipulationService,
+        public selectionManager: SelectionManagerService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
@@ -48,59 +51,19 @@ export class GamePageComponent {
 
     @HostListener('keyup', ['$event'])
     onKeyBoardClick(event: KeyboardEvent) {
-        // console.log(event.key);
-        // console.log('bla ', this.receptor);
-        if (this.receptor === this.playAreaComponent.gridCanvas.nativeElement) {
-            if (event.key === 'Escape' || (event.key === 'Backspace' && this.placeSelectionService.selectedTilesForPlacement.length <= 1)) {
-                this.receptor = {} as HTMLElement;
-            }
-            this.placeSelectionService.onKeyBoardClick(event, this.gameService.players[0].rack);
-            if (event.key === 'Enter') {
-                console.log('ici Enter ');
-                this.receptor = {} as HTMLElement;
-                this.onSubmitPlacement();
-            }
-            // this.receptor = {} as HTMLElement;
-        } else if (this.receptor === this.playAreaComponent.rackCanvas.nativeElement) {
-            if (this.rackService.isLetterOnRack(event.key) || event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-                this.rackLettersManipulationService.onKeyBoardClick(event, this.gameService.players[0].rack);
-            } else {
-                this.rackLettersManipulationService.cancelManipulation();
-            }
-        }
-        //  else {
-        //     console.log('je cancel');
-        //     this.placeSelectionService.cancelPlacement();
-        //     this.receptor = {} as HTMLElement;
-        //     console.log(this.receptor);
-        // }
+        this.selectionManager.onKeyBoardClick(event);
     }
 
     @HostListener('click', ['$event'])
     onLeftClick(event: MouseEvent) {
-        this.receptor = event.target as HTMLElement;
-        if (this.receptor === this.playAreaComponent.gridCanvas.nativeElement) {
-            this.placeSelectionService.onBoardClick(event, true);
-        } else if (this.receptor === this.playAreaComponent.rackCanvas.nativeElement) {
-            this.rackLettersManipulationService.onMouseLeftClick(event, this.gameService.players[0].rack);
-        } else {
-            console.log('je suis la');
-            this.placeSelectionService.cancelPlacement();
-            this.rackLettersManipulationService.cancelManipulation();
-            this.receptor = {} as HTMLElement;
-        }
+        console.log(this.selectionManager.selectionType);
+
+        this.selectionManager.onLeftClick(event);
     }
 
     @HostListener('contextmenu', ['$event'])
     onRightClick(event: MouseEvent) {
-        event.preventDefault();
-        console.log('{ x, y} :', event.offsetX, event.offsetY, event.target);
-        console.log('this.playArea.nativeElement : ', this.playAreaComponent.rackCanvas.nativeElement);
-        if (event.target !== this.playAreaComponent.rackCanvas.nativeElement) {
-            this.exchangeService.cancelExchange();
-        } else {
-            this.exchangeService.onMouseRightClick(event, this.gameService.players[0].rack);
-        }
+        this.selectionManager.onRightClick(event);
     }
 
     @HostListener('window:wheel', ['$event'])
@@ -120,7 +83,6 @@ export class GamePageComponent {
     }
 
     onSubmitPlacement() {
-        // this.command = this.rackSelectionService.buildPlacementCommand(this.rackService.rackLetters);
         this.command = this.placeSelectionService.command;
         console.log('la commande ici', this.command);
         this.chatboxComponent.inputBox = this.command;
@@ -151,14 +113,19 @@ export class GamePageComponent {
         }
         this.roomName = temp + this.roomName;
     }
-    onSubmitExchange() {
+
+    onSubmitExchange(selectionType: SelectionType) {
+        // this.receptor = this.playAreaComponent.rackCanvas.nativeElement;
+        console.log('submit exchange', selectionType);
+        this.selectionManager.getSelectionType(selectionType);
         this.command = this.exchangeService.buildExchangeCommand(this.gameService.players[0].rack);
         this.chatboxComponent.inputBox = this.command;
         this.chatboxComponent.fromSelection = true;
         this.chatboxComponent.onSubmit();
     }
-
-    onCancelManipulation() {
+    onCancelManipulation(selectionType: SelectionType) {
+        this.selectionManager.getSelectionType(selectionType);
+        //  this.receptor = this.playAreaComponent.rackCanvas.nativeElement;
         this.rackLettersManipulationService.cancelManipulation();
     }
 
@@ -169,7 +136,13 @@ export class GamePageComponent {
         return this.exchangeService.selectedIndexes.length === 0 || this.reserveService.getQuantityOfAvailableLetters() < ExchangeLimits.Max;
     }
 
-    onCancelExchange() {
+    onCancelExchange(selectionType: SelectionType) {
+        this.selectionManager.getSelectionType(selectionType);
+        this.receptor = this.playAreaComponent.rackCanvas.nativeElement;
         this.exchangeService.cancelExchange();
+    }
+
+    get selectionType(): typeof SelectionType {
+        return SelectionType;
     }
 }
