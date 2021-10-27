@@ -25,7 +25,7 @@ describe('PlaceExecuteService', () => {
             // eslint-disable-next-line dot-notation
             const result = service['extractParameters'](POSITION);
 
-            const expectedResult = { direction: 'v', coord: { x: 6, y: 14 } } as {
+            const expectedResult = { direction: 'v', coord: { y: 6, x: 14 } } as {
                 direction: string;
                 coord: Vec2;
             };

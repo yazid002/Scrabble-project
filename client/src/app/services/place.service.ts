@@ -21,7 +21,23 @@ export class PlaceService {
         private pointsCountingService: PointsCountingService,
         private timerService: TimerService,
     ) {}
+    placeWordInstant(word: string, coord: Vec2, direction: string): boolean {
+        word = this.verifyService.normalizeWord(word);
 
+        this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
+
+        const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
+        if (wordValidationParameters.wordExists) {
+            this.writeWord(word, coord, direction);
+            this.updateTilesLetters(word, coord, direction);
+            this.points += this.pointsCountingService.processWordPoints(word, coord, direction, this.lettersUsedOnBoard);
+            this.rackService.replaceWord(word);
+
+            // this.timerService.resetTimer();
+        }
+
+        return wordValidationParameters.wordExists;
+    }
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
         word = this.verifyService.normalizeWord(word);
 
@@ -37,10 +53,10 @@ export class PlaceService {
                     const x = computingCoord.x;
                     const y = computingCoord.y;
 
-                    tiles[x][y].text = tiles[x][y].oldText;
-                    tiles[x][y].style = tiles[x][y].oldStyle;
+                    tiles[y][x].text = tiles[y][x].oldText;
+                    tiles[y][x].style = tiles[y][x].oldStyle;
                     setTimeout(() => {
-                        this.gridService.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
+                        this.gridService.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style);
                     }, placementDuration);
                 }
 
@@ -61,8 +77,8 @@ export class PlaceService {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
             const x = computingCoord.x;
             const y = computingCoord.y;
-            tiles[x][y].letter = word[i].toLowerCase();
-            tiles[x][y].bonus = 'x';
+            tiles[y][x].letter = word[i].toLowerCase();
+            tiles[y][x].bonus = 'x';
         }
     }
 
@@ -72,12 +88,12 @@ export class PlaceService {
             const x = computingCoord.x;
             const y = computingCoord.y;
 
-            tiles[x][y].oldStyle = tiles[x][y].style;
-            tiles[x][y].style = this.gridService.letterStyle;
+            tiles[y][x].oldStyle = tiles[y][x].style;
+            tiles[y][x].style = this.gridService.letterStyle;
 
-            tiles[x][y].oldText = tiles[x][y].text;
-            tiles[x][y].text = word[i];
-            this.gridService.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
+            tiles[y][x].oldText = tiles[y][x].text;
+            tiles[y][x].text = word[i];
+            this.gridService.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style);
         }
     }
 }
