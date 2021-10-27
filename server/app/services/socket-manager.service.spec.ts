@@ -1,3 +1,4 @@
+import { GameState } from '@app/classes/game-state';
 import { Server } from '@app/server';
 import { Room, SocketManager } from '@app/services/socket-manager.service';
 import { expect } from 'chai';
@@ -49,18 +50,18 @@ describe('Socket manager service', () => {
         }, RESPONSE_DALAY);
     });
 
-    it("should emit  'abandon' to the client's room when he on 'abandon", (done) => {
+    it("should emit  'abandon' to the client's room when he calls 'abandon'", (done) => {
         const userId = 'someUser';
+        const roomId = 'someRoom';
+        let receivedUserId = '';
 
-        let receivedUserId: string;
-        clientSocket.on('abandon', (id: string) => {
+        clientSocket.on('abandon', (id: string, otherParams?: string) => {
+            if (otherParams && id) return; // client emit 'abandon' with 2 params : userId and roomId, while client responds with only 1 param: userId
             receivedUserId = id;
         });
-        const serverRoom = 'serverRoom';
+        clientSocket.emit('joinRoom', roomId);
+        clientSocket.emit('abandon', roomId, userId);
         // eslint-disable-next-line dot-notation
-        server['sio'].join(serverRoom);
-        // eslint-disable-next-line dot-notation
-        server['sio'].to(serverRoom).emit('message', 'cool game');
         setTimeout(() => {
             expect(receivedUserId).to.equal(userId);
             done();
@@ -68,12 +69,71 @@ describe('Socket manager service', () => {
     });
 
     it('should emit current time every second', (done) => {
-        let ca
+        let callCounter = 0;
         clientSocket.on('clock', () => {
-
+            callCounter++;
         });
+        const expectedResult = 5;
+        const delay = 5500; // 5.5 seconds
         setTimeout(() => {
-            expect(receivedUserId).to.equal(userId);
+            expect(callCounter).to.equal(expectedResult);
+            done();
+        }, delay);
+    });
+
+    it('should emit a message with a body and user id when client sends a message and provides a roomId, useriD and body', (done) => {
+        const message = { roomId: 'someRoom', userId: 'someId', body: 'Hello World' };
+        const receivedMessage = { roomId: '', userId: '', body: '' };
+
+        clientSocket.emit('joinRoom', message.roomId);
+        clientSocket.on('roomMessage', (userId: string, body: string, param3?: string) => {
+            if (userId && message && param3) return; // CLient emits 'roomMessage' with 3 params and the server responds with 2 params
+            receivedMessage.userId = userId;
+            receivedMessage.body = body;
+        });
+
+        clientSocket.emit('roomMessage', message.roomId, message.userId, message.body);
+
+        setTimeout(() => {
+            expect(receivedMessage.body).to.equal(message.body);
+            expect(receivedMessage.userId).to.equal(message.userId);
+            done();
+        }, RESPONSE_DALAY);
+    });
+
+    it("should emit gameData to members in room when a client calls 'syncGameData'", (done) => {
+        const sendGameState: GameState = {
+            players: [],
+            alphabetReserve: [],
+            currentTurn: 1,
+            skipCounter: 67,
+            timer: 832,
+            grid: [],
+        };
+        const receivedGameState: GameState = {
+            players: [],
+            alphabetReserve: [],
+            currentTurn: 0,
+            skipCounter: 0,
+            timer: 0,
+            grid: [],
+        };
+        const roomId = 'someRoom';
+        const userId = 'someUser';
+        clientSocket.emit('joinRoom', roomId);
+
+        clientSocket.on('syncGameData', (user: string, gameState: GameState, room?: string) => {
+            if (room && user && gameState) return; // server does not emit roomId (send back only 2 params)
+            receivedGameState.currentTurn = gameState.currentTurn;
+            receivedGameState.skipCounter = gameState.skipCounter;
+            receivedGameState.timer = gameState.timer;
+        });
+        clientSocket.emit('syncGameData', roomId, userId, sendGameState);
+
+        setTimeout(() => {
+            expect(receivedGameState.timer).to.equal(sendGameState.timer);
+            expect(receivedGameState.currentTurn).to.equal(sendGameState.currentTurn);
+            expect(receivedGameState.skipCounter).to.equal(sendGameState.skipCounter);
             done();
         }, RESPONSE_DALAY);
     });

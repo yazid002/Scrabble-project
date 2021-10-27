@@ -44,7 +44,6 @@ export class GameService {
         this.abandonSignal.next('abandon');
     }
     private changeTurn(skipped: boolean): void {
-        console.log('Changeturn');
         if (skipped) {
             this.skipCounter++;
         } else {
@@ -58,7 +57,6 @@ export class GameService {
         }
     }
     private nextPlayer() {
-        console.log('nextplayer signal emited in gameService');
         this.otherPlayerSignal.next(this.numPlayers);
     }
 

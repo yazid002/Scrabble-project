@@ -34,7 +34,6 @@ export class RoomService {
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
             // Send our message to the other players
-            console.log('message emited');
             // socket.broadcast.to('game').emit('message', 'nice game');
             this.socket.emit('roomMessage', this.roomId, this.socket.id, message);
         });
@@ -60,7 +59,6 @@ export class RoomService {
             const message: IChat = { from: SENDER.otherPlayer, body: broadcastMessage };
             if (id === this.socket.id || !broadcastMessage) return;
             this.chatService.messages.push(message);
-            console.log('Message received');
         });
         this.socket.on('syncGameData', (id: string, gameState: GameState) => {
             if (id === this.socket.id) return;

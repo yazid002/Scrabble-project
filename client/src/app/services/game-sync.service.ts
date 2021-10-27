@@ -32,6 +32,9 @@ export class GameSyncService {
         private timerService: TimerService,
         private gridService: GridService,
     ) {
+        this.initialize();
+    }
+    initialize() {
         this.sendGameStateSignal = new BehaviorSubject<GameState>(this.getGameState());
         this.sendAbandonSignal = new BehaviorSubject<string>('');
         this.sendOtherPlayerTrigger = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
@@ -54,7 +57,7 @@ export class GameSyncService {
             tiles[i] = gameState.grid[i];
         }
         this.gridService.drawGrid();
-        console.log('receiving data from server!', this.getGameState());
+
         if (!this.alreadySynced) {
             this.alreadySynced = true;
             this.sendToServer();
@@ -62,7 +65,6 @@ export class GameSyncService {
     }
     sendToServer() {
         const gameState = this.getGameState();
-        console.log('sending data to server', gameState);
         this.sendGameStateSignal.next(gameState);
     }
     private getGameState(): GameState {

@@ -11,6 +11,9 @@ import { TimerService } from './timer.service';
 export class VirtualPlayerService {
     virtualPlayerSignal: Subscription;
     constructor(private gameService: GameService, private exchangeService: ExchangeService, private timerService: TimerService) {
+        this.initialize();
+    }
+    initialize() {
         this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
             if (numPlayers !== 'solo') return;
             this.play();

@@ -19,15 +19,11 @@ export class GamePageComponent {
         public gridService: GridService,
 
         private virtualPlayerService: VirtualPlayerService,
-        private roomService: RoomService,
+        public roomService: RoomService,
         private gameSyncService: GameSyncService,
     ) {
-        console.log(this.virtualPlayerService);
-        console.log(this.roomService);
-        console.log(this.gameSyncService);
-        setInterval(() => {
-            this.rooms = this.roomService.rooms;
-        }, 1000);
+        this.virtualPlayerService.initialize();
+        this.gameSyncService.initialize();
     }
 
     increaseSize(): void {
