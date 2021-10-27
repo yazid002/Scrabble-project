@@ -69,6 +69,7 @@ export class RoomService {
             this.gameService.convertGameToSolo();
         });
         this.socket.on('askMasterSync', () => {
+            console.log('askMasterSync');
             if (!this.gameSyncService.isMasterClient) return;
             this.gameSyncService.sendToServer();
         });

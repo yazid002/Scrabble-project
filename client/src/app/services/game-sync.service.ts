@@ -26,15 +26,19 @@ export class GameSyncService {
     abandonTrigger: Subscription;
     isMasterClient: boolean;
     private alreadySynced: boolean;
+    private alreadyInitialized: boolean;
     constructor(
         private gameService: GameService,
         private reserveService: ReserveService,
         private timerService: TimerService,
         private gridService: GridService,
     ) {
+        this.alreadyInitialized = false;
         this.initialize();
     }
     initialize() {
+        if (this.alreadyInitialized) return;
+        this.alreadyInitialized = true;
         this.sendGameStateSignal = new BehaviorSubject<GameState>(this.getGameState());
         this.sendAbandonSignal = new BehaviorSubject<string>('');
         this.sendOtherPlayerTrigger = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {

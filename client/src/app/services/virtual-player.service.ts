@@ -10,10 +10,14 @@ import { TimerService } from './timer.service';
 })
 export class VirtualPlayerService {
     virtualPlayerSignal: Subscription;
+    private alreadyInitialized: boolean;
     constructor(private gameService: GameService, private exchangeService: ExchangeService, private timerService: TimerService) {
+        this.alreadyInitialized = false;
         this.initialize();
     }
     initialize() {
+        if (this.alreadyInitialized) return;
+        this.alreadyInitialized = true;
         this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
             if (numPlayers !== 'solo') return;
             this.play();
