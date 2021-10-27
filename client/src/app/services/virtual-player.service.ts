@@ -11,7 +11,11 @@ import { TimerService } from './timer.service';
 export class VirtualPlayerService {
     virtualPlayerSignal: Subscription;
     constructor(private gameService: GameService, private exchangeService: ExchangeService, private timerService: TimerService) {
-        this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe(() => {
+        this.initialize();
+    }
+    initialize() {
+        this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
+            if (numPlayers !== 'solo') return;
             this.play();
         });
     }
@@ -60,6 +64,7 @@ export class VirtualPlayerService {
         this.exchangeService.exchangeLetters(lettersToChange);
     }
     private place() {
-        console.log('virtual player place');
+        // TODO: commenter pour le merge, a enlever
+        //  console.log('virtual player place');
     }
 }

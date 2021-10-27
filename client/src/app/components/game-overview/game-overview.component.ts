@@ -19,6 +19,7 @@ export class GameOverviewComponent implements OnInit {
     computerIndex = COMPUTER_INDEX;
     realPlayerIndex = REAL_PLAYER_INDEX;
     nbLettersReserve: number = 0;
+    otherPlayerName: string = '';
     constructor(
         public userSettingsService: UserSettingsService,
         public timerService: TimerService,
@@ -42,9 +43,10 @@ export class GameOverviewComponent implements OnInit {
         );
 
         this.assignValues(mode, numPlayers, computerLevel, timer);
-        this.getReserveSize();
+
+        this.updateData();
     }
-    private getReserveSize(): void {
+    private updateData(): void {
         const reserveRefreshRate = 1000;
         setInterval(() => {
             this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();
@@ -54,7 +56,7 @@ export class GameOverviewComponent implements OnInit {
         if (mode && numPlayers && computerLevel && timer) {
             this.mode = mode.value;
             this.numPlayers = numPlayers.value;
-            this.computerLevel = computerLevel.value;
+            this.computerLevel = this.numPlayers === 'solo' ? computerLevel.value : '';
             this.timer = timer.value;
         }
     }

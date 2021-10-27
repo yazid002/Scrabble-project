@@ -3,10 +3,10 @@ import { tiles } from '@app/classes/board';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { Vec2 } from '@app/classes/vec2';
 import { VerifyService } from '@app/services/verify.service';
+import { GameService } from './game.service';
 import { GridService } from './grid.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
-import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 
 @Injectable({
@@ -14,17 +14,14 @@ import { TimerService } from './timer.service';
 })
 export class PlaceService {
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
-    points: number = 0;
     constructor(
         private rackService: RackService,
         private verifyService: VerifyService,
         private gridService: GridService,
         private pointsCountingService: PointsCountingService,
-        private reserveService: ReserveService,
         private timerService: TimerService,
-    ) {
-        pointsCountingService.reserve = this.reserveService.alphabets;
-    }
+        private gameService: GameService,
+    ) {}
 
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
         word = this.verifyService.normalizeWord(word);
@@ -50,8 +47,13 @@ export class PlaceService {
 
                 reject(new ImpossibleCommand(wordValidationParameters.errorMessage));
             } else {
+                this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
+                    word,
+                    coord,
+                    direction,
+                    this.lettersUsedOnBoard,
+                );
                 this.updateTilesLetters(word, coord, direction);
-                this.points += this.pointsCountingService.getWordBasePoints(word);
                 resolve(this.rackService.replaceWord(word));
 
                 this.timerService.resetTimer();
@@ -66,6 +68,7 @@ export class PlaceService {
             const x = computingCoord.x;
             const y = computingCoord.y;
             tiles[x][y].letter = word[i].toLowerCase();
+            tiles[x][y].bonus = 'x';
         }
     }
 

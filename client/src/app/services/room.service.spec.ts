@@ -15,7 +15,7 @@ describe('RoomService', () => {
     });
     it('should create a room with name = socket.id when createRoom is called', () => {
         service.roomId = 'NoneSense';
-        service.createRoom();
+        service.createRoom(); // TODO once lobby is finished, createroom should take no arguments
         expect(service.roomId).toEqual(service.socket.id);
     });
     it('should not add message received to the message list if we are the sender', () => {

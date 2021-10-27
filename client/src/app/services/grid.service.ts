@@ -62,7 +62,7 @@ export class GridService {
         this.gridContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                this.fillGridPortion({ x, y }, tiles[y][x].text, tiles[y][x].style);
+                this.fillGridPortion({ x, y }, tiles[x][y].text, tiles[x][y].style);
                 this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
             }
         }
