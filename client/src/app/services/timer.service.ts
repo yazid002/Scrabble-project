@@ -1,6 +1,6 @@
 import { Injectable, Output } from '@angular/core';
-import { UserSettingsService } from './user-settings.service';
 import { BehaviorSubject } from 'rxjs';
+import { UserSettingsService } from './user-settings.service';
 
 @Injectable({
     providedIn: 'root',
@@ -31,8 +31,10 @@ export class TimerService {
         }, timerIntervalMS);
     }
     resetTimer(skipped: boolean = false) {
-        this.counter.totalTimer = this.counter.resetValue;
-        this.timerDone.next(skipped);
+        // setTimeout(() => {
+            this.counter.totalTimer = this.counter.resetValue;
+            this.timerDone.next(skipped);
+        // }, 1000);
     }
     private getTimerSettings() {
         const timer = Number(this.userSettingsService.settings.timer.currentChoiceKey);

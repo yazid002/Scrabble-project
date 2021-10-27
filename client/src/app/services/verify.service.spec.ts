@@ -15,13 +15,6 @@ describe('VerifyService', () => {
 
     beforeEach(() => {
         rackServiceSpy = jasmine.createSpyObj('RackService', ['findJokersNumberOnRack', 'isLetterOnRack']);
-        // rackServiceSpy.rackLetters = [
-        //     { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-        //     { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-        //     { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-        //     { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-        //     { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-        // ];
 
         TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }] });
         service = TestBed.inject(VerifyService);
@@ -545,10 +538,10 @@ describe('VerifyService', () => {
 
     it(' findHorizontalAdjacentWord should return the right word if coords are on the left', () => {
         const coord = { x: 1, y: 6 };
-        tiles[coord.x][coord.y - 1].text = '';
-        tiles[coord.x][coord.y].text = 'p';
-        tiles[coord.x][coord.y + 1].text = 'u';
-        tiles[coord.x][coord.y + 2].text = 'dl';
+        tiles[coord.y][coord.x - 1].text = '';
+        tiles[coord.y][coord.x].text = 'p';
+        tiles[coord.y][coord.x + 1].text = 'u';
+        tiles[coord.y][coord.x + 2].text = 'dl';
 
         // Car findHorizontalAdjacentWord est privée
         // eslint-disable-next-line dot-notation
@@ -560,12 +553,12 @@ describe('VerifyService', () => {
     });
 
     it(' findHorizontalAdjacentWord should return the right word if coords are in the middle', () => {
-        const coord = { x: 1, y: 5 };
-        tiles[coord.x][coord.y - 2].text = 'dl';
-        tiles[coord.x][coord.y - 1].text = 'p';
-        tiles[coord.x][coord.y].text = 'u';
-        tiles[coord.x][coord.y + 1].text = 'u';
-        tiles[coord.x][coord.y + 2].text = '';
+        const coord = { y: 1, x: 5 };
+        tiles[coord.y][coord.x - 2].text = 'dl';
+        tiles[coord.y][coord.x - 1].text = 'p';
+        tiles[coord.y][coord.x].text = 'u';
+        tiles[coord.y][coord.x + 1].text = 'u';
+        tiles[coord.y][coord.x + 2].text = '';
 
         // Car findHorizontalAdjacentWord est privée
         // eslint-disable-next-line dot-notation
@@ -577,12 +570,12 @@ describe('VerifyService', () => {
     });
 
     it(' findHorizontalAdjacentWord should return the right word if coords are on the left', () => {
-        const coord = { x: 1, y: 5 };
-        tiles[coord.x][coord.y - 3].text = '';
-        tiles[coord.x][coord.y - 2].text = 'o';
-        tiles[coord.x][coord.y - 1].text = 'i';
-        tiles[coord.x][coord.y].text = 's';
-        tiles[coord.x][coord.y + 1].text = '';
+        const coord = { y: 1, x: 5 };
+        tiles[coord.y][coord.x - 3].text = '';
+        tiles[coord.y][coord.x - 2].text = 'o';
+        tiles[coord.y][coord.x - 1].text = 'i';
+        tiles[coord.y][coord.x].text = 's';
+        tiles[coord.y][coord.x + 1].text = '';
 
         // Car findHorizontalAdjacentWord est privée
         // eslint-disable-next-line dot-notation
@@ -608,10 +601,10 @@ describe('VerifyService', () => {
 
     it(' findVerticalAdjacentWord should return the right word if coords are on the top', () => {
         const coord = { x: 1, y: 6 };
-        tiles[coord.x - 1][coord.y].text = '';
-        tiles[coord.x][coord.y].text = 'p';
-        tiles[coord.x + 1][coord.y].text = 'u';
-        tiles[coord.x + 2][coord.y].text = 'dl';
+        tiles[coord.y - 1][coord.x].text = '';
+        tiles[coord.y][coord.x].text = 'p';
+        tiles[coord.y + 1][coord.x].text = 'u';
+        tiles[coord.y + 2][coord.x].text = 'dl';
 
         // Car findVerticalAdjacentWord est privée
         // eslint-disable-next-line dot-notation
@@ -624,11 +617,11 @@ describe('VerifyService', () => {
 
     it(' findVerticalAdjacentWord should return the right word if coords are in the middle', () => {
         const coord = { x: 10, y: 5 };
-        tiles[coord.x - 2][coord.y].text = 'dl';
-        tiles[coord.x - 1][coord.y].text = 'p';
-        tiles[coord.x][coord.y].text = 'u';
-        tiles[coord.x + 1][coord.y].text = 'u';
-        tiles[coord.x + 2][coord.y].text = '';
+        tiles[coord.y - 2][coord.x].text = 'dl';
+        tiles[coord.y - 1][coord.x].text = 'p';
+        tiles[coord.y][coord.x].text = 'u';
+        tiles[coord.y + 1][coord.x].text = 'u';
+        tiles[coord.y + 2][coord.x].text = '';
 
         // Car findVerticalAdjacentWord est privée
         // eslint-disable-next-line dot-notation
@@ -641,11 +634,11 @@ describe('VerifyService', () => {
 
     it(' findVerticalAdjacentWord should return the right word if coords are on the bottom', () => {
         const coord = { x: 11, y: 5 };
-        tiles[coord.x - 3][coord.y].text = '';
-        tiles[coord.x - 2][coord.y].text = 'o';
-        tiles[coord.x - 1][coord.y].text = 'i';
-        tiles[coord.x][coord.y].text = 's';
-        tiles[coord.x + 1][coord.y].text = '';
+        tiles[coord.y - 3][coord.x].text = '';
+        tiles[coord.y - 2][coord.x].text = 'o';
+        tiles[coord.y - 1][coord.x].text = 'i';
+        tiles[coord.y][coord.x].text = 's';
+        tiles[coord.y + 1][coord.x].text = '';
 
         // Car findVerticalAdjacentWord est privée
         // eslint-disable-next-line dot-notation
@@ -657,13 +650,13 @@ describe('VerifyService', () => {
     });
 
     it(' computeCoordByDirection should return the same y but the x should be added with step if direction is v', () => {
-        const coord = { x: 11, y: 5 };
+        const coord = { y: 11, x: 5 };
         const direction = 'v';
         const step = 2;
 
         const result = service.computeCoordByDirection(direction, coord, step);
 
-        const expectedResult = { x: coord.x + step, y: coord.y };
+        const expectedResult = { x: coord.x, y: coord.y + step };
 
         expect(result).toEqual(expectedResult);
     });
@@ -675,7 +668,7 @@ describe('VerifyService', () => {
 
         const result = service.computeCoordByDirection(direction, coord, step);
 
-        const expectedResult = { x: coord.x, y: coord.y + step };
+        const expectedResult = { x: coord.x + step, y: coord.y };
 
         expect(result).toEqual(expectedResult);
     });
@@ -772,7 +765,7 @@ describe('VerifyService', () => {
     });
 
     it(' isFitting should throw an error there is not enough space for the word horizontally', () => {
-        const coord = { x: 1, y: 13 };
+        const coord = { y: 1, x: 13 };
         const word = 'papa';
         const direction = 'h';
 
@@ -780,7 +773,7 @@ describe('VerifyService', () => {
     });
 
     it(' isFitting should throw an error there is not enough space for the word vertically', () => {
-        const coord = { x: 14, y: 1 };
+        const coord = { y: 14, x: 1 };
         const word = 'papa';
         const direction = 'v';
 
@@ -822,12 +815,12 @@ describe('VerifyService', () => {
     });
 
     it(' isFitting should return the letters that were on the board and that we used in our placement', () => {
-        const coord = { x: 9, y: 1 };
+        const coord = { y: 9, x: 1 };
         const word = 'papa';
         const direction = 'v';
 
         // Car isCaseEmpty est privée
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // esliny-disabxe-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.returnValue(false);
 
         // Car isLetterOnBoardTheSame est privée
@@ -836,10 +829,10 @@ describe('VerifyService', () => {
 
         const result = service.isFitting(coord, direction, word);
         const expectedResult = [
-            { letter: 'p', coord: { x: 9, y: 1 } },
-            { letter: 'a', coord: { x: 10, y: 1 } },
-            { letter: 'p', coord: { x: 11, y: 1 } },
-            { letter: 'a', coord: { x: 12, y: 1 } },
+            { letter: 'p', coord: { y: 9, x: 1 } },
+            { letter: 'a', coord: { y: 10, x: 1 } },
+            { letter: 'p', coord: { y: 11, x: 1 } },
+            { letter: 'a', coord: { y: 12, x: 1 } },
         ];
 
         expect(result).toEqual(expectedResult);

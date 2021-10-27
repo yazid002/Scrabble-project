@@ -61,10 +61,10 @@ export class PointsCountingService {
             const length = lettersUsedOnBoard.filter((letter) => letter.coord.x === x && letter.coord.y === y);
             if (length.length === 0) {
                 basePoints = this.getLetterPoints(wordToCheck[i]);
-                const letterPoints = this.letterBonusesMapping.get(tiles[x][y].bonus) as (basePoints: number) => number;
+                const letterPoints = this.letterBonusesMapping.get(tiles[y][x].bonus) as (basePoints: number) => number;
                 point += letterPoints ? letterPoints(basePoints) : basePoints;
 
-                switch (tiles[x][y].bonus) {
+                switch (tiles[y][x].bonus) {
                     case 'tw':
                         numberOfTW++;
                         break;
