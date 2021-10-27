@@ -45,7 +45,7 @@ export class GamePageComponent {
             temp += 'créé une salle ';
         } else {
             this.roomService.joinRoom(this.roomName);
-            temp += 'join la salle ';
+            temp += 'joint la salle ';
         }
         this.roomName = temp + this.roomName;
     }

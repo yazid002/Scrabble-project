@@ -23,7 +23,13 @@ interface WordNCoord {
 export class VirtualPlayerService {
     virtualPlayerSignal: Subscription;
     private alreadyInitialized: boolean;
-    constructor(private gameService: GameService, private exchangeService: ExchangeService, private placeService: PlaceService, private verifyService: VerifyService, private timerService: TimerService) {
+    constructor(
+        private gameService: GameService,
+        private exchangeService: ExchangeService,
+        private placeService: PlaceService,
+        private verifyService: VerifyService,
+        private timerService: TimerService,
+    ) {
         this.alreadyInitialized = false;
         this.initialize();
     }
@@ -34,8 +40,6 @@ export class VirtualPlayerService {
             if (numPlayers !== 'solo') return;
             this.play();
         });
-        console.log(this.verifyService);
-        console.log(this.placeService);
     }
     private play() {
         const TURN_TIME = 3000;
