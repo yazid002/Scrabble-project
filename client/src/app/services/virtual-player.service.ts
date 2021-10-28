@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { ExchangeService } from './exchange.service';
 import { COMPUTER, GameService } from './game.service';
 import { PlaceService } from './place.service';
+import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
 import { VerifyService } from './verify.service';
 
@@ -28,6 +29,7 @@ export class VirtualPlayerService {
         private timerService: TimerService,
         private verifyService: VerifyService,
         private placeService: PlaceService,
+        private pointsCountingService: PointsCountingService,
     ) {
         this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe(() => {
             this.play();
@@ -84,44 +86,119 @@ export class VirtualPlayerService {
 
         this.makePossibilities();
     }
-    private makePossibilities() {
-        const gridCombos = this.getLetterCombosFromGrid();
-        const possibilities: WordNCoord[] = [];
-        const rackCombos: string[] = this.makeRackCombos();
-        // console.log('grid', gridCombos);
-        // console.log('rackCombos', rackCombos);
-        // Add 1 or more letters from the rack to the begining and end of every grid 'chuncks'
-        for (const rackCombo of rackCombos) {
-            for (const gridCombo of gridCombos) {
-                let lin = 0;
-                let col = 0;
-                if (gridCombo.direction === 'vertical') {
-                    lin = gridCombo.coord.y - rackCombo.length;
-                    col = gridCombo.coord.x;
-                } else {
-                    lin = gridCombo.coord.y;
-                    col = gridCombo.coord.x - rackCombo.length;
-                }
-                const word: WordNCoord = { word: `${rackCombo}${gridCombo.word}`, coord: { x: col, y: lin }, direction: gridCombo.direction };
-                word.word = word.word.toLowerCase();
-                let valid = false;
-                if (this.verifyService.isWordInDictionary(word.word)) {
-                    console.log(word);
+    private decidePoints(): { min: number; max: number } {
+        const pointMap: Map<number, { min: number; max: number }> = new Map();
+        let i = 0;
+        for (i; i < 4; i++) {
+            pointMap.set(i, { min: 0, max: 6 });
+        }
+        for (i; i < 7; i++) {
+            pointMap.set(i, { min: 7, max: 12 });
+        }
+        for (i; i < 10; i++) {
+            pointMap.set(i, { min: 13, max: 18 });
+        }
+        const randomNumber = Math.floor(10 * Math.random());
+        console.log('wanted points', pointMap.get(randomNumber) as { min: number; max: number });
+        return pointMap.get(randomNumber) as { min: number; max: number };
+    }
+    private validateWordPoints(word: WordNCoord, pointRange: { min: number; max: number }): boolean {
+        try {
+            const lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word.word, word.coord, word.direction);
+
+            const points = this.pointsCountingService.processWordPoints(word.word, word.coord, word.direction, lettersUsedOnBoard);
+            if (points <= pointRange.max && points >= pointRange.min) return true;
+        } catch {
+            return false;
+        }
+
+        return false;
+    }
+    private bindGridAndRack(rackCombo: string, gridCombo: WordNCoord): WordNCoord[] {
+        const combos: WordNCoord[] = [];
+        for (let index = 0; index <= rackCombo.length; index++) {
+            const before = rackCombo.slice(0, index);
+            const after = rackCombo.slice(index, rackCombo.length + 1);
+            const word = before + gridCombo.word + after;
+            let x = gridCombo.coord.x;
+            let y = gridCombo.coord.y;
+            if (gridCombo.direction === 'horizontal') {
+                x -= index;
+            } else {
+                y -= index;
+            }
+            combos.push({ word, coord: { y, x }, direction: gridCombo.direction });
+
+        }
+        return combos;
+    }
+    private tryPossibility(
+        rackCombo: string,
+        possibilities: WordNCoord[],
+        pointRange: { min: number; max: number },
+        gridCombo?: WordNCoord,
+    ): WordNCoord[] {
+        let lin = 7;
+        let col = 7;
+        const word: WordNCoord = { word: rackCombo, coord: { x: col, y: lin }, direction: 'horizontal' };
+        if (gridCombo) {
+
+            word.coord.y = gridCombo.coord.y;
+            word.coord.x = gridCombo.coord.x;
+
+            word.word = gridCombo.word;
+            word.direction = gridCombo.direction;
+        }
+        word.word = word.word.toLowerCase();
+        let valid = false;
+        const hasRightPoints = this.validateWordPoints(word, pointRange);
+        if (hasRightPoints) {
+            const isWordInDictionary = this.verifyService.isWordInDictionary(word.word);
+            if (isWordInDictionary) {
+                if (possibilities.length >= 2) {
                     try {
                         valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction);
 
                         if (valid) {
-                            possibilities.push(word);
-
                             console.log('possibilities', possibilities);
-                            return;
                         }
                     } catch (error) {
                         console.log(error);
                     }
                 }
+                return [word];
             }
         }
+        return [];
+    }
+    private makePossibilities() {
+        const gridCombos = this.getLetterCombosFromGrid();
+        let possibilities: WordNCoord[] = [];
+        const rackCombos: string[] = this.makeRackCombos();
+        const pointRange = this.decidePoints();
+        // console.log('grid', gridCombos);
+        // console.log('rackCombos', rackCombos);
+        // Add 1 or more letters from the rack to the begining and end of every grid 'chuncks'
+        for (const rackCombo of rackCombos) {
+            if (this.verifyService.isFirstMove()) {
+                const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange));
+                if (newPossibilities.length > 0) {
+                    possibilities = possibilities.concat(newPossibilities);
+                    return;
+                }
+            }
+            for (const gridCombo of gridCombos) {
+                const wordCombos = this.bindGridAndRack(rackCombo, gridCombo);
+                for (const wordCombo of wordCombos) {
+                     const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange, wordCombo));
+                    if (newPossibilities.length > 0) {
+                        possibilities = possibilities.concat(newPossibilities);
+                        return;
+                    }
+                }
+            }
+        }
+        console.log(possibilities);
     }
     private makeRackCombos(): string[] {
         let computerRack = '';
@@ -144,8 +221,8 @@ export class VirtualPlayerService {
         const possibilities: WordNCoord[] = [];
         // get all horizontal possibilities
         for (let line = 0; line < tiles.length; line++) {
+            // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let col = 0; col < tiles[line].length; col++) {
-                // eslint-disable-next-line @typescript-eslint/prefer-for-of
                 if (tiles[line][col].letter !== EMPTY) {
                     if (tempWord === EMPTY) {
                         x = col;
@@ -176,7 +253,6 @@ export class VirtualPlayerService {
                 } else {
                     if (tempWord !== EMPTY) {
                         const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'vertical' };
-                        console.log('letter do add', temp);
                         possibilities.push(temp);
                     }
                     tempWord = EMPTY;

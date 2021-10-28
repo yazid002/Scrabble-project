@@ -109,6 +109,10 @@ export class VerifyService {
         const lettersUsedOnBoard = this.isFitting(coord, direction, word);
         return lettersUsedOnBoard;
     }
+    isFirstMove(): boolean {
+        const h8Coord: Vec2 = { x: 7, y: 7 };
+        return tiles[h8Coord.x][h8Coord.y].letter === '';
+    }
 
     private findVerticalAdjacentWord(coord: Vec2): string {
         let up = coord.y;
@@ -234,11 +238,6 @@ export class VerifyService {
         if (!valid) {
             throw new ImpossibleCommand(' Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8');
         }
-    }
-
-    private isFirstMove(): boolean {
-        const h8Coord: Vec2 = { x: 7, y: 7 };
-        return tiles[h8Coord.x][h8Coord.y].letter === '';
     }
 
     private validateInvalidSymbols(word: string): void {
