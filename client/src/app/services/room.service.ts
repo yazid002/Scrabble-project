@@ -85,7 +85,7 @@ export class RoomService {
     createRoom() {
         const settings = this.userSettingsService.getSettings();
         this.socket.emit('createRoom', settings);
-        this.roomId = this.socket.id; // TODO when lobby is complete, set to this.socket.id;
+        this.roomId = this.socket.id;
         this.gameSyncService.isMasterClient = true;
     }
 }

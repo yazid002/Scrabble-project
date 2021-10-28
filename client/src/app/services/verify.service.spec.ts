@@ -821,7 +821,7 @@ describe('VerifyService', () => {
 
         // Car isCaseEmpty est privée
         // esliny-disabxe-next-line @typescript-eslint/no-explicit-any
-        spyOn<unknown>(service, 'isCaseEmpty').and.returnValue(false);
+        spyOn<any>(service, 'isCaseEmpty').and.returnValue(false);
 
         // Car isLetterOnBoardTheSame est privée
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
