@@ -30,8 +30,6 @@ export class VirtualPlayerService {
         private placeService: PlaceService,
         private verifyService: VerifyService,
         private timerService: TimerService,
-        private verifyService: VerifyService,
-        private placeService: PlaceService,
         private pointsCountingService: PointsCountingService,
     ) {
         this.alreadyInitialized = false;
@@ -163,13 +161,15 @@ export class VirtualPlayerService {
         if (hasRightPoints) {
             const isWordInDictionary = this.verifyService.isWordInDictionary(word.word);
             if (isWordInDictionary) {
-                if (possibilities.length >= 2) {
+                if (possibilities.length === 0) {
                     try {
                         valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction);
 
                         if (valid) {
                             console.log('possibilities', possibilities);
+                            return [word]
                         }
+                        return [];
                     } catch (error) {
                         console.log(error);
                     }
@@ -192,8 +192,9 @@ export class VirtualPlayerService {
                 const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange));
                 if (newPossibilities.length > 0) {
                     possibilities = possibilities.concat(newPossibilities);
-                    return;
+
                 }
+                if (possibilities.length >= 3) return;
             }
             for (const gridCombo of gridCombos) {
                 const wordCombos = this.bindGridAndRack(rackCombo, gridCombo);
@@ -201,8 +202,8 @@ export class VirtualPlayerService {
                      const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange, wordCombo));
                     if (newPossibilities.length > 0) {
                         possibilities = possibilities.concat(newPossibilities);
-                        return;
                     }
+                    if (possibilities.length >= 3) return;
                 }
             }
         }

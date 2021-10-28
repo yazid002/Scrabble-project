@@ -119,5 +119,8 @@ export class GameService {
     }
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
+        if (this.currentTurn === OTHER_PLAYER) {
+            this.nextPlayer();
+        }
     }
 }
