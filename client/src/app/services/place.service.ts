@@ -3,6 +3,7 @@ import { tiles } from '@app/classes/board';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { Vec2 } from '@app/classes/vec2';
 import { VerifyService } from '@app/services/verify.service';
+import { GameService } from './game.service';
 import { GridService } from './grid.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
@@ -13,13 +14,13 @@ import { TimerService } from './timer.service';
 })
 export class PlaceService {
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
-    points: number = 0;
     constructor(
         private rackService: RackService,
         private verifyService: VerifyService,
         private gridService: GridService,
         private pointsCountingService: PointsCountingService,
         private timerService: TimerService,
+        private gameService: GameService,
     ) {}
     placeWordInstant(word: string, coord: Vec2, direction: string): boolean {
         word = this.verifyService.normalizeWord(word);
@@ -29,7 +30,12 @@ export class PlaceService {
         if (wordValidationParameters.wordExists) {
             this.writeWord(word, coord, direction);
             this.updateTilesLetters(word, coord, direction);
-            this.points += this.pointsCountingService.processWordPoints(word, coord, direction, this.lettersUsedOnBoard);
+            this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
+                word,
+                coord,
+                direction,
+                this.lettersUsedOnBoard,
+            );
             this.rackService.replaceWord(word);
 
             // this.timerService.resetTimer();
@@ -61,7 +67,12 @@ export class PlaceService {
 
                 reject(new ImpossibleCommand(wordValidationParameters.errorMessage));
             } else {
-                this.points += this.pointsCountingService.processWordPoints(word, coord, direction, this.lettersUsedOnBoard);
+                this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
+                    word,
+                    coord,
+                    direction,
+                    this.lettersUsedOnBoard,
+                );
                 this.updateTilesLetters(word, coord, direction);
                 resolve(this.rackService.replaceWord(word));
 

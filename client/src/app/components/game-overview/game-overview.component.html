@@ -8,7 +8,7 @@
 
     <mat-card id="me" [ngClass]="gameService.currentTurn===realPlayerIndex ? 'activePlayer' : ''">
         <mat-card-title>{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
-        <mat-card-content>Nombre de points: {{ placeService.points }}</mat-card-content>
+        <mat-card-content>Nombre de points: {{ gameService.players[realPlayerIndex].points }}</mat-card-content>
         <mat-card-content *ngIf="gameService.currentTurn===realPlayerIndex">
             Votre tour termine dans:
             <strong class="time"> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
@@ -19,7 +19,7 @@
     </mat-card>
 
     <mat-card id="otherPlayer" [ngClass]="gameService.currentTurn===realPlayerIndex ? '' : 'activePlayer'">
-        <mat-card-title>{{ userSettingsService.getComputerName() }}</mat-card-title>
+        <mat-card-title>{{ gameService.players[computerIndex].name }}</mat-card-title>
         <mat-card-subtitle>Niveau {{ computerLevel }}</mat-card-subtitle>
         <mat-card-content>Nombre de points: {{gameService.players[computerIndex].points}}</mat-card-content>
         <mat-card-content *ngIf="!(gameService.currentTurn===realPlayerIndex)">
