@@ -43,7 +43,7 @@ export class PlaceExecutionService {
         const direction: string = position.slice(DIRECTION_CHAR_POSITION);
         const line: number = position.charCodeAt(0) - A_VALUE;
         const column = Number(position.replace(/\D/g, '')) - 1; /* Enlève tous les caractères non numériques du string, puis le converti en nombre
-        Pris sur: 
+        Pris sur:
         https://stackoverflow.com/questions/1862130/strip-all-non-numeric-characters-from-string-in-javascript
         */
         return { direction, coord: { y: line, x: column } };

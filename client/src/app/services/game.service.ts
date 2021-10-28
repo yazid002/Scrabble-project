@@ -40,6 +40,7 @@ export class GameService {
             }
         }
     }
+
     private getNumPlayerInstructions(key: string): () => void {
         const numPlayerMap: Map<string, () => void> = new Map([
             ['solo', () => this.initSoloPlayers()],

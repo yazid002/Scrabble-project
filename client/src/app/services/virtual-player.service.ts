@@ -124,26 +124,13 @@ export class VirtualPlayerService {
         }
     }
     private makeRackCombos(): string[] {
-        const combos: string[] = [];
-        const computerRack: string[] = [];
+        let computerRack = '';
         for (const rackLetter of this.gameService.players[COMPUTER].rack) {
-            computerRack.push(rackLetter.name);
+            computerRack += rackLetter.name;
         }
-        // console.log('rack', computerRack);
-        const numPossibilites = Math.pow(2, computerRack.length);
-        for (let counter = 1; counter < numPossibilites; counter++) {
-            let temp = '';
-            let tempCounter = counter;
-            for (let index = computerRack.length - 1; index >= 0; index--) {
-                if (tempCounter >= Math.pow(2, index)) {
-                    temp += computerRack[index];
-                    tempCounter -= Math.pow(2, index);
-                }
-            }
-            combos.push(temp);
-        }
+        const anagrams = this.generateAnagrams(computerRack);
 
-        return combos;
+        return anagrams;
     }
     private getLetterCombosFromGrid(): WordNCoord[] {
         /**
@@ -197,7 +184,35 @@ export class VirtualPlayerService {
             }
         }
 
-        // console.log(possibilities);
         return possibilities;
+    }
+    // http://jsfiddle.net/jtodd/U5dcL/
+    private generateAnagrams(word: string): string[] {
+        if (word.length < 2) {
+            return [word];
+        } else {
+            const anagrams = [];
+            let before;
+            let focus;
+            let after;
+            let shortWord;
+            let subAnagrams;
+            let newEntry;
+            for (let i = 0; i < word.length; i++) {
+                before = word.slice(0, i);
+                focus = word[i];
+                after = word.slice(i + 1, word.length + 1);
+                shortWord = before + after;
+                subAnagrams = this.generateAnagrams(shortWord);
+                if (focus) {
+                    anagrams.push(focus);
+                }
+                for (const j of subAnagrams) {
+                    newEntry = focus + j;
+                    anagrams.push(newEntry);
+                }
+            }
+            return [...new Set(anagrams)];
+        }
     }
 }
