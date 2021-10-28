@@ -31,10 +31,8 @@ export class TimerService {
         }, timerIntervalMS);
     }
     resetTimer(skipped: boolean = false) {
-        setTimeout(() => {
-            this.counter.totalTimer = this.counter.resetValue;
-            this.timerDone.next(skipped);
-        }, 1000);
+        this.counter.totalTimer = this.counter.resetValue;
+        this.timerDone.next(skipped);
     }
     private getTimerSettings() {
         const timer = Number(this.userSettingsService.settings.timer.currentChoiceKey);

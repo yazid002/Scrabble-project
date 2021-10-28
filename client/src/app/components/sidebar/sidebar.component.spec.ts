@@ -1,15 +1,32 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatCardModule } from '@angular/material/card';
-import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { AppRoutingModule } from '@app/modules/app-routing.module';
+import { of } from 'rxjs';
+
+class MatDialogMock {
+    open() {
+        return {
+            afterClosed: () => of({}),
+        };
+    }
+}
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [SidebarComponent, GameOverviewComponent],
-            imports: [MatCardModule],
+            imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule],
+            declarations: [SidebarComponent],
+            providers: [
+                {
+                    provide: MatDialog,
+                    useClass: MatDialogMock,
+                },
+            ],
         }).compileComponents();
     });
 
