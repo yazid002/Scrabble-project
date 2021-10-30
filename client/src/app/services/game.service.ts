@@ -19,6 +19,7 @@ const MAX_SKIPS = 6;
 export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
     @Output() abandonSignal = new BehaviorSubject<string>('');
+    @Output() whoWon = new BehaviorSubject<number>(-1);
 
     players: Player[] = [];
     currentTurn: number;
@@ -47,6 +48,7 @@ export class GameService {
     }
     quitGame() {
         this.abandonSignal.next('abandon');
+        this.endGame();
     }
     private didGameEnd(): boolean {
         let hasEnded = false;
@@ -66,15 +68,20 @@ export class GameService {
         return hasEnded;
     }
     private endGame() {
-        // substract points
         let endGameString = `Fin de partie: ${this.reserveService.alphabets.length} lettres restantes`;
         for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
             const player = this.players[playerIndex];
+            const otherPlayer = this.players[(playerIndex + 1) % 2];
+            // substract points
             if (player.rack.length === 0) {
-                const otherPlayerIndex = (playerIndex + 1) % 2;
-                player.points += this.subtractPoint(otherPlayerIndex);
+                player.points += this.subtractPoint(otherPlayer);
             } else {
-                player.points -= this.subtractPoint(playerIndex);
+                player.points -= this.subtractPoint(player);
+            }
+
+            // determine who won
+            if (player.points >= otherPlayer.points) {
+                player.won = 'Vous avez gagné!';
             }
 
             endGameString += '<br>' + this.players[playerIndex].name + ' :<br>';
@@ -89,9 +96,9 @@ export class GameService {
         this.chatService.addMessage(endGameMessage);
     }
 
-    private subtractPoint(playerIndex: number): number {
+    private subtractPoint(player: Player): number {
         let pointToSub = 0;
-        for (const letter of this.players[playerIndex].rack) {
+        for (const letter of player.rack) {
             pointToSub -= letter.points;
         }
         return pointToSub;
