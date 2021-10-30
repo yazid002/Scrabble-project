@@ -1,7 +1,9 @@
 import { Injectable, Output } from '@angular/core';
+import { IChat, SENDER } from '@app/classes/chat';
 import { Player } from '@app/classes/player';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { ChatService } from './chat.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
@@ -24,7 +26,12 @@ export class GameService {
     turnDone: Subscription;
     numPlayers: string;
     skipCounter: number = 0;
-    constructor(private userSettingsService: UserSettingsService, private reserveService: ReserveService, private timerService: TimerService) {
+    constructor(
+        private userSettingsService: UserSettingsService,
+        private reserveService: ReserveService,
+        private timerService: TimerService,
+        private chatService: ChatService,
+    ) {
         this.initPlayers();
         this.randomTurn();
         this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {
@@ -41,13 +48,63 @@ export class GameService {
     quitGame() {
         this.abandonSignal.next('abandon');
     }
+    private didGameEnd(): boolean {
+        let hasEnded = false;
+        if (this.skipCounter >= MAX_SKIPS) {
+            hasEnded = true;
+        }
+        const isReserveEmpty = this.reserveService.alphabets.length === 0;
+        let isRackEmpty = false;
+        for (const player of this.players) {
+            if (player.rack.length === 0) {
+                isRackEmpty = true;
+            }
+        }
+        if (isReserveEmpty && isRackEmpty) {
+            hasEnded = true;
+        }
+        return hasEnded;
+    }
+    private endGame() {
+        // substract points
+        let endGameString = `Fin de partie: ${this.reserveService.alphabets.length} lettres restantes`;
+        for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
+            const player = this.players[playerIndex];
+            if (player.rack.length === 0) {
+                const otherPlayerIndex = (playerIndex + 1) % 2;
+                player.points += this.subtractPoint(otherPlayerIndex);
+            } else {
+                player.points -= this.subtractPoint(playerIndex);
+            }
+
+            endGameString += '<br>' + this.players[playerIndex].name + ' :<br>';
+            endGameString += this.players[playerIndex].rack.map((character) => character.affiche).join('<br>    ');
+
+        }
+
+        const endGameMessage: IChat = {
+            from: SENDER.computer,
+            body: endGameString,
+        };
+        this.chatService.addMessage(endGameMessage);
+    }
+
+    private subtractPoint(playerIndex: number): number {
+        let pointToSub = 0;
+        for (const letter of this.players[playerIndex].rack) {
+            pointToSub -= letter.points;
+        }
+        return pointToSub;
+    }
     private changeTurn(skipped: boolean): void {
         if (skipped) {
             this.skipCounter++;
         } else {
             this.skipCounter = 0;
         }
-        if (this.skipCounter < MAX_SKIPS) {
+        if (this.didGameEnd()) {
+            this.endGame();
+        } else {
             this.currentTurn = (this.currentTurn + 1) % 2;
             if (this.currentTurn === OTHER_PLAYER) {
                 this.nextPlayer();
