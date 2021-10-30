@@ -4,7 +4,6 @@ import { IOption } from '@app/classes/game-options';
 import { RoomService } from '@app/services/room.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { QuitMultiplayerDialogComponent } from './../components/quit-multiplayer-dialog/quit-multiplayer-dialog.component';
-import { SwitchDialogComponent } from './../components/switch-dialog/switch-dialog.component';
 @Component({
     selector: 'app-lobby',
     templateUrl: './lobby.component.html',
@@ -58,13 +57,6 @@ export class LobbyComponent implements OnInit {
         this.matDialog.open(QuitMultiplayerDialogComponent);
     }
 
-    openSwitchToSoloDialog() {
-        this.matDialog.open(SwitchDialogComponent);
-    }
-
-    openSwitchToRoomDialog() {
-        this.matDialog.open(SwitchDialogComponent);
-    }
     private assignValues(name: string, mode: IOption | undefined, numPlayers: IOption | undefined, timer: IOption | undefined) {
         if (name && mode && numPlayers && timer) {
             this.name = localStorage.getItem('test') as string;
