@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { IChat, SENDER } from '@app/classes/chat';
 import { ChatService } from './chat.service';
 
-fdescribe('ChatService', () => {
+describe('ChatService', () => {
     let service: ChatService;
 
     beforeEach(() => {
