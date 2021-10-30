@@ -8,7 +8,7 @@
                 <mat-radio-button
                     color="primary"
                     *ngFor="let choice of setting.value.setting.availableChoices"
-                    [disabled]="choice.disabled"
+                    [disabled]="choice.key === 'multiplayer' ? true : choice.disabled"
                     [value]="choice.key"
                     [checked]="setting.value.currentChoiceKey === choice.key"
                     >{{ choice.value }}

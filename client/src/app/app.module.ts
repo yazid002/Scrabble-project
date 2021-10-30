@@ -19,6 +19,7 @@ import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.
 import { LobbyComponent } from './lobby/lobby.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
 import { QuitMultiplayerDialogComponent } from './components/quit-multiplayer-dialog/quit-multiplayer-dialog.component';
+import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
 
 /**
  * Main module that is used in main.ts.
@@ -42,6 +43,7 @@ import { QuitMultiplayerDialogComponent } from './components/quit-multiplayer-di
         SwitchDialogComponent,
         QuitConfirmationDialogComponent,
         QuitMultiplayerDialogComponent,
+        WaitingRoomComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],

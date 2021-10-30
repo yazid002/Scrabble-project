@@ -1,51 +1,33 @@
 <!-- <h2 mat-lobby-title>Waiting Room</h2> -->
 
-<div class="title">Waiting room</div>
+<div class="title">Lobby</div>
 
-<mat-card id="summary">
-    <mat-card-title>Partie Multijoueurs </mat-card-title>
-    <mat-divider></mat-divider>
-    <mat-card id="me" [ngClass]="personIsActive ? 'activePlayer' : ''">
-        <mat-card-title id="name">{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
+<body>
+    <mat-card class="summary">
+        <mat-card-title>Partie Multijoueurs </mat-card-title>
+        <mat-divider></mat-divider>
+        <mat-card id="me" [ngClass]="personIsActive ? 'activePlayer' : ''">
+            <mat-card-title id="name">{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
+        </mat-card>
     </mat-card>
-    <mat-card-title-group>
-        <mat-card-subtitle>Mode : {{ mode }}</mat-card-subtitle>
-        <mat-card-subtitle>Temps par tours : {{ timer }}</mat-card-subtitle>
-    </mat-card-title-group>
-    <!-- <mat-card-title-group>
-        <mat-card-subtitle>Mode {{ mode }}</mat-card-subtitle>
-        <mat-card-subtitle>Temps par tours {{ timer }}</mat-card-subtitle>
-    </mat-card-title-group>
-    <mat-card-content>Il y a {{ nbLettersReserve }} lettres restantes dans la réserve</mat-card-content> -->
-    <mat-card-footer>
-        <mat-card-subtitle>En attente </mat-card-subtitle>
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    </mat-card-footer>
-</mat-card>
-<div id="container">
-    <mat-card-title style="margin-top: 5px">Rooms available : </mat-card-title>
-    <mat-divider id="divider"></mat-divider>
-    <mat-list class="content">
-        <mat-list-item *ngFor="let room of roomService.rooms" class="room">
-            <h3 matLine>Game : {{ room.id }}</h3>
-            <p matLine>Mode : {{ room.settings.mode }}</p>
-            <p matLine>Timer : {{ room.settings.timer }}</p>
-            <button mat-raised-button color="basic" (click)="goInRoom(room.id)" routerLink="game" id="join_button">Join</button>
+    <div class="container">
+        <mat-card class="rooms">
+            <mat-card-title>Rooms Disponibles </mat-card-title>
             <mat-divider></mat-divider>
-        </mat-list-item>
-    </mat-list>
-
-    <!-- <table mat-table>
-        <th *ngFor="let column of headers">
-            {{ column }}
-        </th>
-    </table> -->
-    <div class="footer">
-        <button mat-raised-button mat-dialog-close (click)="openQuitMultiplayerDialog()" id="back_button"><span>Back</span></button>
-        <button mat-raised-button color="primary" mat-dialog-close (click)="openSwitchDialog()" id="solo_button">Switch to Solo</button>
-        <!-- <button mat-raised-button color="primary" mat-dialog-close id="join_button">Join</button> -->
-        <mat-slide-toggle color="primary" class="bonus">Bonus</mat-slide-toggle>
-
-        <!-- <button mat-raised-button color="primary" type="submit" [disabled]="error" routerLink="game" mat-dialog-close>Join</button> -->
+            <mat-list class="content">
+                <mat-list-item *ngFor="let room of roomService.rooms" class="room">
+                    <h3 matLine>Game : {{ room.id }}</h3>
+                    <p matLine>Mode : {{ room.settings.mode }}</p>
+                    <p matLine>Timer : {{ room.settings.timer }}</p>
+                    <button mat-raised-button color="basic" (click)="goInRoom(room.id)" routerLink="game" id="join_button">Join</button>
+                    <mat-divider></mat-divider>
+                </mat-list-item>
+            </mat-list>
+            <mat-card-footer>
+                <button mat-raised-button mat-dialog-close [routerLink]="['/waiting']" id="back_button"><span>Back</span></button>
+                <mat-card-subtitle>En attente </mat-card-subtitle>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </mat-card-footer>
+        </mat-card>
     </div>
-</div>
+</body>

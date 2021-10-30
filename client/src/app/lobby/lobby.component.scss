@@ -2,19 +2,22 @@
 
 .title {
     font-family: 'Common Pixel', sans-serif;
-    font-size: 75px;
-    margin-top: 20px;
+    font-size: 100px;
+    margin-top: 40px;
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 150px;
 }
-#container {
-    width: 50%;
-    height: 75%;
-    border: 4px solid black;
-    border-radius: 3px;
-    position: relative;
+
+.rooms mat-card-title {
     text-align: center;
-    margin: auto;
+}
+
+.rooms {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    height: 50%;
 }
 
 .content {
@@ -36,25 +39,26 @@ button {
     bottom: 5px;
 }
 
-.bonus {
-    // right: 5px;
-    // bottom: 5px;
-    font-weight: bold;
-    float: right;
-}
-
-mat-card {
-    width: 250px;
-}
-
-#summary {
+.summary {
     margin-bottom: 20px;
     display: block;
     margin-left: auto;
     margin-right: auto;
+    width: 20%;
+    align-items: center;
+}
+
+.summary mat-card-title {
+    text-align: center;
+}
+
+#me {
+    margin-left: auto;
+    margin-right: auto;
 }
 #name {
-    margin-top: 15px;
+    margin-top: 5px;
+    text-align: center;
 }
 mat-card-title-group {
     margin-top: 20px;

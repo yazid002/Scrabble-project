@@ -36,7 +36,15 @@
 
         <section id="footer">
             <button mat-raised-button mat-dialog-close>Retour À l'accueil</button>
-            <button mat-raised-button color="primary" type="submit" [disabled]="error" *ngIf="numPlayerChoice()" routerLink="lobby" mat-dialog-close>
+            <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="error"
+                *ngIf="numPlayerChoice()"
+                routerLink="waiting"
+                mat-dialog-close
+            >
                 Jouer
             </button>
             <button mat-raised-button color="primary" type="submit" [disabled]="error" *ngIf="!numPlayerChoice()" routerLink="game" mat-dialog-close>
