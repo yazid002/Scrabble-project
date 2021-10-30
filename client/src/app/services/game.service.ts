@@ -9,9 +9,7 @@ import { UserSettingsService } from './user-settings.service';
 export const REAL_PLAYER = 0;
 export const COMPUTER = 1;
 export const OTHER_PLAYER = 1;
-interface InstructionSet {
-    init: () => void;
-}
+
 const MAX_SKIPS = 6;
 @Injectable({
     providedIn: 'root',
@@ -27,7 +25,7 @@ export class GameService {
     numPlayers: string;
     skipCounter: number = 0;
     constructor(private userSettingsService: UserSettingsService, private reserveService: ReserveService, private timerService: TimerService) {
-        this.startGame();
+        this.initPlayers();
         this.randomTurn();
         this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {
             this.changeTurn(skipped);
@@ -59,31 +57,7 @@ export class GameService {
     private nextPlayer() {
         this.otherPlayerSignal.next(this.numPlayers);
     }
-
-    private getNumPlayerInstructions(numPlayer: string): InstructionSet {
-        const numPlayerMap: Map<string, InstructionSet> = new Map([
-            [
-                'solo',
-                {
-                    init: () => this.initSoloPlayers(),
-                },
-            ],
-            [
-                'multiplayer',
-                {
-                    init: () => this.initMultiPlayers(),
-                },
-            ],
-        ]);
-
-        const makePlayers = numPlayerMap.get(numPlayer) as InstructionSet;
-        return makePlayers;
-    }
-    private startGame() {
-        const makePlayers = this.getNumPlayerInstructions(this.userSettingsService.settings.numPlayers.currentChoiceKey);
-        makePlayers.init();
-    }
-    private initMainPlayer() {
+    private initPlayers() {
         const realPlayer: Player = {
             id: REAL_PLAYER,
             name: this.userSettingsService.nameOption.userChoice,
@@ -101,22 +75,7 @@ export class GameService {
         };
         this.players.push(computer);
     }
-    private initSoloPlayers() {
-        this.initMainPlayer();
-        const computer: Player = {
-            id: COMPUTER,
-            name: this.userSettingsService.computerName,
-            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
-            points: 0,
-        };
-        this.players.push(computer);
-    }
 
-    private initMultiPlayers() {
-        this.initMainPlayer();
-
-        // TODO init other player
-    }
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
     }
