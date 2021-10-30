@@ -6,10 +6,9 @@
     </mat-card-title-group>
 
     <mat-card-content>Il y a {{ nbLettersReserve }} lettres restantes dans la réserve</mat-card-content>
-{{computerLevel}}khj
     <mat-card *ngFor="let player of gameService.players; let i = index" [id]="i === realPlayerIndex? 'me': 'otherPlayer'" [ngClass]="gameService.currentTurn=== i ? 'activePlayer' : ''">
         <mat-card-title>{{player.name}}</mat-card-title>
-        <mat-card-content *ngIf="gameService.numPlayers==='solo' && i === computerIndex">{{computerLevel}}</mat-card-content>
+        <mat-card-content *ngIf="gameService.numPlayers==='solo' && i === computerIndex">Niveau {{computerLevel}}</mat-card-content>
         <mat-card-content>Nombre de points: {{player.points}}</mat-card-content>
         <mat-card-content *ngIf="i === gameService.currentTurn">
             Temps restant au tour:
