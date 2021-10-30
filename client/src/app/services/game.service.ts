@@ -56,15 +56,12 @@ export class GameService {
             hasEnded = true;
         }
         const isReserveEmpty = this.reserveService.alphabets.length === 0;
-        let isRackEmpty = false;
         for (const player of this.players) {
-            if (player.rack.length === 0) {
-                isRackEmpty = true;
+            if (player.rack.length === 0 && isReserveEmpty) {
+                hasEnded = true;
             }
         }
-        if (isReserveEmpty && isRackEmpty) {
-            hasEnded = true;
-        }
+
         return hasEnded;
     }
     private endGame() {
