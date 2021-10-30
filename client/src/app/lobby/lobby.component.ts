@@ -24,7 +24,8 @@ export class LobbyComponent implements OnInit {
     constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, public roomService: RoomService) {}
     ngOnInit(): void {
         const name = this.userSettingsService.nameOption.userChoice;
-        if (!localStorage.getItem('test')) localStorage.setItem('test', name);
+        // if (!localStorage.getItem('test')) localStorage.setItem('test', name);
+
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
         );
@@ -59,7 +60,8 @@ export class LobbyComponent implements OnInit {
 
     private assignValues(name: string, mode: IOption | undefined, numPlayers: IOption | undefined, timer: IOption | undefined) {
         if (name && mode && numPlayers && timer) {
-            this.name = localStorage.getItem('test') as string;
+            // this.name = localStorage.getItem('test') as string;
+            this.name = name;
             this.mode = mode.value;
             this.numPlayers = numPlayers.value;
             this.timer = timer.value;
