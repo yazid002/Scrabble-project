@@ -3,7 +3,8 @@ import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
-import { GameService, REAL_PLAYER } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service';
+import { PLAYER } from '@app/classes/player';
 
 const MAX_MESSAGE_LENGTH = 512;
 const MIN_MESSAGE_LENGTH = 1;
@@ -33,7 +34,7 @@ export class ChatboxComponent implements OnInit {
             return;
         }
         if (this.inputBox.startsWith('!')) {
-            if (this.gameService.currentTurn !== REAL_PLAYER) {
+            if (this.gameService.currentTurn !== PLAYER.realPlayer) {
                 this.error = true;
                 this.errorMessage = 'Attendez votre tour';
                 return;

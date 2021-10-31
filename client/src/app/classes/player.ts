@@ -6,3 +6,7 @@ export interface Player {
     rack: ICharacter[];
     points: number;
 }
+export const PLAYER = {
+    realPlayer: 0,
+    otherPlayer: 1,
+};

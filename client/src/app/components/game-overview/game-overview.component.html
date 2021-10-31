@@ -6,23 +6,23 @@
     </mat-card-title-group>
     <mat-card-content>Il y a {{ nbLettersReserve }} lettres restantes dans la réserve</mat-card-content>
 
-    <mat-card id="me" [ngClass]="gameService.currentTurn===realPlayerIndex ? 'activePlayer' : ''">
+    <mat-card id="me" [ngClass]="gameService.currentTurn===playerIndex.realPlayer ? 'activePlayer' : ''">
         <mat-card-title>{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
-        <mat-card-content>Nombre de points: {{ gameService.players[realPlayerIndex].points }}</mat-card-content>
-        <mat-card-content *ngIf="gameService.currentTurn===realPlayerIndex">
+        <mat-card-content>Nombre de points: {{ gameService.players[playerIndex.realPlayer].points }}</mat-card-content>
+        <mat-card-content *ngIf="gameService.currentTurn===playerIndex.realPlayer">
             Votre tour termine dans:
             <strong class="time"> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
         </mat-card-content>
-        <mat-card-content *ngIf="gameService.players[realPlayerIndex].rack.length < 7"
-            >Il y a {{ gameService.players[realPlayerIndex].rack.length }} lettres dans votre chevalet</mat-card-content
+        <mat-card-content *ngIf="gameService.players[playerIndex.realPlayer].rack.length < 7"
+            >Il y a {{ gameService.players[playerIndex.realPlayer].rack.length }} lettres dans votre chevalet</mat-card-content
         >
     </mat-card>
 
-    <mat-card id="otherPlayer" [ngClass]="gameService.currentTurn===realPlayerIndex ? '' : 'activePlayer'">
-        <mat-card-title>{{ gameService.players[computerIndex].name }}</mat-card-title>
+    <mat-card id="otherPlayer" [ngClass]="gameService.currentTurn===playerIndex.realPlayer ? '' : 'activePlayer'">
+        <mat-card-title>{{ gameService.players[playerIndex.otherPlayer].name }}</mat-card-title>
         <mat-card-subtitle>Niveau {{ computerLevel }}</mat-card-subtitle>
-        <mat-card-content>Nombre de points: {{gameService.players[computerIndex].points}}</mat-card-content>
-        <mat-card-content *ngIf="!(gameService.currentTurn===realPlayerIndex)">
+        <mat-card-content>Nombre de points: {{gameService.players[playerIndex.otherPlayer].points}}</mat-card-content>
+        <mat-card-content *ngIf="!(gameService.currentTurn===playerIndex.realPlayer)">
             Le tour de votre opposant se termine dans au plus:
             <strong class="time"> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
         </mat-card-content>

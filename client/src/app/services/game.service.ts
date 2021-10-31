@@ -5,10 +5,8 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
+import { PLAYER } from '@app/classes/player';
 
-export const REAL_PLAYER = 0;
-export const COMPUTER = 1;
-export const OTHER_PLAYER = 1;
 
 const MAX_SKIPS = 6;
 @Injectable({
@@ -34,7 +32,7 @@ export class GameService {
     }
     convertGameToSolo() {
         this.numPlayers = 'solo';
-        if (this.currentTurn === OTHER_PLAYER) {
+        if (this.currentTurn === PLAYER.otherPlayer) {
             this.otherPlayerSignal.next(this.numPlayers);
         }
     }
@@ -49,7 +47,7 @@ export class GameService {
         }
         if (this.skipCounter < MAX_SKIPS) {
             this.currentTurn = (this.currentTurn + 1) % 2;
-            if (this.currentTurn === OTHER_PLAYER) {
+            if (this.currentTurn === PLAYER.otherPlayer) {
                 this.nextPlayer();
             }
         }
@@ -60,7 +58,7 @@ export class GameService {
     }
     private initPlayers() {
         const realPlayer: Player = {
-            id: REAL_PLAYER,
+            id: PLAYER.realPlayer,
             name: this.userSettingsService.nameOption.userChoice,
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
@@ -69,7 +67,7 @@ export class GameService {
 
         // make computer just two have two players
         const computer: Player = {
-            id: COMPUTER,
+            id: PLAYER.otherPlayer,
             name: this.userSettingsService.getComputerName(),
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
@@ -79,7 +77,7 @@ export class GameService {
 
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
-        if (this.currentTurn === OTHER_PLAYER) {
+        if (this.currentTurn === PLAYER.otherPlayer) {
             this.nextPlayer();
         }
     }

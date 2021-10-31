@@ -5,11 +5,12 @@ import { Vec2 } from '@app/classes/vec2';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
 import { ExchangeService } from './exchange.service';
-import { COMPUTER, GameService } from './game.service';
+import { GameService } from './game.service';
 import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
 import { VerifyService } from './verify.service';
+import { PLAYER } from '@app/classes/player';
 
 type Direction = 'horizontal' | 'vertical';
 interface WordNCoord {
@@ -66,18 +67,18 @@ export class VirtualPlayerService {
         const numbs: number[] = [];
         let numb = 0;
 
-        for (let i = 0; i < this.gameService.players[COMPUTER].rack.length; i++) {
+        for (let i = 0; i < this.gameService.players[PLAYER.otherPlayer].rack.length; i++) {
             numbs.push(i);
         }
 
-        if (numberOfLetters <= this.gameService.players[COMPUTER].rack.length) {
+        if (numberOfLetters <= this.gameService.players[PLAYER.otherPlayer].rack.length) {
             for (let i = 0; i < numberOfLetters; i++) {
                 numb = Math.floor(Math.random() * numbs.length);
                 numbersPicked.push(numbs[numb]);
                 numbs.splice(numb, 1);
             }
             for (let i = 0; i < numberOfLetters; i++) {
-                lettersToChange.push(this.gameService.players[COMPUTER].rack[numbersPicked[i]].name);
+                lettersToChange.push(this.gameService.players[PLAYER.otherPlayer].rack[numbersPicked[i]].name);
             }
         }
         return lettersToChange;
@@ -204,7 +205,7 @@ export class VirtualPlayerService {
     }
     private makeRackCombos(): string[] {
         let computerRack = '';
-        for (const rackLetter of this.gameService.players[COMPUTER].rack) {
+        for (const rackLetter of this.gameService.players[PLAYER.otherPlayer].rack) {
             computerRack += rackLetter.name;
         }
         const anagrams = this.generateAnagrams(computerRack);
