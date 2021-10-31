@@ -1,12 +1,10 @@
 import { Injectable, Output } from '@angular/core';
-import { Player } from '@app/classes/player';
+import { Player, PLAYER } from '@app/classes/player';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
-import { PLAYER } from '@app/classes/player';
-
 
 const MAX_SKIPS = 6;
 @Injectable({

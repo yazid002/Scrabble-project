@@ -4,7 +4,8 @@ import { InvalidArgumentsLength } from '@app/classes/command-errors/command-synt
 import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { ExchangeService } from './exchange.service';
-import { GameService, REAL_PLAYER } from './game.service';
+import { GameService } from './game.service';
+import { PLAYER } from '@app/classes/player';
 import { RackService } from './rack.service';
 
 describe('ExchangeService', () => {
@@ -14,10 +15,10 @@ describe('ExchangeService', () => {
 
     beforeEach(() => {
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
-        gameServiceSpy.currentTurn = REAL_PLAYER;
+        gameServiceSpy.currentTurn = PLAYER.realPlayer;
         gameServiceSpy.players = [
             {
-                id: REAL_PLAYER,
+                id: PLAYER.realPlayer,
                 name: 'Random name',
                 rack: [
                     { name: 'A', quantity: 9, points: 1, affiche: 'A' },

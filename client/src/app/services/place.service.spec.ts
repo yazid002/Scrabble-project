@@ -4,11 +4,12 @@ import { ImpossibleCommand } from '@app/classes/command-errors/impossible-comman
 import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
 import { VerifyService } from '@app/services/verify.service';
-import { GameService, REAL_PLAYER } from './game.service';
+import { GameService } from './game.service';
 import { GridService } from './grid.service';
 import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
+import { PLAYER } from '@app/classes/player';
 
 const CANVAS_WIDTH = 500;
 const CANVAS_HEIGHT = 500;
@@ -40,10 +41,10 @@ describe('PlaceService', () => {
         verifyServiceSpy.dictionary = dictionary;
 
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
-        gameServiceSpy.currentTurn = REAL_PLAYER;
+        gameServiceSpy.currentTurn = PLAYER.realPlayer;
         gameServiceSpy.players = [
             {
-                id: REAL_PLAYER,
+                id: PLAYER.realPlayer,
                 name: 'Random name',
                 rack: [
                     { name: 'A', quantity: 9, points: 1, affiche: 'A' },
