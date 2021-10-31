@@ -183,29 +183,29 @@ export class VerifyService {
     }
 
     private findAdjacentUp(coord: Vec2): boolean {
-        if (coord.x > 0) {
-            return tiles[coord.x - 1][coord.y].letter !== '';
+        if (coord.y > 0) {
+            return tiles[coord.y - 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentDown(coord: Vec2) {
-        if (coord.x < SQUARE_NUMBER - 1) {
-            return tiles[coord.x + 1][coord.y].letter !== '';
+        if (coord.y < SQUARE_NUMBER - 1) {
+            return tiles[coord.y + 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentRight(coord: Vec2) {
-        if (coord.y < SQUARE_NUMBER - 1) {
-            return tiles[coord.x][coord.y + 1].letter !== '';
+        if (coord.x < SQUARE_NUMBER - 1) {
+            return tiles[coord.y][coord.x + 1].letter !== '';
         }
         return false;
     }
 
     private findAdjacentLeft(coord: Vec2) {
-        if (coord.y > 0) {
-            return tiles[coord.x][coord.y - 1].letter !== '';
+        if (coord.x > 0) {
+            return tiles[coord.y][coord.x - 1].letter !== '';
         }
         return false;
     }
