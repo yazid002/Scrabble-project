@@ -68,6 +68,7 @@ export class VerifyService {
 
         while (i < word.length && coord.y + i < SQUARE_NUMBER) {
             wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
+            console.log('wordFound horizontal ', wordFound);
 
             // for (let i = 0; i < wordFound.length; i++) {
             //     if (wordFound[i] === '*') {
@@ -85,7 +86,9 @@ export class VerifyService {
         }
         i = 0;
         while (i < word.length && coord.x + i < SQUARE_NUMBER) {
+            console.log('wordFound coord vertical ', { x: coord.x + i, y: coord.y });
             wordFound = this.findVerticalAdjacentWord({ x: coord.x + i, y: coord.y });
+            console.log('wordFound vertical ', wordFound);
             i++;
             if (wordFound.length >= 2) {
                 if (!this.isWordInDictionary(wordFound)) {

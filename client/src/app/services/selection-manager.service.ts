@@ -71,12 +71,13 @@ export class SelectionManagerService {
                     )
             ) {
                 this.rackLettersManipulationService.cancelManipulation();
-                // this.exchangeService.onMouseRightClick(event, this.gameService.players[0].rack);
+                //  this.exchangeService.onMouseRightClick(event, this.gameService.players[0].rack);
             }
             // else {
             //     this.exchangeService.cancelExchange();
             // }
-            //   this.rackLettersManipulationService.cancelManipulation();
+
+            this.rackLettersManipulationService.cancelManipulation();
             this.exchangeService.onMouseRightClick(event, this.gameService.players[0].rack);
         }
     }
@@ -114,6 +115,21 @@ export class SelectionManagerService {
         //     this.receptor = {} as HTMLElement;
         //     console.log(this.receptor);
         // }
+    }
+
+    onMouseWheel(event: WheelEvent) {
+        console.log('mouseWheel : ', event.deltaY, event.bubbles);
+        let keyEvent: KeyboardEvent;
+        if (event.deltaY > 0) {
+            keyEvent = {
+                key: 'ArrowRight',
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+        } else {
+            keyEvent = { key: 'ArrowLeft', preventDefault: () => void '' } as KeyboardEvent;
+        }
+
+        this.onKeyBoardClick(keyEvent);
     }
 
     onSubmitPlacement() {

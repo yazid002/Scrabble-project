@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { Bonus } from '@app/classes/bonus';
@@ -265,6 +266,8 @@ export class GridService {
                     this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
+
+                //  console.log(tiles);
             }
         }
     }

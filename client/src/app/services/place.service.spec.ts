@@ -64,8 +64,10 @@ describe('PlaceService', () => {
             'findInexistentLettersOnRack',
             'replaceWord',
         ]);
+
         rackServiceSpy.gameService = gameServiceSpy;
         gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion', 'writeLetter']);
+
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         gridServiceSpy.gridContext = ctxStub;
         gridServiceSpy.letterStyle = { color: 'NavajoWhite', font: '15px serif' };

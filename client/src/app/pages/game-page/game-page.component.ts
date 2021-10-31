@@ -68,30 +68,40 @@ export class GamePageComponent implements AfterViewInit {
 
     @HostListener('window:wheel', ['$event'])
     onMouseWheel(event: WheelEvent) {
-        console.log('mouseWheel : ', event.deltaY, event.bubbles);
-        let keyEvent: KeyboardEvent;
-        if (event.deltaY > 0) {
-            keyEvent = {
-                key: 'ArrowRight',
-                preventDefault: () => void '',
-            } as KeyboardEvent;
-        } else {
-            keyEvent = { key: 'ArrowLeft', preventDefault: () => void '' } as KeyboardEvent;
-        }
-
-        this.onKeyBoardClick(keyEvent);
+        this.selectionManager.onMouseWheel(event);
     }
 
     ngAfterViewInit(): void {
         this.selectionManager.chatboxComponent = this.chatboxComponent;
+        console.log('kkkjhjh ', this.chatboxComponent);
     }
 
-    onSubmitPlacement() {
-        this.command = this.placeSelectionService.command;
-        console.log('la commande ici', this.command);
-        this.chatboxComponent.inputBox = this.command;
-        this.chatboxComponent.fromSelection = true;
-        this.chatboxComponent.onSubmit();
+    onSubmitPlacement(selectionType: SelectionType) {
+        this.selectionManager.getSelectionType(selectionType);
+        // this.command = this.placeSelectionService.command;
+        // console.log('la commande ici', this.command);
+        // this.chatboxComponent.inputBox = this.command;
+        // this.chatboxComponent.fromSelection = true;
+        // this.chatboxComponent.onSubmit();
+        //  this.selectionManager.onSubmitPlacement();
+        const keyEvent = {
+            key: 'Enter',
+            preventDefault: () => void '',
+        } as KeyboardEvent;
+        this.selectionManager.onKeyBoardClick(keyEvent);
+    }
+
+    disablePlacement() {
+        return this.placeSelectionService.selectedRackIndexesForPlacement.length === 0;
+    }
+
+    onCancelPlacement(selectionType: SelectionType) {
+        this.selectionManager.getSelectionType(selectionType);
+        const keyEvent = {
+            key: 'Escape',
+            preventDefault: () => void '',
+        } as KeyboardEvent;
+        this.selectionManager.onKeyBoardClick(keyEvent);
     }
 
     increaseSize(): void {
@@ -138,14 +148,6 @@ export class GamePageComponent implements AfterViewInit {
     }
     disableExchange() {
         return this.exchangeService.selectedIndexes.length === 0 || this.reserveService.getQuantityOfAvailableLetters() < ExchangeLimits.Max;
-    }
-
-    disablePlacement() {
-        return this.placeSelectionService.selectedRackIndexesForPlacement.length === 0;
-    }
-
-    onCancelPlacement() {
-        return this.placeSelectionService.cancelPlacement();
     }
 
     onCancelExchange(selectionType: SelectionType) {

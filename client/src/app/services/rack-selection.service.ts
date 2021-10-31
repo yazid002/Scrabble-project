@@ -149,7 +149,12 @@ export class RackSelectionService {
             const coord = this.tileSelectionService.selectedIndexesForPlacement[length - 1];
             tiles[coord.y][coord.x].style.color = tiles[coord.y][coord.x].oldStyle.color;
             tiles[coord.y][coord.x].text = tiles[coord.y][coord.x].oldText;
-            this.gridService.fillGridPortion({ x: coord.y, y: coord.x }, tiles[coord.y][coord.x].text, tiles[coord.y][coord.x].style);
+            this.gridService.fillGridPortion(
+                { x: coord.y, y: coord.x },
+                tiles[coord.y][coord.x].text,
+                tiles[coord.y][coord.x].style.color as string,
+                tiles[coord.y][coord.x].style.font as string,
+            );
             this.tileSelectionService.selectedIndexesForPlacement.pop();
             console.log(this.tileSelectionService.selectedIndexesForPlacement.length);
         }
@@ -160,7 +165,12 @@ export class RackSelectionService {
             const coord = this.tileSelectionService.selectedIndexesForPlacement[length - 1];
             tiles[coord.y][coord.x].style.color = tiles[coord.y][coord.x].oldStyle.color;
             tiles[coord.y][coord.x].text = tiles[coord.y][coord.x].oldText;
-            this.gridService.fillGridPortion({ x: coord.y, y: coord.x }, tiles[coord.y][coord.x].text, tiles[coord.y][coord.x].style);
+            this.gridService.fillGridPortion(
+                { x: coord.y, y: coord.x },
+                tiles[coord.y][coord.x].text,
+                tiles[coord.y][coord.x].style.color as string,
+                tiles[coord.y][coord.x].style.font as string,
+            );
             this.rackService.fillRackPortion(this.selectedIndexesForPlacement[length - 1], normalColor);
             console.log('avant', this.selectedIndexesForPlacement);
 

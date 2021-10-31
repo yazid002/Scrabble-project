@@ -5,7 +5,6 @@ import { ExchangeService } from '@app/services/exchange.service';
 import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
-
 @Component({
     selector: 'app-play-area',
     templateUrl: './play-area.component.html',
@@ -30,6 +29,7 @@ export class PlayAreaComponent implements AfterViewInit {
             this.selectionManager.getSelectionType(SelectionType.Grid);
         } else if (event.target === this.rackCanvas.nativeElement) {
             this.selectionManager.getSelectionType(SelectionType.Rack);
+            console.log('play ', this.selectionManager.selectionType);
         } else {
             this.selectionManager.getSelectionType(SelectionType.None);
         }

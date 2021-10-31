@@ -16,8 +16,8 @@
         <button id="random" (click)="randomNumber()">random</button>
 
         <div *ngIf="!disablePlacement()">
-            <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement()">Placer</button>
-            <button mat-raised-button color="primary" type="submit" (click)="onCancelPlacement()">Annuler</button>
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement(selectionType.Grid)">Placer</button>
+            <button mat-raised-button color="primary" type="submit" (click)="onCancelPlacement(selectionType.Grid)">Annuler</button>
         </div>
     </section>
     <app-chatbox></app-chatbox>

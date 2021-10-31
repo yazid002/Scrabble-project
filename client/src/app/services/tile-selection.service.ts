@@ -58,7 +58,8 @@ export class TileSelectionService {
                 this.gridService.fillGridPortion(
                     { x: this.selectedCoord.y, y: this.selectedCoord.x },
                     tiles[this.selectedCoord.y][this.selectedCoord.x].text,
-                    tiles[this.selectedCoord.y][this.selectedCoord.x].style,
+                    tiles[this.selectedCoord.y][this.selectedCoord.x].style.color as string,
+                    tiles[this.selectedCoord.y][this.selectedCoord.x].style.font as string,
                 );
                 this.gridService.gridContext.strokeRect(coord.y * SQUARE_WIDTH, coord.x * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 console.log('2', tiles[this.selectedCoord.y][this.selectedCoord.x]);
@@ -82,7 +83,8 @@ export class TileSelectionService {
             this.gridService.fillGridPortion(
                 { x: this.selectedCoord.y, y: this.selectedCoord.x },
                 tiles[this.selectedCoord.y][this.selectedCoord.x].text,
-                tiles[this.selectedCoord.y][this.selectedCoord.x].style,
+                tiles[this.selectedCoord.y][this.selectedCoord.x].style.color as string,
+                tiles[this.selectedCoord.y][this.selectedCoord.x].style.font as string,
             );
             this.gridService.gridContext.strokeRect(
                 this.selectedCoord.y * SQUARE_WIDTH,
@@ -99,7 +101,12 @@ export class TileSelectionService {
             tiles[coord.y][coord.x].style.color = tiles[coord.y][coord.x].oldStyle.color;
             //  tiles[coord.y][coord.x].text = tiles[coord.y][coord.x].oldText;
 
-            this.gridService.fillGridPortion({ x: coord.y, y: coord.x }, tiles[coord.y][coord.x].oldText, tiles[coord.y][coord.x].style);
+            this.gridService.fillGridPortion(
+                { x: coord.y, y: coord.x },
+                tiles[coord.y][coord.x].oldText,
+                tiles[coord.y][coord.x].style.color as string,
+                tiles[coord.y][coord.x].style.font as string,
+            );
             this.gridService.gridContext.strokeRect(coord.y * SQUARE_WIDTH, coord.x * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
         }
         this.selectedIndexesForPlacement = [];
