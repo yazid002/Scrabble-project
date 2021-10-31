@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { ExchangeLimits } from '@app/enums/exchange-enums';
@@ -19,7 +19,7 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent {
+export class GamePageComponent implements AfterViewInit {
     @ViewChild(ChatboxComponent) chatboxComponent: ChatboxComponent;
     @ViewChild(PlayAreaComponent) playAreaComponent: PlayAreaComponent;
     // TODO verifier si les services en parametre sont utilises ou doivent en private
@@ -80,6 +80,10 @@ export class GamePageComponent {
         }
 
         this.onKeyBoardClick(keyEvent);
+    }
+
+    ngAfterViewInit(): void {
+        this.selectionManager.chatboxComponent = this.chatboxComponent;
     }
 
     onSubmitPlacement() {

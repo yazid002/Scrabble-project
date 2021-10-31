@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { SelectionType } from '@app/enums/selection-enum';
 import { ExchangeService } from './exchange.service';
-import { GameService } from './game.service';
+import { GameService, REAL_PLAYER } from './game.service';
 import { GridService } from './grid.service';
 import { PlaceSelectionService } from './place-selection.service';
 import { RackLettersManipulationService } from './rack-letters-manipulation.service';
@@ -71,12 +71,13 @@ export class SelectionManagerService {
                     )
             ) {
                 this.rackLettersManipulationService.cancelManipulation();
-                //  this.exchangeService.onMouseRightClick(event, this.gameService.players[0].rack);
+                // this.exchangeService.onMouseRightClick(event, this.gameService.players[0].rack);
             }
             // else {
             //     this.exchangeService.cancelExchange();
             // }
-            this.rackLettersManipulationService.cancelManipulation();
+            //   this.rackLettersManipulationService.cancelManipulation();
+            this.exchangeService.onMouseRightClick(event, this.gameService.players[0].rack);
         }
     }
 
@@ -92,6 +93,11 @@ export class SelectionManagerService {
             if (event.key === 'Enter') {
                 console.log('ici Enter ');
                 // this.receptor = {} as HTMLElement;
+                if (this.gameService.currentTurn !== REAL_PLAYER) {
+                    // this.chatboxComponent.error = true;
+                    this.chatboxComponent.errorMessage = 'Attendez votre tour';
+                    return;
+                }
                 this.onSubmitPlacement();
             }
             // this.receptor = {} as HTMLElement;
