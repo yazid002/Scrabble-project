@@ -85,4 +85,13 @@ describe('GameService', () => {
         // eslint-disable-next-line dot-notation
         expect(service['didGameEnd']()).toEqual(true);
     });
+    it('should never put a winning message to a player that has abandonned the game, even if they have more points', () => {
+        service.players[PLAYER.realPlayer].points = 0;
+        service.players[PLAYER.otherPlayer].points = 500;
+        service.players[PLAYER.realPlayer].rack = [];
+        service.players[PLAYER.otherPlayer].rack = [];
+        const otherPlayerAbandonned = true;
+        service.endGame(otherPlayerAbandonned);
+        expect(service.players[PLAYER.otherPlayer].won).toEqual('');
+    });
 });

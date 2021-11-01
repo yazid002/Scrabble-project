@@ -46,21 +46,7 @@ export class GameService {
         this.abandonSignal.next('abandon');
         this.endGame();
     }
-    private didGameEnd(): boolean {
-        let hasEnded = false;
-        if (this.skipCounter >= MAX_SKIPS) {
-            hasEnded = true;
-        }
-        const isReserveEmpty = this.reserveService.alphabets.length === 0;
-        for (const player of this.players) {
-            if (player.rack.length === 0 && isReserveEmpty) {
-                hasEnded = true;
-            }
-        }
-
-        return hasEnded;
-    }
-    private endGame() {
+    endGame(otherPlayerAbandonned: boolean = false) {
         let endGameString = `Fin de partie: ${this.reserveService.alphabets.length} lettres restantes`;
         for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
             const player = this.players[playerIndex];
@@ -81,6 +67,9 @@ export class GameService {
             endGameString += this.players[playerIndex].rack.map((character) => character.affiche).join('<br>    ');
 
         }
+        if (otherPlayerAbandonned) {
+            this.players[PLAYER.otherPlayer].won = '';
+        }
 
         const endGameMessage: IChat = {
             from: SENDER.computer,
@@ -88,6 +77,21 @@ export class GameService {
         };
         this.chatService.addMessage(endGameMessage);
     }
+    private didGameEnd(): boolean {
+        let hasEnded = false;
+        if (this.skipCounter >= MAX_SKIPS) {
+            hasEnded = true;
+        }
+        const isReserveEmpty = this.reserveService.alphabets.length === 0;
+        for (const player of this.players) {
+            if (player.rack.length === 0 && isReserveEmpty) {
+                hasEnded = true;
+            }
+        }
+
+        return hasEnded;
+    }
+
 
     private subtractPoint(player: Player): number {
         let pointToSub = 0;
