@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { ReserveService } from '@app/services/reserve.service';
-import { GameService, REAL_PLAYER } from './game.service';
+import { GameService } from './game.service';
+import { PLAYER } from '@app/classes/player';
 
 @Injectable({
     providedIn: 'root',
@@ -82,16 +83,16 @@ export class RackService {
         this.rackContext.fillRect((DEFAULT_WIDTH / RACK_SIZE) * index, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT);
         this.rackContext.fillStyle = 'rgb(0,0,0)';
         this.rackContext.font = '30px serif';
-        if (this.gameService.players[REAL_PLAYER].rack[index]) {
+        if (this.gameService.players[PLAYER.realPlayer].rack[index]) {
             this.rackContext.fillText(
-                this.gameService.players[REAL_PLAYER].rack[index].affiche,
+                this.gameService.players[PLAYER.realPlayer].rack[index].affiche,
                 (DEFAULT_WIDTH / RACK_SIZE) * index + LETTERS_PIXELS_WIDTH_ADJUSTMENT,
                 DEFAULT_HEIGHT - LETTERS_PIXELS_HEIGH_ADJUSTMENT,
             );
 
             this.rackContext.font = '10px serif';
             this.rackContext.fillText(
-                this.gameService.players[REAL_PLAYER].rack[index].points.toString(),
+                this.gameService.players[PLAYER.realPlayer].rack[index].points.toString(),
                 (DEFAULT_WIDTH / RACK_SIZE) * index + POINTS_PIXELS_WIDTH_ADJUSTMENT,
                 DEFAULT_HEIGHT - POINTS_PIXELS_HEIGH_ADJUSTMENT,
             );

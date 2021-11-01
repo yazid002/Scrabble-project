@@ -65,7 +65,6 @@ export class PlaceService {
     }
     async placeWord(word: string, coord: Vec2, direction: string, isCalledThoughtChat: boolean): Promise<void> {
         word = this.verifyService.normalizeWord(word);
-
         const promise = new Promise<void>((resolve, reject) => {
             try {
                 this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);

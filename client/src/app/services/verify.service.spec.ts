@@ -190,7 +190,7 @@ describe('VerifyService', () => {
 
     it(' findAdjacentUp should return true', () => {
         const coord = { x: 1, y: 4 };
-        tiles[coord.x - 1][coord.y].letter = 'a';
+        tiles[coord.y - 1][coord.x].letter = 'a';
 
         // Car findAdjacentUp est privée
         // eslint-disable-next-line dot-notation
@@ -199,7 +199,7 @@ describe('VerifyService', () => {
     });
 
     it(' findAdjacentUp should return false if the letter is place at the extreme top of the board', () => {
-        const coord = { x: 0, y: 4 };
+        const coord = { y: 0, x: 4 };
 
         // Car findAdjacentUp est privée
         // eslint-disable-next-line dot-notation
@@ -209,7 +209,7 @@ describe('VerifyService', () => {
 
     it(' findAdjacentUp should return false if the letter is not place at the extreme top of the board and there is no letter above', () => {
         const coord = { x: 1, y: 4 };
-        tiles[coord.x - 1][coord.y].letter = '';
+        tiles[coord.y - 1][coord.x].letter = '';
 
         // Car findAdjacentUp est privée
         // eslint-disable-next-line dot-notation
@@ -219,7 +219,7 @@ describe('VerifyService', () => {
 
     it(' findAdjacentDown should return true', () => {
         const coord = { x: 13, y: 4 };
-        tiles[coord.x + 1][coord.y].letter = 'a';
+        tiles[coord.y + 1][coord.x].letter = 'a';
 
         // Car findAdjacentDown est privée
         // eslint-disable-next-line dot-notation
@@ -228,7 +228,7 @@ describe('VerifyService', () => {
     });
 
     it(' findAdjacentDown should return false if the letter is place at the extreme bottom of the board', () => {
-        const coord = { x: 14, y: 4 };
+        const coord = { y: 14, x: 4 };
 
         // Car findAdjacentDown est privée
         // eslint-disable-next-line dot-notation
@@ -240,8 +240,8 @@ describe('VerifyService', () => {
         ' findAdjacentDown should return false if the letter is not place at the extreme bottom of' +
             ' the board and there is no letter bottom of it',
         () => {
-            const coord = { x: 13, y: 4 };
-            tiles[coord.x + 1][coord.y].letter = '';
+            const coord = { y: 13, x: 4 };
+            tiles[coord.y + 1][coord.x].letter = '';
 
             // Car findAdjacentUp est privée
             // eslint-disable-next-line dot-notation
@@ -252,7 +252,7 @@ describe('VerifyService', () => {
 
     it(' findAdjacentRight should return true', () => {
         const coord = { x: 1, y: 13 };
-        tiles[coord.x][coord.y + 1].letter = 'a';
+        tiles[coord.y][coord.x + 1].letter = 'a';
 
         // Car findAdjacentRight est privée
         // eslint-disable-next-line dot-notation
@@ -261,7 +261,7 @@ describe('VerifyService', () => {
     });
 
     it(' findAdjacentRight should return false if the letter is place on the extreme right of the board', () => {
-        const coord = { x: 0, y: 14 };
+        const coord = { y: 0, x: 14 };
 
         // Car findAdjacentRight est privée
         // eslint-disable-next-line dot-notation
@@ -273,8 +273,8 @@ describe('VerifyService', () => {
         ' findAdjacentRight should return false if the letter is not place at the extreme right' +
             ' of the board and there is no letter on its right',
         () => {
-            const coord = { x: 1, y: 13 };
-            tiles[coord.x][coord.y + 1].letter = '';
+            const coord = { y: 1, x: 13 };
+            tiles[coord.y][coord.x + 1].letter = '';
 
             // Car findAdjacentRight est privée
             // eslint-disable-next-line dot-notation
@@ -285,7 +285,7 @@ describe('VerifyService', () => {
 
     it(' findAdjacentLeft should return true', () => {
         const coord = { x: 1, y: 1 };
-        tiles[coord.x][coord.y - 1].letter = 'a';
+        tiles[coord.y][coord.x - 1].letter = 'a';
 
         // Car findAdjacentLeft est privée
         // eslint-disable-next-line dot-notation
@@ -528,7 +528,7 @@ describe('VerifyService', () => {
 
     it(' findHorizontalAdjacentWord should return an empty string if the text at the given coords is a bonus', () => {
         const coord = { x: 1, y: 1 };
-        tiles[coord.x][coord.y].text = 'dl';
+        tiles[coord.y][coord.x].text = 'dl';
 
         // eslint-disable-next-line dot-notation
         const result = service['findHorizontalAdjacentWord'](coord);
@@ -588,7 +588,7 @@ describe('VerifyService', () => {
 
     it(' findVerticalAdjacentWord should return an empty string if the text at the given coords is a bonus', () => {
         const coord = { x: 1, y: 1 };
-        tiles[coord.x][coord.y].text = 'dl';
+        tiles[coord.y][coord.x].text = 'dl';
 
         // Car findVerticalAdjacentWord est privée
         // eslint-disable-next-line dot-notation

@@ -5,10 +5,12 @@ import { Vec2 } from '@app/classes/vec2';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
 import { ExchangeService } from './exchange.service';
-import { COMPUTER, GameService } from './game.service';
+import { GameService } from './game.service';
 import { PlaceService } from './place.service';
+import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
 import { VerifyService } from './verify.service';
+import { PLAYER } from '@app/classes/player';
 
 type Direction = 'horizontal' | 'vertical';
 interface WordNCoord {
@@ -29,6 +31,7 @@ export class VirtualPlayerService {
         private placeService: PlaceService,
         private verifyService: VerifyService,
         private timerService: TimerService,
+        private pointsCountingService: PointsCountingService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();
@@ -45,7 +48,7 @@ export class VirtualPlayerService {
         const TURN_TIME = 3000;
         let skipped = false;
         setTimeout(() => {
-            const oneOfTenProbability = 100; // TODO should be 10, but peut to 100 to easely test place
+            const oneOfTenProbability = 10;
             const randomNumber = Math.floor(oneOfTenProbability * Math.random());
             if (randomNumber === 0) {
                 skipped = true;
@@ -64,18 +67,18 @@ export class VirtualPlayerService {
         const numbs: number[] = [];
         let numb = 0;
 
-        for (let i = 0; i < this.gameService.players[COMPUTER].rack.length; i++) {
+        for (let i = 0; i < this.gameService.players[PLAYER.otherPlayer].rack.length; i++) {
             numbs.push(i);
         }
 
-        if (numberOfLetters <= this.gameService.players[COMPUTER].rack.length) {
+        if (numberOfLetters <= this.gameService.players[PLAYER.otherPlayer].rack.length) {
             for (let i = 0; i < numberOfLetters; i++) {
                 numb = Math.floor(Math.random() * numbs.length);
                 numbersPicked.push(numbs[numb]);
                 numbs.splice(numb, 1);
             }
             for (let i = 0; i < numberOfLetters; i++) {
-                lettersToChange.push(this.gameService.players[COMPUTER].rack[numbersPicked[i]].name);
+                lettersToChange.push(this.gameService.players[PLAYER.otherPlayer].rack[numbersPicked[i]].name);
             }
         }
         return lettersToChange;
@@ -86,76 +89,133 @@ export class VirtualPlayerService {
         this.exchangeService.exchangeLetters(lettersToChange, true);
     }
     private place() {
-        console.log('virtual player place');
-
         this.makePossibilities();
     }
-    private makePossibilities() {
-        const gridCombos = this.getLetterCombosFromGrid();
-        const possibilities: WordNCoord[] = [];
-        const rackCombos: string[] = this.makeRackCombos();
-        // console.log('grid', gridCombos);
-        // console.log('rackCombos', rackCombos);
-        // Add 1 or more letters from the rack to the begining and end of every grid 'chuncks'
-        for (const rackCombo of rackCombos) {
-            for (const gridCombo of gridCombos) {
-                let lin = 0;
-                let col = 0;
-                if (gridCombo.direction === 'vertical') {
-                    lin = gridCombo.coord.y - rackCombo.length;
-                    col = gridCombo.coord.x;
-                } else {
-                    lin = gridCombo.coord.y;
-                    col = gridCombo.coord.x - rackCombo.length;
-                }
-                const word: WordNCoord = { word: `${rackCombo}${gridCombo.word}`, coord: { x: col, y: lin }, direction: gridCombo.direction };
-                word.word = word.word.toLowerCase();
-                let valid = false;
-                if (this.verifyService.isWordInDictionary(word.word)) {
-                    console.log(word);
+    private decidePoints(): { min: number; max: number } {
+        const pointMap: Map<number, { min: number; max: number }> = new Map();
+        let i = 0;
+        const SMALL_WORD_PROPORTION = 4;
+        const MEDIUM_WORD_PROPORTION = 3;
+        const BIG_WORD_PROPORTION = 3;
+
+        for (i; i < SMALL_WORD_PROPORTION; i++) {
+            pointMap.set(i, { min: 0, max: 6 });
+        }
+        for (i; i < SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION; i++) {
+            pointMap.set(i, { min: 7, max: 12 });
+        }
+        for (i; i < SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION; i++) {
+            pointMap.set(i, { min: 13, max: 18 });
+        }
+        const randomNumber = Math.floor((SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION) * Math.random());
+        return pointMap.get(randomNumber) as { min: number; max: number };
+    }
+    private validateWordPoints(word: WordNCoord, pointRange: { min: number; max: number }): boolean {
+        try {
+            const lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word.word, word.coord, word.direction);
+
+            const points = this.pointsCountingService.processWordPoints(word.word, word.coord, word.direction, lettersUsedOnBoard);
+            if (points <= pointRange.max && points >= pointRange.min) return true;
+        } catch {
+            return false;
+        }
+
+        return false;
+    }
+    private bindGridAndRack(rackCombo: string, gridCombo: WordNCoord): WordNCoord[] {
+        const combos: WordNCoord[] = [];
+        for (let index = 0; index <= rackCombo.length; index++) {
+            const before = rackCombo.slice(0, index);
+            const after = rackCombo.slice(index, rackCombo.length + 1);
+            const word = before + gridCombo.word + after;
+            let x = gridCombo.coord.x;
+            let y = gridCombo.coord.y;
+            if (gridCombo.direction === 'horizontal') {
+                x -= index;
+            } else {
+                y -= index;
+            }
+            combos.push({ word, coord: { y, x }, direction: gridCombo.direction });
+        }
+        return combos;
+    }
+    private tryPossibility(
+        rackCombo: string,
+        possibilities: WordNCoord[],
+        pointRange: { min: number; max: number },
+        gridCombo?: WordNCoord,
+    ): WordNCoord[] {
+        const lin = 7;
+        const col = 7;
+        const word: WordNCoord = { word: rackCombo, coord: { x: col, y: lin }, direction: 'horizontal' };
+        if (gridCombo) {
+            word.coord.y = gridCombo.coord.y;
+            word.coord.x = gridCombo.coord.x;
+
+            word.word = gridCombo.word;
+            word.direction = gridCombo.direction;
+        }
+        word.word = word.word.toLowerCase();
+        let valid = false;
+        const hasRightPoints = this.validateWordPoints(word, pointRange);
+        if (hasRightPoints) {
+            const isWordInDictionary = this.verifyService.isWordInDictionary(word.word);
+            if (isWordInDictionary) {
+                if (possibilities.length === 0) {
                     try {
                         valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction, true);
 
                         if (valid) {
-                            possibilities.push(word);
-
-                            console.log('possibilities', possibilities);
-                            return;
+                            return [word];
                         }
-                    } catch (error) {
-                        console.log(error);
+                        return [];
+                    } catch {
+                        return [];
                     }
+                }
+                return [word];
+            }
+        }
+        return [];
+    }
+    private makePossibilities() {
+        const gridCombos = this.getLetterCombosFromGrid();
+        let possibilities: WordNCoord[] = [];
+        const rackCombos: string[] = this.makeRackCombos();
+        const pointRange = this.decidePoints();
+        for (const rackCombo of rackCombos) {
+            if (this.verifyService.isFirstMove()) {
+                const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange));
+                if (newPossibilities.length > 0) {
+                    possibilities = possibilities.concat(newPossibilities);
+                }
+                if (possibilities.length >= 3) return;
+            }
+            for (const gridCombo of gridCombos) {
+                const wordCombos = this.bindGridAndRack(rackCombo, gridCombo);
+                for (const wordCombo of wordCombos) {
+                    const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange, wordCombo));
+                    if (newPossibilities.length > 0) {
+                        possibilities = possibilities.concat(newPossibilities);
+                    }
+                    if (possibilities.length >= 3) return;
                 }
             }
         }
     }
     private makeRackCombos(): string[] {
-        const combos: string[] = [];
-        const computerRack: string[] = [];
-        for (const rackLetter of this.gameService.players[COMPUTER].rack) {
-            computerRack.push(rackLetter.name);
+        let computerRack = '';
+        for (const rackLetter of this.gameService.players[PLAYER.otherPlayer].rack) {
+            computerRack += rackLetter.name;
         }
-        // console.log('rack', computerRack);
-        const numPossibilites = Math.pow(2, computerRack.length);
-        for (let counter = 1; counter < numPossibilites; counter++) {
-            let temp = '';
-            let tempCounter = counter;
-            for (let index = computerRack.length - 1; index >= 0; index--) {
-                if (tempCounter >= Math.pow(2, index)) {
-                    temp += computerRack[index];
-                    tempCounter -= Math.pow(2, index);
-                }
-            }
-            combos.push(temp);
-        }
+        const anagrams = this.generateAnagrams(computerRack);
 
-        return combos;
+        return anagrams;
     }
     private getLetterCombosFromGrid(): WordNCoord[] {
         /**
          * Get all letters on grid that are touching. They will be considered as a chunk later since we can't shuffle them
          */
-        // console.log(tiles);
         const EMPTY = '';
         let tempWord = EMPTY;
         let x = 0;
@@ -163,8 +223,8 @@ export class VirtualPlayerService {
         const possibilities: WordNCoord[] = [];
         // get all horizontal possibilities
         for (let line = 0; line < tiles.length; line++) {
+            // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let col = 0; col < tiles[line].length; col++) {
-                // eslint-disable-next-line @typescript-eslint/prefer-for-of
                 if (tiles[line][col].letter !== EMPTY) {
                     if (tempWord === EMPTY) {
                         x = col;
@@ -174,7 +234,6 @@ export class VirtualPlayerService {
                 } else {
                     if (tempWord !== EMPTY) {
                         const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'horizontal' };
-                        // console.log('letter do add', temp);
                         possibilities.push(temp);
                     }
                     tempWord = EMPTY;
@@ -195,7 +254,6 @@ export class VirtualPlayerService {
                 } else {
                     if (tempWord !== EMPTY) {
                         const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'vertical' };
-                        console.log('letter do add', temp);
                         possibilities.push(temp);
                     }
                     tempWord = EMPTY;
@@ -203,7 +261,35 @@ export class VirtualPlayerService {
             }
         }
 
-        // console.log(possibilities);
         return possibilities;
+    }
+    // http://jsfiddle.net/jtodd/U5dcL/
+    private generateAnagrams(word: string): string[] {
+        if (word.length < 2) {
+            return [word];
+        } else {
+            const anagrams = [];
+            let before;
+            let focus;
+            let after;
+            let shortWord;
+            let subAnagrams;
+            let newEntry;
+            for (let i = 0; i < word.length; i++) {
+                before = word.slice(0, i);
+                focus = word[i];
+                after = word.slice(i + 1, word.length + 1);
+                shortWord = before + after;
+                subAnagrams = this.generateAnagrams(shortWord);
+                if (focus) {
+                    anagrams.push(focus);
+                }
+                for (const j of subAnagrams) {
+                    newEntry = focus + j;
+                    anagrams.push(newEntry);
+                }
+            }
+            return [...new Set(anagrams)];
+        }
     }
 }

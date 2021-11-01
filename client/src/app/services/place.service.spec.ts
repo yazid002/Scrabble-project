@@ -2,9 +2,10 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { Dictionary } from '@app/classes/dictionary';
+import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { VerifyService } from '@app/services/verify.service';
-import { GameService, REAL_PLAYER } from './game.service';
+import { GameService } from './game.service';
 import { GridService } from './grid.service';
 import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
@@ -40,10 +41,10 @@ describe('PlaceService', () => {
         verifyServiceSpy.dictionary = dictionary;
 
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
-        gameServiceSpy.currentTurn = REAL_PLAYER;
+        gameServiceSpy.currentTurn = PLAYER.realPlayer;
         gameServiceSpy.players = [
             {
-                id: REAL_PLAYER,
+                id: PLAYER.realPlayer,
                 name: 'Random name',
                 rack: [
                     { name: 'A', quantity: 9, points: 1, affiche: 'A' },
@@ -204,5 +205,29 @@ describe('PlaceService', () => {
             tick(placementDuration);
             expect(gridServiceSpy.fillGridPortion).toHaveBeenCalled();
         }));
+    });
+    describe('placeWordInstant', () => {
+        it('should write word if word is valid on placeWordInstant', () => {
+            const wordExistsParams = { wordExists: true, errorMessage: '' };
+            verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
+            verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
+            verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            const writeWordSpy = spyOn(service, 'writeWord').and.callThrough();
+
+            service.placeWordInstant(wordToCheck, coord, direction);
+
+            expect(writeWordSpy).toHaveBeenCalledTimes(1);
+        });
+        it('should not write word if word is valid on placeWordInstant', () => {
+            const wordExistsParams = { wordExists: false, errorMessage: '' };
+            verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
+            verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
+            verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            const writeWordSpy = spyOn(service, 'writeWord').and.callThrough();
+
+            service.placeWordInstant(wordToCheck, coord, direction);
+
+            expect(writeWordSpy).not.toHaveBeenCalled();
+        });
     });
 });

@@ -1,10 +1,11 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
+import { PLAYER } from '@app/classes/player';
 import { SelectionType } from '@app/enums/selection-enum';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
-import { GameService, REAL_PLAYER } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 
 const MAX_MESSAGE_LENGTH = 512;
@@ -50,7 +51,7 @@ export class ChatboxComponent implements OnInit {
             return;
         }
         if (this.inputBox.startsWith('!')) {
-            if (this.gameService.currentTurn !== REAL_PLAYER) {
+            if (this.gameService.currentTurn !== PLAYER.realPlayer) {
                 this.error = true;
                 this.errorMessage = 'Attendez votre tour';
                 return;
@@ -75,16 +76,16 @@ export class ChatboxComponent implements OnInit {
         if (this.inputBox.startsWith('!')) {
             let response: IChat = { from: '', body: '' };
             response = await this.commandExecutionService.executeCommand(this.inputBox, !this.fromSelection);
-            // try {
-            //     response = await this.commandExecutionService.executeCommand(this.inputBox, !this.fromSelection);
-            // } catch (error) {
-            //     if (error instanceof CommandError) {
-            //         response = {
-            //             from: this.possibleSenders.computer,
-            //             body: error.message,
-            //         };
-            //     }
-            // }
+            try {
+                response = await this.commandExecutionService.executeCommand(this.inputBox, !this.fromSelection);
+            } catch (error) {
+                if (error instanceof CommandError) {
+                    response = {
+                        from: this.possibleSenders.computer,
+                        body: error.message,
+                    };
+                }
+            }
             this.chatService.addMessage(response);
         }
 

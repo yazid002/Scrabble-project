@@ -125,6 +125,10 @@ export class VerifyService {
         const lettersUsedOnBoard = this.isFitting(coord, direction, word);
         return lettersUsedOnBoard;
     }
+    isFirstMove(): boolean {
+        const h8Coord: Vec2 = { x: 7, y: 7 };
+        return tiles[h8Coord.x][h8Coord.y].letter === '';
+    }
 
     validateFirstMove(word: string, direction: string, coord: Vec2): void {
         const h8Coord: Vec2 = { x: 7, y: 7 };
@@ -219,32 +223,34 @@ export class VerifyService {
     }
 
     private findAdjacentUp(coord: Vec2): boolean {
-        console.log(' coord ', coord, 'adjacent up ', tiles[coord.y - 1][coord.x].letter);
         if (coord.y > 0) {
+            console.log(' coord ', coord, 'adjacent up ', tiles[coord.y - 1][coord.x].letter);
             return tiles[coord.y - 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentDown(coord: Vec2) {
-        console.log(' coord ', coord, 'adjacent down ', tiles[coord.y + 1][coord.x].letter);
         if (coord.y < SQUARE_NUMBER - 1) {
+            console.log(' coord ', coord, 'adjacent down ', tiles[coord.y + 1][coord.x].letter);
             return tiles[coord.y + 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentRight(coord: Vec2) {
-        console.log(' coord ', coord, 'adjacent right ', tiles[coord.y][coord.x + 1].letter);
         if (coord.x < SQUARE_NUMBER - 1) {
+            console.log(' coord ', coord, 'adjacent right ', tiles[coord.y][coord.x + 1].letter);
+
             return tiles[coord.y][coord.x + 1].letter !== '';
         }
         return false;
     }
 
     private findAdjacentLeft(coord: Vec2) {
-        console.log(' coord ', coord, 'adjacent left ', tiles[coord.y][coord.x - 1].letter);
         if (coord.x > 0) {
+            console.log(' coord ', coord, 'adjacent left ', tiles[coord.y][coord.x - 1].letter);
+
             return tiles[coord.y][coord.x - 1].letter !== '';
         }
         return false;
@@ -268,10 +274,6 @@ export class VerifyService {
             this.success = false;
             throw new NotEnoughOccurrences(` * (lettres blanches) représentant les lettres "${upperLettersInWord.join('", "')}" demandées.`);
         }
-    }
-    private isFirstMove(): boolean {
-        const h8Coord: Vec2 = { x: 7, y: 7 };
-        return tiles[h8Coord.x][h8Coord.y].letter === '';
     }
 
     private validateInvalidSymbols(word: string): void {

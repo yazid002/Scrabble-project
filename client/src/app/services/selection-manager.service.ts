@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { PlacementParameters } from '@app/classes/placement';
+import { PLAYER } from '@app/classes/player';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { ExchangeLimits } from '@app/enums/exchange-enums';
 import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { SelectionType } from '@app/enums/selection-enum';
 import { Subscription } from 'rxjs';
 import { ExchangeSelectionService } from './exchange-selection.service';
-import { GameService, REAL_PLAYER } from './game.service';
+import { GameService } from './game.service';
 import { PlaceSelectionService } from './place-selection.service';
 import { RackLettersManipulationService } from './rack-letters-manipulation.service';
 import { RackService } from './rack.service';
@@ -82,7 +83,7 @@ export class SelectionManagerService {
 
     handleGridSelectionOnLeftClick(event: MouseEvent) {
         console.log('this.gameService.currentTurn ', this.gameService.currentTurn);
-        if (this.gameService.currentTurn !== REAL_PLAYER) {
+        if (this.gameService.currentTurn !== PLAYER.realPlayer) {
             return;
         }
         this.placeSelectionService.onBoardClick(event, true);
@@ -142,7 +143,7 @@ export class SelectionManagerService {
 
     handleGridSelectionOnKeyBoardClick(event: KeyboardEvent) {
         // On ne peut pas placer si ce n'est pas notre tour
-        if (this.gameService.currentTurn !== REAL_PLAYER) {
+        if (this.gameService.currentTurn !== PLAYER.realPlayer) {
             return;
         }
         //     const placementParameters = this.gameService.players[0].placementParameters as PlacementParameters;
