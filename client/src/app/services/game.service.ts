@@ -64,6 +64,13 @@ export class GameService {
             name: this.userSettingsService.nameOption.userChoice,
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
+            placementParameters: {
+                selectedCoord: { x: -1, y: -1 },
+                direction: true,
+                selectedTilesForPlacement: [],
+                selectedRackIndexesForPlacement: [],
+                wordToVerify: [],
+            },
         };
         this.players.push(realPlayer);
 

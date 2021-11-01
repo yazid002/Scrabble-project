@@ -4,9 +4,9 @@ import { InvalidArgumentsLength } from '@app/classes/command-errors/command-synt
 import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { ICharacter } from '@app/classes/letter';
-import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { ExchangeLimits } from '@app/enums/exchange-enums';
 import { RackService } from '@app/services/rack.service';
+import { ExchangeSelectionService } from './exchange-selection.service';
 import { GameService } from './game.service';
 import { TimerService } from './timer.service';
 
@@ -14,8 +14,12 @@ import { TimerService } from './timer.service';
     providedIn: 'root',
 })
 export class ExchangeService {
-    selectedIndexes: number[] = [];
-    constructor(private rackService: RackService, private gameService: GameService, private timerService: TimerService) {}
+    constructor(
+        private rackService: RackService,
+        private gameService: GameService,
+        private timerService: TimerService,
+        private exchangeSelectionService: ExchangeSelectionService,
+    ) {}
 
     exchangeLetters(lettersToChange: string[], viaCommand: boolean): void {
         this.validateExchangeFeasibility(lettersToChange);
@@ -25,78 +29,21 @@ export class ExchangeService {
         } else {
             this.exchangeLettersViaClick(lettersToChange);
         }
+        this.timerService.resetTimer();
     }
 
     exchangeLettersViaCommand(lettersToChange: string[]): void {
         for (const letter of lettersToChange) {
             this.rackService.replaceLetter(letter, false);
         }
-        this.timerService.resetTimer();
+        //   this.timerService.resetTimer();
     }
 
     exchangeLettersViaClick(lettersToChange: string[]): void {
         for (let i = 0; i < lettersToChange.length; i++) {
-            this.rackService.replaceLetter(lettersToChange[i], false, this.selectedIndexes[i]);
+            this.rackService.replaceLetter(lettersToChange[i], false, this.exchangeSelectionService.selectedIndexes[i]);
         }
-        this.selectedIndexes = [];
-    }
-
-    onMouseRightClick(event: MouseEvent, rack: ICharacter[]) {
-        const normalColor = 'NavajoWhite';
-        const selectionColor = 'blue';
-        const index = this.getClickIndex(event, rack);
-        const included = this.selectedIndexes.includes(index);
-
-        console.log(this.selectedIndexes);
-        console.log(included);
-        if (included) {
-            this.selectedIndexes = this.selectedIndexes.filter((elem) => {
-                console.log(elem);
-                console.log(index);
-                return elem !== index;
-            });
-            console.log(this.selectedIndexes);
-            this.rackService.fillRackPortion(index, normalColor);
-        } else {
-            this.selectedIndexes.push(index);
-            this.rackService.fillRackPortion(index, selectionColor);
-            console.log(this.selectedIndexes);
-        }
-    }
-
-    cancelExchange() {
-        const normalColor = 'NavajoWhite';
-        for (const index of this.selectedIndexes) {
-            this.rackService.fillRackPortion(index, normalColor);
-        }
-        this.selectedIndexes = [];
-    }
-
-    buildExchangeCommand(rack: ICharacter[]): string {
-        console.log(rack);
-        const lettersToExchange = this.getSelectedLetters(rack);
-        return `!echanger ${lettersToExchange.join('')}`;
-    }
-
-    getSelectedLetters(rack: ICharacter[]): string[] {
-        const selectedLetters = [];
-        for (const index of this.selectedIndexes) {
-            selectedLetters.push(rack[index].name.toLocaleLowerCase());
-        }
-        console.log(selectedLetters);
-        return selectedLetters;
-    }
-
-    getClickIndex(event: MouseEvent, rack: ICharacter[]): number {
-        console.log('{ x, y} :', event.offsetX, event.offsetY);
-        const notFound = -1;
-        for (let i = 0; i < rack.length; i++) {
-            if (event.offsetX >= i * (DEFAULT_WIDTH / RACK_SIZE) && event.offsetX < (i + 1) * (DEFAULT_WIDTH / RACK_SIZE)) {
-                console.log(i);
-                return i;
-            }
-        }
-        return notFound;
+        this.exchangeSelectionService.selectedIndexes = [];
     }
 
     private validateExchangeFeasibility(lettersToChange: string[]): void {

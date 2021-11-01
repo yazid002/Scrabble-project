@@ -98,22 +98,9 @@ describe('RackService', () => {
     });
 
     describe('findLetterPosition', () => {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-        it('should return NOT_FOUND', () => {
-            const NOT_FOUND = -1;
-            const LETTER_TO_CHECK = 'Z';
-=======
->>>>>>> demo-feature-selection
         it('should return notFound', () => {
             const notFound = -1;
             const letterToCheck = 'Z';
-
-<<<<<<< HEAD
-=======
->>>>>>> feature/placer-des-lettres
->>>>>>> demo-feature-selection
             // Car findLetterPosition est privée
             // eslint-disable-next-line dot-notation
             const result = service['findLetterPosition'](letterToCheck);
@@ -340,15 +327,7 @@ describe('RackService', () => {
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
-<<<<<<< HEAD
             expect(service.gameService.players[REAL_PLAYER].rack[indexOfLetterToReplaceOnRack]).toEqual(replacementLetter);
-=======
-<<<<<<< HEAD
-            expect(service.gameService.players[REAL_PLAYER].rack[INDEX_OF_LETTER_TO_REPLACE_ON_RACK]).toEqual(REPLACEMENT_LETTER);
-=======
-            expect(service.rackLetters[indexOfLetterToReplaceOnRack]).toEqual(replacementLetter);
->>>>>>> feature/placer-des-lettres
->>>>>>> demo-feature-selection
         });
 
         it('should call findLetterPosition if the rackLetters is not null', () => {
@@ -480,8 +459,6 @@ describe('RackService', () => {
             expect(afterSize).toBeGreaterThan(beforeSize);
         });
     });
-<<<<<<< HEAD
-=======
 
     it(' fillRack should call fillRackPortion as many times as RACK_SIZE', () => {
         const aLetterInReserve = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
@@ -508,5 +485,4 @@ describe('RackService', () => {
 
         expect(reserveServiceSpy.getLettersFromReserve).toHaveBeenCalledTimes(1);
     });
->>>>>>> feature/placer-des-lettres
 });

@@ -6,6 +6,7 @@ import { Player } from '@app/classes/player';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GameService, OTHER_PLAYER, REAL_PLAYER } from './game.service';
 import { GridService } from './grid.service';
+import { PlaceSelectionService } from './place-selection.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 export interface GameState {
@@ -32,6 +33,7 @@ export class GameSyncService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private gridService: GridService,
+        private placeSelectionService: PlaceSelectionService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();
@@ -72,6 +74,12 @@ export class GameSyncService {
         this.sendGameStateSignal.next(gameState);
     }
     private getGameState(): GameState {
+        //   for (const player of this.gameService.players) {
+        //   if (player.placementParameters) {
+        this.placeSelectionService.cancelPlacement();
+        //   }
+        // }
+
         const tempGrid: Case[][] = tiles;
         for (let i = 0; i < tiles.length; i++) {
             tempGrid[i] = tiles[i];

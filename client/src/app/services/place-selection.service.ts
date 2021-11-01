@@ -4,6 +4,7 @@ import { ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
 import { SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
+import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { GridService } from './grid.service';
 import { RackService } from './rack.service';
 import { VerifyService } from './verify.service';
@@ -68,8 +69,9 @@ export class PlaceSelectionService {
         return notFound;
     }
 
-    buildPlacementCommand(rack: ICharacter[]): string {
+    buildPlacementCommand(): string {
         // // console.log(rack);
+        //  const placementParameters = player.placementParameters as PlacementParameters;
         return `!placer ${String.fromCharCode(this.selectedTilesForPlacement[0].y + 'A'.charCodeAt(0)).toLowerCase()}${
             this.selectedTilesForPlacement[0].x + 1
         }${this.direction ? 'h' : 'v'} ${this.wordToVerify.join('')}`;
@@ -81,6 +83,7 @@ export class PlaceSelectionService {
         const selectionColor = 'darkorchid';
         const regexp = new RegExp('^[a-zA-Z]$');
         const eventKey = this.verifyService.normalizeWord(event.key);
+        // const placementParameters = player.placementParameters as PlacementParameters;
         // console.log('le key normalisé ', eventKey);
         if (regexp.test(eventKey)) {
             // console.log('je suis rentrée');
@@ -103,7 +106,7 @@ export class PlaceSelectionService {
                     : { x: this.selectedCoord.x, y: this.selectedCoord.y + 1 };
                 //  this.gridService.drawGridPortionBorder(selectionColor, nextCoord, 2);
                 // // console.log('nextCoord :', nextCoord);
-                if (tiles[nextCoord.x][nextCoord.y].text === '' || tiles[nextCoord.x][nextCoord.y].text.length === 2) {
+                if (tiles[nextCoord.y][nextCoord.x].text === '' || tiles[nextCoord.y][nextCoord.x].text.length === 2) {
                     this.onBoardClick(
                         {
                             button: 0,
@@ -116,19 +119,19 @@ export class PlaceSelectionService {
             }
         } else
             switch (event.key) {
-                case 'Backspace': {
+                case KeyboardKeys.Backspace: {
                     this.cancelUniqueSelectionFromRack();
                     this.cancelUniqueBoardClick();
 
                     break;
                 }
-                case 'Enter': {
-                    this.command = this.buildPlacementCommand(rack);
+                case KeyboardKeys.Enter: {
+                    this.command = this.buildPlacementCommand();
                     // console.log('la commande ', this.command);
 
                     break;
                 }
-                case 'Escape': {
+                case KeyboardKeys.Escape: {
                     this.cancelPlacement();
 
                     break;
@@ -139,6 +142,7 @@ export class PlaceSelectionService {
 
     cancelUniqueSelectionFromRack() {
         // console.log(this.selectedRackIndexesForPlacement);
+        //  const placementParameters = player.placementParameters as PlacementParameters;
         const toRemove = this.selectedRackIndexesForPlacement.pop();
         this.wordToVerify.pop();
         // console.log(toRemove);
@@ -156,6 +160,7 @@ export class PlaceSelectionService {
         //     this.gridService.removeArrow(this.selectedCoord);
         // }
         // console.log(this.selectedCoord);
+        // const this = player.placementParameters as PlacementParameters;
         while (this.selectedCoord.x !== -1) {
             this.cancelUniqueSelectionFromRack();
             this.cancelUniqueBoardClick();
@@ -165,24 +170,31 @@ export class PlaceSelectionService {
     onBoardClick(event: MouseEvent, shouldChangeDirection: boolean) {
         const notFound = { x: -1, y: -1 };
         const coord = this.getClickCoords(event);
+        //    const placementParameters = player.placementParameters as PlacementParameters;
         if (tiles[7][7].text.length === 2 && (coord.x !== 7 || coord.y !== 7)) {
+            console.log("c'est ici 0 ", this.direction);
             return;
         }
-        if (!(tiles[coord.x][coord.y].text === '' || tiles[coord.x][coord.y].text.length === 2)) {
+        if (!(tiles[coord.y][coord.x].text === '' || tiles[coord.y][coord.x].text.length === 2)) {
+            console.log("c'est ici 1 ", this.direction);
             return;
         }
 
         if (!(this.selectedRackIndexesForPlacement.length === 0 || !shouldChangeDirection === true)) {
+            console.log("c'est ici 2 ", this.direction);
             return;
         }
         if (!(coord.x !== notFound.x && coord.y !== notFound.y)) {
+            console.log("c'est ici 3 ", this.direction);
             return;
         }
 
         if (this.selectedCoord.x === notFound.x && this.selectedCoord.y === notFound.y) {
             // on clique pour la premiere fois
+            console.log("c'est ici 4 ", this.direction);
             this.selectedCoord = coord;
         } else if (coord.x !== this.selectedCoord.x || coord.y !== this.selectedCoord.y) {
+            console.log("c'est ici 5 ", this.direction);
             // on clique sur une autre case apres avoir déja cliqué une premiere fois
             if (shouldChangeDirection) {
                 this.direction = true;
@@ -193,42 +205,18 @@ export class PlaceSelectionService {
 
             this.selectedCoord = coord;
         } else {
+            console.log("c'est ici 6 ", this.direction);
             // on clique sur le même, on change de direction
             this.direction = !this.direction;
             this.gridService.removeArrow(this.selectedCoord);
         }
         this.gridService.drawArrow(this.direction, this.selectedCoord);
-
-        /*  if (coord.x !== notFound.x && coord.y !== notFound.y) {
-            if (coord.x === this.selectedCoord.x && coord.y === this.selectedCoord.y) {
-                // on clique sur le même, on change de direction
-                this.gridService.removeArrow(this.selectedCoord);
-                if (!shouldChangeDirection) {
-                    this.direction = !this.direction;
-                }
-            } else if (this.selectedCoord.x === notFound.x && this.selectedCoord.y === notFound.y) {
-                // on clique pour la premiere fois
-                this.selectedCoord = coord;
-            } else {
-                //
-                // on clique sur une autre case apres avoir déja cliqué une premiere fois
-                if (shouldChangeDirection) {
-                    this.direction = true;
-                }
-                this.gridService.removeArrow(this.selectedCoord);
-                this.selectedCoord = coord;
-
-                // if (this.selectedRackIndexesForPlacement.length === 0) {
-
-                //  }
-                //  }
-            }
-            this.gridService.drawArrow(this.direction, this.selectedCoord);
-        }*/
     }
 
     cancelUniqueBoardClick() {
         // console.log(this.selectedTilesForPlacement);
+        //   const placementParameters = player.placementParameters as PlacementParameters;
+        console.log("c'est ici cancel");
         const coord = this.selectedTilesForPlacement.pop();
         if (this.selectedTilesForPlacement.length === 0 && this.selectedCoord.x !== -1) {
             this.gridService.removeArrow(this.selectedCoord);
@@ -250,9 +238,9 @@ export class PlaceSelectionService {
                 tiles[coord.y][coord.x].style.font as string,
             );
             if (this.direction) {
-                this.selectedCoord.y -= 1;
-            } else {
                 this.selectedCoord.x -= 1;
+            } else {
+                this.selectedCoord.y -= 1;
             }
             this.gridService.drawArrow(this.direction, this.selectedCoord);
         }

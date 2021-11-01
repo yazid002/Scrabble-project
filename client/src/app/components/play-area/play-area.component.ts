@@ -35,6 +35,16 @@ export class PlayAreaComponent implements AfterViewInit {
         }
     }
 
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent) {
+        if (event.target === this.rackCanvas.nativeElement) {
+            this.selectionManager.getSelectionType(SelectionType.Rack);
+            console.log('play ', this.selectionManager.selectionType);
+        } else {
+            this.selectionManager.getSelectionType(SelectionType.None);
+        }
+    }
+
     // (click)="this.selectionManager.getSelectionType(selectionType.Rack)"
     //      (click)="this.selectionManager.getSelectionType(selectionType.Grid)"
     ngAfterViewInit(): void {

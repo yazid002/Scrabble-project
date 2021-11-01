@@ -38,10 +38,10 @@ export class GridService {
         tiles[coord.y][coord.x].oldStyle.color = tiles[coord.y][coord.x].style.color;
         tiles[coord.y][coord.x].oldStyle.font = tiles[coord.y][coord.x].style.font;
 
-        console.log('letterStyle1 :', this.letterStyle);
+        // console.log('letterStyle1 :', this.letterStyle);
         tiles[coord.y][coord.x].style.font = this.letterStyle.font;
         tiles[coord.y][coord.x].style.color = this.letterStyle.color;
-        console.log('letterStyle2 :', tiles[coord.y][coord.x].style);
+        // console.log('letterStyle2 :', tiles[coord.y][coord.x].style);
 
         tiles[coord.y][coord.x].oldText = tiles[coord.y][coord.x].text;
         tiles[coord.y][coord.x].text = letter;
@@ -51,22 +51,8 @@ export class GridService {
             tiles[coord.y][coord.x].style.color as string,
             tiles[coord.y][coord.x].style.font as string,
         );
-        // } else {
-        //     this.fillGridPortion({ x: coord.x, y: coord.y }, letter, this.letterStyle);
-        // }
 
-        // this.squareColor = 'black';
-        // this.squareLineWidth = 1;
-        // this.squareLineWidth = 1;
-        // this.squareColor = 'red';
-
-        this.fillGridPortion(
-            { x: coord.x, y: coord.y },
-            tiles[coord.x][coord.y].text,
-            tiles[coord.x][coord.y].style.color as string,
-            tiles[coord.x][coord.y].style.font as string,
-        );
-        console.log('testvalid', tiles);
+        // // console.log('testvalid', tiles);
     }
 
     drawArrow(direction: boolean, coord: Vec2) {
@@ -102,7 +88,7 @@ export class GridService {
             tiles[coord.y][coord.x].style.font as string,
         );
 
-        // console.log(coord);
+        // // // console.log(coord);
     }
 
     drawGridOutdoor() {
@@ -161,7 +147,7 @@ export class GridService {
     }
 
     fillGridPortion(coord: Vec2, letter: string, color: string, font: string) {
-        console.log('le style de la case : ', letter, color);
+        // // console.log('le style de la case : ', letter, color);
 
         const lettersPixelsWidthAdjustment = 2;
         const lettersPixelsHeighAdjustment = 22;
@@ -267,7 +253,7 @@ export class GridService {
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
 
-                //  console.log(tiles);
+                //  // console.log(tiles);
             }
         }
     }

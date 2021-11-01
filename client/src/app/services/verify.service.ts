@@ -67,6 +67,7 @@ export class VerifyService {
         let i = 0;
 
         while (i < word.length && coord.y + i < SQUARE_NUMBER) {
+            console.log('wordFound coord horizontal ', { x: coord.x, y: coord.y + i });
             wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
             console.log('wordFound horizontal ', wordFound);
 
@@ -146,13 +147,19 @@ export class VerifyService {
             return wordFound;
         }
 
+        console.log(tiles);
+
         while (up > 0 && tiles[up - 1][coord.x].text !== '' && !this.bonuses.includes(tiles[up - 1][coord.x].text)) {
+            console.log('up ', up);
             up--;
         }
         while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.x].text !== '' && !this.bonuses.includes(tiles[down + 1][coord.x].text)) {
+            console.log('down ', down);
             down++;
         }
 
+        console.log('uppp ', up);
+        console.log('downnnn ', down);
         for (let i = up; i <= down; i++) {
             wordFound += tiles[i][coord.x].text;
         }
@@ -171,13 +178,18 @@ export class VerifyService {
         if (this.bonuses.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
-
+        console.log(tiles);
         while (left > 0 && tiles[coord.y][left - 1].text !== '' && !this.bonuses.includes(tiles[coord.y][left - 1].text)) {
+            console.log('left ', left);
             left--;
         }
         while (right < SQUARE_NUMBER - 1 && tiles[coord.y][right + 1].text !== '' && !this.bonuses.includes(tiles[coord.y][right + 1].text)) {
+            console.log('right ', right);
             right++;
         }
+
+        console.log('lefttt ', left);
+        console.log('righttt ', right);
         for (let i = left; i <= right; i++) {
             wordFound += tiles[coord.y][i].text;
         }
@@ -192,6 +204,7 @@ export class VerifyService {
             const computedCoord = this.computeCoordByDirection(direction, coord, i);
             const x = computedCoord.x;
             const y = computedCoord.y;
+            console.log('has adjacentt ', computedCoord);
             if (
                 !this.isCaseEmpty(tiles[coord.y][coord.x].letter) ||
                 this.findAdjacentUp({ y, x }) ||
@@ -206,29 +219,33 @@ export class VerifyService {
     }
 
     private findAdjacentUp(coord: Vec2): boolean {
-        if (coord.x > 0) {
-            return tiles[coord.x - 1][coord.y].letter !== '';
+        console.log(' coord ', coord, 'adjacent up ', tiles[coord.y - 1][coord.x].letter);
+        if (coord.y > 0) {
+            return tiles[coord.y - 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentDown(coord: Vec2) {
-        if (coord.x < SQUARE_NUMBER - 1) {
-            return tiles[coord.x + 1][coord.y].letter !== '';
+        console.log(' coord ', coord, 'adjacent down ', tiles[coord.y + 1][coord.x].letter);
+        if (coord.y < SQUARE_NUMBER - 1) {
+            return tiles[coord.y + 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentRight(coord: Vec2) {
-        if (coord.y < SQUARE_NUMBER - 1) {
-            return tiles[coord.x][coord.y + 1].letter !== '';
+        console.log(' coord ', coord, 'adjacent right ', tiles[coord.y][coord.x + 1].letter);
+        if (coord.x < SQUARE_NUMBER - 1) {
+            return tiles[coord.y][coord.x + 1].letter !== '';
         }
         return false;
     }
 
     private findAdjacentLeft(coord: Vec2) {
-        if (coord.y > 0) {
-            return tiles[coord.x][coord.y - 1].letter !== '';
+        console.log(' coord ', coord, 'adjacent left ', tiles[coord.y][coord.x - 1].letter);
+        if (coord.x > 0) {
+            return tiles[coord.y][coord.x - 1].letter !== '';
         }
         return false;
     }
