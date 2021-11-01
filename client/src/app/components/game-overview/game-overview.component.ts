@@ -28,27 +28,28 @@ export class GameOverviewComponent implements OnInit {
         public gameService: GameService,
     ) {}
     ngOnInit(): void {
-        const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
-        );
-        const numPlayers = this.userSettingsService.settings.numPlayers.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.numPlayers.currentChoiceKey,
-        );
-        const computerLevel = this.userSettingsService.settings.computerLevel.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.computerLevel.currentChoiceKey,
-        );
 
-        const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
-        );
 
-        this.assignValues(mode, numPlayers, computerLevel, timer);
 
         this.updateData();
     }
     private updateData(): void {
         const reserveRefreshRate = 1000;
         setInterval(() => {
+            const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
+                (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
+            );
+            const numPlayers = this.userSettingsService.settings.numPlayers.setting.availableChoices.find(
+                (key) => key.key === this.userSettingsService.settings.numPlayers.currentChoiceKey,
+            );
+            const computerLevel = this.userSettingsService.settings.computerLevel.setting.availableChoices.find(
+                (key) => key.key === this.userSettingsService.settings.computerLevel.currentChoiceKey,
+            );
+
+            const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
+                (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
+            );
+            this.assignValues(mode, numPlayers, computerLevel, timer);
             this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();
         }, reserveRefreshRate);
     }
@@ -56,7 +57,7 @@ export class GameOverviewComponent implements OnInit {
         if (mode && numPlayers && computerLevel && timer) {
             this.mode = mode.value;
             this.numPlayers = numPlayers.value;
-            this.computerLevel = this.numPlayers === 'solo' ? computerLevel.value : '';
+            this.computerLevel = computerLevel.value;
             this.timer = timer.value;
         }
     }

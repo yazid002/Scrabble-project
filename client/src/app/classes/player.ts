@@ -5,6 +5,7 @@ export interface Player {
     id: number;
     rack: ICharacter[];
     points: number;
+    won?: string;
 }
 export const PLAYER = {
     realPlayer: 0,
