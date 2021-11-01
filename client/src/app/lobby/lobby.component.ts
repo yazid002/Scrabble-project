@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { IOption } from '@app/classes/game-options';
 import { RoomService } from '@app/services/room.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { QuitMultiplayerDialogComponent } from './../components/quit-multiplayer-dialog/quit-multiplayer-dialog.component';
@@ -26,17 +25,18 @@ export class LobbyComponent implements OnInit {
         const name = this.userSettingsService.nameOption.userChoice;
         // if (!localStorage.getItem('test')) localStorage.setItem('test', name);
 
-        const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
-        );
-        // if (!localStorage.getItem('localMode')) localStorage.setItem('localMode', JSON.stringify(mode?.value));
-        const numPlayers = this.userSettingsService.settings.numPlayers.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.numPlayers.currentChoiceKey,
-        );
-        const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
-        );
-        this.assignValues(name, mode, numPlayers, timer);
+        // const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
+        //     (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
+        // );
+
+        // const numPlayers = this.userSettingsService.settings.numPlayers.setting.availableChoices.find(
+        //     (key) => key.key === this.userSettingsService.settings.numPlayers.currentChoiceKey,
+        // );
+        // const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
+        //     (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
+        // );
+        // this.assignValues(name, mode, numPlayers, timer);
+        this.assignValues(name);
     }
 
     goInRoom(id?: string) {
@@ -58,13 +58,13 @@ export class LobbyComponent implements OnInit {
         this.matDialog.open(QuitMultiplayerDialogComponent);
     }
 
-    private assignValues(name: string, mode: IOption | undefined, numPlayers: IOption | undefined, timer: IOption | undefined) {
-        if (name && mode && numPlayers && timer) {
-            // this.name = localStorage.getItem('test') as string;
+    private assignValues(name: string) {
+        if (name) {
             this.name = name;
-            this.mode = mode.value;
-            this.numPlayers = numPlayers.value;
-            this.timer = timer.value;
+            // this.name = localStorage.getItem('test') as string;
+            // this.mode = mode.value;
+            // this.numPlayers = numPlayers.value;
+            // this.timer = timer.value;
         }
     }
 }
