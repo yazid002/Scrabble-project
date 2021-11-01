@@ -25,8 +25,6 @@ export class PlaceService {
     placeWordInstant(word: string, coord: Vec2, direction: string): boolean {
         word = this.verifyService.normalizeWord(word);
 
-        this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
-
         const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
         if (wordValidationParameters.wordExists) {
             this.writeWord(word, coord, direction);
@@ -46,7 +44,6 @@ export class PlaceService {
     }
     async placeWord(word: string, coord: Vec2, direction: string): Promise<void> {
         word = this.verifyService.normalizeWord(word);
-
         const promise = new Promise<void>((resolve, reject) => {
             this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
             this.writeWord(word, coord, direction);

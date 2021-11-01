@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { IOption } from '@app/classes/game-options';
-import { COMPUTER as COMPUTER_INDEX, GameService, REAL_PLAYER as REAL_PLAYER_INDEX } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service';
 import { PlaceService } from '@app/services/place.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
+import { PLAYER } from '@app/classes/player';
 import { UserSettingsService } from '@app/services/user-settings.service';
 
 @Component({
@@ -16,8 +17,7 @@ export class GameOverviewComponent implements OnInit {
     numPlayers: string;
     computerLevel: string;
     timer: string;
-    computerIndex = COMPUTER_INDEX;
-    realPlayerIndex = REAL_PLAYER_INDEX;
+    playerIndex = PLAYER;
     nbLettersReserve: number = 0;
     otherPlayerName: string = '';
     constructor(

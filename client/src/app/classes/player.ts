@@ -7,3 +7,7 @@ export interface Player {
     points: number;
     won?: string;
 }
+export const PLAYER = {
+    realPlayer: 0,
+    otherPlayer: 1,
+};

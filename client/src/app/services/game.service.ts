@@ -1,16 +1,12 @@
 import { Injectable, Output } from '@angular/core';
-import { IChat, SENDER } from '@app/classes/chat';
-import { Player } from '@app/classes/player';
+import { Player, PLAYER } from '@app/classes/player';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
-
-export const REAL_PLAYER = 0;
-export const COMPUTER = 1;
-export const OTHER_PLAYER = 1;
+import { SENDER, IChat } from '@app/classes/chat';
 
 const MAX_SKIPS = 6;
 @Injectable({
@@ -42,7 +38,7 @@ export class GameService {
     }
     convertGameToSolo() {
         this.numPlayers = 'solo';
-        if (this.currentTurn === OTHER_PLAYER) {
+        if (this.currentTurn === PLAYER.otherPlayer) {
             this.otherPlayerSignal.next(this.numPlayers);
         }
     }
@@ -110,7 +106,7 @@ export class GameService {
             this.endGame();
         } else {
             this.currentTurn = (this.currentTurn + 1) % 2;
-            if (this.currentTurn === OTHER_PLAYER) {
+            if (this.currentTurn === PLAYER.otherPlayer) {
                 this.nextPlayer();
             }
         }
@@ -121,7 +117,7 @@ export class GameService {
     }
     private initPlayers() {
         const realPlayer: Player = {
-            id: REAL_PLAYER,
+            id: PLAYER.realPlayer,
             name: this.userSettingsService.nameOption.userChoice,
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
@@ -130,7 +126,7 @@ export class GameService {
 
         // make computer just two have two players
         const computer: Player = {
-            id: COMPUTER,
+            id: PLAYER.otherPlayer,
             name: this.userSettingsService.getComputerName(),
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
@@ -140,5 +136,8 @@ export class GameService {
 
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
+        if (this.currentTurn === PLAYER.otherPlayer) {
+            this.nextPlayer();
+        }
     }
 }

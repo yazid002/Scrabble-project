@@ -2,9 +2,10 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
-import { GameService, REAL_PLAYER } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service';
 import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
+import { PLAYER } from '@app/classes/player';
 
 describe('RackService', () => {
     let service: RackService;
@@ -18,10 +19,10 @@ describe('RackService', () => {
     beforeEach(() => {
         reserveServiceSpy = jasmine.createSpyObj('ReserveService', ['getQuantityOfAvailableLetters', 'getLettersFromReserve', 'addLetterInReserve']);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers']);
-        gameServiceSpy.currentTurn = REAL_PLAYER;
+        gameServiceSpy.currentTurn = PLAYER.realPlayer;
         gameServiceSpy.players = [
             {
-                id: REAL_PLAYER,
+                id: PLAYER.realPlayer,
                 name: 'Random name',
                 rack: [
                     { name: 'A', quantity: 9, points: 1, affiche: 'A' },
@@ -142,7 +143,7 @@ describe('RackService', () => {
 
     describe('findJokersNumberOnRack', () => {
         it('should return the number of jokers on Rack', () => {
-            service.gameService.players[REAL_PLAYER].rack = [
+            service.gameService.players[PLAYER.realPlayer].rack = [
                 { name: 'A', quantity: 9, points: 1, affiche: 'A' },
                 { name: '*', quantity: 0, points: 0, affiche: '*' },
                 { name: '*', quantity: 0, points: 0, affiche: '*' },
@@ -157,7 +158,7 @@ describe('RackService', () => {
         });
 
         it('should return 0 if there is no joker on Rack', () => {
-            service.gameService.players[REAL_PLAYER].rack = [
+            service.gameService.players[PLAYER.realPlayer].rack = [
                 { name: 'A', quantity: 9, points: 1, affiche: 'A' },
                 { name: 'D', quantity: 3, points: 2, affiche: 'D' },
                 { name: 'E', quantity: 15, points: 1, affiche: 'E' },
@@ -242,7 +243,7 @@ describe('RackService', () => {
 
         it('should also replace *', () => {
             const wordToReplace = '*';
-            service.gameService.players[REAL_PLAYER].rack = [
+            service.gameService.players[PLAYER.realPlayer].rack = [
                 { name: 'A', quantity: 9, points: 1, affiche: 'A' },
                 { name: '*', quantity: 0, points: 0, affiche: '*' },
                 { name: '*', quantity: 0, points: 0, affiche: '*' },
@@ -253,12 +254,12 @@ describe('RackService', () => {
             // Car replaceLetter est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'replaceLetter').and.callFake(() => {
-                service.gameService.players[REAL_PLAYER].rack[1] = { name: 'D', quantity: 3, points: 2, affiche: 'D' };
+                service.gameService.players[PLAYER.realPlayer].rack[1] = { name: 'D', quantity: 3, points: 2, affiche: 'D' };
             });
 
             service.replaceWord(wordToReplace);
 
-            expect(service.gameService.players[REAL_PLAYER].rack[1].name).not.toEqual(wordToReplace);
+            expect(service.gameService.players[PLAYER.realPlayer].rack[1].name).not.toEqual(wordToReplace);
         });
     });
 
@@ -325,7 +326,7 @@ describe('RackService', () => {
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](LETTER_TO_REPLACE, true);
 
-            expect(service.gameService.players[REAL_PLAYER].rack[INDEX_OF_LETTER_TO_REPLACE_ON_RACK]).toEqual(REPLACEMENT_LETTER);
+            expect(service.gameService.players[PLAYER.realPlayer].rack[INDEX_OF_LETTER_TO_REPLACE_ON_RACK]).toEqual(REPLACEMENT_LETTER);
         });
 
         it('should call findLetterPosition if the rackLetters is not null', () => {

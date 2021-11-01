@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { GameService, OTHER_PLAYER, REAL_PLAYER } from './game.service';
+import { GameService } from './game.service';
+import { PLAYER } from '@app/classes/player';
 
-fdescribe('GameService', () => {
+describe('GameService', () => {
     let service: GameService;
 
     beforeEach(() => {
@@ -14,13 +15,13 @@ fdescribe('GameService', () => {
     });
     it("should emit tell virtualPlayerService it is his turn to play if it's the other player's turn\
     and we're converting the game from multiplayer to solo", () => {
-        service.currentTurn = REAL_PLAYER;
+        service.currentTurn = PLAYER.realPlayer;
         const spy = spyOn(service.otherPlayerSignal, 'next');
         service.numPlayers = 'multiplayer';
         service.convertGameToSolo();
         expect(spy).not.toHaveBeenCalled();
 
-        service.currentTurn = OTHER_PLAYER;
+        service.currentTurn = PLAYER.otherPlayer;
         service.convertGameToSolo();
         expect(spy).toHaveBeenCalled();
     });
