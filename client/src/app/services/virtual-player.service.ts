@@ -47,7 +47,7 @@ export class VirtualPlayerService {
         setTimeout(() => {
             const oneOfTenProbability = 100; // TODO should be 10, but peut to 100 to easely test place
             const randomNumber = Math.floor(oneOfTenProbability * Math.random());
-            if (randomNumber === 0) {
+            if (randomNumber < 99) {
                 skipped = true;
             } else if (randomNumber === 1) {
                 this.exchange();
