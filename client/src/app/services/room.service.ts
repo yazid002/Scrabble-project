@@ -42,6 +42,7 @@ export class RoomService {
         });
         this.gameStateSubscription = this.gameSyncService.sendGameStateSignal.subscribe((gameState: GameState) => {
             this.socket.emit('syncGameData', this.roomId, this.socket.id, gameState);
+            console.log(this.roomId);
         });
         this.abandonSubscription = this.gameSyncService.sendAbandonSignal.subscribe(() => {
             this.socket.emit('abandon', this.roomId, this.socket.id);
@@ -50,6 +51,7 @@ export class RoomService {
     }
     configureBaseSocketFeatures() {
         // Afficher l'identifiant du Socket dans l'interface
+        this.socket.emit('allo');
         this.socket.on('connect', () => {
             // document.getElementById('socketIdField').textContent = this.socket.id;
         });
@@ -78,6 +80,9 @@ export class RoomService {
             if (!this.gameSyncService.isMasterClient) return;
             this.gameSyncService.sendToServer();
         });
+        this.socket.on('setRoomId', (roomId: string) => {
+            this.roomId = roomId;
+        })
         this.socket.on('rooms', (rooms: Room[]) => {
             this.rooms = rooms;
         });
@@ -94,14 +99,17 @@ export class RoomService {
     createRoom() {
         const settings = this.userSettingsService.getSettings();
         this.socket.emit('createRoom', settings);
-        this.roomId = this.socket.id;
+
+        // this.roomId = this.socket.id;
+
         this.gameSyncService.isMasterClient = true;
         console.log(this.roomId);
         return this.roomId;
     }
 
+
     quitRoom(roomId: string) {
-        this.socket.emit('leaveRoom', roomId);
-        this.roomId = '';
+        // this.socket.emit('leaveRoom', roomId);
+        // this.roomId = '';
     }
 }

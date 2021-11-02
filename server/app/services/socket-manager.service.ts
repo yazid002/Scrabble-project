@@ -57,6 +57,7 @@ export class SocketManager {
                 this.rooms.push(room);
                 this.rooms = [...new Set(this.rooms)];
                 this.sio.emit('rooms', this.rooms);
+                socket.emit('setRoomId', socket.id);
             });
 
             socket.on('abandon', (roomId: string, userId: string) => {
