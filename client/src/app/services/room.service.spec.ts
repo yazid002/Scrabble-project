@@ -108,7 +108,7 @@ describe('RoomService', () => {
         expect(spy).not.toHaveBeenCalled();
     });
 
-    it('should call solo game mode on receive abandon message', () => {
+    it('should end the game on receive abandon message', () => {
         // eslint-disable-next-line dot-notation
         clientSocket.on = (eventName: string, roomMessageCallback: (id: string) => void) => {
             if (eventName === 'abandon') {
@@ -118,7 +118,7 @@ describe('RoomService', () => {
             return undefined as any;
         };
         // eslint-disable-next-line dot-notation
-        const spy = spyOn(service['gameService'], 'convertGameToSolo');
+        const spy = spyOn(service['gameService'], 'endGame');
         service.configureRoomCommunication();
         expect(spy).toHaveBeenCalled();
     });
