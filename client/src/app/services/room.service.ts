@@ -94,4 +94,8 @@ export class RoomService {
         this.gameSyncService.isMasterClient = true;
         return this.roomId;
     }
+
+    // quitRoom(roomId: string) {
+    //     this.socket.emit('leaveRoom', roomId);
+    // }
 }

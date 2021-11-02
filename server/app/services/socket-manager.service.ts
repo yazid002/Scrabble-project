@@ -43,6 +43,10 @@ export class SocketManager {
                 this.sio.to(roomId).emit('askMasterSync');
             });
 
+            // socket.on('leaveRoom', (roomId: string) => {
+            //     socket.leave(roomId);
+            // });
+
             socket.on('createRoom', (settings: { mode: string; timer: string }) => {
                 const room: Room = {
                     id: socket.id,
