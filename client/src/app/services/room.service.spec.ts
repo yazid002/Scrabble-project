@@ -1,11 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-// import { GameService } from './game.service';
 import { Socket } from 'socket.io-client';
 import { GameState } from './game-sync.service';
 import { Room, RoomService } from './room.service';
-// import { UserSettingsService } from './user-settings.service';
-// import * as chai from 'chai';
-// import * as io from 'socket.io-client';
 
 describe('RoomService', () => {
     let service: RoomService;
