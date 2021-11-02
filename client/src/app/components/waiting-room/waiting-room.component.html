@@ -25,6 +25,6 @@
     <button mat-raised-button color="primary" mat-dialog-close (click)="openSwitchToSoloDialog()" id="solo_button">Switch to Solo</button>
 
     <!-- <button mat-raised-button color="primary" routerLink="Waiting" id="waiting_room">Créer Votre Room</button> -->
-    <button mat-raised-button color="primary" [routerLink]="['/lobby']" id="join">Joindre un Room</button>
+    <button mat-raised-button color="primary" [routerLink]="['/lobby']" id="join" (click)="roomService.quitRoom()">Joindre un Room</button>
     <button mat-raised-button color="primary" (click)="openQuitMultiplayerDialog()" id="quitter">Quitter</button>
 </div>

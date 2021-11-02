@@ -32,19 +32,12 @@ export class SocketManager {
                 if (aRoomIndex !== -1) {
                     this.rooms.splice(aRoomIndex, 1);
                 }
-
                 socket.join(roomId);
                 this.sio.to(roomId).emit('askMasterSync');
             });
 
-            socket.on('leaveRoom', (roomId?: string) => {
-                if (roomId) {
-                    const roomIndex = this.rooms.findIndex((room) => room.id === roomId);
-                    if (roomIndex === -1) return;
-                    this.rooms.splice(roomIndex, 1);
-                } else {
-                    this.leaveRoom(socket.id);
-                }
+            socket.on('leaveRoom', () => {
+                this.leaveRoom(socket.id);
             });
 
             socket.on('createRoom', (settings: { mode: string; timer: string }, userName: string) => {
@@ -101,14 +94,6 @@ export class SocketManager {
         console.log(this.rooms);
         const roomIndex = this.rooms.findIndex((room) => room.clientId.includes(socketId));
         if (roomIndex === -1) return;
-        const clienIndex = this.rooms[roomIndex].clientId.findIndex((clientId) => clientId === socketId);
-        if (clienIndex === -1) return;
-        console.log('Leaveing room');
-        console.log(this.rooms[roomIndex]);
-        this.rooms[roomIndex].clientId.splice(clienIndex, 1);
-        console.log(this.rooms[roomIndex]);
-        if (this.rooms[roomIndex].clientId.length === 0) {
-            this.rooms.splice(roomIndex, 1);
-        }
+        this.rooms.splice(roomIndex, 1);
     }
 }

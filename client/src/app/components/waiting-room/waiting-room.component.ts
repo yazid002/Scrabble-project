@@ -19,7 +19,7 @@ export class WaitingRoomComponent implements OnInit {
     personIsActive: boolean = false;
     roomName: string = '';
     isMaster: boolean = false;
-    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, private roomService: RoomService) {}
+    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public roomService: RoomService) {}
     ngOnInit(): void {
         const name = this.userSettingsService.nameOption.userChoice;
         if (!localStorage.getItem('test')) localStorage.setItem('test', name);

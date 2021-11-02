@@ -91,7 +91,7 @@ export class RoomService {
 
     joinRoom(roomId: string) {
         if (this.roomId || this.roomId === '') {
-            this.quitRoom(this.roomId);
+            this.quitRoom();
         }
         this.socket.emit('joinRoom', roomId);
         this.roomId = roomId;
@@ -110,8 +110,8 @@ export class RoomService {
     }
 
 
-    quitRoom(roomId: string) {
-        this.socket.emit('leaveRoom', roomId);
+    quitRoom() {
+        this.socket.emit('leaveRoom');
         this.roomId = '';
     }
 }
