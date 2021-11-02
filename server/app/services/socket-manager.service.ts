@@ -4,7 +4,7 @@ import * as io from 'socket.io';
 
 export interface Room {
     id: string;
-    numPlayers: number;
+    clientId: string[];
     settings: { mode: string; timer: string };
 }
 
@@ -27,41 +27,36 @@ export class SocketManager {
                  *
                  * @param roomId: provide a roomId to join a specific room
                  */
-                const aRoom = this.rooms.find((room) => room.id === roomId);
-                if (aRoom) {
-                    aRoom.numPlayers++;
+                const aRoomIndex = this.rooms.findIndex((room) => room.id === roomId);
+                if (aRoomIndex !== -1) {
+                    this.rooms.splice(aRoomIndex, 1);
                 }
+
                 socket.join(roomId);
                 this.sio.to(roomId).emit('askMasterSync');
             });
 
-            socket.on('leaveRoom', (roomId: string) => {
-                socket.leave(roomId);
-                const aRoom = this.rooms.find((room) => room.id === roomId);
-                if (aRoom) {
-                    aRoom.numPlayers--;
-                    if (aRoom.numPlayers === 0) {
-                        const roomIndex = this.rooms.indexOf(aRoom);
-                        this.rooms.splice(roomIndex, 1);
-                    }
-                }
+            socket.on('leaveRoom', () => {
+                this.leaveRoom(socket.id);
             });
 
             socket.on('createRoom', (settings: { mode: string; timer: string }) => {
                 const room: Room = {
-                    numPlayers: 1,
+                    clientId: [socket.id],
                     id: socket.id,
                     settings,
                 };
                 socket.join(room.id);
                 this.rooms.push(room);
-                this.rooms = [...new Set(this.rooms)];
+                console.log(this.rooms);
+                // this.rooms = [...new Set(this.rooms)];
                 this.sio.emit('rooms', this.rooms);
                 socket.emit('setRoomId', socket.id);
             });
 
             socket.on('abandon', (roomId: string, userId: string) => {
                 this.sio.to(roomId).emit('abandon', userId);
+                this.leaveRoom(socket.id);
             });
 
             socket.on('roomMessage', (roomId: string, userId: string, message: string) => {
@@ -76,6 +71,7 @@ export class SocketManager {
             socket.on('disconnect', (reason: string) => {
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
+                this.leaveRoom(socket.id);
                 // const aRoom = this.rooms.find((room) => room.id === roomId);
                 // aRoom?.numPlayers--;
                 // if (aRoom?.numPlayers === 0) {
@@ -92,5 +88,19 @@ export class SocketManager {
 
     private emitTime() {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
+    }
+    private leaveRoom(socketId: string) {
+        console.log(this.rooms);
+        const roomIndex = this.rooms.findIndex((room) => room.clientId.includes(socketId));
+        if (roomIndex === -1) return;
+        const clienIndex = this.rooms[roomIndex].clientId.findIndex((clientId) => clientId === socketId);
+        if (clienIndex === -1) return;
+        console.log('Leaveing room');
+        console.log(this.rooms[roomIndex]);
+        this.rooms[roomIndex].clientId.splice(clienIndex, 1);
+        console.log(this.rooms[roomIndex]);
+        if (this.rooms[roomIndex].clientId.length === 0) {
+            this.rooms.splice(roomIndex, 1);
+        }
     }
 }
