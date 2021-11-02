@@ -16,9 +16,9 @@
             <mat-divider></mat-divider>
             <mat-list class="content">
                 <mat-list-item *ngFor="let room of roomService.rooms" class="room">
-                    <h3 matLine>Game : {{ room.id }}</h3>
+                    <h3 matLine>Nom de l'adversaire : {{ room.name }}</h3>
                     <p matLine>Mode : {{ room.settings.mode }}</p>
-                    <p matLine>Timer : {{ room.settings.timer }}</p>
+                    <p matLine>Temps : {{ room.settings.timer }}</p>
                     <button mat-raised-button color="basic" (click)="goInRoom(room.id)" routerLink="game" id="join_button">Join</button>
                     <mat-divider></mat-divider>
                 </mat-list-item>
