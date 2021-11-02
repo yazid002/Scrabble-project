@@ -4,6 +4,7 @@ import * as io from 'socket.io';
 
 interface Room {
     id: string;
+    numPlayers: number;
     settings: { mode: string; timer: string };
 }
 
@@ -38,17 +39,29 @@ export class SocketManager {
                  *
                  * @param roomId: provide a roomId to join a specific room
                  */
-
+                const aRoom = this.rooms.find((room) => room.id === roomId);
+                if (aRoom) {
+                    aRoom.numPlayers++;
+                }
                 socket.join(roomId);
                 this.sio.to(roomId).emit('askMasterSync');
             });
 
-            // socket.on('leaveRoom', (roomId: string) => {
-            //     socket.leave(roomId);
-            // });
+            socket.on('leaveRoom', (roomId: string) => {
+                socket.leave(roomId);
+                const aRoom = this.rooms.find((room) => room.id === roomId);
+                if (aRoom) {
+                    aRoom.numPlayers--;
+                    if (aRoom.numPlayers === 0) {
+                        const roomIndex = this.rooms.indexOf(aRoom);
+                        this.rooms.splice(roomIndex, 1);
+                    }
+                }
+            });
 
             socket.on('createRoom', (settings: { mode: string; timer: string }) => {
                 const room: Room = {
+                    numPlayers: 1,
                     id: socket.id,
                     settings,
                 };
@@ -76,6 +89,12 @@ export class SocketManager {
             socket.on('disconnect', (reason: string) => {
                 console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
                 console.log(`Raison de deconnexion : ${reason}`);
+                // const aRoom = this.rooms.find((room) => room.id === roomId);
+                // aRoom?.numPlayers--;
+                // if (aRoom?.numPlayers === 0) {
+                //     const roomIndex = this.rooms.indexOf(aRoom);
+                //     this.rooms.splice(roomIndex, 1);
+                // }
             });
         });
 

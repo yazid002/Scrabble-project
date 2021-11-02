@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
+import { RoomService } from '@app/services/room.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { QuitMultiplayerDialogComponent } from './../quit-multiplayer-dialog/quit-multiplayer-dialog.component';
 import { SwitchDialogComponent } from './../switch-dialog/switch-dialog.component';
@@ -18,7 +19,7 @@ export class WaitingRoomComponent implements OnInit {
     personIsActive: boolean = false;
     roomName: string = '';
     isMaster: boolean = false;
-    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog) {}
+    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, private roomService: RoomService) {}
     ngOnInit(): void {
         const name = this.userSettingsService.nameOption.userChoice;
         if (!localStorage.getItem('test')) localStorage.setItem('test', name);
@@ -33,6 +34,7 @@ export class WaitingRoomComponent implements OnInit {
             (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
         );
         this.assignValues(name, mode, numPlayers, timer);
+        this.roomService.createRoom();
     }
     openSwitchToSoloDialog() {
         this.matDialog.open(SwitchDialogComponent);

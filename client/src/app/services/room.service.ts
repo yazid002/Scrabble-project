@@ -83,6 +83,9 @@ export class RoomService {
     }
 
     joinRoom(roomId: string) {
+        if (this.roomId || this.roomId === '') {
+            this.quitRoom(this.roomId);
+        }
         this.socket.emit('joinRoom', roomId);
         this.roomId = roomId;
         this.gameSyncService.isMasterClient = false;
@@ -92,10 +95,12 @@ export class RoomService {
         this.socket.emit('createRoom', settings);
         this.roomId = this.socket.id; // TODO when lobby is complete, set to this.socket.id;
         this.gameSyncService.isMasterClient = true;
+        console.log(this.roomId);
         return this.roomId;
     }
 
-    // quitRoom(roomId: string) {
-    //     this.socket.emit('leaveRoom', roomId);
-    // }
+    quitRoom(roomId: string) {
+        this.socket.emit('leaveRoom', roomId);
+        this.roomId = '';
+    }
 }

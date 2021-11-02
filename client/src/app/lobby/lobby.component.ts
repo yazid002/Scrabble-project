@@ -15,7 +15,7 @@ export class LobbyComponent implements OnInit {
     timer: string;
     personIsActive: boolean = false;
 
-    roomName: string = '';
+    // roomName: string = '';
     isMaster: boolean = false;
 
     // rooms: Room[] = [];
@@ -40,18 +40,16 @@ export class LobbyComponent implements OnInit {
     }
 
     goInRoom(id?: string) {
-        let temp = 'Vous avez ';
+        // const temp = 'Vous avez ';
         if (id) {
             this.roomService.roomId = id;
-
-            this.roomService.joinRoom(this.roomName);
-            temp += 'créé une salle ';
+            this.roomService.joinRoom(id);
+            // temp += 'créé une salle ';
         } else {
             this.isMaster = true;
-            this.roomName = this.roomService.createRoom();
-            temp += 'join la salle ';
+            this.roomService.createRoom();
+            // temp += 'join la salle ';
         }
-        this.roomName = temp + this.roomName;
     }
 
     openQuitMultiplayerDialog() {
