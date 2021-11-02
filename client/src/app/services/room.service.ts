@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
+import { PLAYER } from '@app/classes/player';
 import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { ChatService } from './chat.service';
@@ -59,10 +60,11 @@ export class RoomService {
         });
         this.socket.on('abandon', (id: string) => {
             if (id === this.socket.id) return;
-            this.gameService.convertGameToSolo();
+            this.gameService.endGame();
+            this.gameService.players[PLAYER.realPlayer].won = 'Votre adversaire a abandonné. Vous gagnez par défaut!';
+            // this.gameService.convertGameToSolo(); Uncomment for sprint 3
         });
         this.socket.on('askMasterSync', () => {
-            console.log('askMasterSync');
             if (!this.gameSyncService.isMasterClient) return;
             this.gameSyncService.sendToServer();
         });

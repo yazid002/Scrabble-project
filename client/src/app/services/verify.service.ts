@@ -109,6 +109,10 @@ export class VerifyService {
         const lettersUsedOnBoard = this.isFitting(coord, direction, word);
         return lettersUsedOnBoard;
     }
+    isFirstMove(): boolean {
+        const h8Coord: Vec2 = { x: 7, y: 7 };
+        return tiles[h8Coord.x][h8Coord.y].letter === '';
+    }
 
     private findVerticalAdjacentWord(coord: Vec2): string {
         let up = coord.y;
@@ -179,29 +183,29 @@ export class VerifyService {
     }
 
     private findAdjacentUp(coord: Vec2): boolean {
-        if (coord.x > 0) {
-            return tiles[coord.x - 1][coord.y].letter !== '';
+        if (coord.y > 0) {
+            return tiles[coord.y - 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentDown(coord: Vec2) {
-        if (coord.x < SQUARE_NUMBER - 1) {
-            return tiles[coord.x + 1][coord.y].letter !== '';
+        if (coord.y < SQUARE_NUMBER - 1) {
+            return tiles[coord.y + 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentRight(coord: Vec2) {
-        if (coord.y < SQUARE_NUMBER - 1) {
-            return tiles[coord.x][coord.y + 1].letter !== '';
+        if (coord.x < SQUARE_NUMBER - 1) {
+            return tiles[coord.y][coord.x + 1].letter !== '';
         }
         return false;
     }
 
     private findAdjacentLeft(coord: Vec2) {
-        if (coord.y > 0) {
-            return tiles[coord.x][coord.y - 1].letter !== '';
+        if (coord.x > 0) {
+            return tiles[coord.y][coord.x - 1].letter !== '';
         }
         return false;
     }
@@ -234,11 +238,6 @@ export class VerifyService {
         if (!valid) {
             throw new ImpossibleCommand(' Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8');
         }
-    }
-
-    private isFirstMove(): boolean {
-        const h8Coord: Vec2 = { x: 7, y: 7 };
-        return tiles[h8Coord.x][h8Coord.y].letter === '';
     }
 
     private validateInvalidSymbols(word: string): void {
