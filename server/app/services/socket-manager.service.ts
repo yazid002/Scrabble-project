@@ -3,6 +3,7 @@ import * as http from 'http';
 import * as io from 'socket.io';
 
 export interface Room {
+    name: string;
     id: string;
     clientId: string[];
     settings: { mode: string; timer: string };
@@ -36,12 +37,19 @@ export class SocketManager {
                 this.sio.to(roomId).emit('askMasterSync');
             });
 
-            socket.on('leaveRoom', () => {
-                this.leaveRoom(socket.id);
+            socket.on('leaveRoom', (roomId?: string) => {
+                if (roomId) {
+                    const roomIndex = this.rooms.findIndex((room) => room.id === roomId);
+                    if (roomIndex === -1) return;
+                    this.rooms.splice(roomIndex, 1);
+                } else {
+                    this.leaveRoom(socket.id);
+                }
             });
 
-            socket.on('createRoom', (settings: { mode: string; timer: string }) => {
+            socket.on('createRoom', (settings: { mode: string; timer: string }, userName: string) => {
                 const room: Room = {
+                    name: userName,
                     clientId: [socket.id],
                     id: socket.id,
                     settings,

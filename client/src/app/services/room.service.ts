@@ -10,6 +10,7 @@ import { GameService } from './game.service';
 import { UserSettingsService } from './user-settings.service';
 export interface Room {
     id: string;
+    name: string;
     settings: { mode: string; timer: string };
 }
 @Injectable({
@@ -98,7 +99,8 @@ export class RoomService {
     }
     createRoom() {
         const settings = this.userSettingsService.getSettings();
-        this.socket.emit('createRoom', settings);
+        const userName = this.gameService.players[0].name;
+        this.socket.emit('createRoom', settings, userName);
 
         // this.roomId = this.socket.id;
 
@@ -109,7 +111,7 @@ export class RoomService {
 
 
     quitRoom(roomId: string) {
-        // this.socket.emit('leaveRoom', roomId);
-        // this.roomId = '';
+        this.socket.emit('leaveRoom', roomId);
+        this.roomId = '';
     }
 }
