@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { IChat, SENDER } from '@app/classes/chat';
+import { PLAYER } from '@app/classes/player';
 import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { ChatService } from './chat.service';
@@ -36,7 +37,6 @@ export class RoomService {
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
             // Send our message to the other players
-            console.log('message emited');
             // socket.broadcast.to('game').emit('message', 'nice game');
             this.socket.emit('roomMessage', this.roomId, this.socket.id, message);
         });
@@ -62,7 +62,6 @@ export class RoomService {
             const message: IChat = { from: SENDER.otherPlayer, body: broadcastMessage };
             if (id === this.socket.id || !broadcastMessage) return;
             this.chatService.messages.push(message);
-            console.log('Message received');
         });
         this.socket.on('syncGameData', (id: string, gameState: GameState) => {
             if (id === this.socket.id) return;
@@ -70,7 +69,9 @@ export class RoomService {
         });
         this.socket.on('abandon', (id: string) => {
             if (id === this.socket.id) return;
-            this.gameService.convertGameToSolo();
+            this.gameService.endGame();
+            this.gameService.players[PLAYER.realPlayer].won = 'Votre adversaire a abandonné. Vous gagnez par défaut!';
+            // this.gameService.convertGameToSolo(); Uncomment for sprint 3
         });
         this.socket.on('askMasterSync', () => {
             this.router.navigateByUrl('/game');
@@ -93,7 +94,7 @@ export class RoomService {
     createRoom() {
         const settings = this.userSettingsService.getSettings();
         this.socket.emit('createRoom', settings);
-        this.roomId = this.socket.id; // TODO when lobby is complete, set to this.socket.id;
+        this.roomId = this.socket.id;
         this.gameSyncService.isMasterClient = true;
         console.log(this.roomId);
         return this.roomId;

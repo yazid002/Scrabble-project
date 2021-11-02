@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { IOption } from '@app/classes/game-options';
-import { COMPUTER as COMPUTER_INDEX, GameService, REAL_PLAYER as REAL_PLAYER_INDEX } from '@app/services/game.service';
+import { GameService } from '@app/services/game.service';
 import { PlaceService } from '@app/services/place.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
+import { PLAYER } from '@app/classes/player';
 import { UserSettingsService } from '@app/services/user-settings.service';
 
 @Component({
@@ -16,8 +17,7 @@ export class GameOverviewComponent implements OnInit {
     numPlayers: string;
     computerLevel: string;
     timer: string;
-    computerIndex = COMPUTER_INDEX;
-    realPlayerIndex = REAL_PLAYER_INDEX;
+    playerIndex = PLAYER;
     nbLettersReserve: number = 0;
     otherPlayerName: string = '';
     constructor(
@@ -28,27 +28,28 @@ export class GameOverviewComponent implements OnInit {
         public gameService: GameService,
     ) {}
     ngOnInit(): void {
-        const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
-        );
-        const numPlayers = this.userSettingsService.settings.numPlayers.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.numPlayers.currentChoiceKey,
-        );
-        const computerLevel = this.userSettingsService.settings.computerLevel.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.computerLevel.currentChoiceKey,
-        );
 
-        const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
-        );
 
-        this.assignValues(mode, numPlayers, computerLevel, timer);
 
         this.updateData();
     }
     private updateData(): void {
         const reserveRefreshRate = 1000;
         setInterval(() => {
+            const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
+                (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
+            );
+            const numPlayers = this.userSettingsService.settings.numPlayers.setting.availableChoices.find(
+                (key) => key.key === this.userSettingsService.settings.numPlayers.currentChoiceKey,
+            );
+            const computerLevel = this.userSettingsService.settings.computerLevel.setting.availableChoices.find(
+                (key) => key.key === this.userSettingsService.settings.computerLevel.currentChoiceKey,
+            );
+
+            const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
+                (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
+            );
+            this.assignValues(mode, numPlayers, computerLevel, timer);
             this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();
         }, reserveRefreshRate);
     }
@@ -56,7 +57,7 @@ export class GameOverviewComponent implements OnInit {
         if (mode && numPlayers && computerLevel && timer) {
             this.mode = mode.value;
             this.numPlayers = numPlayers.value;
-            this.computerLevel = this.numPlayers === 'solo' ? computerLevel.value : '';
+            this.computerLevel = computerLevel.value;
             this.timer = timer.value;
         }
     }

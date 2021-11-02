@@ -1,6 +1,6 @@
 import { Injectable, Output } from '@angular/core';
-import { UserSettingsService } from './user-settings.service';
 import { BehaviorSubject } from 'rxjs';
+import { UserSettingsService } from './user-settings.service';
 
 @Injectable({
     providedIn: 'root',

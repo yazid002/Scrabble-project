@@ -24,9 +24,16 @@ const COMPUTER_NAMES: string[] = ['Ordi Illetré', 'Dictionnaire en Personne', '
 const TIMER: IOptionList = {
     settingName: 'Temps maximal par tour',
     availableChoices: [
+        { key: '30', value: '30s' },
         { key: '60', value: '1m' },
         { key: '90', value: '1m30s' },
         { key: '120', value: '2m' },
+        { key: '150', value: '2m30s' },
+        { key: '180', value: '3m' },
+        { key: '210', value: '3m30' },
+        { key: '240', value: '4m' },
+        { key: '270', value: '4m30' },
+        { key: '300', value: '5m' },
     ],
 };
 @Injectable({

@@ -108,13 +108,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 7;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'xx';
-        tiles[coord.x][coord.y + 1].bonus = 'xx';
-        tiles[coord.x][coord.y + 2].bonus = 'xx';
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -127,13 +127,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 8;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'dl';
-        tiles[coord.x][coord.y + 1].bonus = 'xx';
-        tiles[coord.x][coord.y + 2].bonus = 'xx';
+        tiles[coord.y][coord.x].bonus = 'dl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -142,18 +142,17 @@ describe('PointsCountingService', () => {
         expect(result).toEqual(expectedResult);
     });
 
-    it(' applyBoardBonuses should return the word basePoint with a triple letter bonus applied', () => {
+    it(' applyBoardBonuses should return the word basePoint with a triple word bonus applied', () => {
         const wordToCheck = 'abc';
         const expectedResult = 9;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'tl';
-        tiles[coord.x][coord.y + 1].bonus = 'xx';
-        tiles[coord.x][coord.y + 2].bonus = 'xx';
-
+        tiles[coord.y][coord.x].bonus = 'tl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
@@ -165,13 +164,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 21;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'xx';
-        tiles[coord.x][coord.y + 1].bonus = 'tw';
-        tiles[coord.x][coord.y + 2].bonus = 'xx';
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'tw';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -184,13 +183,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 14;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'xx';
-        tiles[coord.x][coord.y + 1].bonus = 'dw';
-        tiles[coord.x][coord.y + 2].bonus = 'xx';
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'dw';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -203,13 +202,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 42;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'xx';
-        tiles[coord.x][coord.y + 1].bonus = 'dw';
-        tiles[coord.x][coord.y + 2].bonus = 'tw';
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'dw';
+        tiles[coord.y + 2][coord.x].bonus = 'tw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -222,13 +221,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 24;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'dl';
-        tiles[coord.x][coord.y + 1].bonus = 'xx';
-        tiles[coord.x][coord.y + 2].bonus = 'tw';
+        tiles[coord.y][coord.x].bonus = 'dl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'tw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -241,13 +240,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 27;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'tl';
-        tiles[coord.x][coord.y + 1].bonus = 'xx';
-        tiles[coord.x][coord.y + 2].bonus = 'tw';
+        tiles[coord.y][coord.x].bonus = 'tl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'tw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -260,13 +259,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 18;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'tl';
-        tiles[coord.x][coord.y + 1].bonus = 'xx';
-        tiles[coord.x][coord.y + 2].bonus = 'dw';
+        tiles[coord.y][coord.x].bonus = 'tl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'dw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -279,13 +278,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 16;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.x][coord.y].bonus = 'dl';
-        tiles[coord.x][coord.y + 1].bonus = 'xx';
-        tiles[coord.x][coord.y + 2].bonus = 'dw';
+        tiles[coord.y][coord.x].bonus = 'dl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'dw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -298,13 +297,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 6;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [{ letter: 'a', coord }];
 
-        tiles[coord.x][coord.y].bonus = 'xx';
-        tiles[coord.x][coord.y + 1].bonus = 'xx';
-        tiles[coord.x][coord.y + 2].bonus = 'xx';
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -317,13 +316,13 @@ describe('PointsCountingService', () => {
         const wordToCheck = 'abc';
         const expectedResult = 6;
 
-        const coord: Vec2 = { x: 7, y: 8 };
-        const direction = 'h';
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [{ letter: 'a', coord }];
 
-        tiles[coord.x][coord.y].bonus = 'dw';
-        tiles[coord.x][coord.y + 1].bonus = 'xx';
-        tiles[coord.x][coord.y + 2].bonus = 'xx';
+        tiles[coord.y][coord.x].bonus = 'dw';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation

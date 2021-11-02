@@ -22,9 +22,8 @@ export class GamePageComponent {
         public roomService: RoomService,
         private gameSyncService: GameSyncService,
     ) {
-        console.log(this.virtualPlayerService);
-        console.log(this.roomService);
-        console.log(this.gameSyncService);
+        this.virtualPlayerService.initialize();
+        this.gameSyncService.initialize();
     }
 
     increaseSize(): void {
@@ -46,7 +45,7 @@ export class GamePageComponent {
             temp += 'créé une salle ';
         } else {
             this.roomService.joinRoom(this.roomName);
-            temp += 'join la salle ';
+            temp += 'joint la salle ';
         }
         this.roomName = temp + this.roomName;
     }

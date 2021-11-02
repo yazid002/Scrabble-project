@@ -2,7 +2,7 @@ import { GameState } from '@app/classes/game-state';
 import * as http from 'http';
 import * as io from 'socket.io';
 
-interface Room {
+export interface Room {
     id: string;
     numPlayers: number;
     settings: { mode: string; timer: string };
@@ -18,21 +18,9 @@ export class SocketManager {
     handleSockets(): void {
         this.sio.on('connection', (socket: io.Socket) => {
             this.sio.emit('rooms', this.rooms);
+
+            // eslint-disable-next-line no-console
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
-            // message initial
-            socket.emit('hello', 'Hello World!');
-
-            socket.on('message', (message: string) => {
-                console.log(message);
-            });
-            socket.on('validate', (word: string) => {
-                const isValid = word.length > 5;
-                socket.emit('wordValidated', isValid);
-            });
-
-            socket.on('broadcastAll', (message: string) => {
-                this.sio.sockets.emit('massMessage', `${socket.id} : ${message}`);
-            });
 
             socket.on('joinRoom', (roomId: string) => {
                 /** server makes socket join room
@@ -67,8 +55,7 @@ export class SocketManager {
                 };
                 socket.join(room.id);
                 this.rooms.push(room);
-                this.rooms = [...new Set(this.rooms)]; // Remove possible duplicates
-                console.log('Created room', socket.id);
+                this.rooms = [...new Set(this.rooms)];
                 this.sio.emit('rooms', this.rooms);
             });
 
@@ -82,7 +69,6 @@ export class SocketManager {
                 this.sio.to(roomId).emit('roomMessage', userId, message);
             });
             socket.on('syncGameData', (roomId: string, userId: string, gameState: GameState) => {
-                console.log('Received sync signal from client in room ' + roomId);
                 this.sio.to(roomId).emit('syncGameData', userId, gameState);
             });
 

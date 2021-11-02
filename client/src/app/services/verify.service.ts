@@ -20,7 +20,7 @@ export class VerifyService {
     constructor(private rackService: RackService) {}
 
     isFitting(coord: Vec2, direction: string, word: string): { letter: string; coord: Vec2 }[] {
-        const remainingCases = direction === 'v' ? tiles.length - coord.x : tiles.length - coord.y;
+        const remainingCases = direction === 'h' ? tiles.length - coord.x : tiles.length - coord.y;
 
         if (word.length > remainingCases) {
             throw new ImpossibleCommand("Il n'y a pas assez de place pour écrire ce mot");
@@ -31,13 +31,13 @@ export class VerifyService {
             const computedCoord = this.computeCoordByDirection(direction, coord, i);
             const x = computedCoord.x;
             const y = computedCoord.y;
-            const charInBox = tiles[x][y].letter;
+            const charInBox = tiles[y][x].letter;
             const letter = word.charAt(i) === word.charAt(i).toUpperCase() ? '*' : word.charAt(i);
             if (!this.isCaseEmpty(charInBox)) {
                 if (!this.isLetterOnBoardTheSame(charInBox, letter)) {
                     throw new ImpossibleCommand("Il y a déjà une lettre dans l'une des cases ciblées.");
                 }
-                lettersUsedOnBoard.push({ letter, coord: { x, y } });
+                lettersUsedOnBoard.push({ letter, coord: { y, x } });
             } else if (!this.rackService.isLetterOnRack(letter)) {
                 throw new ImpossibleCommand('Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet');
             }
@@ -87,10 +87,13 @@ export class VerifyService {
     }
 
     computeCoordByDirection(direction: string, coord: Vec2, step: number): Vec2 {
-        const x = direction === 'h' ? coord.x : coord.x + step;
-        const y = direction === 'v' ? coord.y : coord.y + step;
+        const x = direction === 'h' || direction === 'horizontal' ? coord.x + step : coord.x;
+        const y = direction === 'v' || direction === 'vertical' ? coord.y + step : coord.y;
 
-        return { x, y };
+        return { y, x };
+    }
+    isWordInDictionary(wordToCheck: string): boolean {
+        return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
 
     validatePlaceFeasibility(word: string, coord: Vec2, direction: string): { letter: string; coord: Vec2 }[] {
@@ -106,25 +109,29 @@ export class VerifyService {
         const lettersUsedOnBoard = this.isFitting(coord, direction, word);
         return lettersUsedOnBoard;
     }
+    isFirstMove(): boolean {
+        const h8Coord: Vec2 = { x: 7, y: 7 };
+        return tiles[h8Coord.x][h8Coord.y].letter === '';
+    }
 
     private findVerticalAdjacentWord(coord: Vec2): string {
-        let up = coord.x;
-        let down = coord.x;
+        let up = coord.y;
+        let down = coord.y;
         let wordFound = '';
 
-        if (this.bonuses.includes(tiles[coord.x][coord.y].text)) {
+        if (this.bonuses.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
 
-        while (up > 0 && tiles[up - 1][coord.y].text !== '' && !this.bonuses.includes(tiles[up - 1][coord.y].text)) {
+        while (up > 0 && tiles[up - 1][coord.x].text !== '' && !this.bonuses.includes(tiles[up - 1][coord.x].text)) {
             up--;
         }
-        while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.y].text !== '' && !this.bonuses.includes(tiles[down + 1][coord.y].text)) {
+        while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.x].text !== '' && !this.bonuses.includes(tiles[down + 1][coord.x].text)) {
             down++;
         }
 
         for (let i = up; i <= down; i++) {
-            wordFound += tiles[i][coord.y].text;
+            wordFound += tiles[i][coord.x].text;
         }
 
         if (this.bonuses.includes(wordFound)) {
@@ -134,22 +141,22 @@ export class VerifyService {
     }
 
     private findHorizontalAdjacentWord(coord: Vec2): string {
-        let right = coord.y;
-        let left = coord.y;
+        let right = coord.x;
+        let left = coord.x;
         let wordFound = '';
 
-        if (this.bonuses.includes(tiles[coord.x][coord.y].text)) {
+        if (this.bonuses.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
 
-        while (left > 0 && tiles[coord.x][left - 1].text !== '' && !this.bonuses.includes(tiles[coord.x][left - 1].text)) {
+        while (left > 0 && tiles[coord.y][left - 1].text !== '' && !this.bonuses.includes(tiles[coord.y][left - 1].text)) {
             left--;
         }
-        while (right < SQUARE_NUMBER - 1 && tiles[coord.x][right + 1].text !== '' && !this.bonuses.includes(tiles[coord.x][right + 1].text)) {
+        while (right < SQUARE_NUMBER - 1 && tiles[coord.y][right + 1].text !== '' && !this.bonuses.includes(tiles[coord.y][right + 1].text)) {
             right++;
         }
         for (let i = left; i <= right; i++) {
-            wordFound += tiles[coord.x][i].text;
+            wordFound += tiles[coord.y][i].text;
         }
         if (this.bonuses.includes(wordFound)) {
             wordFound = '';
@@ -163,11 +170,11 @@ export class VerifyService {
             const x = computedCoord.x;
             const y = computedCoord.y;
             if (
-                !this.isCaseEmpty(tiles[coord.x][coord.y].letter) ||
-                this.findAdjacentUp({ x, y }) ||
-                this.findAdjacentLeft({ x, y }) ||
-                this.findAdjacentRight({ x, y }) ||
-                this.findAdjacentDown({ x, y })
+                !this.isCaseEmpty(tiles[coord.y][coord.x].letter) ||
+                this.findAdjacentUp({ y, x }) ||
+                this.findAdjacentLeft({ y, x }) ||
+                this.findAdjacentRight({ y, x }) ||
+                this.findAdjacentDown({ y, x })
             ) {
                 return true;
             }
@@ -176,29 +183,29 @@ export class VerifyService {
     }
 
     private findAdjacentUp(coord: Vec2): boolean {
-        if (coord.x > 0) {
-            return tiles[coord.x - 1][coord.y].letter !== '';
+        if (coord.y > 0) {
+            return tiles[coord.y - 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentDown(coord: Vec2) {
-        if (coord.x < SQUARE_NUMBER - 1) {
-            return tiles[coord.x + 1][coord.y].letter !== '';
+        if (coord.y < SQUARE_NUMBER - 1) {
+            return tiles[coord.y + 1][coord.x].letter !== '';
         }
         return false;
     }
 
     private findAdjacentRight(coord: Vec2) {
-        if (coord.y < SQUARE_NUMBER - 1) {
-            return tiles[coord.x][coord.y + 1].letter !== '';
+        if (coord.x < SQUARE_NUMBER - 1) {
+            return tiles[coord.y][coord.x + 1].letter !== '';
         }
         return false;
     }
 
     private findAdjacentLeft(coord: Vec2) {
-        if (coord.y > 0) {
-            return tiles[coord.x][coord.y - 1].letter !== '';
+        if (coord.x > 0) {
+            return tiles[coord.y][coord.x - 1].letter !== '';
         }
         return false;
     }
@@ -209,10 +216,6 @@ export class VerifyService {
 
     private isLetterOnBoardTheSame(letterOnBoard: string, letterToPlace: string): boolean {
         return letterOnBoard === letterToPlace;
-    }
-
-    private isWordInDictionary(wordToCheck: string): boolean {
-        return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
 
     private validateJokersOccurrencesMatch(word: string): void {
@@ -235,11 +238,6 @@ export class VerifyService {
         if (!valid) {
             throw new ImpossibleCommand(' Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8');
         }
-    }
-
-    private isFirstMove(): boolean {
-        const h8Coord: Vec2 = { x: 7, y: 7 };
-        return tiles[h8Coord.x][h8Coord.y].letter === '';
     }
 
     private validateInvalidSymbols(word: string): void {
