@@ -1,4 +1,5 @@
 import { Injectable, Output } from '@angular/core';
+import { IChat, SENDER } from '@app/classes/chat';
 import { Player, PLAYER } from '@app/classes/player';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -6,7 +7,6 @@ import { ChatService } from './chat.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
-import { SENDER, IChat } from '@app/classes/chat';
 
 const MAX_SKIPS = 6;
 @Injectable({
@@ -15,7 +15,6 @@ const MAX_SKIPS = 6;
 export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
     @Output() abandonSignal = new BehaviorSubject<string>('');
-    @Output() whoWon = new BehaviorSubject<number>(-1);
 
     players: Player[] = [];
     currentTurn: number;
@@ -65,7 +64,6 @@ export class GameService {
 
             endGameString += '<br>' + this.players[playerIndex].name + ' :<br>';
             endGameString += this.players[playerIndex].rack.map((character) => character.affiche).join('<br>    ');
-
         }
         if (otherPlayerAbandonned) {
             this.players[PLAYER.otherPlayer].won = '';
@@ -91,7 +89,6 @@ export class GameService {
 
         return hasEnded;
     }
-
 
     private subtractPoint(player: Player): number {
         let pointToSub = 0;

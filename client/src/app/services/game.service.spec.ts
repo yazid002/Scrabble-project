@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { GameService } from './game.service';
 import { PLAYER } from '@app/classes/player';
+import { GameService } from './game.service';
 
 describe('GameService', () => {
     let service: GameService;
@@ -39,7 +39,7 @@ describe('GameService', () => {
     });
     it('should call endGame if skipCounter >=6', () => {
         service.skipCounter = 6;
-        // eslint-disable-next-line no-undef
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const spy = spyOn<any>(service, 'endGame');
         // eslint-disable-next-line dot-notation
         service['changeTurn'](true);
@@ -79,8 +79,6 @@ describe('GameService', () => {
         ];
         // eslint-disable-next-line dot-notation
         service['reserveService'].alphabets = [];
-        // eslint-disable-next-line dot-notation
-
 
         // eslint-disable-next-line dot-notation
         expect(service['didGameEnd']()).toEqual(true);
