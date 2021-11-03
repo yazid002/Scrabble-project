@@ -13,12 +13,8 @@ import { SwitchDialogComponent } from './../switch-dialog/switch-dialog.componen
 })
 export class WaitingRoomComponent implements OnInit {
     name: string;
-    numPlayers: string;
     mode: string;
     timer: string;
-    personIsActive: boolean = false;
-    roomName: string = '';
-    isMaster: boolean = false;
     constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public roomService: RoomService) {}
     ngOnInit(): void {
         const name = this.userSettingsService.nameOption.userChoice;
@@ -27,13 +23,10 @@ export class WaitingRoomComponent implements OnInit {
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
         );
         // if (!localStorage.getItem('localMode')) localStorage.setItem('localMode', JSON.stringify(mode?.value));
-        const numPlayers = this.userSettingsService.settings.numPlayers.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.numPlayers.currentChoiceKey,
-        );
         const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
         );
-        this.assignValues(name, mode, numPlayers, timer);
+        this.assignValues(name, mode, timer);
         this.roomService.createRoom();
     }
     openSwitchToSoloDialog() {
@@ -42,12 +35,11 @@ export class WaitingRoomComponent implements OnInit {
     openQuitMultiplayerDialog() {
         this.matDialog.open(QuitMultiplayerDialogComponent);
     }
-    private assignValues(name: string | undefined, mode: IOption | undefined, numPlayers: IOption | undefined, timer: IOption | undefined) {
-        if (name && mode && numPlayers && timer) {
+    private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined) {
+        if (name && mode && timer) {
             // this.name = localStorage.getItem('test') as string;
             this.name = name;
             this.mode = mode.value;
-            this.numPlayers = numPlayers.value;
             this.timer = timer.value;
         }
     }

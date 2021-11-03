@@ -58,13 +58,13 @@ describe('WaitingRoomComponent', () => {
         let undefString: undefined;
         let undefIoption: undefined;
         // eslint-disable-next-line dot-notation
-        component['assignValues'](undefString, undefIoption, undefIoption, undefIoption);
+        component['assignValues'](undefString, undefIoption, undefIoption);
         expect(component.name).toEqual(initName);
 
         const newName = 'New Name';
         const newOption = { key: 'a key', value: 'a value' };
         // eslint-disable-next-line dot-notation
-        component['assignValues'](newName, newOption, newOption, newOption);
+        component['assignValues'](newName, newOption, newOption);
         expect(component.name).toEqual(newName);
     });
 });
