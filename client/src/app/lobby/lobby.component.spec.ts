@@ -1,6 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { RouterTestingModule } from '@angular/router/testing';
+import { GamePageComponent } from '@app/pages/game-page/game-page.component';
+import { RoomService } from '@app/services/room.service';
+import { of } from 'rxjs';
 import { LobbyComponent } from './lobby.component';
 
+class MatDialogMock {
+    open() {
+        return {
+            afterClosed: () => of({}),
+        };
+    }
+}
 describe('LobbyComponent', () => {
     let component: LobbyComponent;
     let fixture: ComponentFixture<LobbyComponent>;
@@ -8,6 +20,14 @@ describe('LobbyComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [LobbyComponent],
+            imports: [MatDialogModule, RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
+            providers: [
+                {
+                    provide: MatDialog,
+                    useClass: MatDialogMock,
+                },
+                { provide: RoomService },
+            ],
         }).compileComponents();
     });
 
@@ -19,5 +39,25 @@ describe('LobbyComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+    describe('openQuitMultiplayerDialog', () => {
+        it('should open a MatDialog box on', () => {
+            // eslint-disable-next-line -- matDialog is private and we need access for the test
+            const spy = spyOn(component['matDialog'], 'open');
+            component.openQuitMultiplayerDialog();
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+    describe('goInRoom', () => {
+        it('should call "roomService.createRoom" if no id was provided', () => {
+            const spy = spyOn(component.roomService, 'createRoom');
+            component.goInRoom();
+            expect(spy).toHaveBeenCalled();
+        });
+        it('should call "roomService.joinRoom" if an id was provided', () => {
+            const spy = spyOn(component.roomService, 'joinRoom');
+            component.goInRoom('someId');
+            expect(spy).toHaveBeenCalled();
+        });
     });
 });

@@ -101,7 +101,6 @@ export class RoomService {
         return this.roomId;
     }
 
-
     quitRoom() {
         this.socket.emit('leaveRoom');
         this.roomId = '';

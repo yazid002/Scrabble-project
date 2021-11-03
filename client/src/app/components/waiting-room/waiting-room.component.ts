@@ -42,7 +42,7 @@ export class WaitingRoomComponent implements OnInit {
     openQuitMultiplayerDialog() {
         this.matDialog.open(QuitMultiplayerDialogComponent);
     }
-    private assignValues(name: string, mode: IOption | undefined, numPlayers: IOption | undefined, timer: IOption | undefined) {
+    private assignValues(name: string | undefined, mode: IOption | undefined, numPlayers: IOption | undefined, timer: IOption | undefined) {
         if (name && mode && numPlayers && timer) {
             // this.name = localStorage.getItem('test') as string;
             this.name = name;

@@ -3,15 +3,15 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Socket } from 'socket.io-client';
 import { GameState } from './game-sync.service';
 import { Room, RoomService } from './room.service';
-
-fdescribe('RoomService', () => {
+import { GamePageComponent } from '@app/pages/game-page/game-page.component';
+describe('RoomService', () => {
     let service: RoomService;
     let clientSocket: Socket;
 
     beforeEach(() => {
         clientSocket = jasmine.createSpyObj('socket', ['on', 'emit'], { id: '1' }) as unknown as Socket;
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule.withRoutes([])],
+            imports: [RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
         }).compileComponents();
         service = TestBed.inject(RoomService);
         service.socket = clientSocket;
@@ -210,7 +210,6 @@ fdescribe('RoomService', () => {
         const anotherRoom = 'anotherRoom';
         service.joinRoom(anotherRoom);
         expect(spy).not.toHaveBeenCalled();
-
 
         service.roomId = 'already in a room';
         service.joinRoom(anotherRoom);
