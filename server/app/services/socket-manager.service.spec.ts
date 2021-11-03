@@ -3,6 +3,7 @@ import { Server } from '@app/server';
 import { Room, SocketManager } from '@app/services/socket-manager.service';
 import { expect } from 'chai';
 import { io as ioClient, Socket } from 'socket.io-client';
+import * as spy from 'chai-spies';
 import { Container } from 'typedi';
 
 describe('Socket manager service', () => {
@@ -137,4 +138,31 @@ describe('Socket manager service', () => {
             done();
         }, RESPONSE_DALAY);
     });
+    it('should delete a room from list of available rooms when joining it', (done) => {
+        const oldRoom: Room = {
+            id: 'an id',
+            name: 'a name',
+            settings: { mode: 'a mode', timer: 'a time' },
+        };
+        service.rooms.push(oldRoom);
+
+        clientSocket.emit('joinRoom', oldRoom.id);
+
+        setTimeout(() => {
+            const actual = service.rooms.find((room) => room === oldRoom);
+            expect(actual).to.equal(undefined);
+            done();
+        }, RESPONSE_DALAY);
+    });
+    it('should all "leaveRoom() when client emits "leaveRoom" signal', (done) => {
+        // eslint-disable-next-line dot-notation
+        const leaveRoomSpy = spy(service['leaveRoom']);
+        clientSocket.emit('leaveRoom');
+        setTimeout(() => {
+            expect(leaveRoomSpy).to.have.been.called();
+            done();
+        }, RESPONSE_DALAY);
+    })
 });
+
+
