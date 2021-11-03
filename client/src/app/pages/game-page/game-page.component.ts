@@ -37,16 +37,4 @@ export class GamePageComponent {
         const maxValue = 13;
         this.gridService.decreaseTileSize(step, step, maxValue);
     }
-    // TODO enlever goInRoom une fois que le loby est intégré et créé les salles pour nous
-    goInRoom() {
-        let temp = 'Vous avez ';
-        if (this.isMaster) {
-            this.roomService.createRoom();
-            temp += 'créé une salle ';
-        } else {
-            this.roomService.joinRoom(this.roomName);
-            temp += 'joint la salle ';
-        }
-        this.roomName = temp + this.roomName;
-    }
 }
