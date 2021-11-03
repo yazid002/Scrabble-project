@@ -18,13 +18,11 @@ export class GameModeDialogComponent {
         this.errorMessage = result.errorMessage;
     }
     numPlayerChoice() {
-        const numPlayers = this.userSettingsService.settings.numPlayers.setting.availableChoices.find(
-            (key) => key.key === this.userSettingsService.settings.numPlayers.currentChoiceKey,
-        );
-        if (numPlayers?.key === 'multiplayer') {
+        const numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
+        if (numPlayers === 'multiplayer') {
             return true;
-        } else if (numPlayers?.key === 'solo') {
+        } else {
             return false;
-        } else return undefined;
+        }
     }
 }
