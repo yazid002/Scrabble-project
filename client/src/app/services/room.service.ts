@@ -34,7 +34,6 @@ export class RoomService {
     ) {
         this.urlString = `http://${window.location.hostname}:5020`;
         this.socket = io(this.urlString);
-        this.configureBaseSocketFeatures();
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
             // Send our message to the other players
@@ -49,13 +48,6 @@ export class RoomService {
             this.socket.emit('abandon', this.roomId, this.socket.id);
         });
         this.rooms = [];
-    }
-    configureBaseSocketFeatures() {
-        // Afficher l'identifiant du Socket dans l'interface
-        this.socket.emit('allo');
-        this.socket.on('connect', () => {
-            // document.getElementById('socketIdField').textContent = this.socket.id;
-        });
     }
 
     configureRoomCommunication() {
