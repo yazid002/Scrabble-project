@@ -3,9 +3,8 @@ import * as http from 'http';
 import * as io from 'socket.io';
 
 export interface Room {
-    name: string;
     id: string;
-    clientId: string[];
+    name: string;
     settings: { mode: string; timer: string };
 }
 
@@ -18,7 +17,7 @@ export class SocketManager {
 
     handleSockets(): void {
         this.sio.on('connection', (socket: io.Socket) => {
-            this.sio.emit('rooms', this.rooms);
+            this.sendRooms();
 
             // eslint-disable-next-line no-console
             console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
@@ -43,7 +42,6 @@ export class SocketManager {
             socket.on('createRoom', (settings: { mode: string; timer: string }, userName: string) => {
                 const room: Room = {
                     name: userName,
-                    clientId: [socket.id],
                     id: socket.id,
                     settings,
                 };
@@ -51,7 +49,7 @@ export class SocketManager {
                 this.rooms.push(room);
                 console.log(this.rooms);
                 // this.rooms = [...new Set(this.rooms)];
-                this.sio.emit('rooms', this.rooms);
+                this.sendRooms();
                 socket.emit('setRoomId', socket.id);
             });
 
@@ -86,13 +84,16 @@ export class SocketManager {
             this.emitTime();
         }, 1000);
     }
-
+    private sendRooms() {
+        this.rooms.filter((room) => room.name !== '');
+        this.sio.emit('rooms', this.rooms);
+    }
     private emitTime() {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
     private leaveRoom(socketId: string) {
         console.log(this.rooms);
-        const roomIndex = this.rooms.findIndex((room) => room.clientId.includes(socketId));
+        const roomIndex = this.rooms.findIndex((room) => room.id === socketId);
         if (roomIndex === -1) return;
         this.rooms.splice(roomIndex, 1);
     }

@@ -27,7 +27,7 @@ describe('Socket manager service', () => {
     });
 
     it('should create a room when client emits createRoom signal', (done) => {
-        const room: Room = { id: 'someId', settings: { mode: 'someMode', timer: 'someTime' } };
+        const room: Room = { id: 'someId', settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
         const initialArraySize = service.rooms.length;
 
         clientSocket.emit('createRoom', room);
