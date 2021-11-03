@@ -82,7 +82,7 @@ export class RoomService {
     }
 
     joinRoom(roomId: string) {
-        if (this.roomId || this.roomId === '') {
+        if (this.roomId || this.roomId !== '') {
             this.quitRoom();
         }
         this.socket.emit('joinRoom', roomId);
