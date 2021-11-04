@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { IChat, SENDER } from '@app/classes/chat';
 import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
+import { ChatService } from './chat.service';
+import { DebugExecutionService } from './command-execution/debug-execution.service';
 import { ExchangeService } from './exchange.service';
 import { GameService } from './game.service';
 import { PlaceService } from './place.service';
@@ -32,6 +35,8 @@ export class VirtualPlayerService {
         private verifyService: VerifyService,
         private timerService: TimerService,
         private pointsCountingService: PointsCountingService,
+        private debugExecutionService: DebugExecutionService,
+        private chatService: ChatService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();
@@ -90,7 +95,14 @@ export class VirtualPlayerService {
         this.exchangeService.exchangeLetters(lettersToChange, true);
     }
     private place() {
-        this.makePossibilities();
+        const possibilities = this.makePossibilities();
+        if (this.debugExecutionService.state) {
+            const message: IChat = { from: SENDER.computer, body: "L'ordinateur aurait pu placer: " };
+            for (const possibility of possibilities) {
+                message.body += '<br>' + possibility.word;
+            }
+            this.chatService.addMessage(message);
+        }
     }
     private decidePoints(): { min: number; max: number } {
         const pointMap: Map<number, { min: number; max: number }> = new Map();
@@ -179,7 +191,7 @@ export class VirtualPlayerService {
         }
         return [];
     }
-    private async makePossibilities() {
+    private makePossibilities(): WordNCoord[] {
         const gridCombos = this.getLetterCombosFromGrid();
         let possibilities: WordNCoord[] = [];
         const rackCombos: string[] = this.makeRackCombos();
@@ -194,7 +206,7 @@ export class VirtualPlayerService {
                 if (newPossibilities.length > 0) {
                     possibilities = possibilities.concat(newPossibilities);
                 }
-                if (possibilities.length >= 3) return;
+                if (possibilities.length >= 3) return possibilities;
             }
             // let i = 0;
             // const max = 5;
@@ -211,7 +223,7 @@ export class VirtualPlayerService {
                     if (newPossibilities.length > 0) {
                         possibilities = possibilities.concat(newPossibilities);
                     }
-                    if (possibilities.length >= 3) return;
+                    if (possibilities.length >= 3) return possibilities;
                 }
 
                 // for (const wordCombo of wordCombos) {
@@ -226,6 +238,7 @@ export class VirtualPlayerService {
             }
             i++;
         }
+        return possibilities;
     }
     private makeRackCombos(): string[] {
         let computerRack = '';
