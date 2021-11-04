@@ -96,5 +96,6 @@ export class SocketManager {
         const roomIndex = this.rooms.findIndex((room) => room.id === socketId);
         if (roomIndex === -1) return;
         this.rooms.splice(roomIndex, 1);
+        this.sio.emit('rooms', this.rooms);
     }
 }
