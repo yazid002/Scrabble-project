@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
@@ -10,7 +11,6 @@ import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
 import { VerifyService } from './verify.service';
-import { PLAYER } from '@app/classes/player';
 
 type Direction = 'horizontal' | 'vertical';
 interface WordNCoord {
@@ -36,6 +36,7 @@ export class VirtualPlayerService {
         this.alreadyInitialized = false;
         this.initialize();
     }
+
     initialize() {
         if (this.alreadyInitialized) return;
         this.alreadyInitialized = true;
