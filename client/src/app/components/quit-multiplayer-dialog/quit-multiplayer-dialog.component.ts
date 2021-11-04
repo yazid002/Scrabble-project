@@ -7,5 +7,9 @@ import { RoomService } from '@app/services/room.service';
     styleUrls: ['./quit-multiplayer-dialog.component.scss'],
 })
 export class QuitMultiplayerDialogComponent {
-    constructor(public roomService: RoomService) {}
+    constructor(private roomService: RoomService) {}
+
+    quitRoom() {
+        this.roomService.quitRoom();
+    }
 }

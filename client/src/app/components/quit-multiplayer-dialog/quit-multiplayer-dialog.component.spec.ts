@@ -20,4 +20,11 @@ describe('QuitMultiplayerDialogComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should quit Room', () => {
+        // eslint-disable-next-line dot-notation
+        const quitRoomSpy = spyOn(component['roomService'], 'quitRoom');
+        component.quitRoom();
+        expect(quitRoomSpy).toHaveBeenCalled();
+    });
 });
