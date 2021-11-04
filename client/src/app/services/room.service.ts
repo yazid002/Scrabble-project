@@ -7,6 +7,7 @@ import { ChatService } from './chat.service';
 import { GameState, GameSyncService } from './game-sync.service';
 import { GameService } from './game.service';
 import { UserSettingsService } from './user-settings.service';
+import { environment } from '../../environments/environment';
 export interface Room {
     id: string;
     settings: { mode: string; timer: string };
@@ -29,7 +30,7 @@ export class RoomService {
         private gameService: GameService,
         private userSettingsService: UserSettingsService,
     ) {
-        this.urlString = `http://${window.location.hostname}:3000`;
+        this.urlString = environment.serverUrl;
         this.socket = io(this.urlString);
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
