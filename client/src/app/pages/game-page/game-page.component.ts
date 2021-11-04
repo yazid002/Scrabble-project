@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
-import { SelectionType } from '@app/enums/selection-enum';
+import { OperationType, SelectionType } from '@app/enums/selection-enum';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GridService } from '@app/services/grid.service';
 import { Room, RoomService } from '@app/services/room.service';
@@ -91,8 +91,8 @@ export class GamePageComponent implements AfterViewInit {
         this.selectionManager.onSubmitPlacement(selectionType);
     }
 
-    disablePlacement() {
-        return this.selectionManager.disablePlacement();
+    hideOperation(operationType: OperationType) {
+        return this.selectionManager.hideOperation(operationType);
     }
 
     onCancelPlacement(selectionType: SelectionType) {
@@ -113,6 +113,9 @@ export class GamePageComponent implements AfterViewInit {
     disableExchange() {
         return this.selectionManager.disableExchange();
     }
+    hideExchangeButton() {
+        return this.selectionManager.hideExchangeButton();
+    }
 
     onCancelExchange(selectionType: SelectionType) {
         this.selectionManager.onCancelExchange(selectionType);
@@ -120,5 +123,9 @@ export class GamePageComponent implements AfterViewInit {
 
     get selectionType(): typeof SelectionType {
         return SelectionType;
+    }
+
+    get operationType(): typeof OperationType {
+        return OperationType;
     }
 }

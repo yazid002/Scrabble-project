@@ -9,6 +9,5 @@ export const TILE: CaseStyle = { color: 'NavajoWhite', font: '30px serif' };
 export const bonuses: string[] = ['dl', 'tw', 'tl', 'dw'];
 
 // Points
-export const INVALID_NUMBER = -1;
 export const BINGO_BONUS = 50;
 export const BINGO_LENGTH = 7;

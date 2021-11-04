@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ICharacter } from '@app/classes/letter';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { RackService } from './rack.service';
 
@@ -49,16 +50,23 @@ export class ExchangeSelectionService {
     }
 
     getClickIndex(event: MouseEvent, rack: ICharacter[]): number {
-        const notFound = -1;
         for (let i = 0; i < rack.length; i++) {
             if (event.offsetX >= i * (DEFAULT_WIDTH / RACK_SIZE) && event.offsetX < (i + 1) * (DEFAULT_WIDTH / RACK_SIZE)) {
                 return i;
             }
         }
-        return notFound;
+        return NOT_FOUND;
     }
 
     isSelectionInProgress(): boolean {
         return this.selectedIndexes.length !== 0;
+    }
+
+    isLetterAlreadySelected(index: number): boolean {
+        return this.selectedIndexes.includes(index);
+    }
+
+    hideOperation() {
+        return this.selectedIndexes.length === 0;
     }
 }

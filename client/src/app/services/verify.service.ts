@@ -17,6 +17,7 @@ export class VerifyService {
     invalidSymbols: string[] = ['-', "'"];
     bonuses: string[] = ['dl', 'tw', 'tl', 'dw'];
     success: boolean = true;
+    lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
     constructor(private rackService: RackService) {}
 
     isFitting(coord: Vec2, direction: string, word: string): { letter: string; coord: Vec2 }[] {
@@ -34,11 +35,13 @@ export class VerifyService {
             const y = computedCoord.y;
             const charInBox = tiles[y][x].letter;
             const letter = word.charAt(i) === word.charAt(i).toUpperCase() ? '*' : word.charAt(i);
+            console.log('charInBox ', charInBox, 'letter ', word.charAt(i));
             if (!this.isCaseEmpty(charInBox)) {
-                if (!this.isLetterOnBoardTheSame(charInBox, letter)) {
+                if (!this.isLetterOnBoardTheSame(charInBox, word.charAt(i).toLowerCase())) {
                     this.success = false;
                     throw new ImpossibleCommand("Il y a déjà une lettre dans l'une des cases ciblées.");
                 }
+
                 lettersUsedOnBoard.push({ letter, coord: { y, x } });
             } else if (!this.rackService.isLetterOnRack(letter)) {
                 this.success = false;
@@ -46,6 +49,7 @@ export class VerifyService {
             }
         }
 
+        this.lettersUsedOnBoard = lettersUsedOnBoard;
         return lettersUsedOnBoard;
     }
 
@@ -121,8 +125,10 @@ export class VerifyService {
             }
         }
         this.validateInvalidSymbols(word);
-        this.validateJokersOccurrencesMatch(word);
+
         const lettersUsedOnBoard = this.isFitting(coord, direction, word);
+        this.validateJokersOccurrencesMatch(word, this.lettersUsedOnBoard);
+
         return lettersUsedOnBoard;
     }
     isFirstMove(): boolean {
@@ -134,12 +140,31 @@ export class VerifyService {
         const h8Coord: Vec2 = { x: 7, y: 7 };
         const valid =
             direction === 'h'
-                ? coord.x === h8Coord.x && coord.y <= h8Coord.y && coord.y + word.length > h8Coord.y
-                : coord.y === h8Coord.y && coord.x <= h8Coord.x && coord.x + word.length > h8Coord.x;
+                ? coord.y === h8Coord.y && coord.x <= h8Coord.x && coord.x + word.length > h8Coord.x
+                : coord.x === h8Coord.x && coord.y <= h8Coord.y && coord.y + word.length > h8Coord.y;
+
         if (!valid) {
             this.success = false;
             throw new ImpossibleCommand(' Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8');
         }
+    }
+
+    hasAdjacent(word: string, coord: Vec2, direction: string): boolean {
+        for (let i = 0; i < word.length; i++) {
+            const computedCoord = this.computeCoordByDirection(direction, coord, i);
+            const x = computedCoord.x;
+            const y = computedCoord.y;
+            if (
+                !this.isCaseEmpty(tiles[coord.y][coord.x].letter) ||
+                this.findAdjacentUp({ y, x }) ||
+                this.findAdjacentLeft({ y, x }) ||
+                this.findAdjacentRight({ y, x }) ||
+                this.findAdjacentDown({ y, x })
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private findVerticalAdjacentWord(coord: Vec2): string {
@@ -202,29 +227,9 @@ export class VerifyService {
         }
         return wordFound;
     }
-
-    private hasAdjacent(word: string, coord: Vec2, direction: string): boolean {
-        for (let i = 0; i < word.length; i++) {
-            const computedCoord = this.computeCoordByDirection(direction, coord, i);
-            const x = computedCoord.x;
-            const y = computedCoord.y;
-            console.log('has adjacentt ', computedCoord);
-            if (
-                !this.isCaseEmpty(tiles[coord.y][coord.x].letter) ||
-                this.findAdjacentUp({ y, x }) ||
-                this.findAdjacentLeft({ y, x }) ||
-                this.findAdjacentRight({ y, x }) ||
-                this.findAdjacentDown({ y, x })
-            ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private findAdjacentUp(coord: Vec2): boolean {
         if (coord.y > 0) {
-            console.log(' coord ', coord, 'adjacent up ', tiles[coord.y - 1][coord.x].letter);
+            // console.log(' coord ', coord, 'adjacent up ', tiles[coord.y - 1][coord.x].letter);
             return tiles[coord.y - 1][coord.x].letter !== '';
         }
         return false;
@@ -232,7 +237,7 @@ export class VerifyService {
 
     private findAdjacentDown(coord: Vec2) {
         if (coord.y < SQUARE_NUMBER - 1) {
-            console.log(' coord ', coord, 'adjacent down ', tiles[coord.y + 1][coord.x].letter);
+            // console.log(' coord ', coord, 'adjacent down ', tiles[coord.y + 1][coord.x].letter);
             return tiles[coord.y + 1][coord.x].letter !== '';
         }
         return false;
@@ -240,7 +245,7 @@ export class VerifyService {
 
     private findAdjacentRight(coord: Vec2) {
         if (coord.x < SQUARE_NUMBER - 1) {
-            console.log(' coord ', coord, 'adjacent right ', tiles[coord.y][coord.x + 1].letter);
+            // console.log(' coord ', coord, 'adjacent right ', tiles[coord.y][coord.x + 1].letter);
 
             return tiles[coord.y][coord.x + 1].letter !== '';
         }
@@ -249,7 +254,7 @@ export class VerifyService {
 
     private findAdjacentLeft(coord: Vec2) {
         if (coord.x > 0) {
-            console.log(' coord ', coord, 'adjacent left ', tiles[coord.y][coord.x - 1].letter);
+            // console.log(' coord ', coord, 'adjacent left ', tiles[coord.y][coord.x - 1].letter);
 
             return tiles[coord.y][coord.x - 1].letter !== '';
         }
@@ -264,11 +269,13 @@ export class VerifyService {
         return letterOnBoard === letterToPlace;
     }
 
-    private validateJokersOccurrencesMatch(word: string): void {
+    private validateJokersOccurrencesMatch(word: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): void {
         const wordToChange = word.split('') as string[];
         const upperLettersInWord: string[] = wordToChange.filter((letter) => letter === letter.toUpperCase());
+        const numberOfJokersOnBoard = lettersUsedOnBoard.filter((letter) => letter.letter === letter.letter.toUpperCase());
+        console.log('table of jokers on board ', numberOfJokersOnBoard);
 
-        const jokersNumb = this.rackService.findJokersNumberOnRack();
+        const jokersNumb = this.rackService.findJokersNumberOnRack() + numberOfJokersOnBoard.length;
 
         if (upperLettersInWord.length > jokersNumb) {
             this.success = false;

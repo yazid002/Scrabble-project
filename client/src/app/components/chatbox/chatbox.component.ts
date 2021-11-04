@@ -75,7 +75,7 @@ export class ChatboxComponent implements OnInit {
         this.chatService.addMessage(message);
         if (this.inputBox.startsWith('!')) {
             let response: IChat = { from: '', body: '' };
-            response = await this.commandExecutionService.executeCommand(this.inputBox, !this.fromSelection);
+            //   response = await this.commandExecutionService.executeCommand(this.inputBox, !this.fromSelection);
             try {
                 response = await this.commandExecutionService.executeCommand(this.inputBox, !this.fromSelection);
             } catch (error) {
@@ -84,6 +84,8 @@ export class ChatboxComponent implements OnInit {
                         from: this.possibleSenders.computer,
                         body: error.message,
                     };
+                } else {
+                    throw error;
                 }
             }
             this.chatService.addMessage(response);

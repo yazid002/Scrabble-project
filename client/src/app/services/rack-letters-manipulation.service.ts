@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ICharacter } from '@app/classes/letter';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { RackService } from './rack.service';
 
@@ -8,26 +9,19 @@ import { RackService } from './rack.service';
 })
 export class RackLettersManipulationService {
     selectedIndexes: number[] = [];
-    //  selectedLetters: string[] = [];
-    selectedIndex: number = -1;
+    selectedIndex: number = NOT_FOUND;
     shiftKey: boolean = false;
     constructor(private rackService: RackService) {}
 
     getIndexFromKey(event: KeyboardEvent, rack: ICharacter[]) {
-        const notFound = -1;
-
-        const letterToFound = event.key;
-
-        console.log(letterToFound);
-
-        console.log(event.shiftKey);
+        const letterToFound = event.key.toLowerCase();
 
         const selectedLetters = this.getSelectedLetters(rack);
 
         if (event.shiftKey) {
             this.shiftKey = true;
         }
-        if (event.key === 'Shift') {
+        if (letterToFound === 'shift') {
             if (this.shiftKey) {
                 this.shiftKey = false;
                 return this.selectedIndexes[0];
@@ -36,21 +30,18 @@ export class RackLettersManipulationService {
             }
         }
 
-        console.log('f1 :', selectedLetters);
-
-        const lastOccurrence = selectedLetters.lastIndexOf(letterToFound);
-        console.log('lastOccurrence : ', lastOccurrence);
-        let i = 0;
-        if (lastOccurrence !== -1) {
-            i = this.selectedIndexes[lastOccurrence] + 1 === rack.length ? 0 : this.selectedIndexes[lastOccurrence] + 1;
-            console.log('index : ', this.selectedIndexes[lastOccurrence]);
+        if (!this.rackService.isLetterOnRack(letterToFound, rack)) {
+            return this.cancelManipulation();
         }
 
-        console.log('i : ', i);
-        console.log('this.selectedIndexes[lastOccurrence] : ', this.selectedIndexes[lastOccurrence]);
+        const lastOccurrence = selectedLetters.lastIndexOf(letterToFound);
+
+        let i = 0;
+        if (lastOccurrence !== NOT_FOUND) {
+            i = this.selectedIndexes[lastOccurrence] + 1 === rack.length ? 0 : this.selectedIndexes[lastOccurrence] + 1;
+        }
 
         while (i < rack.length) {
-            console.log('i2 : ', i);
             if (rack[i].name === letterToFound.toUpperCase()) {
                 if (!this.selectedIndexes.includes(i) || i === this.selectedIndexes[lastOccurrence]) {
                     return i;
@@ -61,7 +52,7 @@ export class RackLettersManipulationService {
                 i = 0;
             }
         }
-        return notFound;
+        return NOT_FOUND;
     }
 
     onMouseLeftClick(event: MouseEvent, rack: ICharacter[]) {
@@ -69,22 +60,16 @@ export class RackLettersManipulationService {
         const index = this.getMouseClickIndex(event, rack);
         const included = this.selectedIndexes.includes(index);
 
-        console.log(this.selectedIndexes);
-        console.log(included);
         if (!included && index !== -1) {
             this.cancelManipulation();
 
             this.selectedIndexes[0] = index;
             this.rackService.fillRackPortion(index, selectionColor);
-            console.log(this.selectedIndexes);
         }
     }
 
     onKeyBoardClick(event: KeyboardEvent, rack: ICharacter[]) {
         const selectionColor = 'violet';
-
-        console.log('code ', event.code);
-        console.log('key ', event.key);
 
         if (event.key === 'ArrowRight') {
             this.moveToTheRight(rack);
@@ -93,14 +78,10 @@ export class RackLettersManipulationService {
         } else {
             const index = this.getIndexFromKey(event, rack);
             const included = this.selectedIndexes.includes(index);
-
-            console.log(this.selectedIndexes);
-            console.log(included);
             if (!included && index !== -1) {
                 this.cancelManipulation();
                 this.selectedIndexes[0] = index;
                 this.rackService.fillRackPortion(index, selectionColor);
-                console.log(this.selectedIndexes);
             }
         }
     }
@@ -112,27 +93,23 @@ export class RackLettersManipulationService {
         }
 
         this.selectedIndexes = [];
-        return -1;
+        return NOT_FOUND;
     }
 
     getMouseClickIndex(event: MouseEvent, rack: ICharacter[]): number {
-        console.log('{ x, y} :', event.offsetX, event.offsetY);
-        const notFound = -1;
         for (let i = 0; i < rack.length; i++) {
             if (event.offsetX >= i * (DEFAULT_WIDTH / RACK_SIZE) * 1 && event.offsetX < (i + 1) * (DEFAULT_WIDTH / RACK_SIZE) * 1) {
-                console.log(i);
                 return i;
             }
         }
-        return notFound;
+        return NOT_FOUND;
     }
 
     getSelectedLetters(rack: ICharacter[]): string[] {
-        const selectedLetters = [];
+        const selectedLetters: string[] = [];
         for (const index of this.selectedIndexes) {
-            selectedLetters[0] = rack[index].name.toLocaleLowerCase();
+            selectedLetters[0] = rack[index].name.toLowerCase();
         }
-        console.log(selectedLetters);
         return selectedLetters;
     }
 

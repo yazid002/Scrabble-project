@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { ICharacter } from '@app/classes/letter';
+import { PLAYER } from '@app/classes/player';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { ReserveService } from '@app/services/reserve.service';
 import { GameService } from './game.service';
-import { PLAYER } from '@app/classes/player';
 
 @Injectable({
     providedIn: 'root',
@@ -18,9 +20,8 @@ export class RackService {
     }
 
     replaceLetter(letterToReplace: string, onRackOnly: boolean, index?: number): void {
-        const notFound = -1;
         const indexOnRack = index ? index : this.findLetterPosition(letterToReplace);
-        if (indexOnRack !== notFound) {
+        if (indexOnRack !== NOT_FOUND) {
             const newCharacters = this.reserveService.getLettersFromReserve(1);
             if (newCharacters.length !== 0) {
                 if (!onRackOnly) {
@@ -59,15 +60,13 @@ export class RackService {
         return [...new Set(lettersToChange.filter((letter: string) => this.isLetterOnRack(letter) === false))];
     }
 
-    isLetterOnRack(letterToCheck: string): boolean {
-        const notFound = -1;
-        return this.findLetterPosition(letterToCheck) !== notFound;
+    isLetterOnRack(letterToCheck: string, rack?: ICharacter[]): boolean {
+        return this.findLetterPosition(letterToCheck, rack) !== NOT_FOUND;
     }
 
-    findLetterPosition(letterToCheck: string): number {
-        return this.gameService.players[this.gameService.currentTurn].rack.findIndex(
-            (letter) => letter.name === letterToCheck.toUpperCase(),
-        ) as number;
+    findLetterPosition(letterToCheck: string, rack?: ICharacter[]): number {
+        const rackToCheck = rack ? rack : this.gameService.players[this.gameService.currentTurn].rack;
+        return rackToCheck.findIndex((letter) => letter.name === letterToCheck.toUpperCase()) as number;
     }
 
     fillRackPortion(index: number, color: string = 'NavajoWhite') {

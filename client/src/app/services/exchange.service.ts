@@ -4,7 +4,7 @@ import { InvalidArgumentsLength } from '@app/classes/command-errors/command-synt
 import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
 import { ICharacter } from '@app/classes/letter';
-import { ExchangeLimits } from '@app/enums/exchange-enums';
+import { EXCHANGE_MAX_LIMIT, EXCHANGE_MIN_LIMIT } from '@app/constants/exchange-constants';
 import { RackService } from '@app/services/rack.service';
 import { ExchangeSelectionService } from './exchange-selection.service';
 import { GameService } from './game.service';
@@ -47,11 +47,11 @@ export class ExchangeService {
     }
 
     private validateExchangeFeasibility(lettersToChange: string[]): void {
-        const validArgumentsLength = this.validateArgumentLength(lettersToChange, ExchangeLimits.Min, ExchangeLimits.Max);
+        const validArgumentsLength = this.validateArgumentLength(lettersToChange, EXCHANGE_MIN_LIMIT, EXCHANGE_MAX_LIMIT);
         const inexistentLettersOnRack: string[] = this.rackService.findInexistentLettersOnRack(lettersToChange);
         const incoherentOccurrences: string[] = this.findIncoherentOccurrencesMatch(lettersToChange);
 
-        if (!this.rackService.checkLettersAvailability(ExchangeLimits.Max)) {
+        if (!this.rackService.checkLettersAvailability(EXCHANGE_MAX_LIMIT)) {
             throw new ImpossibleCommand("Il n'y a plus assez de lettres dans la réserve.");
         }
         if (!validArgumentsLength) {

@@ -5,7 +5,8 @@ import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
-import { BINGO_BONUS, BINGO_LENGTH, INVALID_NUMBER } from '@app/constants/board-constants';
+import { BINGO_BONUS, BINGO_LENGTH } from '@app/constants/board-constants';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { ReserveService } from './reserve.service';
 import { VerifyService } from './verify.service';
 
@@ -40,10 +41,10 @@ export class PointsCountingService {
 
     private getLetterPoints(letter: string): number {
         const aLetter = this.reserveService.findLetterInReserve(letter);
-        if (aLetter !== INVALID_NUMBER) {
+        if (aLetter !== NOT_FOUND) {
             return (aLetter as ICharacter).points;
         }
-        return INVALID_NUMBER;
+        return NOT_FOUND;
     }
 
     private applyBingo(wordToCheck: string, basePoints: number): number {

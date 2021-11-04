@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
@@ -10,7 +11,6 @@ import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
 import { VerifyService } from './verify.service';
-import { PLAYER } from '@app/classes/player';
 
 type Direction = 'horizontal' | 'vertical';
 interface WordNCoord {
@@ -45,6 +45,7 @@ export class VirtualPlayerService {
         });
     }
     private play() {
+        console.log('rack du joueur virtuel ', this.gameService.players[PLAYER.otherPlayer].rack);
         const TURN_TIME = 3000;
         let skipped = false;
         setTimeout(() => {
@@ -178,29 +179,52 @@ export class VirtualPlayerService {
         }
         return [];
     }
-    private makePossibilities() {
+    private async makePossibilities() {
         const gridCombos = this.getLetterCombosFromGrid();
         let possibilities: WordNCoord[] = [];
         const rackCombos: string[] = this.makeRackCombos();
         const pointRange = this.decidePoints();
-        for (const rackCombo of rackCombos) {
+        let i = 0;
+        const max = 150;
+        while (i < rackCombos.length && i < max) {
+            // for (const rackCombo of rackCombos) {
+            //  console.log('boucle 0 ', i);
             if (this.verifyService.isFirstMove()) {
-                const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange));
+                const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange));
                 if (newPossibilities.length > 0) {
                     possibilities = possibilities.concat(newPossibilities);
                 }
                 if (possibilities.length >= 3) return;
             }
+            // let i = 0;
+            // const max = 5;
+            //   while (i < gridCombos.length && i < max) {
             for (const gridCombo of gridCombos) {
-                const wordCombos = this.bindGridAndRack(rackCombo, gridCombo);
+                //  console.log('boucle 1');
+                //  timeout(5000);
+                const wordCombos = this.bindGridAndRack(rackCombos[i], gridCombo);
+
                 for (const wordCombo of wordCombos) {
-                    const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange, wordCombo));
+                    // console.log('boucle 2 ', i);
+                    //  timeout(5000);
+                    const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange, wordCombo));
                     if (newPossibilities.length > 0) {
                         possibilities = possibilities.concat(newPossibilities);
                     }
                     if (possibilities.length >= 3) return;
                 }
+
+                // for (const wordCombo of wordCombos) {
+                //     console.log('boucle 2');
+                //     timeout(5000);
+                //     const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange, wordCombo));
+                //     if (newPossibilities.length > 0) {
+                //         possibilities = possibilities.concat(newPossibilities);
+                //     }
+                //     if (possibilities.length >= 3) return;
+                // }
             }
+            i++;
         }
     }
     private makeRackCombos(): string[] {
