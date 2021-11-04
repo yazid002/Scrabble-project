@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
-import { CommandError } from '@app/classes/command-errors/command-error';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
-import { GameService } from '@app/services/game.service';
-import { PLAYER } from '@app/classes/player';
 
 const MAX_MESSAGE_LENGTH = 512;
 const MIN_MESSAGE_LENGTH = 1;
@@ -20,13 +17,13 @@ export class ChatboxComponent implements OnInit {
     messages: IChat[] = [];
     readonly possibleSenders = SENDER;
 
-    constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService, private gameService: GameService) {}
+    constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService) {}
 
     ngOnInit(): void {
         this.getMessages();
         document.getElementsByTagName('input')[0].focus();
     }
-    validateFormat() {
+    async validateFormat() {
         this.error = false;
         if (this.inputBox.length > MAX_MESSAGE_LENGTH || this.inputBox.length < MIN_MESSAGE_LENGTH) {
             this.error = true;
@@ -34,19 +31,10 @@ export class ChatboxComponent implements OnInit {
             return;
         }
         if (this.inputBox.startsWith('!')) {
-            if (this.gameService.currentTurn !== PLAYER.realPlayer) {
-                this.error = true;
-                this.errorMessage = 'Attendez votre tour';
-                return;
-            }
-            try {
-                this.commandExecutionService.interpretCommand(this.inputBox);
-                this.error = false;
-            } catch (error) {
-                if (error instanceof CommandError) {
-                    this.errorMessage = error.message;
-                    this.error = true;
-                }
+            const answer = this.commandExecutionService.interpretCommand(this.inputBox);
+            if (answer.error) {
+                this.error = answer.error;
+                this.errorMessage = (await answer.function()).body;
             }
         }
     }
@@ -57,18 +45,9 @@ export class ChatboxComponent implements OnInit {
         };
         this.chatService.addMessage(message);
         if (this.inputBox.startsWith('!')) {
-            let response: IChat = { from: '', body: '' };
-            try {
-                response = await this.commandExecutionService.executeCommand(this.inputBox);
-            } catch (error) {
-                if (error instanceof CommandError) {
-                    response = {
-                        from: this.possibleSenders.computer,
-                        body: error.message,
-                    };
-                }
-            }
-            this.chatService.addMessage(response);
+            const response = await this.commandExecutionService.executeCommand(this.inputBox);
+
+            this.chatService.addMessage(response.message);
         }
 
         this.inputBox = '';
