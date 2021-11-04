@@ -7,7 +7,7 @@ import { ChatService } from './chat.service';
 import { GameState, GameSyncService } from './game-sync.service';
 import { GameService } from './game.service';
 import { UserSettingsService } from './user-settings.service';
-import { environment } from '../../environments/environment';
+import { environment } from 'src/environments/environment.prod';
 export interface Room {
     id: string;
     settings: { mode: string; timer: string };
