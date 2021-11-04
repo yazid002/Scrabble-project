@@ -137,4 +137,20 @@ describe('Socket manager service', () => {
             done();
         }, RESPONSE_DALAY);
     });
+    it('should delete a room from list of available rooms when joining it', (done) => {
+        const oldRoom: Room = {
+            id: 'an id',
+            name: 'a name',
+            settings: { mode: 'a mode', timer: 'a time' },
+        };
+        service.rooms.push(oldRoom);
+
+        clientSocket.emit('joinRoom', oldRoom.id);
+
+        setTimeout(() => {
+            const actual = service.rooms.find((room) => room === oldRoom);
+            expect(actual).to.equal(undefined);
+            done();
+        }, RESPONSE_DALAY);
+    });
 });
