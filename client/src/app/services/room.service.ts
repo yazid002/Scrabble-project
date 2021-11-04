@@ -3,11 +3,11 @@ import { IChat, SENDER } from '@app/classes/chat';
 import { PLAYER } from '@app/classes/player';
 import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
+import { environment } from '../../environments/environment';
 import { ChatService } from './chat.service';
 import { GameState, GameSyncService } from './game-sync.service';
 import { GameService } from './game.service';
 import { UserSettingsService } from './user-settings.service';
-import { environment } from '../../environments/environment';
 export interface Room {
     id: string;
     settings: { mode: string; timer: string };
