@@ -29,7 +29,7 @@ export class RoomService {
         private gameService: GameService,
         private userSettingsService: UserSettingsService,
     ) {
-        this.urlString = `http://${window.location.hostname}:5020`;
+        this.urlString = `http://${window.location.hostname}:3000`;
         this.socket = io(this.urlString);
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {

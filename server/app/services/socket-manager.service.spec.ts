@@ -9,14 +9,14 @@ describe('Socket manager service', () => {
     let service: SocketManager;
     let server: Server;
     let clientSocket: Socket;
-    const RESPONSE_DALAY = 100;
+    const RESPONSE_DALAY = 1000;
     beforeEach(() => {
         server = Container.get(Server);
         server.init();
 
         // eslint-disable-next-line dot-notation
         service = server['socketManger'];
-        const urlString = 'http://localhost:5020';
+        const urlString = 'http://localhost:3000';
         clientSocket = ioClient(urlString);
         clientSocket.connect();
     });
