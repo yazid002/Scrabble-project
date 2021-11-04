@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { RouterTestingModule } from '@angular/router/testing';
+import { GamePageComponent } from '@app/pages/game-page/game-page.component';
+import { RoomService } from '@app/services/room.service';
 import { of } from 'rxjs';
 import { WaitingRoomComponent } from './waiting-room.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { RoomService } from '@app/services/room.service';
-import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 
 class MatDialogMock {
     open() {
@@ -52,7 +52,7 @@ describe('WaitingRoomComponent', () => {
         component.openQuitMultiplayerDialog();
         expect(spy).toHaveBeenCalled();
     });
-    it('should only assign values to setitngs when they are defined', () => {
+    it('should only assign values to settings when they are defined', () => {
         const initName = 'initial name';
         component.name = initName;
         let undefString: undefined;

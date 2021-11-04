@@ -22,7 +22,6 @@ export class WaitingRoomComponent implements OnInit {
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
         );
-        // if (!localStorage.getItem('localMode')) localStorage.setItem('localMode', JSON.stringify(mode?.value));
         const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
         );
@@ -37,7 +36,6 @@ export class WaitingRoomComponent implements OnInit {
     }
     private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined) {
         if (name && mode && timer) {
-            // this.name = localStorage.getItem('test') as string;
             this.name = name;
             this.mode = mode.value;
             this.timer = timer.value;

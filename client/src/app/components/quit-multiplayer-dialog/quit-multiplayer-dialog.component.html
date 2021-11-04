@@ -2,5 +2,5 @@
 
 <section id="footer">
     <button mat-raised-button mat-dialog-close>Retour au jeu</button>
-    <button mat-raised-button color="primary" type="submit" routerLink="home" mat-dialog-close>Oui</button>
+    <button mat-raised-button color="primary" type="submit" routerLink="home" (click)="roomService.quitRoom()" mat-dialog-close>Oui</button>
 </section>
