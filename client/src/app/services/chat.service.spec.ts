@@ -27,4 +27,10 @@ describe('ChatService', () => {
         service.clear();
         expect(service.messages.length).toEqual(0);
     });
+    it("should not send 'messageSend' signal if message is a command", () => {
+        const message: IChat = { from: SENDER.me, body: '!reserve' };
+        const spy = spyOn(service.messageSent, 'next');
+        service.addMessage(message);
+        expect(spy).not.toHaveBeenCalled();
+    });
 });

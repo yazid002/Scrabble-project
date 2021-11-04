@@ -6,12 +6,14 @@ import { ImpossibleCommand } from '@app/classes/command-errors/impossible-comman
 import { ICharacter } from '@app/classes/letter';
 import { ExchangeLimits } from '@app/enums/exchange-enums';
 import { RackService } from '@app/services/rack.service';
+import { GameService } from './game.service';
+import { TimerService } from './timer.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ExchangeService {
-    constructor(private rackService: RackService) {}
+    constructor(private rackService: RackService, private gameService: GameService, private timerService: TimerService) {}
 
     exchangeLetters(lettersToChange: string[]): void {
         this.validateExchangeFeasibility(lettersToChange);
@@ -19,6 +21,7 @@ export class ExchangeService {
         for (const letter of lettersToChange) {
             this.rackService.replaceLetter(letter, false);
         }
+        this.timerService.resetTimer();
     }
 
     private validateExchangeFeasibility(lettersToChange: string[]): void {
@@ -36,12 +39,12 @@ export class ExchangeService {
             throw new InexistentLettersOnRack(`${inexistentLettersOnRack.join(', ')}.`);
         }
         if (incoherentOccurrences.length) {
-            throw new NotEnoughOccurrences(`${incoherentOccurrences.join(', ')}.`);
+            throw new NotEnoughOccurrences(`${incoherentOccurrences.join(', ')} à échanger.`);
         }
     }
 
     private validateLetterOccurrencesMatch(letter: string, letters: string[]): boolean {
-        const rackLetters = this.rackService.rackLetters as ICharacter[];
+        const rackLetters = this.gameService.players[this.gameService.currentTurn].rack as ICharacter[];
         const rackLettersToStrings: string[] = rackLetters.map((rackLetter) => rackLetter.name);
         return this.rackService.countLetterOccurrences(letter, letters) <= this.rackService.countLetterOccurrences(letter, rackLettersToStrings);
     }

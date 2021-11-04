@@ -1,7 +1,52 @@
 import { Component } from '@angular/core';
+import { GameSyncService } from '@app/services/game-sync.service';
+import { GridService } from '@app/services/grid.service';
+import { RoomService, Room } from '@app/services/room.service';
+import { VirtualPlayerService } from '@app/services/virtual-player.service';
+
 @Component({
     selector: 'app-game-page',
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent {}
+export class GamePageComponent {
+    // TODO verifier si les services en parametre sont utilises ou doivent en private
+    // TODO enlever le roomName et isMaster une fois que le loby est intégré et créé les salles pour nous
+    roomName: string = '';
+    isMaster: boolean = false;
+    rooms: Room[];
+    constructor(
+        public gridService: GridService,
+
+        private virtualPlayerService: VirtualPlayerService,
+        public roomService: RoomService,
+        private gameSyncService: GameSyncService,
+    ) {
+        this.virtualPlayerService.initialize();
+        this.gameSyncService.initialize();
+    }
+
+    increaseSize(): void {
+        const step = 1;
+        const maxValue = 22;
+        this.gridService.increaseTileSize(step, step, maxValue);
+    }
+
+    decreaseSize() {
+        const step = -1;
+        const maxValue = 13;
+        this.gridService.decreaseTileSize(step, step, maxValue);
+    }
+    // TODO enlever goInRoom une fois que le loby est intégré et créé les salles pour nous
+    goInRoom() {
+        let temp = 'Vous avez ';
+        if (this.isMaster) {
+            this.roomService.createRoom();
+            temp += 'créé une salle ';
+        } else {
+            this.roomService.joinRoom(this.roomName);
+            temp += 'joint la salle ';
+        }
+        this.roomName = temp + this.roomName;
+    }
+}

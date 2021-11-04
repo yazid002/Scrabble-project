@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
+import { GameService } from '@app/services/game.service';
 import { of } from 'rxjs';
 import { ChatboxComponent } from './chatbox.component';
 
@@ -15,6 +16,8 @@ describe('ChatboxComponent', () => {
     let fixture: ComponentFixture<ChatboxComponent>;
     let commandExecutionServiceSpy: jasmine.SpyObj<CommandExecutionService>;
     let chatServiceSpy: jasmine.SpyObj<ChatService>;
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
+
     beforeEach(async () => {
         // Utilisation de spy au lieu d'appeler les services directement
         commandExecutionServiceSpy = jasmine.createSpyObj('CommandExecutionService', ['interpretCommand', 'executeCommand', 'addLetterInReserve']);
@@ -22,6 +25,7 @@ describe('ChatboxComponent', () => {
         chatServiceSpy.messages = [];
         chatServiceSpy.getMessages.and.returnValue(of(chatServiceSpy.messages));
         chatServiceSpy.addMessage.and.callFake((newMessage) => chatServiceSpy.messages.push(newMessage));
+        gameServiceSpy = jasmine.createSpyObj('gameService', ['changeTurn', 'randomTurnSelect']);
 
         await TestBed.configureTestingModule({
             declarations: [ChatboxComponent],
@@ -30,6 +34,7 @@ describe('ChatboxComponent', () => {
                 ChatService,
                 { provide: CommandExecutionService, useValue: commandExecutionServiceSpy },
                 { provide: ChatService, useValue: chatServiceSpy },
+                { provide: GameService, useValue: gameServiceSpy },
             ],
             imports: [BrowserAnimationsModule, MatCardModule, FormsModule, MatInputModule, MatIconModule],
         }).compileComponents();
@@ -54,6 +59,7 @@ describe('ChatboxComponent', () => {
 
     it('validateFormat should not have any errors if a valid command is entered', () => {
         component.inputBox = '!debug';
+        gameServiceSpy.currentTurn = 0;
         commandExecutionServiceSpy.interpretCommand.and.returnValue(void '');
         component.validateFormat();
         expect(component.error).toBeFalse();
@@ -61,6 +67,7 @@ describe('ChatboxComponent', () => {
 
     it('validateFormat should not add error message when commandExecutionServiceSpy.interpretCommand does not throw a command error', async () => {
         component.inputBox = '!resersve';
+        gameServiceSpy.currentTurn = 0;
         commandExecutionServiceSpy.interpretCommand.and.throwError(new Error('erreur de test.'));
         component.validateFormat();
         expect(component.error).toBeFalse();
@@ -68,9 +75,19 @@ describe('ChatboxComponent', () => {
 
     it('validateFormat should call commandExecutionServiceSpy.interpretCommand if the body starts with !', () => {
         const executedTimes = 1;
+        gameServiceSpy.currentTurn = 0;
         component.inputBox = '!resersve';
         component.validateFormat();
         expect(commandExecutionServiceSpy.interpretCommand).toHaveBeenCalledTimes(executedTimes);
+    });
+
+    it('validateFormat should return error message if not your turn', () => {
+        gameServiceSpy.currentTurn = 1;
+        component.inputBox = '!resersve';
+        component.validateFormat();
+        const expectedResult = 'Attendez votre tour';
+        expect(component.errorMessage).toContain(expectedResult);
+        expect(component.error).toBeTrue();
     });
 
     // On teste le contraire du if

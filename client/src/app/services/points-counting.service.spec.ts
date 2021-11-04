@@ -1,10 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { BINGO_BONUS, INVALID_NUMBER, PointsCountingService } from './points-counting.service';
-
-// // A placer dans un fichier de constantes
-// export const INVALID_NUMBER = -1;
-// export const BINGO_BONUS = 50;
-// export const BINGO_LENGTH = 7;
+import { tiles } from '@app/classes/board';
+import { Vec2 } from '@app/classes/vec2';
+import { BINGO_BONUS } from '@app/constants/board-constants';
+import { PointsCountingService } from './points-counting.service';
 
 describe('PointsCountingService', () => {
     let service: PointsCountingService;
@@ -12,12 +10,6 @@ describe('PointsCountingService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(PointsCountingService);
-        const reserve: { name: string; params: { quantity: number; points: number; display: string } }[] = [
-            { name: 'A', params: { quantity: 9, points: 1, display: 'A' } },
-            { name: 'B', params: { quantity: 2, points: 3, display: 'B' } },
-            { name: 'C', params: { quantity: 2, points: 3, display: 'C' } },
-        ];
-        service.reserve = reserve;
     });
 
     it('should be created', () => {
@@ -25,83 +17,317 @@ describe('PointsCountingService', () => {
     });
 
     it(' getLetterPoints should return the letter points', () => {
-        const letterToCheck = 'B';
+        const letterToCheck = 'b';
         const expectedResult = 3;
 
-        const result = service.getLetterPoints(letterToCheck);
+        // getLetterPoints est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['getLetterPoints'](letterToCheck);
 
         expect(result).toEqual(expectedResult);
     });
 
     it(' getLetterPoints should return the invalid number', () => {
-        const letterToCheck = 'D';
+        const letterToCheck = 'ë';
         const expectedResult = -1;
 
-        const result = service.getLetterPoints(letterToCheck);
-
-        expect(result).toEqual(expectedResult);
-    });
-
-    it(' getWordBasePoints should return the word points', () => {
-        const wordToCheck = 'ABC';
-        const expectedResult = 7;
-        service.wordIsValid = true;
-
-        const result = service.getWordBasePoints(wordToCheck);
-
-        expect(result).toEqual(expectedResult);
-    });
-
-    it(' getWordBasePoints should return the invalid number', () => {
-        const wordToCheck = 'ABC';
-        const expectedResult = INVALID_NUMBER;
-        service.wordIsValid = false;
-
-        const result = service.getWordBasePoints(wordToCheck);
+        // getLetterPoints est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['getLetterPoints'](letterToCheck);
 
         expect(result).toEqual(expectedResult);
     });
 
     it(' applyBingo should return the word points with a bonus', () => {
-        const wordToCheck = 'ABCABCA';
+        const wordToCheck = 'abcabca';
         const wordBasePoints = 15;
         const expectedResult = wordBasePoints + BINGO_BONUS;
-        service.wordIsValid = true;
 
-        const result = service.applyBingo(wordToCheck, wordBasePoints);
+        // applyBingo est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBingo'](wordToCheck, wordBasePoints);
 
         expect(result).toEqual(expectedResult);
     });
 
     it(' applyBingo should return the word base points', () => {
-        const wordToCheck = 'ABCABC';
+        const wordToCheck = 'abcabc';
         const wordBasePoints = 14;
         const expectedResult = wordBasePoints;
-        service.wordIsValid = true;
 
-        const result = service.applyBingo(wordToCheck, wordBasePoints);
+        // applyBingo est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBingo'](wordToCheck, wordBasePoints);
 
         expect(result).toEqual(expectedResult);
     });
 
-    it(' processWordPoints should not call applyBingo if the word points are invalid', () => {
-        const wordToCheck = 'ABCABC';
+    it(' applyBoardBonuses should return the word base points', () => {
+        const wordToCheck = 'abcabc';
+        const wordBasePoints = 14;
+        const expectedResult = wordBasePoints;
 
-        service.getWordBasePoints = jasmine.createSpy().and.returnValue(INVALID_NUMBER);
-        const applyBingoSpy = spyOn(service, 'applyBingo').and.callThrough();
-        service.processWordPoints(wordToCheck);
+        // applyBingo est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBingo'](wordToCheck, wordBasePoints);
 
-        expect(applyBingoSpy).not.toHaveBeenCalled();
+        expect(result).toEqual(expectedResult);
     });
 
-    it(' processWordPoints should call applyBingo if the word points are valid', () => {
-        const wordToCheck = 'ABCABC';
-        const wordBasePoints = 14;
+    it(' processWordPoints should call applyBoardBonuses', () => {
+        const wordToCheck = 'abcabc';
+        const coord: Vec2 = { x: 7, y: 7 };
+        const direction = 'h';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        service.getWordBasePoints = jasmine.createSpy().and.returnValue(wordBasePoints);
-        const applyBingoSpy = spyOn(service, 'applyBingo').and.callThrough();
-        service.processWordPoints(wordToCheck);
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const applyBoardBonusesSpy = spyOn<any>(service, 'applyBoardBonuses').and.callThrough();
 
-        expect(applyBingoSpy).toHaveBeenCalled();
+        service.processWordPoints(wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(applyBoardBonusesSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it(' processWordPoints should call applyBingo', () => {
+        const wordToCheck = 'abcabc';
+        const coord: Vec2 = { x: 7, y: 7 };
+        const direction = 'h';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        // applyBingo est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const applyBingoSpy = spyOn<any>(service, 'applyBingo').and.callThrough();
+
+        service.processWordPoints(wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(applyBingoSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint if there is not any bonus', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 7;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint with a double letter bonus applied', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 8;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'dl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint with a triple word bonus applied', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 9;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'tl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint with a triple word bonus applied', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 21;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'tw';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint with a double word bonus applied', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 14;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'dw';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint with a double word and a triple word bonuses applied', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 42;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'dw';
+        tiles[coord.y + 2][coord.x].bonus = 'tw';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint with a double letter and a triple word bonuses applied', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 24;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'dl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'tw';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint with a triple letter and a triple word bonuses applied', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 27;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'tl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'tw';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint with a triple letter and a double word bonuses applied', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 18;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'tl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'dw';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint with a double letter and a double word bonuses applied', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 16;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        tiles[coord.y][coord.x].bonus = 'dl';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'dw';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint without letters used on board points', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 6;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [{ letter: 'a', coord }];
+
+        tiles[coord.y][coord.x].bonus = 'xx';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the word basePoint without letters used on board bonuses', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = 6;
+
+        const coord: Vec2 = { y: 7, x: 8 };
+        const direction = 'v';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [{ letter: 'a', coord }];
+
+        tiles[coord.y][coord.x].bonus = 'dw';
+        tiles[coord.y + 1][coord.x].bonus = 'xx';
+        tiles[coord.y + 2][coord.x].bonus = 'xx';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
     });
 });

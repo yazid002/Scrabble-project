@@ -3,6 +3,8 @@ import { IChat, SENDER } from '@app/classes/chat';
 import { CommandError } from '@app/classes/command-errors/command-error';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
+import { GameService } from '@app/services/game.service';
+import { PLAYER } from '@app/classes/player';
 
 const MAX_MESSAGE_LENGTH = 512;
 const MIN_MESSAGE_LENGTH = 1;
@@ -18,7 +20,7 @@ export class ChatboxComponent implements OnInit {
     messages: IChat[] = [];
     readonly possibleSenders = SENDER;
 
-    constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService) {}
+    constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService, private gameService: GameService) {}
 
     ngOnInit(): void {
         this.getMessages();
@@ -32,6 +34,11 @@ export class ChatboxComponent implements OnInit {
             return;
         }
         if (this.inputBox.startsWith('!')) {
+            if (this.gameService.currentTurn !== PLAYER.realPlayer) {
+                this.error = true;
+                this.errorMessage = 'Attendez votre tour';
+                return;
+            }
             try {
                 this.commandExecutionService.interpretCommand(this.inputBox);
                 this.error = false;

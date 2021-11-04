@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { VerifyService } from './verify.service';
 
-describe('VerifyService', () => {
-    let service: VerifyService;
+import { VirtualPlayerService } from './virtual-player.service';
+
+describe('VirtualPlayerService', () => {
+    let service: VirtualPlayerService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(VerifyService);
+        service = TestBed.inject(VirtualPlayerService);
     });
 
     it('should be created', () => {

@@ -13,7 +13,7 @@ export class ExchangeExecutionService {
         const lettersToChange: string[] = parameters[ARGUMENTS_INDEX].split('');
         const result: IChat = {
             from: SENDER.computer,
-            body: 'Échangé les lettres avec succès',
+            body: 'Échange de lettres réussi !',
         };
 
         try {

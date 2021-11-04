@@ -76,7 +76,7 @@ export class ReserveService {
         }
     }
 
-    findLetterInReserve(letterToCheck: string): ICharacter | void {
+    findLetterInReserve(letterToCheck: string): ICharacter | number {
         if (letterToCheck === letterToCheck.toUpperCase()) {
             letterToCheck = '*';
         }
@@ -85,6 +85,8 @@ export class ReserveService {
         if (index !== notFound) {
             return this.alphabets[index];
         }
+
+        return notFound;
     }
 
     private findLetterPosition(letterToCheck: string, letters: ICharacter[]): number {

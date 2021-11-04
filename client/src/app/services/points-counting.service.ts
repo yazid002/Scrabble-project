@@ -2,51 +2,80 @@
 // pour les fonctions getLetterPoints et getWordPoints
 
 import { Injectable } from '@angular/core';
-
-// A placer dans un fichier de constantes
-export const INVALID_NUMBER = -1;
-export const BINGO_BONUS = 50;
-export const BINGO_LENGTH = 7;
+import { tiles } from '@app/classes/board';
+import { ICharacter } from '@app/classes/letter';
+import { Vec2 } from '@app/classes/vec2';
+import { BINGO_BONUS, BINGO_LENGTH, INVALID_NUMBER } from '@app/constants/board-constants';
+import { ReserveService } from './reserve.service';
+import { VerifyService } from './verify.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PointsCountingService {
-    // mot placé = combinaison de lettre et leur position
-    reserve: { name: string; params: { quantity: number; points: number; display: string } }[];
-    wordIsValid: boolean;
-    wordToCheck: string;
+    letterBonusesMapping: Map<string, (basePoints: number) => number> = new Map([
+        [
+            'dl',
+            (basePoints: number) => {
+                return basePoints * 2;
+            },
+        ],
+        [
+            'tl',
+            (basePoints: number) => {
+                return basePoints * 3;
+            },
+        ],
+    ]);
 
-    // constructor() {}
+    constructor(private verifyService: VerifyService, public reserveService: ReserveService) {}
 
-    getLetterPoints(letter: string): number {
-        const aLetter = this.reserve.find((element) => element.name === letter.toUpperCase());
-        return aLetter?.params.points || INVALID_NUMBER;
+    processWordPoints(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): number {
+        let points = this.applyBoardBonuses(wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        points = this.applyBingo(wordToCheck, points);
+
+        return points;
     }
 
-    getWordBasePoints(word: string): number {
-        if (this.wordIsValid) {
-            return word
-                .split('')
-                .map((letter) => {
-                    return this.getLetterPoints(letter);
-                })
-                .reduce((firstPoint: number, secondPoint: number) => {
-                    return firstPoint + secondPoint;
-                });
+    private getLetterPoints(letter: string): number {
+        const aLetter = this.reserveService.findLetterInReserve(letter);
+        if (aLetter !== INVALID_NUMBER) {
+            return (aLetter as ICharacter).points;
         }
         return INVALID_NUMBER;
     }
 
-    applyBingo(wordToCheck: string, basePoints: number): number {
+    private applyBingo(wordToCheck: string, basePoints: number): number {
         return wordToCheck.length === BINGO_LENGTH ? basePoints + BINGO_BONUS : basePoints;
     }
 
-    processWordPoints(wordToCheck: string): number {
-        let points = this.getWordBasePoints(wordToCheck);
-        if (points !== INVALID_NUMBER) {
-            points = this.applyBingo(wordToCheck, points);
+    private applyBoardBonuses(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]) {
+        let point = 0;
+        let numberOfTW = 0;
+        let numberOfDW = 0;
+        for (let i = 0; i < wordToCheck.length; i++) {
+            const x = this.verifyService.computeCoordByDirection(direction, coord, i).x;
+            const y = this.verifyService.computeCoordByDirection(direction, coord, i).y;
+            let basePoints = 0;
+            const length = lettersUsedOnBoard.filter((letter) => letter.coord.x === x && letter.coord.y === y);
+            if (length.length === 0) {
+                basePoints = this.getLetterPoints(wordToCheck[i]);
+                const letterPoints = this.letterBonusesMapping.get(tiles[y][x].bonus) as (basePoints: number) => number;
+                point += letterPoints ? letterPoints(basePoints) : basePoints;
+
+                switch (tiles[y][x].bonus) {
+                    case 'tw':
+                        numberOfTW++;
+                        break;
+                    case 'dw':
+                        numberOfDW++;
+                        break;
+                }
+            }
         }
-        return points;
+        point *= numberOfTW ? numberOfTW * 3 : 1;
+        point *= numberOfDW ? numberOfDW * 2 : 1;
+        return point;
     }
 }
