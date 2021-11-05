@@ -30,8 +30,16 @@
                     [placeholder]="userSettingsService.nameOption.displayName"
                     required="true"
                     [(ngModel)]="userSettingsService.nameOption.userChoice"
+                    ngDefaultControl
                 />
             </mat-form-field>
+        </div>
+        <div>
+            <mat-checkbox [(ngModel)]="isChecked" [ngModelOptions]="{ standalone: true }" (change)="applyRandomMode($event)" ngDefaultControl
+                >Mode Bonus
+            </mat-checkbox>
+            <br />
+            {{ this.message }}
         </div>
 
         <section id="footer">
@@ -44,10 +52,20 @@
                 *ngIf="numPlayerChoice()"
                 routerLink="waiting"
                 mat-dialog-close
+                (click)="configureGame()"
             >
                 Jouer
             </button>
-            <button mat-raised-button color="primary" type="submit" [disabled]="error" *ngIf="!numPlayerChoice()" routerLink="game" mat-dialog-close>
+            <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="error"
+                *ngIf="!numPlayerChoice()"
+                routerLink="game"
+                mat-dialog-close
+                (click)="configureGame()"
+            >
                 Jouer
             </button>
         </section>

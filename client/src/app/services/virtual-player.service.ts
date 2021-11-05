@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
@@ -92,7 +91,7 @@ export class VirtualPlayerService {
     private exchange() {
         const numberToChange = Math.floor(Math.random() * RACK_SIZE + 1);
         const lettersToChange = this.selectRandomLetterFromRack(numberToChange);
-        this.exchangeService.exchangeLetters(lettersToChange);
+        this.exchangeService.exchangeLetters(lettersToChange, true);
     }
     private place() {
         const possibilities = this.makePossibilities();
@@ -124,14 +123,13 @@ export class VirtualPlayerService {
         return pointMap.get(randomNumber) as { min: number; max: number };
     }
     private validateWordPoints(word: WordNCoord, pointRange: { min: number; max: number }): boolean {
-        try {
-            const lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word.word, word.coord, word.direction);
-
-            const points = this.pointsCountingService.processWordPoints(word.word, word.coord, word.direction, lettersUsedOnBoard);
-            if (points <= pointRange.max && points >= pointRange.min) return true;
-        } catch {
+        const isPlacementFeasible = this.verifyService.validatePlaceFeasibility(word.word, word.coord, word.direction);
+        if (isPlacementFeasible.error) {
             return false;
         }
+        const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+        const points = this.pointsCountingService.processWordPoints(word.word, word.coord, word.direction, lettersUsedOnBoard);
+        if (points <= pointRange.max && points >= pointRange.min) return true;
 
         return false;
     }
@@ -196,24 +194,29 @@ export class VirtualPlayerService {
         let possibilities: WordNCoord[] = [];
         const rackCombos: string[] = this.makeRackCombos();
         const pointRange = this.decidePoints();
-        for (const rackCombo of rackCombos) {
+        let i = 0;
+        const max = 150;
+        while (i < rackCombos.length && i < max) {
             if (this.verifyService.isFirstMove()) {
-                const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange));
+                const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange));
                 if (newPossibilities.length > 0) {
                     possibilities = possibilities.concat(newPossibilities);
                 }
                 if (possibilities.length >= 3) return possibilities;
             }
+
             for (const gridCombo of gridCombos) {
-                const wordCombos = this.bindGridAndRack(rackCombo, gridCombo);
+                const wordCombos = this.bindGridAndRack(rackCombos[i], gridCombo);
+
                 for (const wordCombo of wordCombos) {
-                    const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange, wordCombo));
+                    const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange, wordCombo));
                     if (newPossibilities.length > 0) {
                         possibilities = possibilities.concat(newPossibilities);
                     }
                     if (possibilities.length >= 3) return possibilities;
                 }
             }
+            i++;
         }
         return possibilities;
     }
@@ -237,7 +240,6 @@ export class VirtualPlayerService {
         const possibilities: WordNCoord[] = [];
         // get all horizontal possibilities
         for (let line = 0; line < tiles.length; line++) {
-            // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let col = 0; col < tiles[line].length; col++) {
                 if (tiles[line][col].letter !== EMPTY) {
                     if (tempWord === EMPTY) {
@@ -255,9 +257,8 @@ export class VirtualPlayerService {
             }
         }
 
-        // get all vertival possibilitier
+        // get all vertival possibilities
         for (let col = 0; col < tiles[0].length; col++) {
-            // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let line = 0; line < tiles.length; line++) {
                 if (tiles[line][col].letter !== EMPTY) {
                     if (tempWord === EMPTY) {

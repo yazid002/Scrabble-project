@@ -42,7 +42,8 @@ export class RoomService {
         });
         this.gameStateSubscription = this.gameSyncService.sendGameStateSignal.subscribe((gameState: GameState) => {
             this.socket.emit('syncGameData', this.roomId, this.socket.id, gameState);
-            console.log(this.roomId);
+            // TODO: ENLEVER SI ON UTLISE PAS
+            //  console.log(this.roomId);
         });
         this.abandonSubscription = this.gameSyncService.sendAbandonSignal.subscribe(() => {
             this.socket.emit('abandon', this.roomId, this.socket.id);
@@ -51,7 +52,7 @@ export class RoomService {
     }
 
     configureRoomCommunication() {
-        // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un membre de la salle
+        // Gérer l'événement envoyé par le serveur : displayr le message envoyé par un membre de la salle
         // this.joinRoom('patate'); // TODO : quand le lobby sera bien créé, on peut join une room plus approprié
         this.socket.on('roomMessage', (id: string, broadcastMessage: string) => {
             const message: IChat = { from: SENDER.otherPlayer, body: broadcastMessage };
@@ -93,10 +94,11 @@ export class RoomService {
         const userName = this.gameService.players[0].name;
         this.socket.emit('createRoom', settings, userName);
 
+        // TODO: NE PAS OUBLIER CES COMMENTAIRES
         // this.roomId = this.socket.id;
 
         this.gameSyncService.isMasterClient = true;
-        console.log(this.roomId);
+        // console.log(this.roomId);
         return this.roomId;
     }
 
