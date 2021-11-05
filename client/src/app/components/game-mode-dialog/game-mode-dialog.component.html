@@ -33,20 +33,32 @@
                     ngDefaultControl
                 />
             </mat-form-field>
-            {{ userSettingsService.nameOption.userChoice }}
-        </div>
-
-        <div>
-            <mat-checkbox [(ngModel)]="isChecked" ngDefaultControl [ngModelOptions]="{ standalone: true }" (change)="applyRandomMode($event)"
-                >Mode Bonus
-            </mat-checkbox>
-            <br />
-            {{ this.message }}
         </div>
 
         <section id="footer">
             <button mat-raised-button mat-dialog-close>Retour À l'accueil</button>
-            <button mat-raised-button color="primary" type="submit" [disabled]="error" routerLink="game" mat-dialog-close (click)="configureGame()">
+            <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="error"
+                *ngIf="numPlayerChoice()"
+                routerLink="waiting"
+                mat-dialog-close
+                (click)="configureGame()"
+            >
+                Jouer
+            </button>
+            <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="error"
+                *ngIf="!numPlayerChoice()"
+                routerLink="game"
+                mat-dialog-close
+                (click)="configureGame()"
+            >
                 Jouer
             </button>
         </section>

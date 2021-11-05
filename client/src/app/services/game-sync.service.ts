@@ -38,7 +38,7 @@ export class GameSyncService {
     ) {
         this.alreadyInitialized = false;
         this.initialize();
-        this.sendToLocalStorage();
+        // this.sendToLocalStorage();
     }
     initialize() {
         if (this.alreadyInitialized) return;

@@ -1,7 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
-// import { tiles } from '@app/classes/board';
-// import { Case } from '@app/classes/case';
-// import { tiles } from '@app/classes/board';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
@@ -17,7 +14,7 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent implements AfterViewInit, OnInit {
+export class GamePageComponent implements AfterViewInit {
     @ViewChild(ChatboxComponent) chatboxComponent: ChatboxComponent;
     @ViewChild(PlayAreaComponent) playAreaComponent: PlayAreaComponent;
 
@@ -59,9 +56,9 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         this.selectionManager.onMouseWheel(event);
     }
 
-    ngOnInit(): void {
-        this.gameSyncService.sendToLocalStorage();
-    }
+    // ngOnInit(): void {
+    //     this.gameSyncService.sendToLocalStorage();
+    // }
 
     ngAfterViewInit(): void {
         this.selectionManager.chatboxComponent = this.chatboxComponent;

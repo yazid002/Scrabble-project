@@ -223,11 +223,13 @@ export class PlaceSelectionService {
 
     checkBoardClickFeasibility(coord: Vec2, shouldChangeDirection: boolean): boolean {
         const notFound = { x: NOT_FOUND, y: NOT_FOUND };
-
         if (!(this.selectedRackIndexesForPlacement.length === 0 || !shouldChangeDirection === true)) {
             return false;
         }
         if (!(coord.x !== notFound.x && coord.y !== notFound.y)) {
+            return false;
+        }
+        if (tiles[coord.y][coord.x].letter !== '') {
             return false;
         }
         return true;

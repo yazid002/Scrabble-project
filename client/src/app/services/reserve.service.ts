@@ -90,6 +90,7 @@ export class ReserveService {
         return notFound;
     }
 
+    // TODO: ENLEVER SI ON UTILISE PAS
     getInitialReserve() {
         const reserve: ICharacter[] = [];
 

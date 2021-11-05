@@ -1,0 +1,33 @@
+<!-- <h2 mat-lobby-title>Waiting Room</h2> -->
+
+<div class="title">Lobby</div>
+
+<body>
+    <mat-card class="summary">
+        <mat-card-title>Partie Multijoueurs </mat-card-title>
+        <mat-divider></mat-divider>
+        <mat-card id="me">
+            <mat-card-title id="name">{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
+        </mat-card>
+    </mat-card>
+    <div class="container">
+        <mat-card class="rooms">
+            <mat-card-title>Rooms Disponibles </mat-card-title>
+            <mat-divider></mat-divider>
+            <mat-list class="content">
+                <mat-list-item *ngFor="let room of roomService.rooms" class="room">
+                    <h3 matLine>Nom de l'adversaire : {{ room.name }}</h3>
+                    <p matLine>Mode : {{ room.settings.mode }}</p>
+                    <p matLine>Temps : {{ room.settings.timer }}</p>
+                    <button mat-raised-button color="basic" (click)="goInRoom(room.id)" routerLink="game" id="join_button">Join</button>
+                    <mat-divider></mat-divider>
+                </mat-list-item>
+            </mat-list>
+            <mat-card-footer>
+                <button mat-raised-button mat-dialog-close [routerLink]="['/waiting']" id="back_button"><span>Back</span></button>
+                <mat-card-subtitle>En attente </mat-card-subtitle>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </mat-card-footer>
+        </mat-card>
+    </div>
+</body>
