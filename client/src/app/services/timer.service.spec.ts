@@ -14,7 +14,14 @@ describe('TimerService', () => {
     });
     it('should emit an event when timer hits zero', () => {
         let skipped = false;
+        service.isEnabled = true;
         service.timerDone.next(skipped);
+        service.counter = {
+            min: 0,
+            seconds: 0,
+            resetValue: 60,
+            totalTimer: 59,
+        };
         service.counter.totalTimer = service.counter.resetValue - 1;
         service.timerDone.subscribe((val) => {
             skipped = val;

@@ -52,6 +52,7 @@ export class TimerService {
         this.counter.seconds = (this.counter.resetValue - secondsPassed) % MAX_SECONDS;
         this.counter.min = Math.max(0, Math.floor(totalMinutes - minutesPassed));
         if (this.counter.totalTimer === 0) {
+            console.log('aaaaaaaa');
             this.timerDone.next(true);
         }
     }
