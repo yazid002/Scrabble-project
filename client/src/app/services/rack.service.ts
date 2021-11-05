@@ -96,5 +96,6 @@ export class RackService {
                 DEFAULT_HEIGHT - POINTS_PIXELS_HEIGH_ADJUSTMENT,
             );
         }
+        this.rackContext.stroke();
     }
 }

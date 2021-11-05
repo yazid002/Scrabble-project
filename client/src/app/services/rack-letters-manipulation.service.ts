@@ -56,7 +56,7 @@ export class RackLettersManipulationService {
     }
 
     onMouseLeftClick(event: MouseEvent, rack: ICharacter[]) {
-        const selectionColor = 'violet';
+        const selectionColor = 'LightSalmon';
         const index = this.getMouseClickIndex(event, rack);
         const included = this.selectedIndexes.includes(index);
 

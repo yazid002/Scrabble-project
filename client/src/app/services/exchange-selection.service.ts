@@ -13,7 +13,7 @@ export class ExchangeSelectionService {
 
     onMouseRightClick(event: MouseEvent, rack: ICharacter[]) {
         const normalColor = 'NavajoWhite';
-        const selectionColor = 'blue';
+        const selectionColor = 'DeepSkyBlue';
         const index = this.getClickIndex(event, rack);
         const included = this.selectedIndexes.includes(index);
 
