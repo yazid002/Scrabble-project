@@ -7,6 +7,7 @@ import { GridService } from '@app/services/grid.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { Room, RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
+import { TimerService } from '@app/services/timer.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -31,9 +32,11 @@ export class GamePageComponent implements AfterViewInit {
         public gameSyncService: GameSyncService,
         private selectionManager: SelectionManagerService,
         private randomMode: RandomModeService,
+        private timerService: TimerService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
+        this.timerService.startTimer();
     }
 
     @HostListener('keyup', ['$event'])

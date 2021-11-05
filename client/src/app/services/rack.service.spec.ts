@@ -25,11 +25,11 @@ describe('RackService', () => {
                 id: PLAYER.realPlayer,
                 name: 'Random name',
                 rack: [
-                    { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                    { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-                    { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-                    { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                    { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                    { name: 'A', quantity: 9, points: 1, display: 'A' },
+                    { name: 'B', quantity: 2, points: 3, display: 'B' },
+                    { name: 'C', quantity: 2, points: 3, display: 'C' },
+                    { name: 'D', quantity: 3, points: 2, display: 'D' },
+                    { name: 'E', quantity: 15, points: 1, display: 'E' },
                 ],
                 points: 0,
             },
@@ -40,14 +40,14 @@ describe('RackService', () => {
         // const player: Player =
         // gameServiceSpy.players = [player];
         reserveServiceSpy.alphabets = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'F', quantity: 2, points: 4, affiche: 'F' },
-            { name: 'G', quantity: 2, points: 4, affiche: 'G' },
-            { name: 'H', quantity: 2, points: 4, affiche: 'H' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 2, points: 3, display: 'B' },
+            { name: 'C', quantity: 2, points: 3, display: 'C' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'F', quantity: 2, points: 4, display: 'F' },
+            { name: 'G', quantity: 2, points: 4, display: 'G' },
+            { name: 'H', quantity: 2, points: 4, display: 'H' },
         ];
         TestBed.configureTestingModule({ providers: [{ provide: ReserveService, useValue: reserveServiceSpy }] });
         service = TestBed.inject(RackService);
@@ -144,11 +144,11 @@ describe('RackService', () => {
     describe('findJokersNumberOnRack', () => {
         it('should return the number of jokers on Rack', () => {
             service.gameService.players[PLAYER.realPlayer].rack = [
-                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                { name: '*', quantity: 0, points: 0, affiche: '*' },
-                { name: '*', quantity: 0, points: 0, affiche: '*' },
-                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                { name: 'A', quantity: 9, points: 1, display: 'A' },
+                { name: '*', quantity: 0, points: 0, display: '*' },
+                { name: '*', quantity: 0, points: 0, display: '*' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
             ];
             const expectedResult = 2;
 
@@ -159,9 +159,9 @@ describe('RackService', () => {
 
         it('should return 0 if there is no joker on Rack', () => {
             service.gameService.players[PLAYER.realPlayer].rack = [
-                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                { name: 'A', quantity: 9, points: 1, display: 'A' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
             ];
             const expectedResult = 0;
 
@@ -244,17 +244,17 @@ describe('RackService', () => {
         it('should also replace *', () => {
             const wordToReplace = '*';
             service.gameService.players[PLAYER.realPlayer].rack = [
-                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                { name: '*', quantity: 0, points: 0, affiche: '*' },
-                { name: '*', quantity: 0, points: 0, affiche: '*' },
-                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                { name: 'A', quantity: 9, points: 1, display: 'A' },
+                { name: '*', quantity: 0, points: 0, display: '*' },
+                { name: '*', quantity: 0, points: 0, display: '*' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
             ];
 
             // Car replaceLetter est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'replaceLetter').and.callFake(() => {
-                service.gameService.players[PLAYER.realPlayer].rack[1] = { name: 'D', quantity: 3, points: 2, affiche: 'D' };
+                service.gameService.players[PLAYER.realPlayer].rack[1] = { name: 'D', quantity: 3, points: 2, display: 'D' };
             });
 
             service.replaceWord(wordToReplace);
@@ -266,7 +266,7 @@ describe('RackService', () => {
     describe('replaceLetter', () => {
         it('should call reserveServiceSpy.getLettersFromReserve if the letter to replace is on the rack', () => {
             const letterToReplace = 'A';
-            const replacementLetter = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
+            const replacementLetter = { name: 'X', quantity: 1, points: 10, display: 'X' };
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
             // Car replaceLetterOnRackOnly est privée
@@ -279,7 +279,7 @@ describe('RackService', () => {
         it('should call fillRackPortion there is a letter for replacement', () => {
             const letterToReplace = 'A';
             const indexOfLetterToReplaceOnRack = 0;
-            const replacementLetter = { name: 'D', quantity: 3, points: 2, affiche: 'D' };
+            const replacementLetter = { name: 'D', quantity: 3, points: 2, display: 'D' };
 
             // Car fillRackPortion est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -295,7 +295,7 @@ describe('RackService', () => {
 
         it('should call reserveServiceSpy.addLetterInReserve if there is letter for replacement and the replacement is also in reserve', () => {
             const letterToReplace = 'A';
-            const replacementLetter = { name: 'V', quantity: 2, points: 4, affiche: 'V' };
+            const replacementLetter = { name: 'V', quantity: 2, points: 4, display: 'V' };
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
             // Car replaceLetterOnRackOnly est privée
@@ -307,7 +307,7 @@ describe('RackService', () => {
 
         it('should not call reserveServiceSpy.addLetterInReserve if there is letter for replacement but the replacement is only on rack', () => {
             const letterToReplace = 'A';
-            const replacementLetter = { name: 'V', quantity: 2, points: 4, affiche: 'V' };
+            const replacementLetter = { name: 'V', quantity: 2, points: 4, display: 'V' };
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
             // Car replaceLetterOnRackOnly est privée
@@ -319,7 +319,7 @@ describe('RackService', () => {
 
         it('should actually replace the letter to replace on the rack', () => {
             const letterToReplace = 'A';
-            const replacementLetter = { name: 'V', quantity: 2, points: 4, affiche: 'V' };
+            const replacementLetter = { name: 'V', quantity: 2, points: 4, display: 'V' };
             const indexOfLetterToReplaceOnRack = 0;
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
@@ -332,7 +332,7 @@ describe('RackService', () => {
 
         it('should call findLetterPosition if the rackLetters is not null', () => {
             const letterToReplace = 'A';
-            const replacementLetter = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
+            const replacementLetter = { name: 'X', quantity: 1, points: 10, display: 'X' };
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
             // Car findLetterPosition est privée
@@ -349,7 +349,7 @@ describe('RackService', () => {
         it('should not call fillRackPortion if the letter to replace is not on the rack', () => {
             const notFound = -1;
             const letterToReplace = 'Z';
-            const replacementLetter = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
+            const replacementLetter = { name: 'X', quantity: 1, points: 10, display: 'X' };
             // Car fillRackPortion est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();

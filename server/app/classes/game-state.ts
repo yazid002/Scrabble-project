@@ -2,7 +2,7 @@ export interface ICharacter {
     name: string;
     quantity: number;
     points: number;
-    affiche: string;
+    display: string;
 }
 
 export interface Player {

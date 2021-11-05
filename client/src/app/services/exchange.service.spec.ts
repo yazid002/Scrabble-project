@@ -18,11 +18,11 @@ describe('ExchangeService', () => {
                 id: PLAYER.realPlayer,
                 name: 'Random name',
                 rack: [
-                    { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                    { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-                    { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-                    { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                    { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                    { name: 'A', quantity: 9, points: 1, display: 'A' },
+                    { name: 'B', quantity: 2, points: 3, display: 'B' },
+                    { name: 'C', quantity: 2, points: 3, display: 'C' },
+                    { name: 'D', quantity: 3, points: 2, display: 'D' },
+                    { name: 'E', quantity: 15, points: 1, display: 'E' },
                 ],
                 points: 0,
             },
@@ -63,11 +63,11 @@ describe('ExchangeService', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'D'];
         rackServiceSpy.gameService.players[0].rack = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
         const rackLettersToStrings = ['A', 'B', 'B', 'D', 'E'];
         rackServiceSpy.countLetterOccurrences
@@ -86,11 +86,11 @@ describe('ExchangeService', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'B', 'D'];
         rackServiceSpy.gameService.players[0].rack = [
-            { name: 'A', quantity: 1, points: 3, affiche: 'A' },
-            { name: 'B', quantity: 1, points: 3, affiche: 'B' },
-            { name: 'C', quantity: 1, points: 3, affiche: 'C' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 1, points: 3, display: 'A' },
+            { name: 'B', quantity: 1, points: 3, display: 'B' },
+            { name: 'C', quantity: 1, points: 3, display: 'C' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
         const rackLettersToStrings = ['A', 'B', 'C', 'D', 'E'];
         rackServiceSpy.countLetterOccurrences
