@@ -1,11 +1,11 @@
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { PLAYER } from '@app/classes/player';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { GameService } from '@app/services/game.service';
 import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
-import { PLAYER } from '@app/classes/player';
 
 describe('RackService', () => {
     let service: RackService;
@@ -280,7 +280,6 @@ describe('RackService', () => {
             const letterToReplace = 'A';
             const indexOfLetterToReplaceOnRack = 0;
             const replacementLetter = { name: 'D', quantity: 3, points: 2, affiche: 'D' };
-            const color = 'NavajoWhite';
 
             // Car fillRackPortion est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -291,7 +290,7 @@ describe('RackService', () => {
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
-            expect(fillRackPortionSpy).toHaveBeenCalledWith(indexOfLetterToReplaceOnRack, color);
+            expect(fillRackPortionSpy).toHaveBeenCalledWith(indexOfLetterToReplaceOnRack);
         });
 
         it('should call reserveServiceSpy.addLetterInReserve if there is letter for replacement and the replacement is also in reserve', () => {
@@ -328,11 +327,7 @@ describe('RackService', () => {
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
-<<<<<<< HEAD
-            expect(service.gameService.players[REAL_PLAYER].rack[indexOfLetterToReplaceOnRack]).toEqual(replacementLetter);
-=======
-            expect(service.gameService.players[PLAYER.realPlayer].rack[INDEX_OF_LETTER_TO_REPLACE_ON_RACK]).toEqual(REPLACEMENT_LETTER);
->>>>>>> develop
+            expect(service.gameService.players[PLAYER.realPlayer].rack[indexOfLetterToReplaceOnRack]).toEqual(replacementLetter);
         });
 
         it('should call findLetterPosition if the rackLetters is not null', () => {
@@ -463,31 +458,5 @@ describe('RackService', () => {
             const afterSize = imageData.filter((x) => x !== 0).length;
             expect(afterSize).toBeGreaterThan(beforeSize);
         });
-    });
-
-    it(' fillRack should call fillRackPortion as many times as RACK_SIZE', () => {
-        const aLetterInReserve = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
-
-        // Car fillRackPortion est privée
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();
-        reserveServiceSpy.getLettersFromReserve.and.returnValue([aLetterInReserve]);
-
-        // Car fillRackPortion est privée
-        // eslint-disable-next-line dot-notation
-        service['fillRack']();
-
-        expect(fillRackPortionSpy).toHaveBeenCalledTimes(RACK_SIZE);
-    });
-
-    it(' fillRack should call reserveServiceSpy.getLettersFromReserve once', () => {
-        const aLetterInReserve = { name: 'X', quantity: 1, points: 10, affiche: 'X' };
-        reserveServiceSpy.getLettersFromReserve.and.returnValue([aLetterInReserve]);
-
-        // Car fillRackPortion est privée
-        // eslint-disable-next-line dot-notation
-        service['fillRack']();
-
-        expect(reserveServiceSpy.getLettersFromReserve).toHaveBeenCalledTimes(1);
     });
 });

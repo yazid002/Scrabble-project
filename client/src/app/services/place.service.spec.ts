@@ -67,13 +67,13 @@ describe('PlaceService', () => {
         ]);
 
         rackServiceSpy.gameService = gameServiceSpy;
-        gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion', 'writeLetter']);
+        gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion', 'writeLetter', 'removeArrow']);
 
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         gridServiceSpy.gridContext = ctxStub;
         gridServiceSpy.letterStyle = { color: 'NavajoWhite', font: '15px serif' };
         gridServiceSpy.pointStyle = { color: 'NavajoWhite', font: '10px serif' };
-
+        gridServiceSpy.border = { squareBorderColor: 'black' };
         pointsCountingServiceSpy = jasmine.createSpyObj('PointsCountingService', ['processWordPoints']);
         TestBed.configureTestingModule({
             providers: [
@@ -139,7 +139,7 @@ describe('PlaceService', () => {
 
             await service.placeWord(wordToCheck, coord, direction, true);
 
-            expect(writeWordSpy).toHaveBeenCalledTimes(1);
+            expect(writeWordSpy).toHaveBeenCalledTimes(2);
         });
 
         it(' should call verifyServiceSpy.checkAllWordsExist', async () => {
@@ -214,20 +214,9 @@ describe('PlaceService', () => {
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             const writeWordSpy = spyOn(service, 'writeWord').and.callThrough();
 
-            service.placeWordInstant(wordToCheck, coord, direction);
+            service.placeWordInstant(wordToCheck, coord, direction, true);
 
             expect(writeWordSpy).toHaveBeenCalledTimes(1);
-        });
-        it('should not write word if word is valid on placeWordInstant', () => {
-            const wordExistsParams = { wordExists: false, errorMessage: '' };
-            verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
-            verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
-            verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
-            const writeWordSpy = spyOn(service, 'writeWord').and.callThrough();
-
-            service.placeWordInstant(wordToCheck, coord, direction);
-
-            expect(writeWordSpy).not.toHaveBeenCalled();
         });
     });
 });

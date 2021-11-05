@@ -195,7 +195,7 @@ describe('ExchangeService', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const validateExchangeFeasibilitySpy = spyOn<any>(service, 'validateExchangeFeasibility').and.returnValue(void '');
 
-        service.exchangeLetters(lettersToChange);
+        service.exchangeLetters(lettersToChange, true);
 
         expect(validateExchangeFeasibilitySpy).toHaveBeenCalled();
         expect(rackServiceSpy.replaceLetter).toHaveBeenCalledTimes(lettersToChange.length);

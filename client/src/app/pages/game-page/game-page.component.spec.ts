@@ -35,7 +35,7 @@ describe('GamePageComponent', () => {
     const CANVAS_HEIGHT = 500;
 
     beforeEach(async () => {
-        gridServiceSpy = jasmine.createSpyObj('GridService', ['increaseTileSize', 'decreaseTileSize', 'drawGrid']);
+        gridServiceSpy = jasmine.createSpyObj('GridService', ['increaseTileSize', 'decreaseTileSize', 'drawGrid', 'randomizeBonus']);
 
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         gridServiceSpy.gridContext = ctxStub;

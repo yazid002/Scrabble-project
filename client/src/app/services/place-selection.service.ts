@@ -239,6 +239,7 @@ export class PlaceSelectionService {
     cancelUniqueBoardClick() {
         const coord = this.selectedTilesForPlacement.pop();
         if (this.selectedTilesForPlacement.length === 0 && this.selectedCoord.x !== -1) {
+            console.log('le selected coord 1 ', this.selectedCoord);
             this.gridService.removeArrow(this.selectedCoord);
         }
 
@@ -259,6 +260,7 @@ export class PlaceSelectionService {
             this.gridService.drawArrow(this.direction, this.selectedCoord);
         }
         if (this.selectedTilesForPlacement.length === 0) {
+            console.log('le selected coord ', this.selectedCoord);
             this.gridService.removeArrow(this.selectedCoord);
             this.selectedCoord.x = -1;
             this.selectedCoord.y = -1;

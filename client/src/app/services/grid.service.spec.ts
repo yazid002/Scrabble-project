@@ -43,7 +43,7 @@ describe('GridService', () => {
     });
 
     it(' drawGrid should call StrokeRect ', () => {
-        const expectCallTimes = 450;
+        const expectCallTimes = 225;
         const strokeTextSpy = spyOn(service.gridContext, 'strokeRect').and.callThrough();
         service.drawGrid();
 
@@ -54,27 +54,27 @@ describe('GridService', () => {
         it('should call strokeText to represent letters and their number of point on the board', () => {
             const strokeTextSpy = spyOn(service.gridContext, 'strokeText').and.callThrough();
 
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, style.color as string, style.font as string);
             expect(strokeTextSpy).toHaveBeenCalledTimes(2);
         });
 
         it('should call clearRect once', () => {
             const clearRectSpy = spyOn(service.gridContext, 'clearRect').and.callThrough();
 
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, style.color as string, style.font as string);
             expect(clearRectSpy).toHaveBeenCalledTimes(1);
         });
 
         it('should call stroke once', () => {
             const strokeSpy = spyOn(service.gridContext, 'stroke').and.callThrough();
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, style.color as string, style.font as string);
             expect(strokeSpy).toHaveBeenCalledTimes(1);
         });
 
         it('should call fillRect once', () => {
             const fillRectSpy = spyOn(service.gridContext, 'fillRect').and.callThrough();
 
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, style.color as string, style.font as string);
             expect(fillRectSpy).toHaveBeenCalledTimes(1);
         });
 
@@ -87,7 +87,7 @@ describe('GridService', () => {
             ).data;
             const beforeSize = imageData.filter((x) => x !== 0).length;
 
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, style.color as string, style.font as string);
 
             imageData = service.gridContext.getImageData(
                 (CANVAS_WIDTH / SQUARE_NUMBER) * coord.y,
@@ -111,12 +111,13 @@ describe('GridService', () => {
         });
     });
 
-    it(' changeTileSize should call fillGridPortion if tile.letter is empty ', () => {
+    it(' changeTileSize should call fillGridPortion if tile.letter is not empty and not a bonus', () => {
         const x = 3;
         const y = 4;
         const letterStep = 1;
         const pointStep = 1;
-        tiles[y][x].letter = 'a';
+        tiles[y][x].text = 'a';
+        tiles[y][x].bonus = 'x';
 
         const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
         service.changeTileSize(letterStep, pointStep);

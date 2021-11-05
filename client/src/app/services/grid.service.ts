@@ -32,7 +32,7 @@ export class GridService {
 
     gridContext: CanvasRenderingContext2D;
 
-    constructor(private reserveService: ReserveService, private verifyService: VerifyService) {}
+    constructor(private reserveService: ReserveService, public verifyService: VerifyService) {}
 
     writeLetter(letter: string, coord: Vec2, throughChat: boolean): void {
         console.log(throughChat);
@@ -135,68 +135,77 @@ export class GridService {
     }
 
     fillGridPortion(coord: Vec2, letter: string, color: string, font: string) {
-        // // console.log('le style de la case : ', letter, color);
-        const isLetterUsedOnBoard =
-            this.verifyService.lettersUsedOnBoard.filter(
-                (aletter: { letter: string; coord: Vec2 }) => aletter.coord.x === coord.x && aletter.coord.y === coord.y,
-            ).length === 0;
-        if (isLetterUsedOnBoard) {
-            const lettersPixelsWidthAdjustment = 2;
-            const lettersPixelsHeighAdjustment = 22;
-            const pointsPixelsWidthAdjustment = 16;
-            const pointsPixelsHeighAdjustment = 30;
-            this.gridContext.clearRect(
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
-                DEFAULT_WIDTH / SQUARE_NUMBER,
-                DEFAULT_WIDTH / SQUARE_NUMBER,
-            );
+        // console.log('le style de la case : ', letter, color, coord);
 
-            //  const strokeStyle = 'black';
-            //  const lineWidth = this.squareLineWidth;
-            this.changeGridStyle(color, undefined, this.squareColor, this.squareLineWidth);
+        // console.log('je ne suis pas dans le board ', letter);
+        const lettersPixelsWidthAdjustment = 2;
+        const lettersPixelsHeighAdjustment = 22;
+        const pointsPixelsWidthAdjustment = 16;
+        const pointsPixelsHeighAdjustment = 30;
+        this.gridContext.clearRect(
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+            DEFAULT_WIDTH / SQUARE_NUMBER,
+            DEFAULT_WIDTH / SQUARE_NUMBER,
+        );
 
-            this.gridContext.fillRect(
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
-                DEFAULT_WIDTH / SQUARE_NUMBER,
-                DEFAULT_WIDTH / SQUARE_NUMBER,
-            );
+        //  const strokeStyle = 'black';
+        //  const lineWidth = this.squareLineWidth;
+        this.changeGridStyle(color, undefined, this.squareColor, this.squareLineWidth);
 
-            // this.gridContext.strokeStyle = this.border.squareBorderColor as string;
-            this.changeGridStyle(undefined, undefined, this.border.squareBorderColor as string);
+        this.gridContext.fillRect(
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+            DEFAULT_WIDTH / SQUARE_NUMBER,
+            DEFAULT_WIDTH / SQUARE_NUMBER,
+        );
 
-            this.gridContext.strokeRect(
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
-                DEFAULT_WIDTH / SQUARE_NUMBER,
-                DEFAULT_WIDTH / SQUARE_NUMBER,
-            );
+        // this.gridContext.strokeStyle = this.border.squareBorderColor as string;
+        this.changeGridStyle(undefined, undefined, this.border.squareBorderColor as string);
 
-            const fillStyle = 'black';
-            this.changeGridStyle(fillStyle, font);
-            this.gridContext.strokeStyle = 'black';
+        this.gridContext.strokeRect(
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+            DEFAULT_WIDTH / SQUARE_NUMBER,
+            DEFAULT_WIDTH / SQUARE_NUMBER,
+        );
+
+        const fillStyle = 'black';
+        this.changeGridStyle(fillStyle, font);
+        this.gridContext.strokeStyle = 'black';
+        this.gridContext.strokeText(
+            letter.toUpperCase(),
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsWidthAdjustment,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + lettersPixelsHeighAdjustment,
+        );
+
+        let character = this.reserveService.findLetterInReserve(letter);
+
+        if (character !== NOT_FOUND && letter !== '') {
+            character = character as ICharacter;
+
+            this.changeGridStyle(this.pointStyle.color, this.pointStyle.font);
+            const points =
+                tiles[coord.y][coord.x].letter !== '' && tiles[coord.y][coord.x].letter === tiles[coord.y][coord.x].letter.toUpperCase()
+                    ? 0
+                    : character.points;
+            console.log('mon point letter ', tiles[coord.y][coord.x].letter);
+            // const isLetterUsedOnBoard =
+            //     this.verifyService.lettersUsedOnBoard.filter(
+            //         (aletter: { letter: string; coord: Vec2 }) => aletter.coord.x === coord.x && aletter.coord.y === coord.y,
+            //     ).length !== 0;
+            // //  const point = !isLetterUsedOnBoard?
+            // if (!isLetterUsedOnBoard) {
             this.gridContext.strokeText(
-                letter.toUpperCase(),
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsWidthAdjustment,
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + lettersPixelsHeighAdjustment,
+                points.toString(),
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + pointsPixelsWidthAdjustment,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + pointsPixelsHeighAdjustment,
             );
-
-            let character = this.reserveService.findLetterInReserve(letter);
-            if (character !== NOT_FOUND && letter !== '') {
-                character = character as ICharacter;
-
-                this.changeGridStyle(this.pointStyle.color, this.pointStyle.font);
-
-                this.gridContext.strokeText(
-                    character.points.toString(),
-                    (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + pointsPixelsWidthAdjustment,
-                    (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + pointsPixelsHeighAdjustment,
-                );
-            }
-
-            this.gridContext.stroke();
+            // }
         }
+
+        this.gridContext.stroke();
+        //  }
     }
 
     changeGridStyle(fillStyle?: string, font?: string, strokeStyle?: string, lineWidth?: number): void {

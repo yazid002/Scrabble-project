@@ -34,7 +34,7 @@ export class GameSyncService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private gridService: GridService,
-        private placeSelectionService: PlaceSelectionService,
+        public placeSelectionService: PlaceSelectionService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();

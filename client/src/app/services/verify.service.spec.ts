@@ -95,7 +95,7 @@ describe('VerifyService', () => {
 
     it(' validateFirstMove should return void if the first move is correct', () => {
         const word = 'moto';
-        const coord = { x: 6, y: 7 };
+        const coord = { x: 7, y: 6 };
         const direction = 'v';
 
         // Car validateFirstMove est privée
@@ -118,35 +118,38 @@ describe('VerifyService', () => {
 
     it(' validateJokersOccurrencesMatch should throw an error if the number of jokers provided is more than the number of jokers available', () => {
         const word = 'mOtO';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
         rackServiceSpy.findJokersNumberOnRack.and.returnValue(1);
 
         // Car validateJokersOccurrencesMatch est privée
         // eslint-disable-next-line dot-notation
-        expect(() => service['validateJokersOccurrencesMatch'](word)).toThrow(
+        expect(() => service['validateJokersOccurrencesMatch'](word, lettersUsedOnBoard)).toThrow(
             new NotEnoughOccurrences(' * (lettres blanches) représentant les lettres "O", "O" demandées.'),
         );
     });
 
     it(' validateJokersOccurrencesMatch should return void if the number of jokers provided is equal to the number of jokers available', () => {
         const word = 'mOto';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
         rackServiceSpy.findJokersNumberOnRack.and.returnValue(1);
 
         // Car validateJokersOccurrencesMatch est privée
         // eslint-disable-next-line dot-notation
-        const result = service['validateJokersOccurrencesMatch'](word);
+        const result = service['validateJokersOccurrencesMatch'](word, lettersUsedOnBoard);
         expect(result).toEqual(void '');
     });
 
     it(' validateJokersOccurrencesMatch should return void if the number of jokers provided is less than the number of jokers available', () => {
         const word = 'mOt';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
         rackServiceSpy.findJokersNumberOnRack.and.returnValue(2);
 
         // Car validateJokersOccurrencesMatch est privée
         // eslint-disable-next-line dot-notation
-        const result = service['validateJokersOccurrencesMatch'](word);
+        const result = service['validateJokersOccurrencesMatch'](word, lettersUsedOnBoard);
         expect(result).toEqual(void '');
     });
 

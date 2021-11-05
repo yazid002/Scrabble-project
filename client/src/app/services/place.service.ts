@@ -139,7 +139,10 @@ export class PlaceService {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
             const x = computingCoord.x;
             const y = computingCoord.y;
-            tiles[y][x].letter = word[i].toLowerCase();
+            if (tiles[y][x].letter === '') {
+                tiles[y][x].letter = word[i];
+            }
+            console.log('mon point letter ici ', tiles[y][x].letter);
             tiles[y][x].bonus = 'x';
         }
     }

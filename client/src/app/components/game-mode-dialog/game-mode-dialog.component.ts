@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { PLAYER } from '@app/classes/player';
+import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 
@@ -14,12 +16,17 @@ export class GameModeDialogComponent {
     isChecked: boolean = false;
     message: string = '';
 
-    constructor(public userSettingsService: UserSettingsService, private gridService: GridService) {}
+    constructor(public userSettingsService: UserSettingsService, public gameService: GameService, private gridService: GridService) {}
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);
         this.error = result.error;
         this.errorMessage = result.errorMessage;
+    }
+
+    configureGame() {
+        this.gameService.players[PLAYER.realPlayer].name = this.userSettingsService.nameOption.userChoice;
+        this.gameService.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
     }
 
     applyRandomMode(event: MatCheckboxChange) {

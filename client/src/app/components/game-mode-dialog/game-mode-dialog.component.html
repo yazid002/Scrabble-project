@@ -5,8 +5,6 @@
 <form (keyup)="validateName()" mat-dialog-content aria-details="w">
     <mat-card>
         <div class="setting" *ngFor="let setting of userSettingsService.settings | keyvalue">
-
-        
             <!-- {{ setting | json }} -->
             <mat-card-title>{{ setting.value.setting.settingName }}</mat-card-title>
             <mat-radio-group [name]="setting.key" [(ngModel)]="setting.value.currentChoiceKey">
@@ -22,7 +20,7 @@
         </div>
         <div>
             <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
-                <mat-label>{{error? errorMessage: userSettingsService.nameOption.displayName}}</mat-label>
+                <mat-label>{{ error ? errorMessage : userSettingsService.nameOption.displayName }}</mat-label>
                 <input
                     autocomplete="off"
                     matInput
@@ -32,26 +30,25 @@
                     [placeholder]="userSettingsService.nameOption.displayName"
                     required="true"
                     [(ngModel)]="userSettingsService.nameOption.userChoice"
+                    ngDefaultControl
                 />
             </mat-form-field>
+            {{ userSettingsService.nameOption.userChoice }}
         </div>
 
         <div>
-            <mat-checkbox [(ngModel)] = "isChecked" [ngModelOptions]="{standalone: true}" (change)="applyRandomMode($event)">Mode Bonus </mat-checkbox> <br>
-            {{this.message}}
-
-
-
+            <mat-checkbox [(ngModel)]="isChecked" ngDefaultControl [ngModelOptions]="{ standalone: true }" (change)="applyRandomMode($event)"
+                >Mode Bonus
+            </mat-checkbox>
+            <br />
+            {{ this.message }}
         </div>
 
-            
-
-
-      
-        
         <section id="footer">
             <button mat-raised-button mat-dialog-close>Retour À l'accueil</button>
-            <button mat-raised-button color="primary" type="submit" [disabled]="error" routerLink="game" mat-dialog-close>Jouer</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="error" routerLink="game" mat-dialog-close (click)="configureGame()">
+                Jouer
+            </button>
         </section>
     </mat-card>
 </form>

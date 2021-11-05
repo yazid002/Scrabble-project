@@ -50,7 +50,6 @@ export class VirtualPlayerService {
         });
     }
     private play() {
-        console.log('rack du joueur virtuel ', this.gameService.players[PLAYER.otherPlayer].rack);
         const TURN_TIME = 3000;
         let skipped = false;
         setTimeout(() => {

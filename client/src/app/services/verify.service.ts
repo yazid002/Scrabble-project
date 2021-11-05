@@ -34,10 +34,11 @@ export class VerifyService {
             const x = computedCoord.x;
             const y = computedCoord.y;
             const charInBox = tiles[y][x].letter;
+            // const textInBox = tiles[y][x].text;
             const letter = word.charAt(i) === word.charAt(i).toUpperCase() ? '*' : word.charAt(i);
-            console.log('charInBox ', charInBox, 'letter ', word.charAt(i));
+            // console.log('charInBox ', charInBox, 'letter ', word.charAt(i));
             if (!this.isCaseEmpty(charInBox)) {
-                if (!this.isLetterOnBoardTheSame(charInBox, word.charAt(i).toLowerCase())) {
+                if (!this.isLetterOnBoardTheSame(charInBox.toLowerCase(), word.charAt(i).toLowerCase())) {
                     this.success = false;
                     throw new ImpossibleCommand("Il y a déjà une lettre dans l'une des cases ciblées.");
                 }
