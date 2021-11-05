@@ -9,7 +9,7 @@ describe('Socket manager service', () => {
     let service: SocketManager;
     let server: Server;
     let clientSocket: Socket;
-    const RESPONSE_DALAY = 1000;
+    const RESPONSE_DELAY = 1000;
     beforeEach(() => {
         server = Container.get(Server);
         server.init();
@@ -34,7 +34,7 @@ describe('Socket manager service', () => {
         setTimeout(() => {
             expect(service.rooms.length).greaterThan(initialArraySize);
             done();
-        }, RESPONSE_DALAY);
+        }, RESPONSE_DELAY);
     });
 
     it("should make the client socket join the romm asked on 'joinRoom'", (done) => {
@@ -47,7 +47,7 @@ describe('Socket manager service', () => {
         setTimeout(() => {
             expect(askMasterSyncCount).greaterThan(0);
             done();
-        }, RESPONSE_DALAY);
+        }, RESPONSE_DELAY);
     });
 
     it("should emit 'abandon' to the client's room when he calls 'abandon'", (done) => {
@@ -65,7 +65,7 @@ describe('Socket manager service', () => {
         setTimeout(() => {
             expect(receivedUserId).to.equal(userId);
             done();
-        }, RESPONSE_DALAY);
+        }, RESPONSE_DELAY);
     });
 
     it('should emit current time every second', (done) => {
@@ -98,7 +98,7 @@ describe('Socket manager service', () => {
             expect(receivedMessage.body).to.equal(message.body);
             expect(receivedMessage.userId).to.equal(message.userId);
             done();
-        }, RESPONSE_DALAY);
+        }, RESPONSE_DELAY);
     });
 
     it("should emit gameData to members in room when a client calls 'syncGameData'", (done) => {
@@ -135,7 +135,7 @@ describe('Socket manager service', () => {
             expect(receivedGameState.currentTurn).to.equal(sendGameState.currentTurn);
             expect(receivedGameState.skipCounter).to.equal(sendGameState.skipCounter);
             done();
-        }, RESPONSE_DALAY);
+        }, RESPONSE_DELAY);
     });
     it('should delete a room from list of available rooms when joining it', (done) => {
         const oldRoom: Room = {
@@ -151,6 +151,20 @@ describe('Socket manager service', () => {
             const actual = service.rooms.find((room) => room === oldRoom);
             expect(actual).to.equal(undefined);
             done();
-        }, RESPONSE_DALAY);
+        }, RESPONSE_DELAY);
+    });
+
+    it('should emit rooms when leaveRoom is emitted', (done) => {
+        let callCounter = '';
+        clientSocket.on('rooms', () => {
+            callCounter = 'hello';
+        });
+        clientSocket.emit('leaveRoom');
+
+        setTimeout(() => {
+            // eslint-disable-next-line dot-notation
+            expect(callCounter).to.equal('hello');
+            done();
+        }, RESPONSE_DELAY);
     });
 });

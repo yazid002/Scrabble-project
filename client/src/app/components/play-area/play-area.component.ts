@@ -6,16 +6,18 @@ import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
+import { PLAYER } from '@app/classes/player';
+import { GameService } from '@app/services/game.service';
+import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 @Component({
     selector: 'app-play-area',
     templateUrl: './play-area.component.html',
     styleUrls: ['./play-area.component.scss'],
 })
 export class PlayAreaComponent implements AfterViewInit {
-    @ViewChild('gridCanvas', { static: false }) gridCanvas!: ElementRef<HTMLCanvasElement>;
-    @ViewChild('rackCanvas', { static: false }) rackCanvas!: ElementRef<HTMLCanvasElement>;
-    // selectionType: typeof SelectionType;
-
+    @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('rackCanvas', { static: false }) private rackCanvas!: ElementRef<HTMLCanvasElement>;
+    player = PLAYER;
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     constructor(
@@ -24,7 +26,10 @@ export class PlayAreaComponent implements AfterViewInit {
         public exchangeService: ExchangeService, //   private commandExecutionService: CommandExecutionService,
         public selectionManager: SelectionManagerService,
         public randomMode: RandomModeService,
+        public gameService: GameService,
+        private passExecutionService: PassExecutionService,
     ) {}
+
     @HostListener('click', ['$event'])
     onLeftClick(event: MouseEvent) {
         if (event.target === this.gridCanvas.nativeElement) {
@@ -68,5 +73,9 @@ export class PlayAreaComponent implements AfterViewInit {
 
     get height(): number {
         return this.canvasSize.y;
+    }
+
+    skipTurn(): void {
+        this.passExecutionService.execute();
     }
 }

@@ -40,6 +40,7 @@ export class VirtualPlayerService {
         this.alreadyInitialized = false;
         this.initialize();
     }
+
     initialize() {
         if (this.alreadyInitialized) return;
         this.alreadyInitialized = true;
