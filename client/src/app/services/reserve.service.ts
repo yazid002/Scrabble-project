@@ -37,6 +37,7 @@ export class ReserveService {
     nbLettersInReserve: number;
     constructor() {
         this.getQuantityOfAvailableLetters();
+        this.getInitialReserve();
     }
 
     getQuantityOfAvailableLetters() {
@@ -87,6 +88,16 @@ export class ReserveService {
         }
 
         return notFound;
+    }
+
+    getInitialReserve() {
+        const reserve: ICharacter[] = [];
+
+        for (let i = 0; i < this.alphabets.length; i++) {
+            reserve[i] = this.alphabets[i];
+        }
+
+        return reserve;
     }
 
     private findLetterPosition(letterToCheck: string, letters: ICharacter[]): number {

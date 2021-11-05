@@ -104,6 +104,8 @@ export class PlaceService {
                         this.selectionManagerService.getSelectionType(SelectionType.Rack);
                         this.timerService.resetTimer();
                     }, placementDuration);
+
+                    localStorage.setItem('bonusGrid', JSON.stringify(tiles));
                 }
 
                 reject(new ImpossibleCommand(wordValidationParameters.errorMessage));

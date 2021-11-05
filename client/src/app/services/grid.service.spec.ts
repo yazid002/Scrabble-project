@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SQUARE_NUMBER } from '@app/constants/board-constants';
 import { GridService } from '@app/services/grid.service';
 
-describe('GridService', () => {
+fdescribe('GridService', () => {
     let service: GridService;
     let ctxStub: CanvasRenderingContext2D;
 
@@ -187,21 +187,39 @@ describe('GridService', () => {
         expect(changeTileSizeSpy).not.toHaveBeenCalled();
     });
 
-    it(' removeArrow should call fillGridPortion 1 time', () => {
-        const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
+    // it(' removeArrow should call fillGridPortion 1 time', () => {
+    //     const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
 
-        service.removeArrow(coord);
+    //     service.removeArrow(coord);
 
-        expect(fillGridPortionSpy).not.toHaveBeenCalled();
-    });
+    //     //   expect(fillGridPortionSpy).toHaveBeenCalled();
+    // });
 
-    it('drawArrow should call drawImage 1 time', () => {
-        const img = document.getElementById('img') as HTMLImageElement;
+    // it('drawArrow should call drawImage 1 time', () => {
+    //     //  const img = document.getElementById('img') as HTMLImageElement;
+    //     const img = { src: '' } as CanvasImageSource;
 
-        const drawImageSpy = spyOn(service.gridContext, 'drawImage').and.callThrough();
+    //     spyOn(document, 'getElementById').and.returnValue(img);
 
-        service.gridContext.drawImage(img, coord.x, coord.y);
+    //     const drawImageSpy = spyOn(service.gridContext, 'drawImage').and.callThrough();
 
-        expect(drawImageSpy).toHaveBeenCalled();
-    });
+    //     service.drawArrow(true, coord);
+    //     // service.gridContext.drawImage(img, coord.x, coord.y);
+
+    //     expect(drawImageSpy).toHaveBeenCalled();
+    // });
+
+    // it('drawArrow should call drawImage 1 time', () => {
+    //      const img = document.getElementById('img') as HTMLImageElement;
+    //     const img = { src: '' } as CanvasImageSource;
+
+    //     spyOn(document, 'getElementById').and.returnValue(img);
+
+    //     const drawImageSpy = spyOn(service.gridContext, 'drawImage').and.callThrough();
+
+    //     service.drawArrow(true, coord);
+    //     service.gridContext.drawImage(img, coord.x, coord.y);
+
+    //     expect(drawImageSpy).toHaveBeenCalled();
+    // });
 });

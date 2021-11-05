@@ -7,9 +7,11 @@ import { GameService } from '@app/services/game.service';
     styleUrls: ['./quit-confirmation-dialog.component.scss'],
 })
 export class QuitConfirmationDialogComponent {
-    constructor(private gameService: GameService) {}
+    constructor(private gameService: GameService,) {}
 
     quitGame() {
         this.gameService.quitGame();
+        // this.gamesync.receiveResetConfig();
+        localStorage.clear();
     }
 }

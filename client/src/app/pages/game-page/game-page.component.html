@@ -20,7 +20,6 @@
         <div *ngIf="!disableManipulation()">
             <button mat-raised-button color="primary" type="submit" (click)="onCancelManipulation(selectionType.Rack)">Annuler</button>
         </div>
-        <button id="random" (click)="randomNumber()">random</button>
 
         <div *ngIf="!hideOperation(operationType.Place)">
             <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement(selectionType.Grid)">Jouer</button>

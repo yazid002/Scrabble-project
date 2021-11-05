@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { PLAYER } from '@app/classes/player';
 import { GameService } from '@app/services/game.service';
-import { GridService } from '@app/services/grid.service';
+import { RandomModeService } from '@app/services/random-mode.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class GameModeDialogComponent {
     isChecked: boolean = false;
     message: string = '';
 
-    constructor(public userSettingsService: UserSettingsService, public gameService: GameService, private gridService: GridService) {}
+    constructor(public userSettingsService: UserSettingsService, public gameService: GameService, private randomMode: RandomModeService) {}
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);
@@ -30,7 +30,7 @@ export class GameModeDialogComponent {
     }
 
     applyRandomMode(event: MatCheckboxChange) {
-        this.gridService.isChecked = event.checked;
+        this.randomMode.isChecked = event.checked;
         this.message = 'MODE BONUS ALEATOIRE ACTIVÉ ';
         if (!event.checked) {
             this.message = 'MODE BONUS ALEATOIRE DESACTIVÉ';

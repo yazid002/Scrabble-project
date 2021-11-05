@@ -38,6 +38,7 @@ export class GameSyncService {
     ) {
         this.alreadyInitialized = false;
         this.initialize();
+        this.sendToLocalStorage();
     }
     initialize() {
         if (this.alreadyInitialized) return;
@@ -45,7 +46,10 @@ export class GameSyncService {
         this.sendGameStateSignal = new BehaviorSubject<GameState>(this.getGameState());
         this.sendAbandonSignal = new BehaviorSubject<string>('');
         this.sendOtherPlayerTrigger = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
-            if (numPlayers !== 'multiplayer') return;
+            if (numPlayers !== 'multiplayer') {
+                // this.sendToLocalStorage();
+                return;
+            }
             this.sendToServer();
         });
         this.abandonTrigger = this.gameService.abandonSignal.subscribe((reason: string) => {
@@ -71,11 +75,35 @@ export class GameSyncService {
             this.sendToServer();
         }
     }
+
     sendToServer() {
         const gameState = this.getGameState();
         this.sendGameStateSignal.next(gameState);
     }
-    private getGameState(): GameState {
+
+    recieveFromLocalStorege() {
+        const gameState = JSON.parse(localStorage.getItem('gameState') as string) as GameState;
+
+        this.reserveService.alphabets = gameState.alphabetReserve;
+        this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
+        this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
+        this.gameService.skipCounter = gameState.skipCounter;
+        this.timerService.counter.totalTimer = gameState.timer;
+        for (let i = 0; i < tiles.length; i++) {
+            tiles[i] = gameState.grid[i];
+        }
+        this.gridService.drawGrid();
+    }
+
+    sendToLocalStorage() {
+        setInterval(() => {
+            const gameState = this.getGameState();
+            localStorage.clear();
+
+            localStorage.setItem('gameState', JSON.stringify(gameState));
+        }, 1000);
+    }
+    getGameState(): GameState {
         //   for (const player of this.gameService.players) {
         //   if (player.placementParameters) {
         this.placeSelectionService.cancelPlacement();
@@ -95,5 +123,38 @@ export class GameSyncService {
             grid: tempGrid,
         };
         return gameState;
+    }
+
+    reset(): GameState {
+        const resetGrid: Case[][] = tiles;
+        for (let i = 0; i < tiles.length; i++) {
+            resetGrid[i] = tiles[i];
+        }
+
+        const initialReserve = this.reserveService.getInitialReserve();
+        const gameState: GameState = {
+            players: [],
+            alphabetReserve: initialReserve,
+            currentTurn: 0,
+            skipCounter: 0,
+            timer: 0,
+            grid: resetGrid,
+        };
+
+        return gameState;
+    }
+
+    receiveResetConfig() {
+        const resetGame = this.reset();
+
+        this.reserveService.alphabets = resetGame.alphabetReserve;
+        this.gameService.players[PLAYER.otherPlayer] = resetGame.players[PLAYER.realPlayer];
+        this.gameService.currentTurn = (resetGame.currentTurn + 1) % 2;
+        this.gameService.skipCounter = resetGame.skipCounter;
+        this.timerService.counter.totalTimer = resetGame.timer;
+        for (let i = 0; i < tiles.length; i++) {
+            tiles[i] = resetGame.grid[i];
+        }
+        this.gridService.drawGrid();
     }
 }
