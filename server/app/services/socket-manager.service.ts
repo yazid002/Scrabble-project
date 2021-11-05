@@ -74,7 +74,6 @@ export class SocketManager {
                 setTimeout(() => {
                     const room = this.rooms.find((element) => element.clients.includes(socket.id));
                     if (!room) return;
-                    console.log('Client ', socket.id, 'left from room ', room.id);
                     this.sio.to(room.id).emit('abandon', socket.id);
                     this.leaveRoom(socket.id);
                 }, ABANDON_TIMER);

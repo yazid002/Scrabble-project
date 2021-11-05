@@ -27,7 +27,7 @@ describe('Socket manager service', () => {
     });
 
     it('should create a room when client emits createRoom signal', (done) => {
-        const room: Room = { id: 'someId', settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
+        const room: Room = { id: 'someId', clients: ['someId'], settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
         const initialArraySize = service.rooms.length;
 
         clientSocket.emit('createRoom', room);
@@ -140,6 +140,7 @@ describe('Socket manager service', () => {
     it('should delete a room from list of available rooms when joining it', (done) => {
         const oldRoom: Room = {
             id: 'an id',
+            clients: ['an id'],
             name: 'a name',
             settings: { mode: 'a mode', timer: 'a time' },
         };
