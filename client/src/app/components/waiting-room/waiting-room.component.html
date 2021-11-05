@@ -1,0 +1,28 @@
+<div class="title">Waiting Room</div>
+<mat-card class="container">
+    <div class="me">
+        <mat-card-title id="name">Name : {{ userSettingsService.nameOption.userChoice }}</mat-card-title>
+    </div>
+
+    <div>
+        <mat-card id="summary">
+            <mat-card-title id="parametres">Paramètres </mat-card-title>
+            <mat-divider></mat-divider>
+
+            <mat-card-title-group>
+                <mat-card-subtitle>Mode : {{ mode }}</mat-card-subtitle>
+                <mat-card-subtitle>Temps par tours : {{ timer }}</mat-card-subtitle>
+            </mat-card-title-group>
+        </mat-card>
+    </div>
+
+    <div class="loading">
+        <h1>En attente d'un autre joueur</h1>
+        <mat-spinner [diameter]="150"></mat-spinner>
+    </div>
+</mat-card>
+<div class="footer">
+    <button mat-raised-button color="primary" mat-dialog-close (click)="openSwitchToSoloDialog()" id="solo_button">Switch to Solo</button>
+    <button mat-raised-button color="primary" [routerLink]="['/lobby']" id="join" (click)="roomService.quitRoom()">Joindre un Room</button>
+    <button mat-raised-button color="primary" (click)="openQuitMultiplayerDialog()" id="quitter">Quitter</button>
+</div>

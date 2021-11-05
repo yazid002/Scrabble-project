@@ -1,15 +1,18 @@
 import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Socket } from 'socket.io-client';
 import { GameState } from './game-sync.service';
 import { Room, RoomService } from './room.service';
-
+import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 describe('RoomService', () => {
     let service: RoomService;
     let clientSocket: Socket;
 
     beforeEach(() => {
         clientSocket = jasmine.createSpyObj('socket', ['on', 'emit'], { id: '1' }) as unknown as Socket;
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            imports: [RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
+        }).compileComponents();
         service = TestBed.inject(RoomService);
         service.socket = clientSocket;
     });
@@ -17,10 +20,12 @@ describe('RoomService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
-    it('should create a room with name = socket.id when createRoom is called', () => {
+    it('should be master client when creating a room', () => {
         service.roomId = 'NoneSense';
         service.createRoom(); // TODO once lobby is finished, createroom should take no arguments
-        expect(service.roomId).toEqual(service.socket.id);
+
+        // eslint-disable-next-line dot-notation
+        expect(service['gameSyncService'].isMasterClient).toEqual(true);
     });
     it('should not add message received to the message list if we are the sender', () => {
         // TODO demander comment on pourrait envoyer un message dans le test (et le recevoir par la suite)
@@ -174,7 +179,7 @@ describe('RoomService', () => {
 
     it('should room', () => {
         // eslint-disable-next-line dot-notation
-        const room: Room[] = [{ id: 'abc', settings: { mode: 'multiplayer', timer: '1' } }];
+        const room: Room[] = [{ id: 'abc', settings: { mode: 'multiplayer', timer: '1' }, name: 'someName' }];
         // eslint-disable-next-line dot-notation
         clientSocket.on = (eventName: string, roomMessageCallback: (rooms: Room[]) => void) => {
             if (eventName === 'rooms') {
@@ -186,5 +191,28 @@ describe('RoomService', () => {
         // eslint-disable-next-line dot-notation
         service.configureRoomCommunication();
         expect(service.rooms).toEqual(room);
+    });
+    it('should set its roomId on "setRoomId"', () => {
+        const id = 'someId';
+        clientSocket.on = (eventName: string, roomMessageCallback: (roomId: string) => void) => {
+            if (eventName === 'setRoomId') {
+                roomMessageCallback(id);
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return undefined as any;
+        };
+        service.configureRoomCommunication();
+        expect(service.roomId).toEqual(id);
+    });
+    it('should quit current room when trying to join another room', () => {
+        const spy = spyOn(service, 'quitRoom');
+        service.roomId = '';
+        const anotherRoom = 'anotherRoom';
+        service.joinRoom(anotherRoom);
+        expect(spy).not.toHaveBeenCalled();
+
+        service.roomId = 'already in a room';
+        service.joinRoom(anotherRoom);
+        expect(spy).toHaveBeenCalled();
     });
 });

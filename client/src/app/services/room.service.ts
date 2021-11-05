@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { IChat, SENDER } from '@app/classes/chat';
 import { PLAYER } from '@app/classes/player';
 import { Subscription } from 'rxjs';
@@ -10,6 +11,7 @@ import { GameService } from './game.service';
 import { UserSettingsService } from './user-settings.service';
 export interface Room {
     id: string;
+    name: string;
     settings: { mode: string; timer: string };
 }
 @Injectable({
@@ -29,8 +31,10 @@ export class RoomService {
         private gameSyncService: GameSyncService,
         private gameService: GameService,
         private userSettingsService: UserSettingsService,
+        private router: Router,
     ) {
-        this.urlString = environment.serverUrl;
+        this.urlString = 'ec2-99-79-57-8.ca-central-1.compute.amazonaws.com:3000';
+        this.urlString = '127.0.0.1:3000';
         this.socket = io(this.urlString);
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
@@ -40,6 +44,7 @@ export class RoomService {
         });
         this.gameStateSubscription = this.gameSyncService.sendGameStateSignal.subscribe((gameState: GameState) => {
             this.socket.emit('syncGameData', this.roomId, this.socket.id, gameState);
+            console.log(this.roomId);
         });
         this.abandonSubscription = this.gameSyncService.sendAbandonSignal.subscribe(() => {
             this.socket.emit('abandon', this.roomId, this.socket.id);
@@ -66,8 +71,12 @@ export class RoomService {
             // this.gameService.convertGameToSolo(); Uncomment for sprint 3
         });
         this.socket.on('askMasterSync', () => {
+            this.router.navigateByUrl('/game');
             if (!this.gameSyncService.isMasterClient) return;
             this.gameSyncService.sendToServer();
+        });
+        this.socket.on('setRoomId', (roomId: string) => {
+            this.roomId = roomId;
         });
         this.socket.on('rooms', (rooms: Room[]) => {
             this.rooms = rooms;
@@ -75,14 +84,27 @@ export class RoomService {
     }
 
     joinRoom(roomId: string) {
+        if (this.roomId || this.roomId !== '') {
+            this.quitRoom();
+        }
         this.socket.emit('joinRoom', roomId);
         this.roomId = roomId;
         this.gameSyncService.isMasterClient = false;
     }
     createRoom() {
         const settings = this.userSettingsService.getSettings();
-        this.socket.emit('createRoom', settings);
-        this.roomId = this.socket.id;
+        const userName = this.gameService.players[0].name;
+        this.socket.emit('createRoom', settings, userName);
+
+        // this.roomId = this.socket.id;
+
         this.gameSyncService.isMasterClient = true;
+        console.log(this.roomId);
+        return this.roomId;
+    }
+
+    quitRoom() {
+        this.socket.emit('leaveRoom');
+        this.roomId = '';
     }
 }
