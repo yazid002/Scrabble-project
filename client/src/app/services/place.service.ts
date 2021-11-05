@@ -27,11 +27,11 @@ export class PlaceService {
         private placeSelectionService: PlaceSelectionService,
         private selectionManagerService: SelectionManagerService,
     ) {}
-    placeWordInstant(word: string, coord: Vec2, direction: string, isCalledThoughtChat: boolean): boolean {
+    placeWordInstant(word: string, coord: Vec2, direction: string): boolean {
         word = this.verifyService.normalizeWord(word);
 
         this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
-        this.writeWord(word, coord, direction, isCalledThoughtChat);
+        this.writeWord(word, coord, direction);
         const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
         if (!wordValidationParameters.wordExists) {
             for (let i = 0; i < word.length; i++) {
@@ -54,8 +54,6 @@ export class PlaceService {
                 this.lettersUsedOnBoard,
             );
             this.rackService.replaceWord(word);
-
-            // this.timerService.resetTimer();
         }
 
         return wordValidationParameters.wordExists;
@@ -76,7 +74,7 @@ export class PlaceService {
             }
 
             if (isCalledThoughtChat) {
-                this.writeWord(word, coord, direction, isCalledThoughtChat);
+                this.writeWord(word, coord, direction);
             }
 
             const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
@@ -120,7 +118,7 @@ export class PlaceService {
                 this.placeSelectionService.selectedTilesForPlacement = [];
                 this.placeSelectionService.wordToVerify = [];
                 this.gridService.border.squareBorderColor = 'black';
-                this.writeWord(word, coord, direction, isCalledThoughtChat);
+                this.writeWord(word, coord, direction);
                 this.gridService.removeArrow(this.placeSelectionService.selectedCoord);
                 this.placeSelectionService.selectedCoord = { x: -1, y: -1 };
                 while (this.placeSelectionService.selectedRackIndexesForPlacement.length > 0) {
@@ -144,15 +142,14 @@ export class PlaceService {
             if (tiles[y][x].letter === '') {
                 tiles[y][x].letter = word[i];
             }
-            console.log('mon point letter ici ', tiles[y][x].letter);
             tiles[y][x].bonus = 'x';
         }
     }
 
-    writeWord(word: string, coord: Vec2, direction: string, isCalledThoughtChat: boolean) {
+    writeWord(word: string, coord: Vec2, direction: string) {
         for (let i = 0; i < word.length; i++) {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
-            this.gridService.writeLetter(word[i], computingCoord, isCalledThoughtChat);
+            this.gridService.writeLetter(word[i], computingCoord);
         }
     }
 }

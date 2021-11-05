@@ -59,7 +59,5 @@ export class RandomModeService {
         }
 
         localStorage.setItem('bonusGrid', JSON.stringify(tiles));
-
-        console.log('tilesafterbonus', tiles);
     }
 }

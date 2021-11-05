@@ -60,7 +60,7 @@ export class RackLettersManipulationService {
         const index = this.getMouseClickIndex(event, rack);
         const included = this.selectedIndexes.includes(index);
 
-        if (!included && index !== -1) {
+        if (!included && index !== NOT_FOUND) {
             this.cancelManipulation();
 
             this.selectedIndexes[0] = index;
@@ -78,7 +78,7 @@ export class RackLettersManipulationService {
         } else {
             const index = this.getIndexFromKey(event, rack);
             const included = this.selectedIndexes.includes(index);
-            if (!included && index !== -1) {
+            if (!included && index !== NOT_FOUND) {
                 this.cancelManipulation();
                 this.selectedIndexes[0] = index;
                 this.rackService.fillRackPortion(index, selectionColor);

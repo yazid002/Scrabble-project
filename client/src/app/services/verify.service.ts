@@ -34,9 +34,7 @@ export class VerifyService {
             const x = computedCoord.x;
             const y = computedCoord.y;
             const charInBox = tiles[y][x].letter;
-            // const textInBox = tiles[y][x].text;
             const letter = word.charAt(i) === word.charAt(i).toUpperCase() ? '*' : word.charAt(i);
-            // console.log('charInBox ', charInBox, 'letter ', word.charAt(i));
             if (!this.isCaseEmpty(charInBox)) {
                 if (!this.isLetterOnBoardTheSame(charInBox.toLowerCase(), word.charAt(i).toLowerCase())) {
                     this.success = false;
@@ -72,16 +70,7 @@ export class VerifyService {
         let i = 0;
 
         while (i < word.length && coord.y + i < SQUARE_NUMBER) {
-            console.log('wordFound coord horizontal ', { x: coord.x, y: coord.y + i });
             wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
-            console.log('wordFound horizontal ', wordFound);
-
-            // for (let i = 0; i < wordFound.length; i++) {
-            //     if (wordFound[i] === '*') {
-            //         wordFound[i] =
-            //     }
-
-            // }
 
             i++;
             if (wordFound.length >= 2) {
@@ -92,9 +81,7 @@ export class VerifyService {
         }
         i = 0;
         while (i < word.length && coord.x + i < SQUARE_NUMBER) {
-            console.log('wordFound coord vertical ', { x: coord.x + i, y: coord.y });
             wordFound = this.findVerticalAdjacentWord({ x: coord.x + i, y: coord.y });
-            console.log('wordFound vertical ', wordFound);
             i++;
             if (wordFound.length >= 2) {
                 if (!this.isWordInDictionary(wordFound)) {
@@ -177,19 +164,13 @@ export class VerifyService {
             return wordFound;
         }
 
-        console.log(tiles);
-
         while (up > 0 && tiles[up - 1][coord.x].text !== '' && !this.bonuses.includes(tiles[up - 1][coord.x].text)) {
-            console.log('up ', up);
             up--;
         }
         while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.x].text !== '' && !this.bonuses.includes(tiles[down + 1][coord.x].text)) {
-            console.log('down ', down);
             down++;
         }
 
-        console.log('uppp ', up);
-        console.log('downnnn ', down);
         for (let i = up; i <= down; i++) {
             wordFound += tiles[i][coord.x].text;
         }
@@ -208,18 +189,13 @@ export class VerifyService {
         if (this.bonuses.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
-        console.log(tiles);
         while (left > 0 && tiles[coord.y][left - 1].text !== '' && !this.bonuses.includes(tiles[coord.y][left - 1].text)) {
-            console.log('left ', left);
             left--;
         }
         while (right < SQUARE_NUMBER - 1 && tiles[coord.y][right + 1].text !== '' && !this.bonuses.includes(tiles[coord.y][right + 1].text)) {
-            console.log('right ', right);
             right++;
         }
 
-        console.log('lefttt ', left);
-        console.log('righttt ', right);
         for (let i = left; i <= right; i++) {
             wordFound += tiles[coord.y][i].text;
         }
@@ -230,7 +206,6 @@ export class VerifyService {
     }
     private findAdjacentUp(coord: Vec2): boolean {
         if (coord.y > 0) {
-            // console.log(' coord ', coord, 'adjacent up ', tiles[coord.y - 1][coord.x].letter);
             return tiles[coord.y - 1][coord.x].letter !== '';
         }
         return false;
@@ -238,7 +213,6 @@ export class VerifyService {
 
     private findAdjacentDown(coord: Vec2) {
         if (coord.y < SQUARE_NUMBER - 1) {
-            // console.log(' coord ', coord, 'adjacent down ', tiles[coord.y + 1][coord.x].letter);
             return tiles[coord.y + 1][coord.x].letter !== '';
         }
         return false;
@@ -246,8 +220,6 @@ export class VerifyService {
 
     private findAdjacentRight(coord: Vec2) {
         if (coord.x < SQUARE_NUMBER - 1) {
-            // console.log(' coord ', coord, 'adjacent right ', tiles[coord.y][coord.x + 1].letter);
-
             return tiles[coord.y][coord.x + 1].letter !== '';
         }
         return false;
@@ -255,8 +227,6 @@ export class VerifyService {
 
     private findAdjacentLeft(coord: Vec2) {
         if (coord.x > 0) {
-            // console.log(' coord ', coord, 'adjacent left ', tiles[coord.y][coord.x - 1].letter);
-
             return tiles[coord.y][coord.x - 1].letter !== '';
         }
         return false;
@@ -274,7 +244,6 @@ export class VerifyService {
         const wordToChange = word.split('') as string[];
         const upperLettersInWord: string[] = wordToChange.filter((letter) => letter === letter.toUpperCase());
         const numberOfJokersOnBoard = lettersUsedOnBoard.filter((letter) => letter.letter === letter.letter.toUpperCase());
-        console.log('table of jokers on board ', numberOfJokersOnBoard);
 
         const jokersNumb = this.rackService.findJokersNumberOnRack() + numberOfJokersOnBoard.length;
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PLAYER } from '@app/classes/player';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { EXCHANGE_MAX_LIMIT } from '@app/constants/exchange-constants';
 import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
@@ -142,7 +143,7 @@ export class SelectionManagerService {
 
     isLetterKeyAlreadySelectedForExchange(event: KeyboardEvent): boolean {
         const index = this.rackLettersManipulationService.getIndexFromKey(event, this.gameService.players[PLAYER.realPlayer].rack);
-        if (index === -1) {
+        if (index === NOT_FOUND) {
             return false;
         }
         return this.exchangeSelectionService.isLetterAlreadySelected(index);
@@ -150,7 +151,7 @@ export class SelectionManagerService {
 
     isLetterClickAlreadySelectedForExchange(event: MouseEvent): boolean {
         const index = this.rackLettersManipulationService.getMouseClickIndex(event, this.gameService.players[PLAYER.realPlayer].rack);
-        if (index === -1) {
+        if (index === NOT_FOUND) {
             return false;
         }
         return this.exchangeSelectionService.isLetterAlreadySelected(index);
@@ -232,7 +233,6 @@ export class SelectionManagerService {
 
     submitPlacement() {
         this.command = this.placeSelectionService.command;
-        console.log('la commande ici', this.command);
         this.chatboxComponent.inputBox = this.command;
         this.chatboxComponent.fromSelection = true;
         this.chatboxComponent.onSubmit();

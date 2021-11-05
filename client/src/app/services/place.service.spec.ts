@@ -4,9 +4,9 @@ import { ImpossibleCommand } from '@app/classes/command-errors/impossible-comman
 import { Dictionary } from '@app/classes/dictionary';
 import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
+import { GridService } from '@app/services/grid.service';
 import { VerifyService } from '@app/services/verify.service';
 import { GameService } from './game.service';
-import { GridService } from './grid.service';
 import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
@@ -103,7 +103,7 @@ describe('PlaceService', () => {
     describe('writeWord', () => {
         it(' should call verifyServiceSpy.computeCoordByDirection', () => {
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
-            service.writeWord(wordToCheck, coord, direction, true);
+            service.writeWord(wordToCheck, coord, direction);
             expect(verifyServiceSpy.computeCoordByDirection).toHaveBeenCalledTimes(wordToCheck.length);
         });
     });
@@ -214,7 +214,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             const writeWordSpy = spyOn(service, 'writeWord').and.callThrough();
 
-            service.placeWordInstant(wordToCheck, coord, direction, true);
+            service.placeWordInstant(wordToCheck, coord, direction);
 
             expect(writeWordSpy).toHaveBeenCalledTimes(1);
         });

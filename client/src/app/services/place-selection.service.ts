@@ -64,7 +64,6 @@ export class PlaceSelectionService {
 
     buildPlacementCommand(): string {
         const wordToVerify: string[] = [];
-        // console.log()
         if (this.selectedTilesForPlacement.length === 0) {
             return '';
         }
@@ -123,7 +122,7 @@ export class PlaceSelectionService {
         this.selectedTilesForPlacement.push(this.selectedCoord);
         this.gridService.squareColor = selectionColor;
         this.gridService.border.squareBorderColor = selectionColor;
-        this.gridService.writeLetter(eventKey, this.selectedCoord, false);
+        this.gridService.writeLetter(eventKey, this.selectedCoord);
 
         return this.moveToNextEmptyTile(this.selectedCoord);
     }
@@ -151,7 +150,6 @@ export class PlaceSelectionService {
     incrementNextCoord(coord: Vec2): Vec2 {
         let nextCoord = { x: coord.x, y: coord.y };
         while (!(tiles[nextCoord.y][nextCoord.x].text === '' || tiles[nextCoord.y][nextCoord.x].text.length === 2)) {
-            //    this.wordToVerify.push(tiles[nextCoord.y][nextCoord.x].text);
             if (nextCoord.y === SQUARE_NUMBER - 1 || nextCoord.x === SQUARE_NUMBER - 1) {
                 break;
             }
@@ -177,8 +175,7 @@ export class PlaceSelectionService {
 
     cancelUniqueSelectionFromRack() {
         const toRemove = this.selectedRackIndexesForPlacement.pop();
-        //  this.wordToVerify.pop();
-        // console.log('wordToVerify ', this.wordToVerify);
+
         if (toRemove === undefined) {
             return;
         }
@@ -238,8 +235,7 @@ export class PlaceSelectionService {
 
     cancelUniqueBoardClick() {
         const coord = this.selectedTilesForPlacement.pop();
-        if (this.selectedTilesForPlacement.length === 0 && this.selectedCoord.x !== -1) {
-            console.log('le selected coord 1 ', this.selectedCoord);
+        if (this.selectedTilesForPlacement.length === 0 && this.selectedCoord.x !== NOT_FOUND) {
             this.gridService.removeArrow(this.selectedCoord);
         }
 
@@ -260,7 +256,6 @@ export class PlaceSelectionService {
             this.gridService.drawArrow(this.direction, this.selectedCoord);
         }
         if (this.selectedTilesForPlacement.length === 0) {
-            console.log('le selected coord ', this.selectedCoord);
             this.gridService.removeArrow(this.selectedCoord);
             this.selectedCoord.x = -1;
             this.selectedCoord.y = -1;

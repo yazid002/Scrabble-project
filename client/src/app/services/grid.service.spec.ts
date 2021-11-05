@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SQUARE_NUMBER } from '@app/constants/board-constants';
 import { GridService } from '@app/services/grid.service';
 
-fdescribe('GridService', () => {
+describe('GridService', () => {
     let service: GridService;
     let ctxStub: CanvasRenderingContext2D;
 

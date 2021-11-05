@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
@@ -23,16 +22,12 @@ export class GridService {
 
     constructor(private reserveService: ReserveService, public verifyService: VerifyService) {}
 
-    writeLetter(letter: string, coord: Vec2, throughChat: boolean): void {
-        console.log(throughChat);
-        //   if (throughChat) {
+    writeLetter(letter: string, coord: Vec2): void {
         tiles[coord.y][coord.x].oldStyle.color = tiles[coord.y][coord.x].style.color;
         tiles[coord.y][coord.x].oldStyle.font = tiles[coord.y][coord.x].style.font;
 
-        // console.log('letterStyle1 :', this.letterStyle);
         tiles[coord.y][coord.x].style.font = this.letterStyle.font;
         tiles[coord.y][coord.x].style.color = this.letterStyle.color;
-        // console.log('letterStyle2 :', tiles[coord.y][coord.x].style);
 
         tiles[coord.y][coord.x].oldText = tiles[coord.y][coord.x].text;
         tiles[coord.y][coord.x].text = letter;
@@ -42,8 +37,6 @@ export class GridService {
             tiles[coord.y][coord.x].style.color as string,
             tiles[coord.y][coord.x].style.font as string,
         );
-
-        // // console.log('testvalid', tiles);
     }
 
     drawArrow(direction: boolean, coord: Vec2) {
@@ -51,13 +44,19 @@ export class GridService {
         const img2 = document.getElementById('img2') as HTMLImageElement;
 
         const arrow = direction === true ? img : img2;
+        const arrowWidth = 13.33;
 
-        this.gridContext.drawImage(arrow, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y, 13.33, 13.33);
+        this.gridContext.drawImage(
+            arrow,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+            arrowWidth,
+            arrowWidth,
+        );
     }
 
     removeArrow(coord: Vec2) {
-        console.log('remove Arrow ', coord);
-        if (coord.x === -1 || coord.y === -1) {
+        if (coord.x === NOT_FOUND || coord.y === NOT_FOUND) {
             return;
         }
         this.fillGridPortion(
@@ -105,7 +104,6 @@ export class GridService {
     }
 
     drawGrid() {
-        // const opacity = 0.2;
         const fillStyle = 'rgb(245, 241, 222)';
         const strokeStyle = 'black';
         const lineWidth = 1;
@@ -115,18 +113,13 @@ export class GridService {
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
                 this.squareColor = 'black';
-                // this.squareLineWidth = 0;
                 this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
-                //  this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
             }
         }
         this.drawGridOutdoor();
     }
 
     fillGridPortion(coord: Vec2, letter: string, color: string, font: string) {
-        // console.log('le style de la case : ', letter, color, coord);
-
-        // console.log('je ne suis pas dans le board ', letter);
         const lettersPixelsWidthAdjustment = 2;
         const lettersPixelsHeighAdjustment = 22;
         const pointsPixelsWidthAdjustment = 16;
@@ -138,8 +131,6 @@ export class GridService {
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
-        //  const strokeStyle = 'black';
-        //  const lineWidth = this.squareLineWidth;
         this.changeGridStyle(color, undefined, this.squareColor, this.squareLineWidth);
 
         this.gridContext.fillRect(
@@ -149,7 +140,6 @@ export class GridService {
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
-        // this.gridContext.strokeStyle = this.border.squareBorderColor as string;
         this.changeGridStyle(undefined, undefined, this.border.squareBorderColor as string);
 
         this.gridContext.strokeRect(
@@ -178,23 +168,15 @@ export class GridService {
                 tiles[coord.y][coord.x].letter !== '' && tiles[coord.y][coord.x].letter === tiles[coord.y][coord.x].letter.toUpperCase()
                     ? 0
                     : character.points;
-            console.log('mon point letter ', tiles[coord.y][coord.x].letter);
-            // const isLetterUsedOnBoard =
-            //     this.verifyService.lettersUsedOnBoard.filter(
-            //         (aletter: { letter: string; coord: Vec2 }) => aletter.coord.x === coord.x && aletter.coord.y === coord.y,
-            //     ).length !== 0;
-            // //  const point = !isLetterUsedOnBoard?
-            // if (!isLetterUsedOnBoard) {
+
             this.gridContext.strokeText(
                 points.toString(),
                 (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + pointsPixelsWidthAdjustment,
                 (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + pointsPixelsHeighAdjustment,
             );
-            // }
         }
 
         this.gridContext.stroke();
-        //  }
     }
 
     changeGridStyle(fillStyle?: string, font?: string, strokeStyle?: string, lineWidth?: number): void {

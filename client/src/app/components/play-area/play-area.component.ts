@@ -31,7 +31,6 @@ export class PlayAreaComponent implements AfterViewInit {
             this.selectionManager.getSelectionType(SelectionType.Grid);
         } else if (event.target === this.rackCanvas.nativeElement) {
             this.selectionManager.getSelectionType(SelectionType.Rack);
-            console.log('play ', this.selectionManager.selectionType);
         } else {
             this.selectionManager.getSelectionType(SelectionType.None);
         }
@@ -41,7 +40,6 @@ export class PlayAreaComponent implements AfterViewInit {
     onRightClick(event: MouseEvent) {
         if (event.target === this.rackCanvas.nativeElement) {
             this.selectionManager.getSelectionType(SelectionType.Rack);
-            console.log('play ', this.selectionManager.selectionType);
         } else {
             this.selectionManager.getSelectionType(SelectionType.None);
         }

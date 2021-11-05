@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-for-of */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
@@ -175,7 +174,7 @@ export class VirtualPlayerService {
             if (isWordInDictionary) {
                 if (possibilities.length === 0) {
                     try {
-                        valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction, true);
+                        valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction);
 
                         if (valid) {
                             return [word];
@@ -198,8 +197,6 @@ export class VirtualPlayerService {
         let i = 0;
         const max = 150;
         while (i < rackCombos.length && i < max) {
-            // for (const rackCombo of rackCombos) {
-            //  console.log('boucle 0 ', i);
             if (this.verifyService.isFirstMove()) {
                 const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange));
                 if (newPossibilities.length > 0) {
@@ -207,33 +204,17 @@ export class VirtualPlayerService {
                 }
                 if (possibilities.length >= 3) return possibilities;
             }
-            // let i = 0;
-            // const max = 5;
-            //   while (i < gridCombos.length && i < max) {
+
             for (const gridCombo of gridCombos) {
-                //  console.log('boucle 1');
-                //  timeout(5000);
                 const wordCombos = this.bindGridAndRack(rackCombos[i], gridCombo);
 
                 for (const wordCombo of wordCombos) {
-                    // console.log('boucle 2 ', i);
-                    //  timeout(5000);
                     const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange, wordCombo));
                     if (newPossibilities.length > 0) {
                         possibilities = possibilities.concat(newPossibilities);
                     }
                     if (possibilities.length >= 3) return possibilities;
                 }
-
-                // for (const wordCombo of wordCombos) {
-                //     console.log('boucle 2');
-                //     timeout(5000);
-                //     const newPossibilities = possibilities.concat(this.tryPossibility(rackCombo, possibilities, pointRange, wordCombo));
-                //     if (newPossibilities.length > 0) {
-                //         possibilities = possibilities.concat(newPossibilities);
-                //     }
-                //     if (possibilities.length >= 3) return;
-                // }
             }
             i++;
         }
@@ -259,7 +240,6 @@ export class VirtualPlayerService {
         const possibilities: WordNCoord[] = [];
         // get all horizontal possibilities
         for (let line = 0; line < tiles.length; line++) {
-            // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let col = 0; col < tiles[line].length; col++) {
                 if (tiles[line][col].letter !== EMPTY) {
                     if (tempWord === EMPTY) {
@@ -277,9 +257,8 @@ export class VirtualPlayerService {
             }
         }
 
-        // get all vertival possibilitier
+        // get all vertival possibilities
         for (let col = 0; col < tiles[0].length; col++) {
-            // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let line = 0; line < tiles.length; line++) {
                 if (tiles[line][col].letter !== EMPTY) {
                     if (tempWord === EMPTY) {

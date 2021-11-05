@@ -20,7 +20,6 @@ export class MainPageComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log('ngonintMP');
         localStorage.clear();
     }
 

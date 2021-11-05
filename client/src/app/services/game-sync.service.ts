@@ -96,19 +96,16 @@ export class GameSyncService {
     }
 
     sendToLocalStorage() {
+        const sendingDelay = 1000;
         setInterval(() => {
             const gameState = this.getGameState();
             localStorage.clear();
 
             localStorage.setItem('gameState', JSON.stringify(gameState));
-        }, 1000);
+        }, sendingDelay);
     }
     getGameState(): GameState {
-        //   for (const player of this.gameService.players) {
-        //   if (player.placementParameters) {
         this.placeSelectionService.cancelPlacement();
-        //   }
-        // }
 
         const tempGrid: Case[][] = tiles;
         for (let i = 0; i < tiles.length; i++) {
