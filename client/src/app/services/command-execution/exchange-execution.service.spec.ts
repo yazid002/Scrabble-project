@@ -21,7 +21,7 @@ describe('ExchangeExecutionService', () => {
         it(' should call exchangeLetters of exchangeServiceSpy', () => {
             const PARAMETERS = ['echanger', 'dos'];
 
-            service.execute(PARAMETERS);
+            service.execute(PARAMETERS, true);
 
             expect(exchangeServiceSpy.exchangeLetters).toHaveBeenCalledTimes(1);
         });
@@ -31,7 +31,7 @@ describe('ExchangeExecutionService', () => {
 
             exchangeServiceSpy.exchangeLetters.and.throwError(new CommandError('Une erreur de test.'));
 
-            const result = service.execute(PARAMETERS);
+            const result = service.execute(PARAMETERS, true);
 
             expect(result.body).toEqual('Erreur de commande : Une erreur de test.');
         });
@@ -41,7 +41,7 @@ describe('ExchangeExecutionService', () => {
 
             exchangeServiceSpy.exchangeLetters.and.throwError(new Error('Une erreur de test.'));
 
-            expect(() => service.execute(PARAMETERS)).toThrow(new Error('Une erreur de test.'));
+            expect(() => service.execute(PARAMETERS, true)).toThrow(new Error('Une erreur de test.'));
         });
 
         it(' should return the initial result if no error was threw', () => {
@@ -49,7 +49,7 @@ describe('ExchangeExecutionService', () => {
 
             exchangeServiceSpy.exchangeLetters.and.returnValue(void '');
 
-            const result = service.execute(PARAMETERS);
+            const result = service.execute(PARAMETERS, true);
 
             expect(result.body).toEqual('Échange de lettres réussi !');
         });

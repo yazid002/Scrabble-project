@@ -11,5 +11,6 @@ export class SidebarComponent {
     constructor(public matDialog: MatDialog) {}
     openQuitConfirmationDialog() {
         this.matDialog.open(QuitConfirmationDialogComponent);
+        
     }
 }

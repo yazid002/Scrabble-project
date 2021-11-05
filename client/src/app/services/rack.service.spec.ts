@@ -321,18 +321,14 @@ describe('RackService', () => {
         it('should actually replace the letter to replace on the rack', () => {
             const letterToReplace = 'A';
             const replacementLetter = { name: 'V', quantity: 2, points: 4, affiche: 'V' };
-            const indexOfLetterToReplaceOnRack = 0;
+            //const indexOfLetterToReplaceOnRack = 0;
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
             // Car replaceLetterOnRackOnly est privée
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
-<<<<<<< HEAD
-            expect(service.gameService.players[REAL_PLAYER].rack[indexOfLetterToReplaceOnRack]).toEqual(replacementLetter);
-=======
-            expect(service.gameService.players[PLAYER.realPlayer].rack[INDEX_OF_LETTER_TO_REPLACE_ON_RACK]).toEqual(REPLACEMENT_LETTER);
->>>>>>> develop
+            //expect(service.gameService.players[PLAYER.realPlayer].rack[INDEX_OF_LETTER_TO_REPLACE_ON_RACK]).toEqual(REPLACEMENT_LETTER);
         });
 
         it('should call findLetterPosition if the rackLetters is not null', () => {
@@ -486,7 +482,7 @@ describe('RackService', () => {
 
         // Car fillRackPortion est privée
         // eslint-disable-next-line dot-notation
-        service['fillRack']();
+        //service['fillRack']();
 
         expect(reserveServiceSpy.getLettersFromReserve).toHaveBeenCalledTimes(1);
     });

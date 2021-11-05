@@ -105,6 +105,8 @@ export class PlaceService {
                             );
                         }
                     }, placementDuration);
+
+                    localStorage.setItem('bonusGrid', JSON.stringify(tiles));
                 }
 
                 reject(new ImpossibleCommand(wordValidationParameters.errorMessage));

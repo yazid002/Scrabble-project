@@ -4,6 +4,7 @@ import { SelectionType } from '@app/enums/selection-enum';
 import { ExchangeService } from '@app/services/exchange.service';
 import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
+import { RandomModeService } from '@app/services/random-mode.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 @Component({
     selector: 'app-play-area',
@@ -22,6 +23,7 @@ export class PlayAreaComponent implements AfterViewInit {
         private readonly rackService: RackService,
         public exchangeService: ExchangeService, //   private commandExecutionService: CommandExecutionService,
         public selectionManager: SelectionManagerService,
+        public randomMode: RandomModeService,
     ) {}
     @HostListener('click', ['$event'])
     onLeftClick(event: MouseEvent) {
@@ -45,8 +47,6 @@ export class PlayAreaComponent implements AfterViewInit {
         }
     }
 
-    // (click)="this.selectionManager.getSelectionType(selectionType.Rack)"
-    //      (click)="this.selectionManager.getSelectionType(selectionType.Grid)"
     ngAfterViewInit(): void {
         const min = 0;
         const max = 3;
@@ -58,17 +58,9 @@ export class PlayAreaComponent implements AfterViewInit {
         this.rackService.displayRack();
 
         this.rackCanvas.nativeElement.focus();
-        this.gridService.randomizeBonus(min, max);
+        this.randomMode.randomizeBonus(min, max);
     }
 
-    // onRackRightClick(event: MouseEvent) {
-    //     console.log('{ x, y} :', event.offsetX, event.offsetY, event.target);
-    //     console.log(event.target === this.rackCanvas.nativeElement);
-
-    //     event.preventDefault();
-
-    //     this.exchangeService.onMouseRightClick(event, this.rackService.rackLetters);
-    // }(contextmenu)="onRackRightClick($event)"
     get selectionType(): typeof SelectionType {
         return SelectionType;
     }

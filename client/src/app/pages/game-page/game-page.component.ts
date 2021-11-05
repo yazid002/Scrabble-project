@@ -1,9 +1,15 @@
-import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+// import { tiles } from '@app/classes/board';
+// import { Case } from '@app/classes/case';
+//import { tiles } from '@app/classes/board';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
+// import { SQUARE_NUMBER } from '@app/constants/board-constants';
+//import { SQUARE_NUMBER } from '@app/constants/board-constants';
 import { SelectionType } from '@app/enums/selection-enum';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GridService } from '@app/services/grid.service';
+import { RandomModeService } from '@app/services/random-mode.service';
 import { Room, RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
@@ -13,7 +19,7 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent implements AfterViewInit {
+export class GamePageComponent implements AfterViewInit, OnInit {
     @ViewChild(ChatboxComponent) chatboxComponent: ChatboxComponent;
     @ViewChild(PlayAreaComponent) playAreaComponent: PlayAreaComponent;
 
@@ -27,8 +33,9 @@ export class GamePageComponent implements AfterViewInit {
         private gridService: GridService,
         private virtualPlayerService: VirtualPlayerService,
         public roomService: RoomService,
-        private gameSyncService: GameSyncService,
+        public gameSyncService: GameSyncService,
         private selectionManager: SelectionManagerService,
+        private randomMode: RandomModeService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
@@ -54,6 +61,10 @@ export class GamePageComponent implements AfterViewInit {
         this.selectionManager.onMouseWheel(event);
     }
 
+    ngOnInit(): void {
+        this.gameSyncService.sendToLocalStorage();
+    }
+
     ngAfterViewInit(): void {
         this.selectionManager.chatboxComponent = this.chatboxComponent;
     }
@@ -72,7 +83,7 @@ export class GamePageComponent implements AfterViewInit {
     }
 
     randomNumber() {
-        this.gridService.randomizeBonus(0, 3);
+        this.randomMode.randomizeBonus(0, 3);
     }
 
     increaseSize(): void {
