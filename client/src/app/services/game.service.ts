@@ -46,6 +46,7 @@ export class GameService {
         this.endGame();
     }
     endGame(otherPlayerAbandonned: boolean = false) {
+        this.timerService.isEnabled = false;
         let endGameString = `Fin de partie: ${this.reserveService.alphabets.length} lettres restantes`;
         for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
             const player = this.players[playerIndex];
@@ -66,7 +67,8 @@ export class GameService {
             endGameString += this.players[playerIndex].rack.map((character) => character.affiche).join('<br>    ');
         }
         if (otherPlayerAbandonned) {
-            this.players[PLAYER.otherPlayer].won = '';
+            this.players[PLAYER.realPlayer].won = 'Votre adversaire a abandonné. Vous gagnez par défaut!';
+            this.players[PLAYER.otherPlayer].won = undefined;
         }
 
         const endGameMessage: IChat = {

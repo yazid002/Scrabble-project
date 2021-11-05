@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { IChat, SENDER } from '@app/classes/chat';
-import { PLAYER } from '@app/classes/player';
 import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { ChatService } from './chat.service';
@@ -66,8 +65,6 @@ export class RoomService {
         this.socket.on('abandon', (id: string) => {
             if (id === this.socket.id) return;
             this.gameService.endGame(true);
-            this.gameService.players[PLAYER.realPlayer].won = 'Votre adversaire a abandonné. Vous gagnez par défaut!';
-            this.gameService.players[PLAYER.otherPlayer].won = undefined;
             // this.gameService.convertGameToSolo(); Uncomment for sprint 3
         });
         this.socket.on('askMasterSync', () => {

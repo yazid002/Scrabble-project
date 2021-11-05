@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GridService } from '@app/services/grid.service';
 import { RoomService } from '@app/services/room.service';
+import { TimerService } from '@app/services/timer.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -21,9 +22,11 @@ export class GamePageComponent {
         private virtualPlayerService: VirtualPlayerService,
         public roomService: RoomService,
         private gameSyncService: GameSyncService,
+        private timerService: TimerService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
+        this.timerService.startTimer();
     }
 
     increaseSize(): void {

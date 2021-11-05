@@ -90,6 +90,6 @@ describe('GameService', () => {
         service.players[PLAYER.otherPlayer].rack = [];
         const otherPlayerAbandonned = true;
         service.endGame(otherPlayerAbandonned);
-        expect(service.players[PLAYER.otherPlayer].won).toEqual('');
+        expect(service.players[PLAYER.otherPlayer].won).toEqual(undefined);
     });
 });
