@@ -2,6 +2,10 @@ import { GameState } from '@app/classes/game-state';
 import * as http from 'http';
 import * as io from 'socket.io';
 
+const ROOM_NOT_FOUND_INDEX = -1;
+const EMIT_TIME_DELAY = 1000;
+const ABANDON_TIMER = 5000;
+
 export interface Room {
     id: string;
     name: string;
@@ -28,7 +32,7 @@ export class SocketManager {
                  * @param roomId: provide a roomId to join a specific room
                  */
                 const aRoomIndex = this.rooms.findIndex((room) => room.id === roomId);
-                if (aRoomIndex !== -1) {
+                if (aRoomIndex !== ROOM_NOT_FOUND_INDEX) {
                     this.rooms.splice(aRoomIndex, 1);
                 }
                 socket.join(roomId);
@@ -67,13 +71,15 @@ export class SocketManager {
 
             socket.on('disconnect', () => {
                 this.leaveRoom(socket.id);
-                this.sio.emit('abandon', socket.id);
+                setTimeout(() => {
+                    this.sio.emit('abandon', socket.id);
+                }, ABANDON_TIMER);
             });
         });
 
         setInterval(() => {
             this.emitTime();
-        }, 1000);
+        }, EMIT_TIME_DELAY);
     }
     private sendRooms() {
         this.rooms.filter((room) => room.name !== '');
@@ -83,9 +89,8 @@ export class SocketManager {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
     private leaveRoom(socketId: string) {
-        console.log(this.rooms);
         const roomIndex = this.rooms.findIndex((room) => room.id === socketId);
-        if (roomIndex === -1) return;
+        if (roomIndex === ROOM_NOT_FOUND_INDEX) return;
         this.rooms.splice(roomIndex, 1);
         this.sio.emit('rooms', this.rooms);
     }
