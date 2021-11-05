@@ -7,6 +7,7 @@ import { UserSettingsService } from './user-settings.service';
 })
 export class TimerService {
     @Output() timerDone = new BehaviorSubject<boolean>(true); // value of boolean represents wheter or not the player skips his turn
+    isEnabled: boolean;
     counter: {
         min: number;
         seconds: number;
@@ -21,13 +22,15 @@ export class TimerService {
             resetValue: 0,
             totalTimer: 0,
         };
-        this.startTimer();
+        this.isEnabled = true;
     }
     startTimer() {
         this.getTimerSettings();
         const timerIntervalMS = 1000;
         setInterval(() => {
-            this.decrementTime();
+            if (this.isEnabled) {
+                this.decrementTime();
+            }
         }, timerIntervalMS);
     }
     resetTimer(skipped: boolean = false) {
