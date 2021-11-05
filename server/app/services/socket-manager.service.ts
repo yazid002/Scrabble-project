@@ -67,16 +67,11 @@ export class SocketManager {
                 this.sio.to(roomId).emit('syncGameData', userId, gameState);
             });
 
-            socket.on('disconnect', (reason: string) => {
-                console.log(`Deconnexion par l'utilisateur avec id : ${socket.id}`);
-                console.log(`Raison de deconnexion : ${reason}`);
-                this.leaveRoom(socket.id);
-                // const aRoom = this.rooms.find((room) => room.id === roomId);
-                // aRoom?.numPlayers--;
-                // if (aRoom?.numPlayers === 0) {
-                //     const roomIndex = this.rooms.indexOf(aRoom);
-                //     this.rooms.splice(roomIndex, 1);
-                // }
+            socket.on('disconnect', () => {
+                socket.on('disconnect', () => {
+                    this.leaveRoom(socket.id);
+                    this.sio.emit('abandon', socket.id);
+                });
             });
         });
 
