@@ -15,7 +15,6 @@ const MAX_SKIPS = 6;
 export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
     @Output() abandonSignal = new BehaviorSubject<string>('');
-    @Output() whoWon = new BehaviorSubject<number>(-1);
 
     players: Player[] = [];
     currentTurn: number;

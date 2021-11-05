@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { IOption } from '@app/classes/game-options';
+import { PLAYER } from '@app/classes/player';
 import { GameService } from '@app/services/game.service';
 import { PlaceService } from '@app/services/place.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
-import { PLAYER } from '@app/classes/player';
 import { UserSettingsService } from '@app/services/user-settings.service';
 
 @Component({
@@ -28,9 +28,6 @@ export class GameOverviewComponent implements OnInit {
         public gameService: GameService,
     ) {}
     ngOnInit(): void {
-
-
-
         this.updateData();
     }
     private updateData(): void {

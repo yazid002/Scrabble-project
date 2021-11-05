@@ -3,20 +3,20 @@ import { Server } from '@app/server';
 import { Room, SocketManager } from '@app/services/socket-manager.service';
 import { expect } from 'chai';
 import { io as ioClient, Socket } from 'socket.io-client';
-import Container from 'typedi';
+import { Container } from 'typedi';
 
 describe('Socket manager service', () => {
     let service: SocketManager;
     let server: Server;
     let clientSocket: Socket;
-    const RESPONSE_DALAY = 100;
+    const RESPONSE_DALAY = 1000;
     beforeEach(() => {
         server = Container.get(Server);
         server.init();
 
         // eslint-disable-next-line dot-notation
         service = server['socketManger'];
-        const urlString = 'http://localhost:5020';
+        const urlString = 'http://localhost:3000';
         clientSocket = ioClient(urlString);
         clientSocket.connect();
     });
@@ -27,7 +27,7 @@ describe('Socket manager service', () => {
     });
 
     it('should create a room when client emits createRoom signal', (done) => {
-        const room: Room = { id: 'someId', settings: { mode: 'someMode', timer: 'someTime' } };
+        const room: Room = { id: 'someId', settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
         const initialArraySize = service.rooms.length;
 
         clientSocket.emit('createRoom', room);
@@ -50,7 +50,7 @@ describe('Socket manager service', () => {
         }, RESPONSE_DALAY);
     });
 
-    it("should emit  'abandon' to the client's room when he calls 'abandon'", (done) => {
+    it("should emit 'abandon' to the client's room when he calls 'abandon'", (done) => {
         const userId = 'someUser';
         const roomId = 'someRoom';
         let receivedUserId = '';
@@ -87,7 +87,7 @@ describe('Socket manager service', () => {
 
         clientSocket.emit('joinRoom', message.roomId);
         clientSocket.on('roomMessage', (userId: string, body: string, param3?: string) => {
-            if (userId && message && param3) return; // CLient emits 'roomMessage' with 3 params and the server responds with 2 params
+            if (userId && message && param3) return; // Client emits 'roomMessage' with 3 params and the server responds with 2 params
             receivedMessage.userId = userId;
             receivedMessage.body = body;
         });
@@ -134,6 +134,22 @@ describe('Socket manager service', () => {
             expect(receivedGameState.timer).to.equal(sendGameState.timer);
             expect(receivedGameState.currentTurn).to.equal(sendGameState.currentTurn);
             expect(receivedGameState.skipCounter).to.equal(sendGameState.skipCounter);
+            done();
+        }, RESPONSE_DALAY);
+    });
+    it('should delete a room from list of available rooms when joining it', (done) => {
+        const oldRoom: Room = {
+            id: 'an id',
+            name: 'a name',
+            settings: { mode: 'a mode', timer: 'a time' },
+        };
+        service.rooms.push(oldRoom);
+
+        clientSocket.emit('joinRoom', oldRoom.id);
+
+        setTimeout(() => {
+            const actual = service.rooms.find((room) => room === oldRoom);
+            expect(actual).to.equal(undefined);
             done();
         }, RESPONSE_DALAY);
     });

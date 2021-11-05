@@ -3,9 +3,9 @@ import { InexistentLettersOnRack } from '@app/classes/command-errors/command-syn
 import { InvalidArgumentsLength } from '@app/classes/command-errors/command-syntax-errors/invalid-argument-length';
 import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
+import { PLAYER } from '@app/classes/player';
 import { ExchangeService } from './exchange.service';
 import { GameService } from './game.service';
-import { PLAYER } from '@app/classes/player';
 import { RackService } from './rack.service';
 
 describe('ExchangeService', () => {
