@@ -7,7 +7,7 @@ import { SocketManager } from './services/socket-manager.service';
 @Service()
 export class Server {
     // Class inspired from Nikolay's socket communication example
-    private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '5020');
+    private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '3000');
     private static readonly baseDix: number = 10;
     private server: http.Server;
     private socketManger: SocketManager;

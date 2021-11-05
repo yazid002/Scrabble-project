@@ -5,7 +5,9 @@ import { CaseStyle } from '@app/classes/case-style';
 import { ICharacter as ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
 import { bonuses, DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { ReserveService } from '@app/services/reserve.service';
+import { VerifyService } from './verify.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,12 +16,12 @@ export class GridService {
     letterStyle: CaseStyle = { color: 'NavajoWhite', font: '15px serif' };
     pointStyle: CaseStyle = { color: 'NavajoWhite', font: '10px serif' };
     squareColor: string = 'black';
-    border: CaseStyle = { squareborder: 'black' };
+    border: CaseStyle = { squareBorderColor: 'black' };
     squareLineWidth: number = 1;
 
     gridContext: CanvasRenderingContext2D;
 
-    constructor(private reserveService: ReserveService) {}
+    constructor(private reserveService: ReserveService, private verifyService: VerifyService) {}
 
     writeLetter(letter: string, coord: Vec2, throughChat: boolean): void {
         console.log(throughChat);
@@ -50,34 +52,20 @@ export class GridService {
 
         const arrow = direction === true ? img : img2;
 
-        // const fillStyle = 'violet';
-        // this.changeGridStyle(fillStyle, '10px serif');
-        // tiles[coord.x][coord.y].oldStyle = tiles[coord.x][coord.y].style;
-
         this.gridContext.drawImage(arrow, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y, 13.33, 13.33);
     }
 
     removeArrow(coord: Vec2) {
-        // const strokeStyle = 'black';
-        // this.changeGridStyle(tiles[coord.x][coord.y].style.color, undefined, strokeStyle);
-        // this.gridContext.fillRect((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x, 13.33, 13.33);
-        // this.gridContext.strokeRect(
-        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
-        //     (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
-        //     DEFAULT_WIDTH / SQUARE_NUMBER,
-        //     DEFAULT_WIDTH / SQUARE_NUMBER,
-        // );
-        // this.squareColor = 'black';
-        // this.squareLineWidth = 0;
-        //  tiles[coord.x][coord.y].style = tiles[coord.x][coord.y].oldStyle;
+        console.log('remove Arrow ', coord);
+        if (coord.x === -1 || coord.y === -1) {
+            return;
+        }
         this.fillGridPortion(
             coord,
             tiles[coord.y][coord.x].text,
             tiles[coord.y][coord.x].style.color as string,
             tiles[coord.y][coord.x].style.font as string,
         );
-
-        // // // console.log(coord);
     }
 
     drawGridOutdoor() {
@@ -137,85 +125,69 @@ export class GridService {
 
     fillGridPortion(coord: Vec2, letter: string, color: string, font: string) {
         // // console.log('le style de la case : ', letter, color);
-
-        const lettersPixelsWidthAdjustment = 2;
-        const lettersPixelsHeighAdjustment = 22;
-        const pointsPixelsWidthAdjustment = 16;
-        const pointsPixelsHeighAdjustment = 30;
-        this.gridContext.clearRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
-            DEFAULT_WIDTH / SQUARE_NUMBER,
-            DEFAULT_WIDTH / SQUARE_NUMBER,
-        );
-
-        //  const strokeStyle = 'black';
-        //  const lineWidth = this.squareLineWidth;
-        this.changeGridStyle(color, undefined, this.squareColor, this.squareLineWidth);
-
-        this.gridContext.fillRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
-            DEFAULT_WIDTH / SQUARE_NUMBER,
-            DEFAULT_WIDTH / SQUARE_NUMBER,
-        );
-
-        this.gridContext.strokeStyle = this.border.squareborder as string;
-
-        this.gridContext.strokeRect(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
-            DEFAULT_WIDTH / SQUARE_NUMBER,
-            DEFAULT_WIDTH / SQUARE_NUMBER,
-        );
-
-        //  this.drawGridPortionBorder(this.squareColor, coord, 2);
-
-        const fillStyle = 'black';
-        this.changeGridStyle(fillStyle, font);
-        this.gridContext.strokeStyle = 'black';
-        this.gridContext.strokeText(
-            letter.toUpperCase(),
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsWidthAdjustment,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + lettersPixelsHeighAdjustment,
-        );
-
-        let character = this.reserveService.findLetterInReserve(letter);
-        const notFound = -1;
-        if (character !== notFound && letter !== '') {
-            character = character as ICharacter;
-
-            this.changeGridStyle(this.pointStyle.color, this.pointStyle.font);
-
-            this.gridContext.strokeText(
-                character.points.toString(),
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + pointsPixelsWidthAdjustment,
-                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + pointsPixelsHeighAdjustment,
+        const isLetterUsedOnBoard =
+            this.verifyService.lettersUsedOnBoard.filter(
+                (aletter: { letter: string; coord: Vec2 }) => aletter.coord.x === coord.x && aletter.coord.y === coord.y,
+            ).length === 0;
+        if (isLetterUsedOnBoard) {
+            const lettersPixelsWidthAdjustment = 2;
+            const lettersPixelsHeighAdjustment = 22;
+            const pointsPixelsWidthAdjustment = 16;
+            const pointsPixelsHeighAdjustment = 30;
+            this.gridContext.clearRect(
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+                DEFAULT_WIDTH / SQUARE_NUMBER,
+                DEFAULT_WIDTH / SQUARE_NUMBER,
             );
+
+            //  const strokeStyle = 'black';
+            //  const lineWidth = this.squareLineWidth;
+            this.changeGridStyle(color, undefined, this.squareColor, this.squareLineWidth);
+
+            this.gridContext.fillRect(
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+                DEFAULT_WIDTH / SQUARE_NUMBER,
+                DEFAULT_WIDTH / SQUARE_NUMBER,
+            );
+
+            // this.gridContext.strokeStyle = this.border.squareBorderColor as string;
+            this.changeGridStyle(undefined, undefined, this.border.squareBorderColor as string);
+
+            this.gridContext.strokeRect(
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+                DEFAULT_WIDTH / SQUARE_NUMBER,
+                DEFAULT_WIDTH / SQUARE_NUMBER,
+            );
+
+            const fillStyle = 'black';
+            this.changeGridStyle(fillStyle, font);
+            this.gridContext.strokeStyle = 'black';
+            this.gridContext.strokeText(
+                letter.toUpperCase(),
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsWidthAdjustment,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + lettersPixelsHeighAdjustment,
+            );
+
+            let character = this.reserveService.findLetterInReserve(letter);
+            if (character !== NOT_FOUND && letter !== '') {
+                character = character as ICharacter;
+
+                this.changeGridStyle(this.pointStyle.color, this.pointStyle.font);
+
+                this.gridContext.strokeText(
+                    character.points.toString(),
+                    (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + pointsPixelsWidthAdjustment,
+                    (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + pointsPixelsHeighAdjustment,
+                );
+            }
+
+            this.gridContext.stroke();
         }
-
-        this.gridContext.stroke();
     }
 
-    drawGridPortionBorder(borderColor: string, coord: Vec2, width: number): void {
-        this.changeGridStyle(borderColor, undefined, this.squareColor, width);
-        this.gridContext.beginPath();
-        this.gridContext.moveTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + 5, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + 5);
-        this.gridContext.lineTo(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + 5,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + DEFAULT_WIDTH / SQUARE_NUMBER - 5,
-        );
-        this.gridContext.lineTo(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + DEFAULT_WIDTH / SQUARE_NUMBER - 5,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + DEFAULT_WIDTH / SQUARE_NUMBER - 5,
-        );
-        this.gridContext.lineTo(
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + DEFAULT_WIDTH / SQUARE_NUMBER - 5,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + 5,
-        );
-        this.gridContext.lineTo((DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + 5, (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + 5);
-        this.gridContext.stroke();
-    }
     changeGridStyle(fillStyle?: string, font?: string, strokeStyle?: string, lineWidth?: number): void {
         this.gridContext.fillStyle = fillStyle as string;
         this.gridContext.font = font as string;
@@ -237,12 +209,9 @@ export class GridService {
                 if (!bonuses.includes(tiles[y][x].text) && tiles[y][x].text !== '') {
                     tiles[y][x].style.font = this.letterStyle.font;
                     this.squareColor = 'black';
-                    // this.squareLineWidth = 0;
                     this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
-
-                //  // console.log(tiles);
             }
         }
     }
@@ -284,4 +253,44 @@ export class GridService {
     }
 
     // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+<<<<<<< HEAD
+=======
+
+    getRandomIntInclusive(min: number, max: number): number {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    randomizeIndex(minNumber: number, maxNumber: number): number {
+        do {
+            this.randomBonusIndex = this.getRandomIntInclusive(minNumber, maxNumber);
+        } while (this.bonusOnGrid[this.randomBonusIndex].quantity === 0);
+
+        return this.randomBonusIndex;
+    }
+    randomizeBonus(min: number, max: number): void {
+        let index: number;
+        if (!this.isChecked) {
+            return;
+        }
+        for (let x = 0; x < SQUARE_NUMBER; x++) {
+            for (let y = 0; y < SQUARE_NUMBER; y++) {
+                if (tiles[y][x].bonus === 'xx') {
+                    continue;
+                }
+
+                index = this.randomizeIndex(min, max);
+                if (this.bonusOnGrid[index].quantity !== 0) {
+                    tiles[y][x].bonus = this.bonusOnGrid[index].text;
+                    tiles[y][x].text = this.bonusOnGrid[index].text;
+                    tiles[y][x].style.color = this.bonusOnGrid[index].color;
+
+                    this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
+                    this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
+                    this.bonusOnGrid[index].quantity--;
+                }
+            }
+        }
+    }
+>>>>>>> e6e6e6ac86f2d5c05ce1bc6e411bf583e2002d1b
 }

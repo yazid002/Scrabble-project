@@ -1,6 +1,6 @@
 export interface CaseStyle {
     color?: string;
     font?: string;
-    arrowborder?: string;
-    squareborder?: string;
+    arrowBorder?: string;
+    squareBorderColor?: string;
 }

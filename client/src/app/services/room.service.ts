@@ -29,9 +29,9 @@ export class RoomService {
         private gameService: GameService,
         private userSettingsService: UserSettingsService,
     ) {
-        this.urlString = `http://${window.location.hostname}:5020`;
+        this.urlString = 'ec2-99-79-57-8.ca-central-1.compute.amazonaws.com:3000';
+        this.urlString = '127.0.0.1:3000';
         this.socket = io(this.urlString);
-        this.configureBaseSocketFeatures();
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
             // Send our message to the other players
@@ -45,12 +45,6 @@ export class RoomService {
             this.socket.emit('abandon', this.roomId, this.socket.id);
         });
         this.rooms = [];
-    }
-    configureBaseSocketFeatures() {
-        // Afficher l'identifiant du Socket dans l'interface
-        this.socket.on('connect', () => {
-            // document.getElementById('socketIdField').textContent = this.socket.id;
-        });
     }
 
     configureRoomCommunication() {

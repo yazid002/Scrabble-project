@@ -4,18 +4,25 @@
         <app-play-area #playArea class="play-area" tabindex="0"></app-play-area>
         <button id="increaseSize" (click)="increaseSize()">+</button>
         <button id="decreaseSize" (click)="decreaseSize()">-</button>
-        <div *ngIf="!disableExchange()">
-            <button id="exchange" mat-raised-button color="primary" type="submit" (click)="onSubmitExchange(selectionType.Rack)">Echanger</button>
+        <div *ngIf="!hideOperation(operationType.Exchange)">
+            <button
+                id="exchange"
+                mat-raised-button
+                color="primary"
+                type="submit"
+                (click)="onSubmitExchange(selectionType.Rack)"
+                [disabled]="disableExchange()"
+            >
+                Echanger
+            </button>
             <button id="exchange" mat-raised-button color="primary" type="submit" (click)="onCancelExchange(selectionType.Rack)">Annuler</button>
         </div>
         <div *ngIf="!disableManipulation()">
-            <!-- <button mat-raised-button color="primary" type="submit" (click)="onSubmitLeftManipulation()">Vers la gauche</button>
-            <button mat-raised-button color="primary" type="submit" (click)="onSubmitRightManipulation()">Vers la droite</button> -->
             <button mat-raised-button color="primary" type="submit" (click)="onCancelManipulation(selectionType.Rack)">Annuler</button>
         </div>
 
-        <div *ngIf="!disablePlacement()">
-            <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement(selectionType.Grid)">Placer</button>
+        <div *ngIf="!hideOperation(operationType.Place)">
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement(selectionType.Grid)">Jouer</button>
             <button mat-raised-button color="primary" type="submit" (click)="onCancelPlacement(selectionType.Grid)">Annuler</button>
         </div>
     </section>

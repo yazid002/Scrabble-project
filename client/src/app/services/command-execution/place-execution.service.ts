@@ -23,7 +23,6 @@ export class PlaceExecutionService {
         const word: string = parameters[WORD_INDEX];
 
         const extractedParameters = this.extractParameters(position);
-
         const errorBody = (await this.placeService
             .placeWord(word, extractedParameters.coord, extractedParameters.direction, isCalledThoughtChat)
             .catch((error: Error) => {

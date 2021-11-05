@@ -4,9 +4,13 @@ import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angu
 //import { tiles } from '@app/classes/board';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
+<<<<<<< HEAD
 // import { SQUARE_NUMBER } from '@app/constants/board-constants';
 //import { SQUARE_NUMBER } from '@app/constants/board-constants';
 import { SelectionType } from '@app/enums/selection-enum';
+=======
+import { OperationType, SelectionType } from '@app/enums/selection-enum';
+>>>>>>> e6e6e6ac86f2d5c05ce1bc6e411bf583e2002d1b
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GridService } from '@app/services/grid.service';
 import { RandomModeService } from '@app/services/random-mode.service';
@@ -102,8 +106,8 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         this.selectionManager.onSubmitPlacement(selectionType);
     }
 
-    disablePlacement() {
-        return this.selectionManager.disablePlacement();
+    hideOperation(operationType: OperationType) {
+        return this.selectionManager.hideOperation(operationType);
     }
 
     onCancelPlacement(selectionType: SelectionType) {
@@ -124,6 +128,9 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     disableExchange() {
         return this.selectionManager.disableExchange();
     }
+    hideExchangeButton() {
+        return this.selectionManager.hideExchangeButton();
+    }
 
     onCancelExchange(selectionType: SelectionType) {
         this.selectionManager.onCancelExchange(selectionType);
@@ -131,5 +138,9 @@ export class GamePageComponent implements AfterViewInit, OnInit {
 
     get selectionType(): typeof SelectionType {
         return SelectionType;
+    }
+
+    get operationType(): typeof OperationType {
+        return OperationType;
     }
 }
