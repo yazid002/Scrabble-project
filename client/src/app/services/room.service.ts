@@ -75,7 +75,7 @@ export class RoomService {
         });
         this.socket.on('setRoomId', (roomId: string) => {
             this.roomId = roomId;
-        })
+        });
         this.socket.on('rooms', (rooms: Room[]) => {
             this.rooms = rooms;
         });
