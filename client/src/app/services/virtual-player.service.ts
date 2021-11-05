@@ -122,14 +122,13 @@ export class VirtualPlayerService {
         return pointMap.get(randomNumber) as { min: number; max: number };
     }
     private validateWordPoints(word: WordNCoord, pointRange: { min: number; max: number }): boolean {
-        try {
-            const lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word.word, word.coord, word.direction);
-
-            const points = this.pointsCountingService.processWordPoints(word.word, word.coord, word.direction, lettersUsedOnBoard);
-            if (points <= pointRange.max && points >= pointRange.min) return true;
-        } catch {
+        const isPlacementFeasible = this.verifyService.validatePlaceFeasibility(word.word, word.coord, word.direction);
+        if (isPlacementFeasible.error) {
             return false;
         }
+        const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+        const points = this.pointsCountingService.processWordPoints(word.word, word.coord, word.direction, lettersUsedOnBoard);
+        if (points <= pointRange.max && points >= pointRange.min) return true;
 
         return false;
     }

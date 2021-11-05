@@ -1,8 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { InexistentLettersOnRack } from '@app/classes/command-errors/command-syntax-errors/inexistent-letters-on-rack';
-import { InvalidArgumentsLength } from '@app/classes/command-errors/command-syntax-errors/invalid-argument-length';
-import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
-import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
+import { SENDER } from '@app/classes/chat';
 import { PLAYER } from '@app/classes/player';
 import { ExchangeService } from './exchange.service';
 import { GameService } from './game.service';
@@ -193,7 +190,10 @@ describe('ExchangeService', () => {
     it('exchangeLetters should call replaceLetter of rackServiceSpy on each letter to change', () => {
         const lettersToChange = ['B', 'D'];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const validateExchangeFeasibilitySpy = spyOn<any>(service, 'validateExchangeFeasibility').and.returnValue(void '');
+        const validateExchangeFeasibilitySpy = spyOn<any>(service, 'validateExchangeFeasibility').and.returnValue({
+            error: false,
+            message: { from: SENDER.computer, body: '' },
+        });
 
         service.exchangeLetters(lettersToChange, true);
 
@@ -201,18 +201,18 @@ describe('ExchangeService', () => {
         expect(rackServiceSpy.replaceLetter).toHaveBeenCalledTimes(lettersToChange.length);
     });
 
-    it('validateExchangeFeasibility should throw ImpossibleCommand', () => {
+    it('validateExchangeFeasibility should return ImpossibleCommand', () => {
         const lettersToChange = ['B', 'D'];
 
         rackServiceSpy.checkLettersAvailability.and.returnValue(false);
 
         // eslint-disable-next-line dot-notation
-        expect(() => service['validateExchangeFeasibility'](lettersToChange)).toThrow(
-            new ImpossibleCommand("Il n'y a plus assez de lettres dans la réserve."),
-        );
+        const result = service['validateExchangeFeasibility'](lettersToChange);
+        expect(result.error).toEqual(true);
+        expect(result.message.body).toEqual("Commande impossible à réaliser : Il n'y a plus assez de lettres dans la réserve.");
     });
 
-    it('validateExchangeFeasibility should throw InvalidArgumentsLength', () => {
+    it('validateExchangeFeasibility should return InvalidArgumentsLength', () => {
         const lettersToChange = ['B', 'D'];
 
         rackServiceSpy.checkLettersAvailability.and.returnValue(true);
@@ -220,11 +220,13 @@ describe('ExchangeService', () => {
         const validateArgumentLengthSpy = spyOn<any>(service, 'validateArgumentLength').and.returnValue(false);
 
         // eslint-disable-next-line dot-notation
-        expect(() => service['validateExchangeFeasibility'](lettersToChange)).toThrow(new InvalidArgumentsLength(''));
+        const result = service['validateExchangeFeasibility'](lettersToChange);
+        expect(result.error).toEqual(true);
+        expect(result.message.body).toEqual('Erreur de syntaxe : Vous avez spécifié soit 0 lettre, soit plus de 7 lettres à échanger. ');
         expect(validateArgumentLengthSpy).toHaveBeenCalled();
     });
 
-    it('validateExchangeFeasibility should throw InexistentLettersOnRack', () => {
+    it('validateExchangeFeasibility should return InexistentLettersOnRack', () => {
         const lettersToChange = ['B', 'D', 'C'];
         const inexistentLettersOnRack = ['B', 'D'];
 
@@ -234,13 +236,16 @@ describe('ExchangeService', () => {
         spyOn<any>(service, 'validateArgumentLength').and.returnValue(true);
 
         // eslint-disable-next-line dot-notation
-        expect(() => service['validateExchangeFeasibility'](lettersToChange)).toThrow(
-            new InexistentLettersOnRack(`${inexistentLettersOnRack.join(', ')}.`),
+        const result = service['validateExchangeFeasibility'](lettersToChange);
+        expect(result.error).toEqual(true);
+        expect(result.message.body).toEqual(
+            "Erreur de syntaxe : Vous n'avez aucune occurrence disponible sur le chevalet pour les lettres: " +
+                `${inexistentLettersOnRack.join(', ')}.`,
         );
         expect(rackServiceSpy.findInexistentLettersOnRack).toHaveBeenCalled();
     });
 
-    it('validateExchangeFeasibility should throw NotEnoughOccurrences', () => {
+    it('validateExchangeFeasibility should return NotEnoughOccurrences', () => {
         const lettersToChange = ['B', 'D', 'C'];
         const incoherentOccurrences = ['B', 'D'];
 
@@ -252,13 +257,16 @@ describe('ExchangeService', () => {
         const findIncoherentOccurrencesMatchSpy = spyOn<any>(service, 'findIncoherentOccurrencesMatch').and.returnValue(incoherentOccurrences);
 
         // eslint-disable-next-line dot-notation
-        expect(() => service['validateExchangeFeasibility'](lettersToChange)).toThrow(
-            new NotEnoughOccurrences(`${incoherentOccurrences.join(', ')} à échanger.`),
+        const result = service['validateExchangeFeasibility'](lettersToChange);
+        expect(result.error).toEqual(true);
+        expect(result.message.body).toEqual(
+            "Erreur de syntaxe : Il n'y a pas assez d'occurrences sur le chevalet pour les lettres: " +
+                `${incoherentOccurrences.join(', ')} à échanger.`,
         );
         expect(findIncoherentOccurrencesMatchSpy).toHaveBeenCalled();
     });
 
-    it('validateExchangeFeasibility should return void', () => {
+    it('validateExchangeFeasibility should return a response with a false error', () => {
         const lettersToChange = ['B', 'D', 'C'];
 
         rackServiceSpy.checkLettersAvailability.and.returnValue(true);
@@ -271,6 +279,6 @@ describe('ExchangeService', () => {
         // eslint-disable-next-line dot-notation
         const result = service['validateExchangeFeasibility'](lettersToChange);
 
-        expect(result).toEqual(void '');
+        expect(result.error).toEqual(false);
     });
 });

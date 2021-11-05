@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
-import { CommandSyntaxError } from '@app/classes/command-errors/command-syntax-errors/command-syntax-error';
-import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
-import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
+import { IChat, SENDER } from '@app/classes/chat';
 import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
 import { bonuses, SQUARE_NUMBER } from '@app/constants/board-constants';
@@ -20,12 +18,16 @@ export class VerifyService {
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
     constructor(private rackService: RackService) {}
 
-    isFitting(coord: Vec2, direction: string, word: string): { letter: string; coord: Vec2 }[] {
-        const remainingCases = direction === 'h' ? tiles.length - coord.x : tiles.length - coord.y;
+    isFitting(coord: Vec2, direction: string, word: string): { error: boolean; message: IChat } {
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
+        const remainingCases = direction === 'h' || direction === 'horizontal' ? tiles.length - coord.x : tiles.length - coord.y;
 
         if (word.length > remainingCases) {
             this.success = false;
-            throw new ImpossibleCommand("Il n'y a pas assez de place pour écrire ce mot");
+            response.error = true;
+            response.message.body = "Commande impossible à réaliser : Il n'y a pas assez de place pour écrire ce mot.";
+            return response;
         }
 
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
@@ -38,18 +40,23 @@ export class VerifyService {
             if (!this.isCaseEmpty(charInBox)) {
                 if (!this.isLetterOnBoardTheSame(charInBox.toLowerCase(), word.charAt(i).toLowerCase())) {
                     this.success = false;
-                    throw new ImpossibleCommand("Il y a déjà une lettre dans l'une des cases ciblées.");
+                    response.error = true;
+                    response.message.body = "Commande impossible à réaliser : Il y a déjà une lettre dans l'une des cases ciblées.";
+                    return response;
                 }
 
                 lettersUsedOnBoard.push({ letter, coord: { y, x } });
             } else if (!this.rackService.isLetterOnRack(letter)) {
                 this.success = false;
-                throw new ImpossibleCommand('Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet');
+                response.error = true;
+                response.message.body =
+                    'Commande impossible à réaliser : Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet.';
+                return response;
             }
         }
 
         this.lettersUsedOnBoard = lettersUsedOnBoard;
-        return lettersUsedOnBoard;
+        return response;
     }
 
     normalizeWord(wordToProcess: string): string {
@@ -102,29 +109,57 @@ export class VerifyService {
     isWordInDictionary(wordToCheck: string): boolean {
         return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
+    areCoordValid(coord: Vec2): boolean {
+        return coord.y < SQUARE_NUMBER && coord.x < SQUARE_NUMBER && coord.x >= 0 && coord.y >= 0;
+    }
 
-    validatePlaceFeasibility(word: string, coord: Vec2, direction: string): { letter: string; coord: Vec2 }[] {
+    validatePlaceFeasibility(word: string, coord: Vec2, direction: string): { error: boolean; message: IChat } {
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
+        if (!this.areCoordValid(coord)) {
+            response.error = true;
+            response.message.body = 'Commande impossible à réaliser : Les coordonnées ne sont pas valides';
+            return response;
+        }
+        const isFitting = this.isFitting(coord, direction, word);
+        if (isFitting.error) {
+            return isFitting;
+        }
         if (this.isFirstMove()) {
-            this.validateFirstMove(word, direction, coord);
+            const isFirstMoveValid = this.validateFirstMove(word, direction, coord);
+            if (isFirstMoveValid.error) {
+                return isFirstMoveValid;
+            }
         } else {
             if (!this.hasAdjacent(word, coord, direction)) {
                 this.success = false;
-                throw new ImpossibleCommand('Vous devez placer un mot ayant au moins une lettre adjacente aux lettres du plateau de jeu.');
+                response.error = true;
+                response.message.body =
+                    'Commande impossible à réaliser : Vous devez placer un mot ayant au moins une lettre adjacente aux lettres du plateau de jeu.';
+                return response;
             }
         }
-        this.validateInvalidSymbols(word);
 
-        const lettersUsedOnBoard = this.isFitting(coord, direction, word);
-        this.validateJokersOccurrencesMatch(word, this.lettersUsedOnBoard);
+        const numberOfJokersIsValid = this.validateJokersOccurrencesMatch(word, this.lettersUsedOnBoard);
+        if (numberOfJokersIsValid.error) {
+            return numberOfJokersIsValid;
+        }
 
-        return lettersUsedOnBoard;
+        const containsInvalidSymbols = this.validateInvalidSymbols(word);
+        if (containsInvalidSymbols) {
+            return containsInvalidSymbols;
+        }
+
+        return response;
     }
     isFirstMove(): boolean {
         const h8Coord: Vec2 = { x: 7, y: 7 };
         return tiles[h8Coord.x][h8Coord.y].letter === '';
     }
 
-    validateFirstMove(word: string, direction: string, coord: Vec2): void {
+    validateFirstMove(word: string, direction: string, coord: Vec2): { error: boolean; message: IChat } {
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
         const h8Coord: Vec2 = { x: 7, y: 7 };
         const valid =
             direction === 'h'
@@ -133,8 +168,12 @@ export class VerifyService {
 
         if (!valid) {
             this.success = false;
-            throw new ImpossibleCommand(' Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8');
+            response.error = true;
+            response.message.body =
+                'Commande impossible à réaliser : Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8.';
+            return response;
         }
+        return response;
     }
 
     hasAdjacent(word: string, coord: Vec2, direction: string): boolean {
@@ -240,7 +279,10 @@ export class VerifyService {
         return letterOnBoard === letterToPlace;
     }
 
-    private validateJokersOccurrencesMatch(word: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): void {
+    private validateJokersOccurrencesMatch(word: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): { error: boolean; message: IChat } {
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
+
         const wordToChange = word.split('') as string[];
         const upperLettersInWord: string[] = wordToChange.filter((letter) => letter === letter.toUpperCase());
         const numberOfJokersOnBoard = lettersUsedOnBoard.filter((letter) => letter.letter === letter.letter.toUpperCase());
@@ -249,15 +291,23 @@ export class VerifyService {
 
         if (upperLettersInWord.length > jokersNumb) {
             this.success = false;
-            throw new NotEnoughOccurrences(` * (lettres blanches) représentant les lettres "${upperLettersInWord.join('", "')}" demandées.`);
+            response.error = true;
+            response.message.body =
+                "Erreur de syntaxe : Il n'y a pas assez d'occurrences sur le chevalet pour les lettres: " +
+                ` * (lettres blanches) représentant les lettres "${upperLettersInWord.join('", "')}" demandées.`;
         }
+        return response;
     }
 
-    private validateInvalidSymbols(word: string): void {
+    private validateInvalidSymbols(word: string): { error: boolean; message: IChat } {
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
         const invalid = this.invalidSymbols.some((symbol) => word.includes(symbol));
         if (invalid) {
             this.success = false;
-            throw new CommandSyntaxError("Les symboles (-) et (') sont invalides.");
+            response.error = true;
+            response.message.body = "Erreur de syntaxe : Les symboles (-) et (') sont invalides.";
         }
+        return response;
     }
 }

@@ -25,12 +25,12 @@ export class PlaceExecutionService {
         const extractedParameters = this.extractParameters(position);
         const errorBody = (await this.placeService
             .placeWord(word, extractedParameters.coord, extractedParameters.direction, isCalledThoughtChat)
-            .catch((error: Error) => {
-                return error.message;
-            })) as string;
+            .catch((error: { error: boolean; message: IChat }) => {
+                return error;
+            })) as { error: boolean; message: IChat };
 
-        if (errorBody) {
-            result.body = errorBody;
+        if (errorBody.error) {
+            result.body = errorBody.message.body;
         }
 
         return result;

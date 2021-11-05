@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
-import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
+import { IChat, SENDER } from '@app/classes/chat';
 import { Vec2 } from '@app/classes/vec2';
 import { SelectionType } from '@app/enums/selection-enum';
 import { VerifyService } from '@app/services/verify.service';
@@ -29,8 +29,11 @@ export class PlaceService {
     ) {}
     placeWordInstant(word: string, coord: Vec2, direction: string): boolean {
         word = this.verifyService.normalizeWord(word);
-
-        this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
+        const isPlacementFeasible = this.verifyService.validatePlaceFeasibility(word, coord, direction);
+        if (isPlacementFeasible.error) {
+            return !isPlacementFeasible.error;
+        }
+        this.lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
         this.writeWord(word, coord, direction);
         const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
         if (!wordValidationParameters.wordExists) {
@@ -59,76 +62,90 @@ export class PlaceService {
         return wordValidationParameters.wordExists;
     }
 
-    async placeWord(word: string, coord: Vec2, direction: string, isCalledThoughtChat: boolean): Promise<void> {
+    async placeWord(word: string, coord: Vec2, direction: string, isCalledThoughtChat: boolean): Promise<{ error: boolean; message: IChat }> {
         word = this.verifyService.normalizeWord(word);
-        const promise = new Promise<void>((resolve, reject) => {
-            try {
-                this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
-            } catch (error) {
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
+        const promise = new Promise<{ error: boolean; message: IChat }>((resolve, reject) => {
+            const isPlacementFeasible = this.verifyService.validatePlaceFeasibility(word, coord, direction);
+            if (isPlacementFeasible.error) {
                 if (!isCalledThoughtChat) {
                     this.placeSelectionService.cancelPlacement();
                     this.selectionManagerService.getSelectionType(SelectionType.Rack);
+                }
+                this.timerService.resetTimer();
+                reject(isPlacementFeasible);
+                // return promise;
+            } else {
+                this.lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+                // try {
+                //     this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
+                // } catch (error) {
+                //     if (!isCalledThoughtChat) {
+                //         this.placeSelectionService.cancelPlacement();
+                //         this.selectionManagerService.getSelectionType(SelectionType.Rack);
+                //         this.timerService.resetTimer();
+                //     }
+                //     throw error;
+                // }
+
+                if (isCalledThoughtChat) {
+                    this.writeWord(word, coord, direction);
+                }
+
+                const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
+                if (!wordValidationParameters.wordExists) {
+                    const placementDuration = 3000; // 3000 millisecondes soit 3s;
+                    for (let i = 0; i < word.length; i++) {
+                        const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
+                        const x = computingCoord.x;
+                        const y = computingCoord.y;
+
+                        tiles[y][x].text = tiles[y][x].oldText;
+                        tiles[y][x].style.color = tiles[y][x].oldStyle.color;
+                        tiles[y][x].style.font = tiles[y][x].oldStyle.font;
+                        setTimeout(() => {
+                            if (!isCalledThoughtChat) {
+                                this.placeSelectionService.cancelPlacement();
+                            } else {
+                                this.gridService.fillGridPortion(
+                                    { y, x },
+                                    tiles[y][x].text,
+                                    tiles[y][x].style.color as string,
+                                    tiles[y][x].style.font as string,
+                                );
+                            }
+                            this.selectionManagerService.getSelectionType(SelectionType.Rack);
+                            this.timerService.resetTimer();
+                        }, placementDuration);
+
+                        localStorage.setItem('bonusGrid', JSON.stringify(tiles));
+                    }
+                    response.error = true;
+                    response.message.body = 'Commande impossible à réaliser : ' + wordValidationParameters.errorMessage;
+                    reject(response);
+                } else {
+                    this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
+                        word,
+                        coord,
+                        direction,
+                        this.lettersUsedOnBoard,
+                    );
+                    this.updateTilesLetters(word, coord, direction);
+                    this.placeSelectionService.selectedTilesForPlacement = [];
+                    this.placeSelectionService.wordToVerify = [];
+                    this.gridService.border.squareBorderColor = 'black';
+                    this.writeWord(word, coord, direction);
+                    this.gridService.removeArrow(this.placeSelectionService.selectedCoord);
+                    this.placeSelectionService.selectedCoord = { x: -1, y: -1 };
+                    while (this.placeSelectionService.selectedRackIndexesForPlacement.length > 0) {
+                        this.placeSelectionService.cancelUniqueSelectionFromRack();
+                    }
+                    this.selectionManagerService.getSelectionType(SelectionType.Rack);
+                    this.rackService.replaceWord(word);
+                    resolve(response);
                     this.timerService.resetTimer();
                 }
-                throw error;
-            }
-
-            if (isCalledThoughtChat) {
-                this.writeWord(word, coord, direction);
-            }
-
-            const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
-            if (!wordValidationParameters.wordExists) {
-                const placementDuration = 3000; // 3000 millisecondes soit 3s;
-                for (let i = 0; i < word.length; i++) {
-                    const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
-                    const x = computingCoord.x;
-                    const y = computingCoord.y;
-
-                    tiles[y][x].text = tiles[y][x].oldText;
-                    tiles[y][x].style.color = tiles[y][x].oldStyle.color;
-                    tiles[y][x].style.font = tiles[y][x].oldStyle.font;
-                    setTimeout(() => {
-                        if (!isCalledThoughtChat) {
-                            this.placeSelectionService.cancelPlacement();
-                        } else {
-                            this.gridService.fillGridPortion(
-                                { y, x },
-                                tiles[y][x].text,
-                                tiles[y][x].style.color as string,
-                                tiles[y][x].style.font as string,
-                            );
-                        }
-                        this.selectionManagerService.getSelectionType(SelectionType.Rack);
-                        this.timerService.resetTimer();
-                    }, placementDuration);
-
-                    localStorage.setItem('bonusGrid', JSON.stringify(tiles));
-                }
-
-                reject(new ImpossibleCommand(wordValidationParameters.errorMessage));
-            } else {
-                this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
-                    word,
-                    coord,
-                    direction,
-                    this.lettersUsedOnBoard,
-                );
-                this.updateTilesLetters(word, coord, direction);
-                this.placeSelectionService.selectedTilesForPlacement = [];
-                this.placeSelectionService.wordToVerify = [];
-                this.gridService.border.squareBorderColor = 'black';
-                this.writeWord(word, coord, direction);
-                this.gridService.removeArrow(this.placeSelectionService.selectedCoord);
-                this.placeSelectionService.selectedCoord = { x: -1, y: -1 };
-                while (this.placeSelectionService.selectedRackIndexesForPlacement.length > 0) {
-                    this.placeSelectionService.cancelUniqueSelectionFromRack();
-                }
-                this.selectionManagerService.getSelectionType(SelectionType.Rack);
-
-                resolve(this.rackService.replaceWord(word));
-
-                this.timerService.resetTimer();
             }
         });
         return promise;

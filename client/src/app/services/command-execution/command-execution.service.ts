@@ -21,7 +21,7 @@ export class CommandExecutionService {
         private exchangeExecutionService: ExchangeExecutionService,
         private gameService: GameService,
     ) {}
-    interpretCommand(command: string): { error: boolean; function: () => Promise<IChat> } {
+    interpretCommand(command: string): { error: boolean; function: () => Promise<IChat> | IChat } {
         const answer = this.findCommand(command, true);
         return answer;
     }
@@ -29,7 +29,7 @@ export class CommandExecutionService {
         const answer = this.findCommand(command, isCalledThoughtChat);
         return { error: answer.error, message: await answer.function() };
     }
-    private findCommand(command: string, isCalledThoughtChat: boolean): { error: boolean; function: () => Promise<IChat> } {
+    private findCommand(command: string, isCalledThoughtChat: boolean): { error: boolean; function: () => Promise<IChat> | IChat } {
         /**
          * Tente de trouver la bonne commande a exécuter. S'il ne trouve pas la commande, alors la commande * donnée en paramètre n'est pas valide.
          */
@@ -45,7 +45,7 @@ export class CommandExecutionService {
             .replace(/[\u0300-\u036f]/g, '');
         const allowedTurn = this.gameService.currentTurn === PLAYER.realPlayer;
         const parameters: string[] = command.split(' ');
-        const commandFormatMapping: Map<string, CommandFormat> = new Map([
+        const commandFormatMapping: Map<string, CommandFormat | IChat> = new Map([
             [
                 'placer',
                 {
@@ -54,7 +54,7 @@ export class CommandExecutionService {
                     allowed: allowedTurn,
                     notAllowedMessage: "Ce n'est pas votre tours",
                     command: async () => {
-                        return this.placeExecutionService.execute(parameters, isCalledThoughtChat);
+                        return await this.placeExecutionService.execute(parameters, isCalledThoughtChat);
                     },
                 },
             ],
@@ -65,8 +65,8 @@ export class CommandExecutionService {
                     description: 'l<sub>1</sub>l<sub>2</sub>l<sub>3</sub>...l<sub>n</sub>',
                     allowed: allowedTurn,
                     notAllowedMessage: "Ce n'est pas votre tours",
-                    command: async () => {
-                        return await this.exchangeExecutionService.execute(parameters, isCalledThoughtChat);
+                    command: () => {
+                        return this.exchangeExecutionService.execute(parameters, isCalledThoughtChat);
                     },
                 },
             ],
@@ -77,8 +77,8 @@ export class CommandExecutionService {
                     description: '"!passer" sans majuscule ni espace à la fin',
                     allowed: allowedTurn,
                     notAllowedMessage: "Ce n'est pas votre tours",
-                    command: async () => {
-                        return await this.passExecutionService.execute();
+                    command: () => {
+                        return this.passExecutionService.execute();
                     },
                 },
             ],
@@ -89,8 +89,8 @@ export class CommandExecutionService {
                     description: '"!debug" sans majuscule ni espace à la fin',
                     allowed: true,
                     notAllowedMessage: '',
-                    command: async () => {
-                        return await this.debugExecutionService.execute();
+                    command: () => {
+                        return this.debugExecutionService.execute();
                     },
                 },
             ],
@@ -101,14 +101,14 @@ export class CommandExecutionService {
                     description: '"!reserve" sans majuscule ni espace à la fin',
                     allowed: this.debugExecutionService.state,
                     notAllowedMessage: '<strong>debug</strong> doit être activé',
-                    command: async () => {
-                        return await this.reserveExecutionService.execute();
+                    command: () => {
+                        return this.reserveExecutionService.execute();
                     },
                 },
             ],
         ]);
 
-        const commandToExecute: { error: boolean; function: () => Promise<IChat> } = this.validateParametersFormat(
+        const commandToExecute: { error: boolean; function: () => Promise<IChat> | IChat } = this.validateParametersFormat(
             command,
             commandFormatMapping.get(parameters[0]) as CommandFormat,
         );
@@ -116,7 +116,7 @@ export class CommandExecutionService {
         return commandToExecute;
     }
 
-    private validateParametersFormat(command: string, format: CommandFormat): { error: boolean; function: () => Promise<IChat> } {
+    private validateParametersFormat(command: string, format: CommandFormat): { error: boolean; function: () => Promise<IChat> | IChat } {
         let regexp: RegExp;
         const answer: IChat = { from: SENDER.computer, body: '' };
         let error = false;

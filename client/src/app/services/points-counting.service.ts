@@ -51,7 +51,7 @@ export class PointsCountingService {
         return wordToCheck.length === BINGO_LENGTH ? basePoints + BINGO_BONUS : basePoints;
     }
 
-    private applyBoardBonuses(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]) {
+    private applyBoardBonuses(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): number {
         let point = 0;
         let numberOfTW = 0;
         let numberOfDW = 0;
