@@ -30,4 +30,23 @@ describe('TimerService', () => {
         service['decrementTime']();
         expect(skipped).toBe(true);
     });
+    it('should not decrement timer if timer is not enabled', (done) => {
+        service.isEnabled = false;
+        const timeInit = 0;
+        service.counter = {
+            min: 0,
+            seconds: 0,
+            resetValue: 60,
+            totalTimer: timeInit,
+        };
+
+
+        const numSeconds = 3;
+        const miliInSeconds = 1000;
+        service.startTimer();
+        setTimeout(() => {
+            expect(service.counter.totalTimer).toEqual(timeInit);
+            done();
+        }, numSeconds * miliInSeconds);
+    });
 });
