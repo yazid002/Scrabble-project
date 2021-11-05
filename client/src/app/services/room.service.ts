@@ -65,8 +65,9 @@ export class RoomService {
         });
         this.socket.on('abandon', (id: string) => {
             if (id === this.socket.id) return;
-            this.gameService.endGame();
+            this.gameService.endGame(true);
             this.gameService.players[PLAYER.realPlayer].won = 'Votre adversaire a abandonné. Vous gagnez par défaut!';
+            this.gameService.players[PLAYER.otherPlayer].won = undefined;
             // this.gameService.convertGameToSolo(); Uncomment for sprint 3
         });
         this.socket.on('askMasterSync', () => {
