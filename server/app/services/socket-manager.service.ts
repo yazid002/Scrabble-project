@@ -59,8 +59,6 @@ export class SocketManager {
             });
 
             socket.on('roomMessage', (roomId: string, userId: string, message: string) => {
-                // socket.broadcast.to('joinRoom').emit("roomMessage", `${socket.id} : ${message}`);
-
                 this.sio.to(roomId).emit('roomMessage', userId, message);
             });
             socket.on('syncGameData', (roomId: string, userId: string, gameState: GameState) => {
@@ -68,10 +66,8 @@ export class SocketManager {
             });
 
             socket.on('disconnect', () => {
-                socket.on('disconnect', () => {
-                    this.leaveRoom(socket.id);
-                    this.sio.emit('abandon', socket.id);
-                });
+                this.leaveRoom(socket.id);
+                this.sio.emit('abandon', socket.id);
             });
         });
 
