@@ -1,7 +1,6 @@
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 // import { QuitConfirmationDialogComponent } from '@app/components/quit-confirmation-dialog/quit-confirmation-dialog.component';
 import { GameSyncService } from '@app/services/game-sync.service';
-import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { RoomService } from '@app/services/room.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
@@ -22,23 +21,10 @@ export class GamePageComponent {
 
         private virtualPlayerService: VirtualPlayerService,
         public roomService: RoomService,
-        private gameSyncService: GameSyncService,
-        private gameService: GameService, // public matDialog: MatDialog,
+        private gameSyncService: GameSyncService, // private gameService: GameService, // public matDialog: MatDialog,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
-    }
-
-    @HostListener('window:beforeunload', ['$event'])
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onWindowClose(event: any): void {
-        // event.returnValue = false;
-        // this.abandonSignal.next('abandon');
-        // this.endGame();
-        event.preventDefault();
-        event.returnValue = false;
-        this.gameService.quitGame();
-        // this.matDialog.open(QuitConfirmationDialogComponent);
     }
 
     increaseSize(): void {
