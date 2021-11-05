@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+// import { QuitConfirmationDialogComponent } from '@app/components/quit-confirmation-dialog/quit-confirmation-dialog.component';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GridService } from '@app/services/grid.service';
 import { RoomService } from '@app/services/room.service';
@@ -20,7 +21,7 @@ export class GamePageComponent {
 
         private virtualPlayerService: VirtualPlayerService,
         public roomService: RoomService,
-        private gameSyncService: GameSyncService,
+        private gameSyncService: GameSyncService, // private gameService: GameService, // public matDialog: MatDialog,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();

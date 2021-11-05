@@ -35,6 +35,18 @@ export class GameService {
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
     }
+
+    // @HostListener('window:beforeunload', ['$event'])
+    // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // onWindowClose(event: any): void {
+    //     // event.returnValue = false;
+    //     // this.abandonSignal.next('abandon');
+    //     // this.endGame();
+    //     this.quitGame();
+    //     event.preventDefault();
+    //     event.returnValue = false;
+    // }
+
     convertGameToSolo() {
         this.numPlayers = 'solo';
         if (this.currentTurn === PLAYER.otherPlayer) {
