@@ -42,7 +42,6 @@ export class RoomService {
         });
         this.gameStateSubscription = this.gameSyncService.sendGameStateSignal.subscribe((gameState: GameState) => {
             this.socket.emit('syncGameData', this.roomId, this.socket.id, gameState);
-            console.log(this.roomId);
         });
         this.abandonSubscription = this.gameSyncService.sendAbandonSignal.subscribe(() => {
             this.socket.emit('abandon', this.roomId, this.socket.id);
@@ -96,7 +95,6 @@ export class RoomService {
         // this.roomId = this.socket.id;
 
         this.gameSyncService.isMasterClient = true;
-        console.log(this.roomId);
         return this.roomId;
     }
 

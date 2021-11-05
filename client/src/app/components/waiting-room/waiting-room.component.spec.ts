@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { RoomService } from '@app/services/room.service';
@@ -20,7 +23,13 @@ describe('WaitingRoomComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [WaitingRoomComponent],
-            imports: [MatDialogModule, RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
+            imports: [
+                MatDividerModule,
+                MatProgressSpinnerModule,
+                MatCardModule,
+                MatDialogModule,
+                RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }]),
+            ],
             providers: [
                 {
                     provide: MatDialog,
