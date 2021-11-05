@@ -35,6 +35,7 @@ export class GameService {
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
     }
+
     convertGameToSolo() {
         this.numPlayers = 'solo';
         if (this.currentTurn === PLAYER.otherPlayer) {
@@ -77,7 +78,7 @@ export class GameService {
         };
         this.chatService.addMessage(endGameMessage);
     }
-    private didGameEnd(): boolean {
+    didGameEnd(): boolean {
         let hasEnded = false;
         if (this.skipCounter >= MAX_SKIPS) {
             hasEnded = true;
