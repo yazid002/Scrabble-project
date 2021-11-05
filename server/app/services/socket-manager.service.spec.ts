@@ -27,7 +27,7 @@ describe('Socket manager service', () => {
     });
 
     it('should create a room when client emits createRoom signal', (done) => {
-        const room: Room = { id: 'someId', settings: { mode: 'someMode', timer: 'someTime' } };
+        const room: Room = { id: 'someId', settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
         const initialArraySize = service.rooms.length;
 
         clientSocket.emit('createRoom', room);
@@ -134,6 +134,22 @@ describe('Socket manager service', () => {
             expect(receivedGameState.timer).to.equal(sendGameState.timer);
             expect(receivedGameState.currentTurn).to.equal(sendGameState.currentTurn);
             expect(receivedGameState.skipCounter).to.equal(sendGameState.skipCounter);
+            done();
+        }, RESPONSE_DALAY);
+    });
+    it('should delete a room from list of available rooms when joining it', (done) => {
+        const oldRoom: Room = {
+            id: 'an id',
+            name: 'a name',
+            settings: { mode: 'a mode', timer: 'a time' },
+        };
+        service.rooms.push(oldRoom);
+
+        clientSocket.emit('joinRoom', oldRoom.id);
+
+        setTimeout(() => {
+            const actual = service.rooms.find((room) => room === oldRoom);
+            expect(actual).to.equal(undefined);
             done();
         }, RESPONSE_DALAY);
     });

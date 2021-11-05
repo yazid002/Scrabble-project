@@ -72,6 +72,7 @@ export class GameSyncService {
     sendToServer() {
         const gameState = this.getGameState();
         this.sendGameStateSignal.next(gameState);
+        
     }
     private getGameState(): GameState {
         const tempGrid: Case[][] = tiles;
