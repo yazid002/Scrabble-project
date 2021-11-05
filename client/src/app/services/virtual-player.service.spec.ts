@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { PLAYER } from '@app/classes/player';
-
 import { VirtualPlayerService } from './virtual-player.service';
 
 describe('VirtualPlayerService', () => {
@@ -36,6 +35,5 @@ describe('VirtualPlayerService', () => {
             // eslint-disable-next-line dot-notation
             expect(service['chatService'].messages.map((message) => message.body)).toContain(expectedMessage);
         });
-
     });
 });
