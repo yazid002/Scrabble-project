@@ -217,22 +217,10 @@ describe('SelectionManagerService', () => {
         expect(placeSelectionServiceSpy.cancelPlacement).toHaveBeenCalledWith();
         expect(rackLettersManipulationServiceSpy.onMouseLeftClick).toHaveBeenCalled();
     });
+    it(' handleNoneSelectionOnLeftClick should call cancelPlacement and cancelManipulation', () => {
+        service.handleNoneSelectionOnLeftClick();
 
-    it('handleRackSelectionOnLeftClick should not select letter for manipulation if letter is selected for exchange', () => {
-        const casePosition = 3;
-        const event = {
-            button: MouseButton.Left,
-            offsetX: casePosition * SQUARE_WIDTH,
-            offsetY: casePosition * SQUARE_WIDTH,
-        } as MouseEvent;
-
-        const isLetterClickAlreadySelectedForExchangeSpy = spyOn(service, 'isLetterClickAlreadySelectedForExchange').and.returnValue(true);
-
-        service.handleRackSelectionOnLeftClick(event);
-
-        expect(isLetterClickAlreadySelectedForExchangeSpy).toHaveBeenCalled();
-        expect(exchangeSelectionServiceSpy.cancelExchange).not.toHaveBeenCalled();
-        expect(placeSelectionServiceSpy.cancelPlacement).not.toHaveBeenCalled();
-        expect(rackLettersManipulationServiceSpy.onMouseLeftClick).not.toHaveBeenCalled();
+        expect(placeSelectionServiceSpy.cancelPlacement).toHaveBeenCalled();
+        expect(rackLettersManipulationServiceSpy.cancelManipulation).toHaveBeenCalled();
     });
 });
