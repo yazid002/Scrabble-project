@@ -4,5 +4,5 @@ export interface CommandFormat {
     description: string;
     allowed: boolean;
     notAllowedMessage: string;
-    command: () => Promise<IChat>;
+    command: () => Promise<IChat> | IChat;
 }

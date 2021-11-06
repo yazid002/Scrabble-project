@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { PLAYER } from '@app/classes/player';
-
 import { VirtualPlayerService } from './virtual-player.service';
 
 describe('VirtualPlayerService', () => {
@@ -23,11 +22,11 @@ describe('VirtualPlayerService', () => {
 
             // eslint-disable-next-line dot-notation
             service['gameService'].players[PLAYER.otherPlayer].rack = [
-                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                { name: 'U', quantity: 0, points: 3, affiche: 'U' },
-                { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                { name: 'A', quantity: 9, points: 1, display: 'A' },
+                { name: 'U', quantity: 0, points: 3, display: 'U' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
             ];
             // eslint-disable-next-line dot-notation
             service['place']();
@@ -36,6 +35,5 @@ describe('VirtualPlayerService', () => {
             // eslint-disable-next-line dot-notation
             expect(service['chatService'].messages.map((message) => message.body)).toContain(expectedMessage);
         });
-
     });
 });

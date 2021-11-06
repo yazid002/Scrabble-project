@@ -3,8 +3,10 @@ import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
 import { ICharacter as ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
-import { DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
+import { bonuses, DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { ReserveService } from '@app/services/reserve.service';
+import { VerifyService } from './verify.service';
 
 @Injectable({
     providedIn: 'root',
@@ -12,10 +14,58 @@ import { ReserveService } from '@app/services/reserve.service';
 export class GridService {
     letterStyle: CaseStyle = { color: 'NavajoWhite', font: '15px serif' };
     pointStyle: CaseStyle = { color: 'NavajoWhite', font: '10px serif' };
+    squareColor: string = 'black';
+    border: CaseStyle = { squareBorderColor: 'black' };
+    squareLineWidth: number = 1;
 
     gridContext: CanvasRenderingContext2D;
 
-    constructor(private reserveService: ReserveService) {}
+    constructor(private reserveService: ReserveService, public verifyService: VerifyService) {}
+
+    writeLetter(letter: string, coord: Vec2): void {
+        tiles[coord.y][coord.x].oldStyle.color = tiles[coord.y][coord.x].style.color;
+        tiles[coord.y][coord.x].oldStyle.font = tiles[coord.y][coord.x].style.font;
+
+        tiles[coord.y][coord.x].style.font = this.letterStyle.font;
+        tiles[coord.y][coord.x].style.color = this.letterStyle.color;
+
+        tiles[coord.y][coord.x].oldText = tiles[coord.y][coord.x].text;
+        tiles[coord.y][coord.x].text = letter;
+        this.fillGridPortion(
+            { x: coord.x, y: coord.y },
+            tiles[coord.y][coord.x].text,
+            tiles[coord.y][coord.x].style.color as string,
+            tiles[coord.y][coord.x].style.font as string,
+        );
+    }
+
+    drawArrow(direction: boolean, coord: Vec2) {
+        const img = document.getElementById('img') as HTMLImageElement;
+        const img2 = document.getElementById('img2') as HTMLImageElement;
+
+        const arrow = direction === true ? img : img2;
+        const arrowWidth = 13.33;
+
+        this.gridContext.drawImage(
+            arrow,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
+            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+            arrowWidth,
+            arrowWidth,
+        );
+    }
+
+    removeArrow(coord: Vec2) {
+        if (coord.x === NOT_FOUND || coord.y === NOT_FOUND) {
+            return;
+        }
+        this.fillGridPortion(
+            coord,
+            tiles[coord.y][coord.x].text,
+            tiles[coord.y][coord.x].style.color as string,
+            tiles[coord.y][coord.x].style.font as string,
+        );
+    }
 
     drawGridOutdoor() {
         this.changeGridStyle('PeachPuff');
@@ -62,14 +112,14 @@ export class GridService {
         this.gridContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style);
-                this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
+                this.squareColor = 'black';
+                this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
             }
         }
         this.drawGridOutdoor();
     }
 
-    fillGridPortion(coord: Vec2, letter: string, style: CaseStyle) {
+    fillGridPortion(coord: Vec2, letter: string, color: string, font: string) {
         const lettersPixelsWidthAdjustment = 2;
         const lettersPixelsHeighAdjustment = 22;
         const pointsPixelsWidthAdjustment = 16;
@@ -81,9 +131,7 @@ export class GridService {
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
 
-        const strokeStyle = 'black';
-        const lineWidth = 1;
-        this.changeGridStyle(style.color, undefined, strokeStyle, lineWidth);
+        this.changeGridStyle(color, undefined, this.squareColor, this.squareLineWidth);
 
         this.gridContext.fillRect(
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
@@ -91,6 +139,8 @@ export class GridService {
             DEFAULT_WIDTH / SQUARE_NUMBER,
             DEFAULT_WIDTH / SQUARE_NUMBER,
         );
+
+        this.changeGridStyle(undefined, undefined, this.border.squareBorderColor as string);
 
         this.gridContext.strokeRect(
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
@@ -100,7 +150,8 @@ export class GridService {
         );
 
         const fillStyle = 'black';
-        this.changeGridStyle(fillStyle, style.font);
+        this.changeGridStyle(fillStyle, font);
+        this.gridContext.strokeStyle = 'black';
         this.gridContext.strokeText(
             letter.toUpperCase(),
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + lettersPixelsWidthAdjustment,
@@ -108,13 +159,18 @@ export class GridService {
         );
 
         let character = this.reserveService.findLetterInReserve(letter);
-        const notFound = -1;
-        if (character !== notFound && letter !== '') {
+
+        if (character !== NOT_FOUND && letter !== '') {
             character = character as ICharacter;
 
             this.changeGridStyle(this.pointStyle.color, this.pointStyle.font);
+            const points =
+                tiles[coord.y][coord.x].letter !== '' && tiles[coord.y][coord.x].letter === tiles[coord.y][coord.x].letter.toUpperCase()
+                    ? 0
+                    : character.points;
+
             this.gridContext.strokeText(
-                character.points.toString(),
+                points.toString(),
                 (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x + pointsPixelsWidthAdjustment,
                 (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y + pointsPixelsHeighAdjustment,
             );
@@ -129,32 +185,35 @@ export class GridService {
         this.gridContext.strokeStyle = strokeStyle as string;
         this.gridContext.lineWidth = lineWidth as number;
     }
-
     changeTileSize(letterStep: number, pointStep: number) {
-        let letterPolice: number = +this.letterStyle.font.split('px')[0];
-        let pointPolice: number = +this.pointStyle.font.split('px')[0];
+        const letterFont = this.letterStyle.font as string;
+        const pointFont = this.pointStyle.font as string;
+        let letterPolice: number = +letterFont.split('px')[0];
+        let pointPolice: number = +pointFont.split('px')[0];
 
         letterPolice += letterStep;
         pointPolice += pointStep;
         this.letterStyle.font = letterPolice.toString() + 'px serif';
         this.pointStyle.font = pointPolice.toString() + 'px serif';
-
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                if (tiles[y][x].letter !== '') {
+                if (!bonuses.includes(tiles[y][x].text) && tiles[y][x].text !== '') {
                     tiles[y][x].style.font = this.letterStyle.font;
-                    this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style);
+                    this.squareColor = 'black';
+                    this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
             }
         }
     }
-
     increaseTileSize(letterStep: number, pointStep: number, maxValue: number) {
+        const letterFont = this.letterStyle.font as string;
+        const pointFont = this.pointStyle.font as string;
         const updateMaxValue = 12;
-        const letterPolice: number = +this.letterStyle.font.split('px')[0];
 
-        const pointPolice: number = +this.pointStyle.font.split('px')[0];
+        const letterPolice: number = +letterFont.split('px')[0];
+
+        const pointPolice: number = +pointFont.split('px')[0];
 
         const pointMaxValue: number = maxValue - updateMaxValue;
 
@@ -166,10 +225,12 @@ export class GridService {
             this.changeTileSize(letterStep, pointStep);
         }
     }
-
     decreaseTileSize(letterStep: number, pointStep: number, minValue: number) {
-        const pointPolice: number = +this.pointStyle.font.split('px')[0];
-        const letterPolice: number = +this.letterStyle.font.split('px')[0];
+        const letterFont = this.letterStyle.font as string;
+        const pointFont = this.pointStyle.font as string;
+
+        const pointPolice: number = +letterFont.split('px')[0];
+        const letterPolice: number = +pointFont.split('px')[0];
 
         if (letterPolice > minValue) {
             this.changeTileSize(letterStep, pointStep);

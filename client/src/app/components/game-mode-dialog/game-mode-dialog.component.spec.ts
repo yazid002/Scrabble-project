@@ -6,6 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
+import { GameService } from '@app/services/game.service';
+import { GridService } from '@app/services/grid.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
 import { GameModeDialogComponent } from './game-mode-dialog.component';
@@ -56,6 +58,8 @@ describe('GameModeDialogComponent', () => {
     let component: GameModeDialogComponent;
     let fixture: ComponentFixture<GameModeDialogComponent>;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
+    let gridServiceServiceSpy: jasmine.SpyObj<GridService>;
 
     beforeEach(async () => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName']);
@@ -66,6 +70,9 @@ describe('GameModeDialogComponent', () => {
             timer: { setting: TIMER, currentChoiceKey: '60' },
         };
         userSettingsServiceSpy.nameOption = NAME_OPTION;
+        gridServiceServiceSpy = jasmine.createSpyObj('GridService', ['applyRandomMode']);
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['initPlayers']);
+
         userSettingsServiceSpy.computerName = '';
         await TestBed.configureTestingModule({
             declarations: [GameModeDialogComponent],
@@ -75,6 +82,8 @@ describe('GameModeDialogComponent', () => {
                     useClass: MatDialogMock,
                 },
                 { provide: UserSettingsService, useValue: userSettingsServiceSpy },
+                { provide: GridService, useValue: gridServiceServiceSpy },
+                { provide: GameService, useValue: gameServiceSpy },
             ],
             imports: [BrowserAnimationsModule, MatRadioModule, MatCardModule, FormsModule, MatInputModule, MatDialogModule],
         }).compileComponents();

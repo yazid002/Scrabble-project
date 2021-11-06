@@ -34,7 +34,7 @@ describe('CommandExecutionService', () => {
             body: string;
         }
         const command = '!debug';
-        const response: { error: boolean; message: IChat } = await service.executeCommand(command);
+        const response: { error: boolean; message: IChat } = await service.executeCommand(command, true);
         expect(response).toBeDefined();
     });
     it('should return error = true with a descriptionis not allowed to make this command', async () => {
