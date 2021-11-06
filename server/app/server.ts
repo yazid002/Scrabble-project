@@ -4,11 +4,13 @@ import { AddressInfo } from 'net';
 import { Service } from 'typedi';
 import { SocketManager } from './services/socket-manager.service';
 
+const BASE_DIX = 10;
+
 @Service()
 export class Server {
     // Class inspired from Nikolay's socket communication example
     private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '3000');
-    private static readonly baseDix: number = 10;
+    private static readonly baseDix: number = BASE_DIX;
     private server: http.Server;
     private socketManger: SocketManager;
     constructor(private readonly application: Application) {}
