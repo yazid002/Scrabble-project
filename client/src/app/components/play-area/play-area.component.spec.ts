@@ -24,20 +24,6 @@ describe('PlayAreaComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call the grid when left mouse click is on grid native element', () => {
-        const event = {} as MouseEvent;
-        const getSelectionTypeSpy = spyOn(component['selectionManager'], 'getSelectionType');
-        component.onLeftClick(event);
-        expect(getSelectionTypeSpy).toHaveBeenCalled();
-    });
-
-    it('should call the rack when on right mouse click is on the rack native element', () => {
-        const event = {} as MouseEvent;
-        const getSelectionTypeSpy = spyOn(component['selectionManager'], 'getSelectionType');
-        component.onRightClick(event);
-        expect(getSelectionTypeSpy).toHaveBeenCalled();
-    });
-
     it('should call execute when skipTurn is called', () => {
         const passExecutionExecuteSpy = spyOn(component['passExecutionService'], 'execute');
         component.skipTurn();

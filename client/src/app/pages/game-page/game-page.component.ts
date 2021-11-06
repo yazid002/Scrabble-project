@@ -22,7 +22,7 @@ export class GamePageComponent implements AfterViewInit {
     // TODO verifier si les services en parametre sont utilises ou doivent en private
     // TODO enlever le roomName et isMaster une fois que le loby est intégré et créé les salles pour nous
     roomName: string = '';
-    isMaster: boolean = false;
+    isMaster: boolean;
     rooms: Room[];
 
     constructor(

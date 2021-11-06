@@ -2,21 +2,32 @@ import { Injectable } from '@angular/core';
 import { ICharacter } from '@app/classes/letter';
 import { NOT_FOUND } from '@app/constants/common-constants';
 import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
+import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { RackService } from './rack.service';
+import { SelectionUtilsService } from './selection-utils.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class RackLettersManipulationService {
-    selectedIndexes: number[] = [];
-    selectedIndex: number = NOT_FOUND;
-    shiftKey: boolean = false;
-    constructor(private rackService: RackService) {}
+    selectedIndexes: number[];
+    selectedIndex: number;
+    shiftKey: boolean;
+    moveOperationMapping: Map<string, (rack: ICharacter[]) => void>;
+    constructor(private rackService: RackService, private selectionUtilsService: SelectionUtilsService) {
+        this.selectedIndexes = [];
+        this.selectedIndex = NOT_FOUND;
+        this.shiftKey = false;
+        this.moveOperationMapping = new Map([
+            [KeyboardKeys.ArrowLeft, (rack: ICharacter[]) => this.moveToTheLeft(rack)],
+            [KeyboardKeys.ArrowRight, (rack: ICharacter[]) => this.moveToTheRight(rack)],
+        ]);
+    }
 
-    getIndexFromKey(event: KeyboardEvent, rack: ICharacter[]) {
+    getIndexFromKey(event: KeyboardEvent, rack: ICharacter[]): number {
         const letterToFound = event.key.toLowerCase();
 
-        const selectedLetters = this.getSelectedLetters(rack);
+        const selectedLetters = this.selectionUtilsService.getSelectedLetters(rack, this.selectedIndexes);
 
         if (event.shiftKey) {
             this.shiftKey = true;
@@ -55,38 +66,19 @@ export class RackLettersManipulationService {
         return NOT_FOUND;
     }
 
-    onMouseLeftClick(event: MouseEvent, rack: ICharacter[]) {
-        const selectionColor = 'LightSalmon';
-        const index = this.getMouseClickIndex(event, rack);
-        const included = this.selectedIndexes.includes(index);
-
-        if (!included && index !== NOT_FOUND) {
-            this.cancelManipulation();
-
-            this.selectedIndexes[0] = index;
-            this.rackService.fillRackPortion(index, selectionColor);
-        }
+    onMouseLeftClick(event: MouseEvent, rack: ICharacter[]): void {
+        const index = this.selectionUtilsService.getMouseClickIndex(event, rack);
+        this.manipulationSteps(index);
     }
 
-    onKeyBoardClick(event: KeyboardEvent, rack: ICharacter[]) {
-        const selectionColor = 'violet';
-
-        if (event.key === 'ArrowRight') {
-            this.moveToTheRight(rack);
-        } else if (event.key === 'ArrowLeft') {
-            this.moveToTheLeft(rack);
-        } else {
-            const index = this.getIndexFromKey(event, rack);
-            const included = this.selectedIndexes.includes(index);
-            if (!included && index !== NOT_FOUND) {
-                this.cancelManipulation();
-                this.selectedIndexes[0] = index;
-                this.rackService.fillRackPortion(index, selectionColor);
-            }
+    onKeyBoardClick(event: KeyboardEvent, rack: ICharacter[]): void {
+        const moveOperation = this.moveOperationMapping.get(event.key);
+        if (moveOperation) {
+            return moveOperation(rack);
         }
+        return this.handleLetterKeySelection(event, rack);
     }
-
-    cancelManipulation() {
+    cancelManipulation(): number {
         const normalColor = 'NavajoWhite';
         for (const index of this.selectedIndexes) {
             this.rackService.fillRackPortion(index, normalColor);
@@ -96,24 +88,7 @@ export class RackLettersManipulationService {
         return NOT_FOUND;
     }
 
-    getMouseClickIndex(event: MouseEvent, rack: ICharacter[]): number {
-        for (let i = 0; i < rack.length; i++) {
-            if (event.offsetX >= i * (DEFAULT_WIDTH / RACK_SIZE) * 1 && event.offsetX < (i + 1) * (DEFAULT_WIDTH / RACK_SIZE) * 1) {
-                return i;
-            }
-        }
-        return NOT_FOUND;
-    }
-
-    getSelectedLetters(rack: ICharacter[]): string[] {
-        const selectedLetters: string[] = [];
-        for (const index of this.selectedIndexes) {
-            selectedLetters[0] = rack[index].name.toLowerCase();
-        }
-        return selectedLetters;
-    }
-
-    moveToTheRight(rack: ICharacter[]) {
+    private moveToTheRight(rack: ICharacter[]): void {
         let toIndex = this.selectedIndexes[0] + 1;
         if (this.selectedIndexes[0] === rack.length - 1) {
             toIndex = 0;
@@ -127,7 +102,7 @@ export class RackLettersManipulationService {
         this.onMouseLeftClick(click, rack);
     }
 
-    moveToTheLeft(rack: ICharacter[]) {
+    private moveToTheLeft(rack: ICharacter[]): void {
         let toIndex = this.selectedIndexes[0] - 1;
         if (this.selectedIndexes[0] === 0) {
             toIndex = rack.length - 1;
@@ -139,5 +114,20 @@ export class RackLettersManipulationService {
         this.cancelManipulation();
         const click = { offsetX: toIndex * (DEFAULT_WIDTH / RACK_SIZE) + 1 } as MouseEvent;
         this.onMouseLeftClick(click, rack);
+    }
+
+    private handleLetterKeySelection(event: KeyboardEvent, rack: ICharacter[]): void {
+        const index = this.getIndexFromKey(event, rack);
+        this.manipulationSteps(index);
+    }
+
+    private manipulationSteps(index: number): void {
+        const selectionColor = 'LightSalmon';
+        const included = this.selectedIndexes.includes(index);
+        if (!included && index !== NOT_FOUND) {
+            this.cancelManipulation();
+            this.selectedIndexes[0] = index;
+            this.rackService.fillRackPortion(index, selectionColor);
+        }
     }
 }

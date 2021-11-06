@@ -1,14 +1,14 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { PLAYER } from '@app/classes/player';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/play-area-constants';
 import { SelectionType } from '@app/enums/selection-enum';
+import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 import { ExchangeService } from '@app/services/exchange.service';
+import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
-import { PLAYER } from '@app/classes/player';
-import { GameService } from '@app/services/game.service';
-import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 @Component({
     selector: 'app-play-area',
     templateUrl: './play-area.component.html',
@@ -33,20 +33,20 @@ export class PlayAreaComponent implements AfterViewInit {
     @HostListener('click', ['$event'])
     onLeftClick(event: MouseEvent) {
         if (event.target === this.gridCanvas.nativeElement) {
-            this.selectionManager.getSelectionType(SelectionType.Grid);
+            this.selectionManager.updateSelectionType(SelectionType.Grid);
         } else if (event.target === this.rackCanvas.nativeElement) {
-            this.selectionManager.getSelectionType(SelectionType.Rack);
+            this.selectionManager.updateSelectionType(SelectionType.Rack);
         } else {
-            this.selectionManager.getSelectionType(SelectionType.None);
+            this.selectionManager.updateSelectionType(SelectionType.None);
         }
     }
 
     @HostListener('contextmenu', ['$event'])
     onRightClick(event: MouseEvent) {
         if (event.target === this.rackCanvas.nativeElement) {
-            this.selectionManager.getSelectionType(SelectionType.Rack);
+            this.selectionManager.updateSelectionType(SelectionType.Rack);
         } else {
-            this.selectionManager.getSelectionType(SelectionType.None);
+            this.selectionManager.updateSelectionType(SelectionType.None);
         }
     }
 
