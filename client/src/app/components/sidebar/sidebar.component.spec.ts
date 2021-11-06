@@ -3,11 +3,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
+import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { of } from 'rxjs';
-// eslint-disable-next-line no-restricted-imports
-import { GameOverviewComponent } from '../game-overview/game-overview.component';
 
 class MatDialogMock {
     open() {
@@ -41,5 +40,12 @@ describe('SidebarComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should open a MatDialog box on "openQuitConfirmationDialog"', () => {
+        // eslint-disable-next-line -- matDialog is private and we need access for the test
+        const spy = spyOn(component['matDialog'], 'open');
+        component.openQuitConfirmationDialog();
+        expect(spy).toHaveBeenCalled();
     });
 });

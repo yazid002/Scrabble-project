@@ -48,11 +48,11 @@ describe('GameService', () => {
     it('should calculate points if one player has an empty rack and the reserve is empty when gameEnds', () => {
         service.players[0].rack = [];
         service.players[1].rack = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
         // eslint-disable-next-line dot-notation
         service['reserveService'].alphabets = [];
@@ -71,11 +71,11 @@ describe('GameService', () => {
     it('didGameEnd should return true if one player has an empty rack and the reserve is empty', () => {
         service.players[0].rack = [];
         service.players[1].rack = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
         // eslint-disable-next-line dot-notation
         service['reserveService'].alphabets = [];

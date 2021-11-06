@@ -9,6 +9,7 @@ import { GameService } from './game.service';
 import { UserSettingsService } from './user-settings.service';
 export interface Room {
     id: string;
+    clients: string[];
     name: string;
     settings: { mode: string; timer: string };
 }
@@ -32,12 +33,10 @@ export class RoomService {
         private router: Router,
     ) {
         this.urlString = 'ec2-99-79-57-8.ca-central-1.compute.amazonaws.com:3000';
-        this.urlString = '127.0.0.1:3000';
         this.socket = io(this.urlString);
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
             // Send our message to the other players
-            // socket.broadcast.to('game').emit('message', 'nice game');
             this.socket.emit('roomMessage', this.roomId, this.socket.id, message);
         });
         this.gameStateSubscription = this.gameSyncService.sendGameStateSignal.subscribe((gameState: GameState) => {
@@ -50,8 +49,6 @@ export class RoomService {
     }
 
     configureRoomCommunication() {
-        // Gérer l'événement envoyé par le serveur : afficher le message envoyé par un membre de la salle
-        // this.joinRoom('patate'); // TODO : quand le lobby sera bien créé, on peut join une room plus approprié
         this.socket.on('roomMessage', (id: string, broadcastMessage: string) => {
             const message: IChat = { from: SENDER.otherPlayer, body: broadcastMessage };
             if (id === this.socket.id || !broadcastMessage) return;
@@ -75,7 +72,7 @@ export class RoomService {
             this.roomId = roomId;
         });
         this.socket.on('rooms', (rooms: Room[]) => {
-            this.rooms = rooms;
+            this.rooms = rooms.filter((room) => room.clients.length === 1);
         });
     }
 
@@ -91,9 +88,6 @@ export class RoomService {
         const settings = this.userSettingsService.getSettings();
         const userName = this.gameService.players[0].name;
         this.socket.emit('createRoom', settings, userName);
-
-        // this.roomId = this.socket.id;
-
         this.gameSyncService.isMasterClient = true;
         return this.roomId;
     }

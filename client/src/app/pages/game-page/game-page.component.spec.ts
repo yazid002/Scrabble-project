@@ -12,10 +12,15 @@ import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { KeyboardKeys } from '@app/enums/keyboard-enum';
+import { SelectionType } from '@app/enums/selection-enum';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { GridService } from '@app/services/grid.service';
-import { GamePageComponent } from './game-page.component';
+import { RandomModeService } from '@app/services/random-mode.service';
+import { RoomService } from '@app/services/room.service';
+import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { of } from 'rxjs';
+import { GamePageComponent } from './game-page.component';
 
 class MatDialogMock {
     open() {
@@ -30,12 +35,34 @@ describe('GamePageComponent', () => {
     let fixture: ComponentFixture<GamePageComponent>;
     let gridServiceSpy: jasmine.SpyObj<GridService>;
     let ctxStub: CanvasRenderingContext2D;
+    let selectionManagerSpy: jasmine.SpyObj<SelectionManagerService>;
+    let roomServiceSpy: jasmine.SpyObj<RoomService>;
+    let randomModeServiceSpy: jasmine.SpyObj<RandomModeService>;
 
     const CANVAS_WIDTH = 500;
     const CANVAS_HEIGHT = 500;
 
     beforeEach(async () => {
         gridServiceSpy = jasmine.createSpyObj('GridService', ['increaseTileSize', 'decreaseTileSize', 'drawGrid']);
+        selectionManagerSpy = jasmine.createSpyObj('SelectionManagerService', [
+            'onSubmitExchange',
+            'onCancelManipulation',
+            'onCancelExchange',
+            'hideExchangeButton',
+            'disableExchange',
+            'disableManipulation',
+            'onCancelPlacement',
+            'onSubmitPlacement',
+            'onKeyBoardClick',
+            'onLeftClick',
+            'onRightClick',
+            'onMouseWheel',
+            'hideOperation',
+            'disableManipulation',
+            'disableExchange',
+        ]);
+        randomModeServiceSpy = jasmine.createSpyObj('RandomModeService', ['randomizeBonus']);
+        roomServiceSpy = jasmine.createSpyObj('RoomService', ['createRoom', 'joinRoom']);
 
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         gridServiceSpy.gridContext = ctxStub;
@@ -57,6 +84,10 @@ describe('GamePageComponent', () => {
             ],
             providers: [
                 { provide: GridService, useValue: gridServiceSpy },
+                { provide: SelectionManagerService, useValue: selectionManagerSpy },
+                { provide: RandomModeService, useValue: randomModeServiceSpy },
+                { provide: RoomService, useValue: roomServiceSpy },
+
                 {
                     provide: MatDialog,
                     useClass: MatDialogMock,
@@ -83,5 +114,115 @@ describe('GamePageComponent', () => {
     it('decreaseSize should call decreaseSize of gridService', () => {
         component.decreaseSize();
         expect(gridServiceSpy.decreaseTileSize).toHaveBeenCalled();
+    });
+
+    it('onKeyBoardClick should call onKeyBoardClick of SelectionManager', () => {
+        const keyEvent = {
+            key: KeyboardKeys.ArrowRight,
+        } as KeyboardEvent;
+
+        component.onKeyBoardClick(keyEvent);
+        expect(selectionManagerSpy.onKeyBoardClick).toHaveBeenCalled();
+    });
+
+    it('onLeftClick should call onLeftClick of SelectionManager', () => {
+        const xValue = 15;
+        const yValue = 15;
+        const keyEvent = {
+            button: 0,
+            offsetX: xValue,
+            offsetY: yValue,
+        } as MouseEvent;
+
+        component.onLeftClick(keyEvent);
+        expect(selectionManagerSpy.onLeftClick).toHaveBeenCalled();
+    });
+
+    it('onRightClick should call onRightClick of SelectionManager', () => {
+        const xValue = 15;
+        const yValue = 15;
+        const keyEvent = {
+            button: 0,
+            offsetX: xValue,
+            offsetY: yValue,
+        } as MouseEvent;
+
+        component.onRightClick(keyEvent);
+        expect(selectionManagerSpy.onRightClick).toHaveBeenCalled();
+    });
+
+    it('onWheelMouse should call onWheelMouse of SelectionManger', () => {
+        const xValue = 15;
+        const yValue = 15;
+        const keyEvent = {
+            button: 0,
+            offsetX: xValue,
+            offsetY: yValue,
+        } as WheelEvent;
+
+        component.onMouseWheel(keyEvent);
+        expect(selectionManagerSpy.onMouseWheel).toHaveBeenCalled();
+    });
+    it('goInRoom should call roomService of  CreatRoom if is Master is True', () => {
+        component.isMaster = true;
+
+        if (component.isMaster) {
+            component.goInRoom();
+            expect(roomServiceSpy.createRoom).toHaveBeenCalled();
+        }
+    });
+
+    it('randomNumber Should call randomizeBonus of randomMode', () => {
+        // const randomMin = 0;
+        // const randomMax = 3;
+        component.randomNumber();
+        expect(randomModeServiceSpy.randomizeBonus).toHaveBeenCalled();
+    });
+
+    it('onSubmitPlacement Should call onSubmitPlacement of SelectionManager', () => {
+        const selectionTypeTest: SelectionType = 1;
+        component.onSubmitPlacement(selectionTypeTest);
+        expect(selectionManagerSpy.onSubmitPlacement).toHaveBeenCalled();
+    });
+
+    it('onCancelPlacement Should call onCancelPlacement of SelectionManager', () => {
+        const selectionTypeTest: SelectionType = 1;
+        component.onCancelPlacement(selectionTypeTest);
+        expect(selectionManagerSpy.onCancelPlacement).toHaveBeenCalled();
+    });
+
+    it('disableManipulation Should call disableManipulation of SelectionManager', () => {
+        component.disableManipulation();
+        expect(selectionManagerSpy.disableManipulation).toHaveBeenCalled();
+    });
+
+    it('disableExchange Should call disableExchange of  SelectionManager', () => {
+        component.disableExchange();
+        expect(selectionManagerSpy.disableExchange).toHaveBeenCalled();
+    });
+
+    it('hideExchangeButton Should call hideExchangeButton of  SelectionManager ', () => {
+        component.hideExchangeButton();
+        expect(selectionManagerSpy.hideExchangeButton).toHaveBeenCalled();
+    });
+
+    it('onCancelExchange Should call onCancelExchange of  SelectionManager ', () => {
+        const selectionTypeTest: SelectionType = 1;
+        component.onCancelExchange(selectionTypeTest);
+        expect(selectionManagerSpy.onCancelExchange).toHaveBeenCalled();
+    });
+
+    it('onCancelManipulation Should call onCancelManipulation of  SelectionManager ', () => {
+        const selectionTypeTest: SelectionType = 1;
+
+        component.onCancelManipulation(selectionTypeTest);
+        expect(selectionManagerSpy.onCancelManipulation).toHaveBeenCalled();
+    });
+
+    it('onSubmitExchange Should call onSubmitExchange of  SelectionManager ', () => {
+        const selectionTypeTest: SelectionType = 1;
+
+        component.onSubmitExchange(selectionTypeTest);
+        expect(selectionManagerSpy.onSubmitExchange).toHaveBeenCalled();
     });
 });

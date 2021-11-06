@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
-import { CaseStyle } from '@app/classes/case-style';
 import { Vec2 } from '@app/classes/vec2';
 import { SQUARE_NUMBER } from '@app/constants/board-constants';
 import { GridService } from '@app/services/grid.service';
@@ -14,7 +13,8 @@ describe('GridService', () => {
     const CANVAS_HEIGHT = 500;
     const coord: Vec2 = { x: 7, y: 7 };
     const letter = 'a';
-    const style: CaseStyle = { color: 'NavajoWhite', font: '15px serif' };
+    const color = 'NavajoWhite';
+    const font = '15px serif';
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -43,7 +43,7 @@ describe('GridService', () => {
     });
 
     it(' drawGrid should call StrokeRect ', () => {
-        const expectCallTimes = 450;
+        const expectCallTimes = 225;
         const strokeTextSpy = spyOn(service.gridContext, 'strokeRect').and.callThrough();
         service.drawGrid();
 
@@ -54,27 +54,27 @@ describe('GridService', () => {
         it('should call strokeText to represent letters and their number of point on the board', () => {
             const strokeTextSpy = spyOn(service.gridContext, 'strokeText').and.callThrough();
 
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, color, font);
             expect(strokeTextSpy).toHaveBeenCalledTimes(2);
         });
 
         it('should call clearRect once', () => {
             const clearRectSpy = spyOn(service.gridContext, 'clearRect').and.callThrough();
 
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, color, font);
             expect(clearRectSpy).toHaveBeenCalledTimes(1);
         });
 
         it('should call stroke once', () => {
             const strokeSpy = spyOn(service.gridContext, 'stroke').and.callThrough();
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, color, font);
             expect(strokeSpy).toHaveBeenCalledTimes(1);
         });
 
         it('should call fillRect once', () => {
             const fillRectSpy = spyOn(service.gridContext, 'fillRect').and.callThrough();
 
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, color, font);
             expect(fillRectSpy).toHaveBeenCalledTimes(1);
         });
 
@@ -87,7 +87,7 @@ describe('GridService', () => {
             ).data;
             const beforeSize = imageData.filter((x) => x !== 0).length;
 
-            service.fillGridPortion(coord, letter, style);
+            service.fillGridPortion(coord, letter, color, font);
 
             imageData = service.gridContext.getImageData(
                 (CANVAS_WIDTH / SQUARE_NUMBER) * coord.y,
@@ -111,12 +111,13 @@ describe('GridService', () => {
         });
     });
 
-    it(' changeTileSize should call fillGridPortion if tile.letter is empty ', () => {
+    it(' changeTileSize should call fillGridPortion if tile.letter is not empty and not a bonus', () => {
         const x = 3;
         const y = 4;
         const letterStep = 1;
         const pointStep = 1;
-        tiles[y][x].letter = 'a';
+        tiles[y][x].text = 'a';
+        tiles[y][x].bonus = 'x';
 
         const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
         service.changeTileSize(letterStep, pointStep);
@@ -185,4 +186,40 @@ describe('GridService', () => {
 
         expect(changeTileSizeSpy).not.toHaveBeenCalled();
     });
+
+    // it(' removeArrow should call fillGridPortion 1 time', () => {
+    //     const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
+
+    //     service.removeArrow(coord);
+
+    //     //   expect(fillGridPortionSpy).toHaveBeenCalled();
+    // });
+
+    // it('drawArrow should call drawImage 1 time', () => {
+    //     //  const img = document.getElementById('img') as HTMLImageElement;
+    //     const img = { src: '' } as CanvasImageSource;
+
+    //     spyOn(document, 'getElementById').and.returnValue(img);
+
+    //     const drawImageSpy = spyOn(service.gridContext, 'drawImage').and.callThrough();
+
+    //     service.drawArrow(true, coord);
+    //     // service.gridContext.drawImage(img, coord.x, coord.y);
+
+    //     expect(drawImageSpy).toHaveBeenCalled();
+    // });
+
+    // it('drawArrow should call drawImage 1 time', () => {
+    //      const img = document.getElementById('img') as HTMLImageElement;
+    //     const img = { src: '' } as CanvasImageSource;
+
+    //     spyOn(document, 'getElementById').and.returnValue(img);
+
+    //     const drawImageSpy = spyOn(service.gridContext, 'drawImage').and.callThrough();
+
+    //     service.drawArrow(true, coord);
+    //     service.gridContext.drawImage(img, coord.x, coord.y);
+
+    //     expect(drawImageSpy).toHaveBeenCalled();
+    // });
 });

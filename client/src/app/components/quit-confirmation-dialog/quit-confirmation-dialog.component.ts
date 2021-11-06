@@ -11,5 +11,7 @@ export class QuitConfirmationDialogComponent {
 
     quitGame() {
         this.gameService.quitGame();
+        // this.gamesync.receiveResetConfig();
+        localStorage.clear();
     }
 }

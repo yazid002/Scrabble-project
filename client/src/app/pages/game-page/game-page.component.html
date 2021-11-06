@@ -1,9 +1,30 @@
 <div class="container">
     <app-sidebar></app-sidebar>
     <section class="play-area-container">
-        <app-play-area class="play-area" tabindex="0"></app-play-area>
+        <app-play-area #playArea class="play-area" tabindex="0"></app-play-area>
         <button id="increaseSize" (click)="increaseSize()">+</button>
         <button id="decreaseSize" (click)="decreaseSize()">-</button>
+        <div *ngIf="!hideOperation(operationType.Exchange)">
+            <button
+                id="exchange"
+                mat-raised-button
+                color="primary"
+                type="submit"
+                (click)="onSubmitExchange(selectionType.Rack)"
+                [disabled]="disableExchange()"
+            >
+                Echanger
+            </button>
+            <button id="exchange" mat-raised-button color="primary" type="submit" (click)="onCancelExchange(selectionType.Rack)">Annuler</button>
+        </div>
+        <div *ngIf="!disableManipulation()">
+            <button mat-raised-button color="primary" type="submit" (click)="onCancelManipulation(selectionType.Rack)">Annuler</button>
+        </div>
+
+        <div *ngIf="!hideOperation(operationType.Place)">
+            <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement(selectionType.Grid)">Jouer</button>
+            <button mat-raised-button color="primary" type="submit" (click)="onCancelPlacement(selectionType.Grid)">Annuler</button>
+        </div>
     </section>
     <app-chatbox></app-chatbox>
 </div>
