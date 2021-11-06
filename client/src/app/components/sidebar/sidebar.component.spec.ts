@@ -6,8 +6,7 @@ import { RouterModule } from '@angular/router';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { of } from 'rxjs';
-// eslint-disable-next-line no-restricted-imports
-import { GameOverviewComponent } from '../game-overview/game-overview.component';
+import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
 
 class MatDialogMock {
     open() {
