@@ -5,7 +5,7 @@ import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { MouseButton } from '@app/enums/mouse-enums';
 import { SelectionUtilsService } from './selection-utils.service';
 
-fdescribe('SelectionUtilsService', () => {
+describe('SelectionUtilsService', () => {
     let service: SelectionUtilsService;
 
     beforeEach(() => {
