@@ -19,6 +19,8 @@ describe('Socket manager service', () => {
         const urlString = 'http://localhost:3000';
         clientSocket = ioClient(urlString);
         clientSocket.connect();
+        const room: Room = { id: 'someId', clients: ['someId'], settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
+        clientSocket.emit('createRoom', room.settings, clientSocket.id);
     });
     afterEach(() => {
         clientSocket.close();
@@ -27,7 +29,7 @@ describe('Socket manager service', () => {
     });
 
     it('should create a room when client emits createRoom signal', (done) => {
-        const room: Room = { id: 'someId', settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
+        const room: Room = { id: 'someId', clients: ['someId'], settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
         const initialArraySize = service.rooms.length;
 
         clientSocket.emit('createRoom', room);
@@ -38,32 +40,32 @@ describe('Socket manager service', () => {
     });
 
     it("should make the client socket join the romm asked on 'joinRoom'", (done) => {
-        const roomId = 'someRoom';
+        const room: Room = { id: 'someId', clients: ['someId'], settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
+        service.rooms.push(room);
         let askMasterSyncCount = 0;
         clientSocket.on('askMasterSync', () => {
             askMasterSyncCount++;
         });
-        clientSocket.emit('joinRoom', roomId);
+        clientSocket.emit('joinRoom', room.id);
         setTimeout(() => {
             expect(askMasterSyncCount).greaterThan(0);
             done();
         }, RESPONSE_DELAY);
     });
 
-    it("should emit 'abandon' to the client's room when he calls 'abandon'", (done) => {
-        const userId = 'someUser';
-        const roomId = 'someRoom';
-        let receivedUserId = '';
+    it("should emit room when client calls 'abandon'", (done) => {
+        const room: Room = { id: 'someId', clients: ['some ID'], settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
+        service.rooms.push(room);
+        clientSocket.emit('joinRoom', room.id);
+        let receivedUserId = 0;
 
-        clientSocket.on('abandon', (id: string, otherParams?: string) => {
-            if (otherParams && id) return; // client emit 'abandon' with 2 params : userId and roomId, while client responds with only 1 param: userId
-            receivedUserId = id;
+        clientSocket.on('rooms', () => {
+            receivedUserId++;
         });
-        clientSocket.emit('joinRoom', roomId);
-        clientSocket.emit('abandon', roomId, userId);
+        clientSocket.emit('abandon', room.id, clientSocket.id);
         // eslint-disable-next-line dot-notation
         setTimeout(() => {
-            expect(receivedUserId).to.equal(userId);
+            expect(receivedUserId).greaterThan(0);
             done();
         }, RESPONSE_DELAY);
     });
@@ -82,9 +84,10 @@ describe('Socket manager service', () => {
     });
 
     it('should emit a message with a body and user id when client sends a message and provides a roomId, useriD and body', (done) => {
-        const message = { roomId: 'someRoom', userId: 'someId', body: 'Hello World' };
         const receivedMessage = { roomId: '', userId: '', body: '' };
-
+        const room: Room = { id: 'someId', clients: ['someId'], settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
+        service.rooms.push(room);
+        const message = { roomId: room.id, userId: 'someId', body: 'Hello World' };
         clientSocket.emit('joinRoom', message.roomId);
         clientSocket.on('roomMessage', (userId: string, body: string, param3?: string) => {
             if (userId && message && param3) return; // Client emits 'roomMessage' with 3 params and the server responds with 2 params
@@ -118,17 +121,18 @@ describe('Socket manager service', () => {
             timer: 0,
             grid: [],
         };
-        const roomId = 'someRoom';
+        const room: Room = { id: 'someId', clients: ['someId'], settings: { mode: 'someMode', timer: 'someTime' }, name: 'Some name' };
+        service.rooms.push(room);
         const userId = 'someUser';
-        clientSocket.emit('joinRoom', roomId);
+        clientSocket.emit('joinRoom', room.id);
 
-        clientSocket.on('syncGameData', (user: string, gameState: GameState, room?: string) => {
-            if (room && user && gameState) return; // server does not emit roomId (send back only 2 params)
+        clientSocket.on('syncGameData', (user: string, gameState: GameState, roomId?: string) => {
+            if (roomId && user && gameState) return; // server does not emit roomId (send back only 2 params)
             receivedGameState.currentTurn = gameState.currentTurn;
             receivedGameState.skipCounter = gameState.skipCounter;
             receivedGameState.timer = gameState.timer;
         });
-        clientSocket.emit('syncGameData', roomId, userId, sendGameState);
+        clientSocket.emit('syncGameData', room.id, userId, sendGameState);
 
         setTimeout(() => {
             expect(receivedGameState.timer).to.equal(sendGameState.timer);
@@ -137,19 +141,20 @@ describe('Socket manager service', () => {
             done();
         }, RESPONSE_DELAY);
     });
-    it('should delete a room from list of available rooms when joining it', (done) => {
+    it('should add clients socket id to the list of clients when he joins a room', (done) => {
         const oldRoom: Room = {
             id: 'an id',
+            clients: ['an id'],
             name: 'a name',
             settings: { mode: 'a mode', timer: 'a time' },
         };
         service.rooms.push(oldRoom);
-
+        const initialClientAmount = oldRoom.clients.length;
         clientSocket.emit('joinRoom', oldRoom.id);
 
         setTimeout(() => {
             const actual = service.rooms.find((room) => room === oldRoom);
-            expect(actual).to.equal(undefined);
+            expect(actual?.clients.length).to.equal(initialClientAmount + 1);
             done();
         }, RESPONSE_DELAY);
     });

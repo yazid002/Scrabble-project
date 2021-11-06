@@ -1,8 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { GamePageComponent } from '@app/pages/game-page/game-page.component';
+import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { RoomService } from '@app/services/room.service';
+import { of } from 'rxjs';
 import { QuitMultiplayerDialogComponent } from './quit-multiplayer-dialog.component';
+
+class MatDialogMock {
+    open() {
+        return {
+            afterClosed: () => of({}),
+        };
+    }
+}
 
 describe('QuitMultiplayerDialogComponent', () => {
     let component: QuitMultiplayerDialogComponent;
@@ -10,9 +21,9 @@ describe('QuitMultiplayerDialogComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
+            imports: [MatButtonModule, MatDialogModule, RouterTestingModule.withRoutes([{ path: 'home', component: MainPageComponent }])],
             declarations: [QuitMultiplayerDialogComponent],
-            imports: [RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
-            providers: [{ provide: RoomService }],
+            providers: [{ provide: MatDialog, useClass: MatDialogMock }, { provide: RoomService }],
         }).compileComponents();
     });
 

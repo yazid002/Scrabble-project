@@ -39,7 +39,6 @@ describe('TimerService', () => {
             resetValue: 60,
             totalTimer: timeInit,
         };
-
         const numSeconds = 3;
         const miliInSeconds = 1000;
         service.startTimer();
