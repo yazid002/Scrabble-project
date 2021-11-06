@@ -15,7 +15,7 @@ import { SelectionManagerService } from './selection-manager.service';
 import { SelectionUtilsService } from './selection-utils.service';
 import { TimerService } from './timer.service';
 
-fdescribe('SelectionManagerService', () => {
+describe('SelectionManagerService', () => {
     let service: SelectionManagerService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
     let selectionUtilsServiceSpy: jasmine.SpyObj<SelectionUtilsService>;
