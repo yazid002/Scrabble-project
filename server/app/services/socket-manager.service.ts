@@ -23,10 +23,6 @@ export class SocketManager {
     handleSockets(): void {
         this.sio.on('connection', (socket: io.Socket) => {
             this.sendRooms();
-
-            // eslint-disable-next-line no-console
-            console.log(`Connexion par l'utilisateur avec id : ${socket.id}`);
-
             socket.on('joinRoom', (roomId: string) => {
                 /** server makes socket join room
                  *
@@ -52,8 +48,6 @@ export class SocketManager {
                 };
                 socket.join(room.id);
                 this.rooms.push(room);
-                console.log(this.rooms);
-                // this.rooms = [...new Set(this.rooms)];
                 this.sendRooms();
                 socket.emit('setRoomId', socket.id);
             });

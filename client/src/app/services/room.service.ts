@@ -43,8 +43,6 @@ export class RoomService {
         });
         this.gameStateSubscription = this.gameSyncService.sendGameStateSignal.subscribe((gameState: GameState) => {
             this.socket.emit('syncGameData', this.roomId, this.socket.id, gameState);
-            // TODO: ENLEVER SI ON UTLISE PAS
-            //  console.log(this.roomId);
         });
         this.abandonSubscription = this.gameSyncService.sendAbandonSignal.subscribe(() => {
             this.socket.emit('abandon', this.roomId, this.socket.id);
@@ -95,11 +93,8 @@ export class RoomService {
         const userName = this.gameService.players[0].name;
         this.socket.emit('createRoom', settings, userName);
 
-        // TODO: NE PAS OUBLIER CES COMMENTAIRES
-        // this.roomId = this.socket.id;
 
         this.gameSyncService.isMasterClient = true;
-        // console.log(this.roomId);
         return this.roomId;
     }
 
