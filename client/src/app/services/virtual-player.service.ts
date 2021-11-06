@@ -190,11 +190,6 @@ export class VirtualPlayerService {
         return [];
     }
     private makePossibilities(): WordNCoord[] {
-        const maxTurnTime = 17000;
-        let hasTimeRanOut = false;
-        setTimeout(() => {
-            hasTimeRanOut = true;
-        }, maxTurnTime);
         const gridCombos = this.getLetterCombosFromGrid();
         let possibilities: WordNCoord[] = [];
         const rackCombos: string[] = this.makeRackCombos();
