@@ -42,4 +42,11 @@ describe('SidebarComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should open a MatDialog box on "openQuitConfirmationDialog"', () => {
+        // eslint-disable-next-line -- matDialog is private and we need access for the test
+        const spy = spyOn(component['matDialog'], 'open');
+        component.openQuitConfirmationDialog();
+        expect(spy).toHaveBeenCalled();
+    });
 });

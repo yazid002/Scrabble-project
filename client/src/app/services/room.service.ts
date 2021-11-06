@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
-import { environment } from '../../environments/environment';
 import { ChatService } from './chat.service';
 import { GameState, GameSyncService } from './game-sync.service';
 import { GameService } from './game.service';
