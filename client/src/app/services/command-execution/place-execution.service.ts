@@ -10,7 +10,7 @@ import { PlaceService } from '@app/services/place.service';
 export class PlaceExecutionService {
     constructor(public grid: GridService, private placeService: PlaceService) {}
 
-    async execute(parameters: string[]): Promise<IChat> {
+    async execute(parameters: string[], isCalledThoughtChat: boolean): Promise<IChat> {
         const POSITION_INDEX = 1;
         const WORD_INDEX = 2;
 
@@ -23,13 +23,14 @@ export class PlaceExecutionService {
         const word: string = parameters[WORD_INDEX];
 
         const extractedParameters = this.extractParameters(position);
+        const errorBody = (await this.placeService
+            .placeWord(word, extractedParameters.coord, extractedParameters.direction, isCalledThoughtChat)
+            .catch((error: { error: boolean; message: IChat }) => {
+                return error;
+            })) as { error: boolean; message: IChat };
 
-        const errorBody = (await this.placeService.placeWord(word, extractedParameters.coord, extractedParameters.direction).catch((error: Error) => {
-            return error.message;
-        })) as string;
-
-        if (errorBody) {
-            result.body = errorBody;
+        if (errorBody.error) {
+            result.body = errorBody.message.body;
         }
 
         return result;

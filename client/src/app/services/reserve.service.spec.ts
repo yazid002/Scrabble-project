@@ -9,14 +9,14 @@ describe('ReserveService', () => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(ReserveService);
         service.alphabets = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'F', quantity: 2, points: 4, affiche: 'F' },
-            { name: 'G', quantity: 2, points: 4, affiche: 'G' },
-            { name: 'H', quantity: 2, points: 4, affiche: 'H' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 2, points: 3, display: 'B' },
+            { name: 'C', quantity: 2, points: 3, display: 'C' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'F', quantity: 2, points: 4, display: 'F' },
+            { name: 'G', quantity: 2, points: 4, display: 'G' },
+            { name: 'H', quantity: 2, points: 4, display: 'H' },
         ];
     });
 
@@ -83,11 +83,11 @@ describe('ReserveService', () => {
             const POSITION = 1;
             const LETTER_TO_CHECK = 'A';
             service.alphabets = [
-                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                { name: '*', quantity: 0, points: 0, affiche: '*' },
-                { name: '*', quantity: 0, points: 0, affiche: '*' },
-                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                { name: 'A', quantity: 9, points: 1, display: 'A' },
+                { name: '*', quantity: 0, points: 0, display: '*' },
+                { name: '*', quantity: 0, points: 0, display: '*' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
             ];
 
             const result = service.findLetterInReserve(LETTER_TO_CHECK);
@@ -101,14 +101,14 @@ describe('ReserveService', () => {
             const NOT_FOUND = -1;
             const LETTER_TO_ADD = 'Z';
             const INITIAL_RESERVE = [
-                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-                { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-                { name: 'F', quantity: 2, points: 4, affiche: 'F' },
-                { name: 'G', quantity: 2, points: 4, affiche: 'G' },
-                { name: 'H', quantity: 2, points: 4, affiche: 'H' },
+                { name: 'A', quantity: 9, points: 1, display: 'A' },
+                { name: 'B', quantity: 2, points: 3, display: 'B' },
+                { name: 'C', quantity: 2, points: 3, display: 'C' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'F', quantity: 2, points: 4, display: 'F' },
+                { name: 'G', quantity: 2, points: 4, display: 'G' },
+                { name: 'H', quantity: 2, points: 4, display: 'H' },
             ];
             service.alphabets = INITIAL_RESERVE;
 
@@ -139,10 +139,10 @@ describe('ReserveService', () => {
     describe('getQuantityOfAvailableLetters', () => {
         it('should return the quantity of available letters in the reserve', () => {
             service.alphabets = [
-                { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-                { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-                { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+                { name: 'A', quantity: 9, points: 1, display: 'A' },
+                { name: 'B', quantity: 2, points: 3, display: 'B' },
+                { name: 'C', quantity: 2, points: 3, display: 'C' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
             ];
 
             const expectedResult = 16;

@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
+import { SelectionType } from '@app/enums/selection-enum';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
+import { SelectionManagerService } from '@app/services/selection-manager.service';
 
 const MAX_MESSAGE_LENGTH = 512;
 const MIN_MESSAGE_LENGTH = 1;
@@ -11,13 +13,22 @@ const MIN_MESSAGE_LENGTH = 1;
     styleUrls: ['./chatbox.component.scss'],
 })
 export class ChatboxComponent implements OnInit {
+    fromSelection: boolean = false;
     inputBox: string = '';
     error: boolean;
     errorMessage: string = '';
     messages: IChat[] = [];
     readonly possibleSenders = SENDER;
 
-    constructor(public chatService: ChatService, private commandExecutionService: CommandExecutionService) {}
+    constructor(
+        public chatService: ChatService,
+        private commandExecutionService: CommandExecutionService,
+        private selectionManager: SelectionManagerService,
+    ) {}
+    @HostListener('click', ['$event'])
+    onLeftClick() {
+        this.selectionManager.getSelectionType(SelectionType.Chat);
+    }
 
     ngOnInit(): void {
         this.getMessages();
@@ -45,12 +56,13 @@ export class ChatboxComponent implements OnInit {
         };
         this.chatService.addMessage(message);
         if (this.inputBox.startsWith('!')) {
-            const response = await this.commandExecutionService.executeCommand(this.inputBox);
+            const response = await this.commandExecutionService.executeCommand(this.inputBox, !this.fromSelection);
 
             this.chatService.addMessage(response.message);
         }
 
         this.inputBox = '';
+        this.fromSelection = false;
         this.scrollDown();
     }
     private scrollDown() {

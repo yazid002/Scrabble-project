@@ -10,9 +10,9 @@ describe('ReserveExecutionService', () => {
     beforeEach(() => {
         reserveServiceSpy = jasmine.createSpyObj('ReserveService', ['getQuantityOfAvailableLetters', 'getLettersFromReserve', 'addLetterInReserve']);
         reserveServiceSpy.alphabets = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 2, points: 3, display: 'B' },
+            { name: 'C', quantity: 2, points: 3, display: 'C' },
         ];
 
         TestBed.configureTestingModule({

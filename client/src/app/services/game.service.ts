@@ -65,7 +65,7 @@ export class GameService {
             }
 
             endGameString += '<br>' + this.players[playerIndex].name + ' :<br>';
-            endGameString += this.players[playerIndex].rack.map((character) => character.affiche).join('<br>    ');
+            endGameString += this.players[playerIndex].rack.map((character) => character.display).join('<br>    ');
         }
         if (otherPlayerAbandonned) {
             this.players[PLAYER.realPlayer].won = 'Votre adversaire a abandonné. Vous gagnez par défaut!';
@@ -125,6 +125,13 @@ export class GameService {
             name: this.userSettingsService.nameOption.userChoice,
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
+            placementParameters: {
+                selectedCoord: { x: -1, y: -1 },
+                direction: true,
+                selectedTilesForPlacement: [],
+                selectedRackIndexesForPlacement: [],
+                wordToVerify: [],
+            },
         };
         this.players.push(realPlayer);
 
