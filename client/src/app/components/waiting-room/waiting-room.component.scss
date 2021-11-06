@@ -1,0 +1,78 @@
+@import url('http://fonts.cdnfonts.com/css/common-pixel');
+
+.title {
+    font-family: 'Common Pixel', sans-serif;
+    font-size: 100px;
+    margin-top: 40px;
+    text-align: center;
+    color: red;
+    margin-bottom: 200px;
+}
+
+.loading {
+    //margin: auto
+    text-align: center;
+
+    margin-top: 50px;
+}
+.loading h1 {
+    margin-bottom: 50px;
+    color: green;
+    font-family: Gill Sans, sans-serif;
+}
+
+#parametres {
+    text-align: center;
+}
+
+.me {
+    text-align: center;
+    margin: auto;
+    margin-top: 10px;
+}
+
+mat-spinner {
+    margin: auto;
+}
+
+mat-card {
+    width: 250px;
+    margin-top: 20px;
+}
+
+#summary {
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+// #name {
+//     margin-top: 10px;
+// }
+mat-card-title-group {
+    margin-top: 20px;
+}
+
+mat-card mat-card {
+    margin-top: 1em;
+    justify-content: space-between;
+    width: 200px;
+}
+
+.container {
+    margin: auto;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    //height: 100%;
+}
+#solo_button {
+    margin-right: 5px;
+}
+#join {
+    margin-right: 5px;
+}

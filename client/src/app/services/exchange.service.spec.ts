@@ -3,14 +3,34 @@ import { InexistentLettersOnRack } from '@app/classes/command-errors/command-syn
 import { InvalidArgumentsLength } from '@app/classes/command-errors/command-syntax-errors/invalid-argument-length';
 import { NotEnoughOccurrences } from '@app/classes/command-errors/command-syntax-errors/not-enough-occurrences';
 import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
+import { PLAYER } from '@app/classes/player';
 import { ExchangeService } from './exchange.service';
+import { GameService } from './game.service';
 import { RackService } from './rack.service';
 
 describe('ExchangeService', () => {
     let service: ExchangeService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
 
     beforeEach(() => {
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
+        gameServiceSpy.currentTurn = PLAYER.realPlayer;
+        gameServiceSpy.players = [
+            {
+                id: PLAYER.realPlayer,
+                name: 'Random name',
+                rack: [
+                    { name: 'A', quantity: 9, points: 1, affiche: 'A' },
+                    { name: 'B', quantity: 2, points: 3, affiche: 'B' },
+                    { name: 'C', quantity: 2, points: 3, affiche: 'C' },
+                    { name: 'D', quantity: 3, points: 2, affiche: 'D' },
+                    { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                ],
+                points: 0,
+            },
+        ];
+
         rackServiceSpy = jasmine.createSpyObj('RackService', [
             'replaceLetter',
             'findLetterPosition',
@@ -18,15 +38,12 @@ describe('ExchangeService', () => {
             'checkLettersAvailability',
             'findInexistentLettersOnRack',
         ]);
-        rackServiceSpy.rackLetters = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-            { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-        ];
+        rackServiceSpy.gameService = gameServiceSpy;
         TestBed.configureTestingModule({
-            providers: [{ provide: RackService, useValue: rackServiceSpy }],
+            providers: [
+                { provide: RackService, useValue: rackServiceSpy },
+                { provide: GameService, useValue: gameServiceSpy },
+            ],
         });
         service = TestBed.inject(ExchangeService);
     });
@@ -48,7 +65,7 @@ describe('ExchangeService', () => {
     it('validateLetterOccurrencesMatch should return true if the letterToChange has same or less occurrence number in command and on rack', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'D'];
-        rackServiceSpy.rackLetters = [
+        rackServiceSpy.gameService.players[0].rack = [
             { name: 'A', quantity: 9, points: 1, affiche: 'A' },
             { name: 'B', quantity: 0, points: 3, affiche: 'B' },
             { name: 'B', quantity: 0, points: 3, affiche: 'B' },
@@ -71,7 +88,7 @@ describe('ExchangeService', () => {
     it('validateLetterOccurrencesMatch should return false if the letterToChange has more occurrence number in command and on rack', () => {
         const letterToChange = 'B';
         const lettersToChange = ['B', 'B', 'D'];
-        rackServiceSpy.rackLetters = [
+        rackServiceSpy.gameService.players[0].rack = [
             { name: 'A', quantity: 1, points: 3, affiche: 'A' },
             { name: 'B', quantity: 1, points: 3, affiche: 'B' },
             { name: 'C', quantity: 1, points: 3, affiche: 'C' },

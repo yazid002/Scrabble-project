@@ -1,7 +1,8 @@
 import { IChat } from './chat';
-
 export interface CommandFormat {
     format: string;
     description: string;
-    command: () => Promise<IChat> | IChat;
+    allowed: boolean;
+    notAllowedMessage: string;
+    command: () => Promise<IChat>;
 }

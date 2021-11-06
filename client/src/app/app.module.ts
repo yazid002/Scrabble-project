@@ -14,7 +14,12 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { ChatboxComponent } from './components/chatbox/chatbox.component';
 import { GameModeDialogComponent } from './components/game-mode-dialog/game-mode-dialog.component';
 import { GameOverviewComponent } from './components/game-overview/game-overview.component';
+import { QuitConfirmationDialogComponent } from './components/quit-confirmation-dialog/quit-confirmation-dialog.component';
+import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.component';
+import { LobbyComponent } from './lobby/lobby.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
+import { QuitMultiplayerDialogComponent } from './components/quit-multiplayer-dialog/quit-multiplayer-dialog.component';
+import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
 
 /**
  * Main module that is used in main.ts.
@@ -34,6 +39,11 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         LeaderboardPageComponent,
         ChatboxComponent,
         GameOverviewComponent,
+        LobbyComponent,
+        SwitchDialogComponent,
+        QuitConfirmationDialogComponent,
+        QuitMultiplayerDialogComponent,
+        WaitingRoomComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],

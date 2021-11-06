@@ -1,10 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Output } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { UserSettingsService } from './user-settings.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class TimerService {
+    @Output() timerDone = new BehaviorSubject<boolean>(true); // value of boolean represents wheter or not the player skips his turn
+    isEnabled: boolean;
     counter: {
         min: number;
         seconds: number;
@@ -19,14 +22,20 @@ export class TimerService {
             resetValue: 0,
             totalTimer: 0,
         };
-        this.startTimer();
+        this.isEnabled = true;
     }
     startTimer() {
         this.getTimerSettings();
         const timerIntervalMS = 1000;
         setInterval(() => {
-            this.decrementTime();
+            if (this.isEnabled) {
+                this.decrementTime();
+            }
         }, timerIntervalMS);
+    }
+    resetTimer(skipped: boolean = false) {
+        this.counter.totalTimer = this.counter.resetValue;
+        this.timerDone.next(skipped);
     }
     private getTimerSettings() {
         const timer = Number(this.userSettingsService.settings.timer.currentChoiceKey);
@@ -42,5 +51,8 @@ export class TimerService {
 
         this.counter.seconds = (this.counter.resetValue - secondsPassed) % MAX_SECONDS;
         this.counter.min = Math.max(0, Math.floor(totalMinutes - minutesPassed));
+        if (this.counter.totalTimer === 0) {
+            this.timerDone.next(true);
+        }
     }
 }

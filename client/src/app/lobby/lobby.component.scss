@@ -1,0 +1,84 @@
+@import url('http://fonts.cdnfonts.com/css/common-pixel');
+
+.title {
+    font-family: 'Common Pixel', sans-serif;
+    font-size: 100px;
+    margin-top: 40px;
+    text-align: center;
+    margin-bottom: 150px;
+}
+
+.rooms mat-card-title {
+    text-align: center;
+}
+
+.rooms {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    height: 25%;
+}
+
+.content {
+    height: calc(100vh - 64px);
+    overflow: auto;
+}
+
+.room > h3 {
+    float: left;
+}
+
+button {
+    display: inline-block;
+    margin: 10px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 5px;
+}
+
+.summary {
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+    align-items: center;
+}
+
+.summary mat-card-title {
+    text-align: center;
+}
+
+#me {
+    margin-left: auto;
+    margin-right: auto;
+}
+#name {
+    margin-top: 5px;
+    text-align: center;
+}
+mat-card-title-group {
+    margin-top: 20px;
+}
+
+mat-card mat-card {
+    margin-top: 1em;
+    justify-content: space-between;
+    width: 200px;
+}
+mat-card-footer mat-card-subtitle {
+    color: green;
+    font-family: Gill Sans, sans-serif;
+    font-size: 18px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+#divider {
+    border-top-color: #800020;
+    border-top-width: 4px;
+    border-top-style: dashed;
+}

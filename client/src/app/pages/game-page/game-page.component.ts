@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
+// import { QuitConfirmationDialogComponent } from '@app/components/quit-confirmation-dialog/quit-confirmation-dialog.component';
+import { GameSyncService } from '@app/services/game-sync.service';
 import { GridService } from '@app/services/grid.service';
+import { RoomService } from '@app/services/room.service';
+import { TimerService } from '@app/services/timer.service';
+import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
     selector: 'app-game-page',
@@ -7,7 +12,23 @@ import { GridService } from '@app/services/grid.service';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
-    constructor(public gridService: GridService) {}
+    // TODO verifier si les services en parametre sont utilises ou doivent en private
+    // TODO enlever le roomName et isMaster une fois que le loby est intégré et créé les salles pour nous
+    roomName: string = '';
+    isMaster: boolean = false;
+
+    constructor(
+        public gridService: GridService,
+
+        private virtualPlayerService: VirtualPlayerService,
+        public roomService: RoomService,
+        private gameSyncService: GameSyncService,
+        private timerService: TimerService,
+    ) {
+        this.virtualPlayerService.initialize();
+        this.gameSyncService.initialize();
+        this.timerService.startTimer();
+    }
 
     increaseSize(): void {
         const step = 1;

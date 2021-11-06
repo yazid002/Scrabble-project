@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
-import { CommandError } from '@app/classes/command-errors/command-error';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 
@@ -24,7 +23,7 @@ export class ChatboxComponent implements OnInit {
         this.getMessages();
         document.getElementsByTagName('input')[0].focus();
     }
-    validateFormat() {
+    async validateFormat() {
         this.error = false;
         if (this.inputBox.length > MAX_MESSAGE_LENGTH || this.inputBox.length < MIN_MESSAGE_LENGTH) {
             this.error = true;
@@ -32,14 +31,10 @@ export class ChatboxComponent implements OnInit {
             return;
         }
         if (this.inputBox.startsWith('!')) {
-            try {
-                this.commandExecutionService.interpretCommand(this.inputBox);
-                this.error = false;
-            } catch (error) {
-                if (error instanceof CommandError) {
-                    this.errorMessage = error.message;
-                    this.error = true;
-                }
+            const answer = this.commandExecutionService.interpretCommand(this.inputBox);
+            if (answer.error) {
+                this.error = answer.error;
+                this.errorMessage = (await answer.function()).body;
             }
         }
     }
@@ -50,18 +45,9 @@ export class ChatboxComponent implements OnInit {
         };
         this.chatService.addMessage(message);
         if (this.inputBox.startsWith('!')) {
-            let response: IChat = { from: '', body: '' };
-            try {
-                response = await this.commandExecutionService.executeCommand(this.inputBox);
-            } catch (error) {
-                if (error instanceof CommandError) {
-                    response = {
-                        from: this.possibleSenders.computer,
-                        body: error.message,
-                    };
-                }
-            }
-            this.chatService.addMessage(response);
+            const response = await this.commandExecutionService.executeCommand(this.inputBox);
+
+            this.chatService.addMessage(response.message);
         }
 
         this.inputBox = '';
