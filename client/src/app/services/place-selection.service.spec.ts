@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { PlaceSelectionService } from './place-selection.service';
 
-fdescribe('PlaceSelectionService', () => {
+describe('PlaceSelectionService', () => {
     let service: PlaceSelectionService;
 
     beforeEach(() => {
