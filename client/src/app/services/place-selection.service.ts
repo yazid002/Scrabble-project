@@ -4,7 +4,6 @@ import { ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
 import { SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { NOT_FOUND } from '@app/constants/common-constants';
-import { DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { GridService } from './grid.service';
 import { RackService } from './rack.service';
@@ -14,22 +13,43 @@ import { VerifyService } from './verify.service';
     providedIn: 'root',
 })
 export class PlaceSelectionService {
-    selectedCoord: Vec2 = { x: -1, y: -1 };
-    direction: boolean = true;
-    selectedTilesForPlacement: Vec2[] = [];
-    selectedRackIndexesForPlacement: number[] = [];
-    wordToVerify: string[] = [];
-    command: string = '';
+    selectedCoord: Vec2;
+    direction: boolean;
+    selectedTilesForPlacement: Vec2[];
+    selectedRackIndexesForPlacement: number[];
+    wordToVerify: string[];
+    command: string;
+    keyEventOperationMap: Map<string, () => void>;
 
-    constructor(private gridService: GridService, private verifyService: VerifyService, private rackService: RackService) {}
+    constructor(private gridService: GridService, private verifyService: VerifyService, private rackService: RackService) {
+        this.selectedCoord = { x: NOT_FOUND, y: NOT_FOUND };
+        this.direction = true;
+        this.selectedTilesForPlacement = [];
+        this.selectedRackIndexesForPlacement = [];
+        this.wordToVerify = [];
+        this.command = '';
 
-    getClickIndex(event: MouseEvent, rack: ICharacter[]): number {
-        for (let i = 0; i < rack.length; i++) {
-            if (event.offsetX >= i * (DEFAULT_WIDTH / RACK_SIZE) && event.offsetX < (i + 1) * (DEFAULT_WIDTH / RACK_SIZE)) {
-                return i;
-            }
-        }
-        return NOT_FOUND;
+        this.keyEventOperationMap = new Map([
+            [
+                KeyboardKeys.Backspace,
+                () => {
+                    this.cancelUniqueSelectionFromRack();
+                    this.cancelUniqueBoardClick();
+                },
+            ],
+            [
+                KeyboardKeys.Enter,
+                () => {
+                    this.command = this.buildPlacementCommand();
+                },
+            ],
+            [
+                KeyboardKeys.Escape,
+                () => {
+                    this.cancelPlacement();
+                },
+            ],
+        ]);
     }
 
     getClickCoords(event: MouseEvent): Vec2 {
@@ -90,24 +110,12 @@ export class PlaceSelectionService {
         const eventKey = this.verifyService.normalizeWord(event.key);
         if (regexp.test(eventKey)) {
             return this.placeOnBoard(eventKey, selectionColor, rack);
-        } else
-            switch (event.key) {
-                case KeyboardKeys.Backspace: {
-                    this.cancelUniqueSelectionFromRack();
-                    this.cancelUniqueBoardClick();
-
-                    break;
-                }
-                case KeyboardKeys.Enter: {
-                    this.command = this.buildPlacementCommand();
-                    break;
-                }
-                case KeyboardKeys.Escape: {
-                    this.cancelPlacement();
-
-                    break;
-                }
+        } else {
+            const operation = this.keyEventOperationMap.get(event.key);
+            if (operation) {
+                operation();
             }
+        }
     }
 
     placeOnBoard(eventKey: string, selectionColor: string, rack: ICharacter[]): void {

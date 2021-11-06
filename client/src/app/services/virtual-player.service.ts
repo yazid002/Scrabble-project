@@ -190,7 +190,6 @@ export class VirtualPlayerService {
         return [];
     }
     private makePossibilities(): WordNCoord[] {
-
         const maxTurnTime = 17000;
         let hasTimeRanOut = false;
         setTimeout(() => {

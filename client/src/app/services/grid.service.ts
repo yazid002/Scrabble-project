@@ -6,7 +6,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { bonuses, DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { NOT_FOUND } from '@app/constants/common-constants';
 import { ReserveService } from '@app/services/reserve.service';
-import { VerifyService } from './verify.service';
 
 @Injectable({
     providedIn: 'root',
@@ -20,7 +19,7 @@ export class GridService {
 
     gridContext: CanvasRenderingContext2D;
 
-    constructor(private reserveService: ReserveService, public verifyService: VerifyService) {}
+    constructor(private reserveService: ReserveService) {}
 
     writeLetter(letter: string, coord: Vec2): void {
         tiles[coord.y][coord.x].oldStyle.color = tiles[coord.y][coord.x].style.color;
