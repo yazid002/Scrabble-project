@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { Socket } from 'socket.io-client';
 import { GameState } from './game-sync.service';
 import { Room, RoomService } from './room.service';
-import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 describe('RoomService', () => {
     let service: RoomService;
     let clientSocket: Socket;
@@ -26,9 +26,6 @@ describe('RoomService', () => {
 
         // eslint-disable-next-line dot-notation
         expect(service['gameSyncService'].isMasterClient).toEqual(true);
-    });
-    it('should not add message received to the message list if we are the sender', () => {
-        // TODO demander comment on pourrait envoyer un message dans le test (et le recevoir par la suite)
     });
 
     it('should emit joinRoom when joinRoom is called', () => {
