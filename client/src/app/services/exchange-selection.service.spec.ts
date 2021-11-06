@@ -60,11 +60,11 @@ describe('ExchangeSelectionService', () => {
         const selectedIndexes = [firstIndexSelected, secondIndexSelected];
         const expectedResult = '!echanger be';
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = selectedIndexes;
@@ -107,11 +107,11 @@ describe('ExchangeSelectionService', () => {
         const secondIndexSelected = 4;
         const selectedIndexes = [firstIndexSelected, secondIndexSelected];
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         const expectedCallTimes = 1;
@@ -130,11 +130,11 @@ describe('ExchangeSelectionService', () => {
     it('onMouseRightClick should call getClickIndex ', () => {
         const casPosition = 8;
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         const expectedCallTimes = 1;
@@ -153,11 +153,11 @@ describe('ExchangeSelectionService', () => {
     it('onMouseRightClick should select the letter clicked ', () => {
         const casePosition = 3;
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         selectionUtilsServiceSpy.getMouseClickIndex.and.returnValue(casePosition);
@@ -177,11 +177,11 @@ describe('ExchangeSelectionService', () => {
     it('onMouseRightClick should cancel the selection clicked ', () => {
         const casePosition = 4;
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         selectionUtilsServiceSpy.getMouseClickIndex.and.returnValue(casePosition);

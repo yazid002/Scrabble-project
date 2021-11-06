@@ -190,13 +190,18 @@ export class VirtualPlayerService {
         return [];
     }
     private makePossibilities(): WordNCoord[] {
+
+        const maxTurnTime = 17000;
+        let hasTimeRanOut = false;
+        setTimeout(() => {
+            hasTimeRanOut = true;
+        }, maxTurnTime);
         const gridCombos = this.getLetterCombosFromGrid();
         let possibilities: WordNCoord[] = [];
         const rackCombos: string[] = this.makeRackCombos();
         const pointRange = this.decidePoints();
         let i = 0;
-        const max = 150;
-        while (i < rackCombos.length && i < max) {
+        while (i < rackCombos.length && !hasTimeRanOut) {
             if (this.verifyService.isFirstMove()) {
                 const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange));
                 if (newPossibilities.length > 0) {
