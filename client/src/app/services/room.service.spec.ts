@@ -179,7 +179,7 @@ describe('RoomService', () => {
 
     it('should room', () => {
         // eslint-disable-next-line dot-notation
-        const room: Room[] = [{ id: 'abc', settings: { mode: 'multiplayer', timer: '1' }, name: 'someName' }];
+        const room: Room[] = [{ id: 'abc', clients: ['abc'], settings: { mode: 'multiplayer', timer: '1' }, name: 'someName' }];
         // eslint-disable-next-line dot-notation
         clientSocket.on = (eventName: string, roomMessageCallback: (rooms: Room[]) => void) => {
             if (eventName === 'rooms') {

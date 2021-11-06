@@ -8,6 +8,7 @@ const ABANDON_TIMER = 5000;
 
 export interface Room {
     id: string;
+    clients: string[];
     name: string;
     settings: { mode: string; timer: string };
 }
@@ -32,9 +33,8 @@ export class SocketManager {
                  * @param roomId: provide a roomId to join a specific room
                  */
                 const aRoomIndex = this.rooms.findIndex((room) => room.id === roomId);
-                if (aRoomIndex !== ROOM_NOT_FOUND_INDEX) {
-                    this.rooms.splice(aRoomIndex, 1);
-                }
+                if (aRoomIndex === ROOM_NOT_FOUND_INDEX) return;
+                this.rooms[aRoomIndex].clients.push(socket.id);
                 socket.join(roomId);
                 this.sio.to(roomId).emit('askMasterSync');
             });
@@ -46,6 +46,7 @@ export class SocketManager {
             socket.on('createRoom', (settings: { mode: string; timer: string }, userName: string) => {
                 const room: Room = {
                     name: userName,
+                    clients: [socket.id],
                     id: socket.id,
                     settings,
                 };
@@ -70,9 +71,11 @@ export class SocketManager {
             });
 
             socket.on('disconnect', () => {
-                this.leaveRoom(socket.id);
                 setTimeout(() => {
-                    this.sio.emit('abandon', socket.id);
+                    const room = this.rooms.find((element) => element.clients.includes(socket.id));
+                    if (!room) return;
+                    this.sio.to(room.id).emit('abandon', socket.id);
+                    this.leaveRoom(socket.id);
                 }, ABANDON_TIMER);
             });
         });
@@ -89,9 +92,13 @@ export class SocketManager {
         this.sio.sockets.emit('clock', new Date().toLocaleTimeString());
     }
     private leaveRoom(socketId: string) {
-        const roomIndex = this.rooms.findIndex((room) => room.id === socketId);
+        const roomIndex = this.rooms.findIndex((room) => room.clients.includes(socketId));
         if (roomIndex === ROOM_NOT_FOUND_INDEX) return;
-        this.rooms.splice(roomIndex, 1);
+        const clientIndex = this.rooms[roomIndex].clients.findIndex((client) => client === socketId);
+        this.rooms[roomIndex].clients.splice(clientIndex, 1);
+        if (this.rooms[roomIndex].clients.length === 0) {
+            this.rooms.splice(roomIndex, 1);
+        }
         this.sio.emit('rooms', this.rooms);
     }
 }

@@ -9,6 +9,7 @@ import { GameService } from './game.service';
 import { UserSettingsService } from './user-settings.service';
 export interface Room {
     id: string;
+    clients: string[];
     name: string;
     settings: { mode: string; timer: string };
 }
@@ -77,7 +78,7 @@ export class RoomService {
             this.roomId = roomId;
         });
         this.socket.on('rooms', (rooms: Room[]) => {
-            this.rooms = rooms;
+            this.rooms = rooms.filter((room) => room.clients.length === 1);
         });
     }
 
