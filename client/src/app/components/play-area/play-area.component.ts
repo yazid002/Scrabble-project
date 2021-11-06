@@ -33,20 +33,20 @@ export class PlayAreaComponent implements AfterViewInit {
     @HostListener('click', ['$event'])
     onLeftClick(event: MouseEvent) {
         if (event.target === this.gridCanvas.nativeElement) {
-            this.selectionManager.getSelectionType(SelectionType.Grid);
+            this.selectionManager.updateSelectionType(SelectionType.Grid);
         } else if (event.target === this.rackCanvas.nativeElement) {
-            this.selectionManager.getSelectionType(SelectionType.Rack);
+            this.selectionManager.updateSelectionType(SelectionType.Rack);
         } else {
-            this.selectionManager.getSelectionType(SelectionType.None);
+            this.selectionManager.updateSelectionType(SelectionType.None);
         }
     }
 
     @HostListener('contextmenu', ['$event'])
     onRightClick(event: MouseEvent) {
         if (event.target === this.rackCanvas.nativeElement) {
-            this.selectionManager.getSelectionType(SelectionType.Rack);
+            this.selectionManager.updateSelectionType(SelectionType.Rack);
         } else {
-            this.selectionManager.getSelectionType(SelectionType.None);
+            this.selectionManager.updateSelectionType(SelectionType.None);
         }
     }
 

@@ -27,7 +27,7 @@ export class ChatboxComponent implements OnInit {
     ) {}
     @HostListener('click', ['$event'])
     onLeftClick() {
-        this.selectionManager.getSelectionType(SelectionType.Chat);
+        this.selectionManager.updateSelectionType(SelectionType.Chat);
     }
 
     ngOnInit(): void {

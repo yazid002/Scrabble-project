@@ -71,23 +71,12 @@ export class PlaceService {
             if (isPlacementFeasible.error) {
                 if (!isCalledThoughtChat) {
                     this.placeSelectionService.cancelPlacement();
-                    this.selectionManagerService.getSelectionType(SelectionType.Rack);
+                    this.selectionManagerService.updateSelectionType(SelectionType.Rack);
                 }
                 this.timerService.resetTimer();
                 reject(isPlacementFeasible);
-                // return promise;
             } else {
                 this.lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
-                // try {
-                //     this.lettersUsedOnBoard = this.verifyService.validatePlaceFeasibility(word, coord, direction);
-                // } catch (error) {
-                //     if (!isCalledThoughtChat) {
-                //         this.placeSelectionService.cancelPlacement();
-                //         this.selectionManagerService.getSelectionType(SelectionType.Rack);
-                //         this.timerService.resetTimer();
-                //     }
-                //     throw error;
-                // }
 
                 if (isCalledThoughtChat) {
                     this.writeWord(word, coord, direction);
@@ -115,7 +104,7 @@ export class PlaceService {
                                     tiles[y][x].style.font as string,
                                 );
                             }
-                            this.selectionManagerService.getSelectionType(SelectionType.Rack);
+                            this.selectionManagerService.updateSelectionType(SelectionType.Rack);
                             this.timerService.resetTimer();
                         }, placementDuration);
 
@@ -141,7 +130,7 @@ export class PlaceService {
                     while (this.placeSelectionService.selectedRackIndexesForPlacement.length > 0) {
                         this.placeSelectionService.cancelUniqueSelectionFromRack();
                     }
-                    this.selectionManagerService.getSelectionType(SelectionType.Rack);
+                    this.selectionManagerService.updateSelectionType(SelectionType.Rack);
                     this.rackService.replaceWord(word);
                     resolve(response);
                     this.timerService.resetTimer();

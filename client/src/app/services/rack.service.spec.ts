@@ -37,8 +37,7 @@ describe('RackService', () => {
         TestBed.configureTestingModule({
             providers: [{ provide: GameService, useValue: gameServiceSpy }],
         });
-        // const player: Player =
-        // gameServiceSpy.players = [player];
+
         reserveServiceSpy.alphabets = [
             { name: 'A', quantity: 9, points: 1, display: 'A' },
             { name: 'B', quantity: 2, points: 3, display: 'B' },

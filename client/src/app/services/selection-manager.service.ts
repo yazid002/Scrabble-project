@@ -19,9 +19,9 @@ import { TimerService } from './timer.service';
     providedIn: 'root',
 })
 export class SelectionManagerService {
-    selectionType = SelectionType.Chat;
+    selectionType: SelectionType;
     chatboxComponent: ChatboxComponent;
-    command = '';
+    command: string;
     timerDone: Subscription;
 
     onLeftClickSelectionTypeMapping: Map<SelectionType, (event?: MouseEvent) => void>;
@@ -36,6 +36,8 @@ export class SelectionManagerService {
         private selectionUtilsService: SelectionUtilsService,
         private gameService: GameService,
     ) {
+        this.selectionType = SelectionType.Chat;
+        this.command = '';
         this.onLeftClickSelectionTypeMapping = new Map([
             [SelectionType.Grid, (event?: MouseEvent) => this.handleGridSelectionOnLeftClick(event as MouseEvent)],
             [SelectionType.Rack, (event?: MouseEvent) => this.handleRackSelectionOnLeftClick(event as MouseEvent)],
@@ -46,7 +48,7 @@ export class SelectionManagerService {
         });
     }
 
-    getSelectionType(selectionTypeSelected: SelectionType) {
+    updateSelectionType(selectionTypeSelected: SelectionType): void {
         this.selectionType = selectionTypeSelected;
     }
 
@@ -63,7 +65,7 @@ export class SelectionManagerService {
 
     handleGridSelectionOnLeftClick(event: MouseEvent) {
         if (this.gameService.currentTurn !== PLAYER.realPlayer) {
-            this.getSelectionType(SelectionType.Rack);
+            this.updateSelectionType(SelectionType.Rack);
             return;
         }
         this.placeSelectionService.onBoardClick(event, true);
@@ -113,7 +115,7 @@ export class SelectionManagerService {
         const itSMyTurn = this.gameService.currentTurn === PLAYER.realPlayer;
         // On ne peut pas placer si ce n'est pas notre tour
         if (!itSMyTurn) {
-            this.getSelectionType(SelectionType.Rack);
+            this.updateSelectionType(SelectionType.Rack);
             return;
         }
         const isPlacementCanceled =
@@ -174,7 +176,7 @@ export class SelectionManagerService {
     }
 
     onCancelManipulation(selectionType: SelectionType) {
-        this.getSelectionType(selectionType);
+        this.updateSelectionType(selectionType);
         this.rackLettersManipulationService.cancelManipulation();
     }
 
@@ -192,12 +194,12 @@ export class SelectionManagerService {
     }
 
     onCancelExchange(selectionType: SelectionType) {
-        this.getSelectionType(selectionType);
+        this.updateSelectionType(selectionType);
         this.exchangeSelectionService.cancelExchange();
     }
 
     onSubmitExchange(selectionType: SelectionType) {
-        this.getSelectionType(selectionType);
+        this.updateSelectionType(selectionType);
         this.command = this.exchangeSelectionService.buildExchangeCommand(this.gameService.players[PLAYER.realPlayer].rack);
         this.chatboxComponent.inputBox = this.command;
         this.chatboxComponent.fromSelection = true;
@@ -205,7 +207,7 @@ export class SelectionManagerService {
     }
 
     onSubmitPlacement(selectionType: SelectionType) {
-        this.getSelectionType(selectionType);
+        this.updateSelectionType(selectionType);
         const keyEvent = {
             key: KeyboardKeys.Enter,
             preventDefault: () => void '',
@@ -223,7 +225,7 @@ export class SelectionManagerService {
     }
 
     onCancelPlacement(selectionType: SelectionType) {
-        this.getSelectionType(selectionType);
+        this.updateSelectionType(selectionType);
         const keyEvent = {
             key: KeyboardKeys.Escape,
             preventDefault: () => void '',

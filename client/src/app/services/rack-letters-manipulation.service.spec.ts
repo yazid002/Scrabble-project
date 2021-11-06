@@ -61,11 +61,11 @@ describe('RackLettersManipulationService', () => {
         const firstIndexSelected = 2;
         const selectedIndexes = [firstIndexSelected];
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = selectedIndexes;
@@ -84,11 +84,11 @@ describe('RackLettersManipulationService', () => {
         const selectedIndexes = [indexSelected];
         const firstIndex = 0;
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = selectedIndexes;
@@ -106,11 +106,11 @@ describe('RackLettersManipulationService', () => {
         const firstIndexSelected = 2;
         const selectedIndexes = [firstIndexSelected];
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = selectedIndexes;
@@ -129,11 +129,11 @@ describe('RackLettersManipulationService', () => {
         const selectedIndexes = [firstIndexSelected];
         const lastIndex = 4;
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = selectedIndexes;
@@ -154,11 +154,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         const expectedResult = 1;
@@ -177,11 +177,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = [1];
@@ -201,11 +201,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = [2];
@@ -225,11 +225,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         const selected = 4;
@@ -250,11 +250,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         rackServiceSpy.isLetterOnRack.and.returnValue(false);
@@ -276,11 +276,11 @@ describe('RackLettersManipulationService', () => {
         const alreadySelected = 0;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = [alreadySelected];
@@ -303,11 +303,11 @@ describe('RackLettersManipulationService', () => {
         const alreadySelected = 0;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = [alreadySelected];
@@ -342,11 +342,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         selectionUtilsServiceSpy.getMouseClickIndex.and.returnValue(casePosition);
@@ -379,11 +379,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         selectionUtilsServiceSpy.getMouseClickIndex.and.returnValue(casePosition);
@@ -407,11 +407,11 @@ describe('RackLettersManipulationService', () => {
         const alreadySelected = 0;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.selectedIndexes = [alreadySelected];
@@ -430,11 +430,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         const getIndexFromKeySpy = spyOn(service, 'getIndexFromKey').and.callThrough();
@@ -452,11 +452,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         // Car la fonction est privee
@@ -478,11 +478,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.shiftKey = false;
@@ -503,11 +503,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.shiftKey = true;
@@ -525,11 +525,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         service.shiftKey = true;
@@ -547,11 +547,11 @@ describe('RackLettersManipulationService', () => {
         } as KeyboardEvent;
 
         const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
         const cancelManipulationSpy = spyOn(service, 'cancelManipulation').and.callThrough();
 

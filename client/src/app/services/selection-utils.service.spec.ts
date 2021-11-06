@@ -23,11 +23,11 @@ describe('SelectionUtilsService', () => {
         const selectedIndexes = [firstIndexSelected, secondIndexSelected];
         const expectedResult = ['b', 'e'];
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         const result = service.getSelectedLetters(rack, selectedIndexes);
@@ -38,11 +38,11 @@ describe('SelectionUtilsService', () => {
     it('getMouseClickIndex should return not found', () => {
         const casPosition = 8;
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
         const event = {
@@ -57,11 +57,11 @@ describe('SelectionUtilsService', () => {
     it('getClickIndex should return the letter index on the rack', () => {
         const expectedResult = 2;
         const rack: ICharacter[] = [
-            { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'B', quantity: 0, points: 3, affiche: 'B' },
-            { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-            { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
         const event = {
             button: MouseButton.Right,
