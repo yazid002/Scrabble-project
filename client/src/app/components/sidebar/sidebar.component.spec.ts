@@ -3,10 +3,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
+import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { of } from 'rxjs';
-import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
 
 class MatDialogMock {
     open() {
