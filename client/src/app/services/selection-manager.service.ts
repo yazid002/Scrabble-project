@@ -12,6 +12,7 @@ import { PlaceSelectionService } from './place-selection.service';
 import { RackLettersManipulationService } from './rack-letters-manipulation.service';
 import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
+import { SelectionUtilsService } from './selection-utils.service';
 import { TimerService } from './timer.service';
 
 @Injectable({
@@ -32,7 +33,7 @@ export class SelectionManagerService {
         private rackLettersManipulationService: RackLettersManipulationService,
         private placeSelectionService: PlaceSelectionService,
         private timerService: TimerService,
-
+        private selectionUtilsService: SelectionUtilsService,
         private gameService: GameService,
     ) {
         this.onLeftClickSelectionTypeMapping = new Map([
@@ -42,7 +43,6 @@ export class SelectionManagerService {
         ]);
         this.timerDone = this.timerService.timerDone.subscribe(() => {
             this.placeSelectionService.cancelPlacement();
-            // this.getSelectionType(SelectionType.None);
         });
     }
 
@@ -84,7 +84,7 @@ export class SelectionManagerService {
     handleNoneSelectionOnLeftClick() {
         this.placeSelectionService.cancelPlacement();
         this.rackLettersManipulationService.cancelManipulation();
-        if (!this.exchangeSelectionService.isSelectionInProgress()) {
+        if (this.exchangeSelectionService.hideOperation()) {
             this.selectionType = SelectionType.Rack;
         } else {
             this.exchangeSelectionService.cancelExchange();
@@ -150,7 +150,7 @@ export class SelectionManagerService {
     }
 
     isLetterClickAlreadySelectedForExchange(event: MouseEvent): boolean {
-        const index = this.rackLettersManipulationService.getMouseClickIndex(event, this.gameService.players[PLAYER.realPlayer].rack);
+        const index = this.selectionUtilsService.getMouseClickIndex(event, this.gameService.players[PLAYER.realPlayer].rack);
         if (index === NOT_FOUND) {
             return false;
         }

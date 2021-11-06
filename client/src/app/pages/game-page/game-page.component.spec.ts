@@ -12,8 +12,10 @@ import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { GridService } from '@app/services/grid.service';
+import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { of } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
 
@@ -30,12 +32,22 @@ describe('GamePageComponent', () => {
     let fixture: ComponentFixture<GamePageComponent>;
     let gridServiceSpy: jasmine.SpyObj<GridService>;
     let ctxStub: CanvasRenderingContext2D;
+    let selectionManagerSpy: jasmine.SpyObj<SelectionManagerService>;
 
     const CANVAS_WIDTH = 500;
     const CANVAS_HEIGHT = 500;
 
     beforeEach(async () => {
         gridServiceSpy = jasmine.createSpyObj('GridService', ['increaseTileSize', 'decreaseTileSize', 'drawGrid', 'randomizeBonus']);
+        selectionManagerSpy = jasmine.createSpyObj('SelectionManagerService', [
+            'onKeyBoardClick',
+            'onLeftClick',
+            'onRightClick',
+            'onMouseWheel',
+            'hideOperation',
+            'disableManipulation',
+            'disableExchange',
+        ]);
 
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         gridServiceSpy.gridContext = ctxStub;
@@ -57,6 +69,7 @@ describe('GamePageComponent', () => {
             ],
             providers: [
                 { provide: GridService, useValue: gridServiceSpy },
+                { provide: SelectionManagerService, useValue: selectionManagerSpy },
                 {
                     provide: MatDialog,
                     useClass: MatDialogMock,
@@ -83,5 +96,14 @@ describe('GamePageComponent', () => {
     it('decreaseSize should call decreaseSize of gridService', () => {
         component.decreaseSize();
         expect(gridServiceSpy.decreaseTileSize).toHaveBeenCalled();
+    });
+
+    it('onKeyBoardClick should call onKeyBoardClick of SelectionManager', () => {
+        const keyEvent = {
+            key: KeyboardKeys.ArrowRight,
+        } as KeyboardEvent;
+
+        component.onKeyBoardClick(keyEvent);
+        expect(selectionManagerSpy.onKeyBoardClick).toHaveBeenCalled();
     });
 });

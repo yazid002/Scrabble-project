@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SelectionManagerService } from './selection-manager.service';
 
-describe('SelectionManagerService', () => {
+fdescribe('SelectionManagerService', () => {
     let service: SelectionManagerService;
 
     beforeEach(() => {
