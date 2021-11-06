@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { CommandError } from '@app/classes/command-errors/command-error';
+import { SENDER } from '@app/classes/chat';
 import { ExchangeExecutionService } from '@app/services/command-execution/exchange-execution.service';
 import { ExchangeService } from '@app/services/exchange.service';
 
@@ -20,16 +20,22 @@ describe('ExchangeExecutionService', () => {
     describe('execute', () => {
         it(' should call exchangeLetters of exchangeServiceSpy', () => {
             const PARAMETERS = ['echanger', 'dos'];
-
+            exchangeServiceSpy.exchangeLetters.and.returnValue({
+                error: false,
+                message: { from: SENDER.computer, body: '' },
+            });
             service.execute(PARAMETERS, true);
 
             expect(exchangeServiceSpy.exchangeLetters).toHaveBeenCalledTimes(1);
         });
 
-        it(' should catch and return an error throw by exchangeServiceSpy', () => {
+        it(' should return an error message', () => {
             const PARAMETERS = ['echanger', 'dos'];
 
-            exchangeServiceSpy.exchangeLetters.and.throwError(new CommandError('Une erreur de test.'));
+            exchangeServiceSpy.exchangeLetters.and.returnValue({
+                error: true,
+                message: { from: SENDER.computer, body: 'Erreur de commande : Une erreur de test.' },
+            });
 
             const result = service.execute(PARAMETERS, true);
 
@@ -47,7 +53,7 @@ describe('ExchangeExecutionService', () => {
         it(' should return the initial result if no error was threw', () => {
             const PARAMETERS = ['echanger', 'dos'];
 
-            exchangeServiceSpy.exchangeLetters.and.returnValue(void '');
+            exchangeServiceSpy.exchangeLetters.and.returnValue({ error: false, message: { from: SENDER.computer, body: '' } });
 
             const result = service.execute(PARAMETERS, true);
 

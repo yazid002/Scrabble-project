@@ -83,7 +83,7 @@ export class RackService {
         this.rackContext.font = '30px serif';
         if (this.gameService.players[PLAYER.realPlayer].rack[index]) {
             this.rackContext.fillText(
-                this.gameService.players[PLAYER.realPlayer].rack[index].affiche,
+                this.gameService.players[PLAYER.realPlayer].rack[index].display,
                 (DEFAULT_WIDTH / RACK_SIZE) * index + LETTERS_PIXELS_WIDTH_ADJUSTMENT,
                 DEFAULT_HEIGHT - LETTERS_PIXELS_HEIGH_ADJUSTMENT,
             );

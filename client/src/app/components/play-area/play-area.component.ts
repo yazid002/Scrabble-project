@@ -1,7 +1,10 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { PLAYER } from '@app/classes/player';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/play-area-constants';
 import { SelectionType } from '@app/enums/selection-enum';
+import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 import { ExchangeService } from '@app/services/exchange.service';
+import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { RackService } from '@app/services/rack.service';
 import { RandomModeService } from '@app/services/random-mode.service';
@@ -14,8 +17,7 @@ import { SelectionManagerService } from '@app/services/selection-manager.service
 export class PlayAreaComponent implements AfterViewInit {
     @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
     @ViewChild('rackCanvas', { static: false }) private rackCanvas!: ElementRef<HTMLCanvasElement>;
-    // selectionType: typeof SelectionType;
-
+    player = PLAYER;
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     constructor(
@@ -24,7 +26,10 @@ export class PlayAreaComponent implements AfterViewInit {
         public exchangeService: ExchangeService, //   private commandExecutionService: CommandExecutionService,
         public selectionManager: SelectionManagerService,
         public randomMode: RandomModeService,
+        public gameService: GameService,
+        private passExecutionService: PassExecutionService,
     ) {}
+
     @HostListener('click', ['$event'])
     onLeftClick(event: MouseEvent) {
         if (event.target === this.gridCanvas.nativeElement) {
@@ -68,5 +73,9 @@ export class PlayAreaComponent implements AfterViewInit {
 
     get height(): number {
         return this.canvasSize.y;
+    }
+
+    skipTurn(): void {
+        this.passExecutionService.execute();
     }
 }

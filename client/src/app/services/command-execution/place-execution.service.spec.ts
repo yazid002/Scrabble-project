@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { CommandError } from '@app/classes/command-errors/command-error';
+import { SENDER } from '@app/classes/chat';
 import { Vec2 } from '@app/classes/vec2';
 import { PlaceExecutionService } from '@app/services/command-execution/place-execution.service';
 import { PlaceService } from '@app/services/place.service';
@@ -40,7 +40,7 @@ describe('PlaceExecuteService', () => {
             // Car extractParameters est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const extractParametersSpy = spyOn<any>(service, 'extractParameters').and.callThrough();
-            placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
+            placeServiceSpy.placeWord.and.returnValue(Promise.resolve({ error: false, message: { from: SENDER.computer, body: '' } }));
 
             service.execute(PARAMETERS, true);
 
@@ -50,7 +50,7 @@ describe('PlaceExecuteService', () => {
         it(' should call placeServiceSpy.placeWord', () => {
             const PARAMETERS = ['placer', 'g15v', 'dos'];
 
-            placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
+            placeServiceSpy.placeWord.and.returnValue(Promise.resolve({ error: false, message: { from: SENDER.computer, body: '' } }));
 
             service.execute(PARAMETERS, true);
 
@@ -60,7 +60,7 @@ describe('PlaceExecuteService', () => {
         it(' should return the initial result if no error was thrown', async () => {
             const PARAMETERS = ['placer', 'g15v', 'dos'];
 
-            placeServiceSpy.placeWord.and.returnValue(Promise.resolve(void ''));
+            placeServiceSpy.placeWord.and.returnValue(Promise.resolve({ error: false, message: { from: SENDER.computer, body: '' } }));
 
             await service.execute(PARAMETERS, true).then((result) => {
                 expect(result.body).toEqual('Le mot a été placé avec succès !');
@@ -70,7 +70,9 @@ describe('PlaceExecuteService', () => {
         it(' should catch and return an error thrown by placeServiceSpy', async () => {
             const PARAMETERS = ['placer', 'g15v', 'd'];
 
-            placeServiceSpy.placeWord.and.returnValue(Promise.reject(new CommandError('Une erreur de test.')));
+            placeServiceSpy.placeWord.and.returnValue(
+                Promise.reject({ error: true, message: { from: SENDER.computer, body: 'Erreur de commande : Une erreur de test.' } }),
+            );
 
             const result = await service.execute(PARAMETERS, true).then((error) => {
                 return error;

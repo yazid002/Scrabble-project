@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
-import { CommandError } from '@app/classes/command-errors/command-error';
 import { ExchangeService } from '@app/services/exchange.service';
 
 const ARGUMENTS_INDEX = 1;
@@ -16,16 +15,11 @@ export class ExchangeExecutionService {
             body: 'Échange de lettres réussi !',
         };
 
-        try {
-            this.exchangeService.exchangeLetters(lettersToChange, viaCommand);
-        } catch (error) {
-            if (error instanceof CommandError) {
-                result.body = error.message;
-                return result;
-            } else {
-                throw error;
-            }
+        const response = this.exchangeService.exchangeLetters(lettersToChange, viaCommand);
+        if (response.error) {
+            result.body = response.message.body;
         }
+
         return result;
     }
 }

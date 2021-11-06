@@ -1,6 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
-import { ImpossibleCommand } from '@app/classes/command-errors/impossible-command/impossible-command';
+import { IChat, SENDER } from '@app/classes/chat';
 import { Dictionary } from '@app/classes/dictionary';
 import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
@@ -47,11 +47,11 @@ describe('PlaceService', () => {
                 id: PLAYER.realPlayer,
                 name: 'Random name',
                 rack: [
-                    { name: 'A', quantity: 9, points: 1, affiche: 'A' },
-                    { name: 'B', quantity: 2, points: 3, affiche: 'B' },
-                    { name: 'C', quantity: 2, points: 3, affiche: 'C' },
-                    { name: 'D', quantity: 3, points: 2, affiche: 'D' },
-                    { name: 'E', quantity: 15, points: 1, affiche: 'E' },
+                    { name: 'A', quantity: 9, points: 1, display: 'A' },
+                    { name: 'B', quantity: 2, points: 3, display: 'B' },
+                    { name: 'C', quantity: 2, points: 3, display: 'C' },
+                    { name: 'D', quantity: 3, points: 2, display: 'D' },
+                    { name: 'E', quantity: 15, points: 1, display: 'E' },
                 ],
                 points: 0,
             },
@@ -103,6 +103,7 @@ describe('PlaceService', () => {
     describe('writeWord', () => {
         it(' should call verifyServiceSpy.computeCoordByDirection', () => {
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
+
             service.writeWord(wordToCheck, coord, direction);
             expect(verifyServiceSpy.computeCoordByDirection).toHaveBeenCalledTimes(wordToCheck.length);
         });
@@ -111,19 +112,25 @@ describe('PlaceService', () => {
     describe('placeWord', () => {
         it(' should call verifyServiceSpy.validatePlaceFeasibility', async () => {
             const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
-            // spyOn(service, 'isLetterOnRack');
+            verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
+
             await service.placeWord(wordToCheck, coord, direction, true);
             expect(verifyServiceSpy.validatePlaceFeasibility).toHaveBeenCalledTimes(1);
         });
 
         it(' should call verifyServiceSpy.validatePlaceFeasibility', async () => {
             const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
 
             await service.placeWord(wordToCheck, coord, direction, true);
 
@@ -132,9 +139,12 @@ describe('PlaceService', () => {
 
         it(' should call writeWord', async () => {
             const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
             const writeWordSpy = spyOn(service, 'writeWord').and.callThrough();
 
             await service.placeWord(wordToCheck, coord, direction, true);
@@ -144,9 +154,12 @@ describe('PlaceService', () => {
 
         it(' should call verifyServiceSpy.checkAllWordsExist', async () => {
             const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
 
             await service.placeWord(wordToCheck, coord, direction, true);
 
@@ -155,22 +168,28 @@ describe('PlaceService', () => {
 
         it(' should throw ImpossibleCommand', async () => {
             const wordExistsParams = { wordExists: false, errorMessage: "Le mot n'est pas valide." };
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
 
-            const result = await service.placeWord(wordToCheck, coord, direction, true).catch((error) => {
+            const placeResponse = await service.placeWord(wordToCheck, coord, direction, true).catch((error: { error: boolean; message: IChat }) => {
                 return error;
             });
 
-            expect(result).toEqual(new ImpossibleCommand("Le mot n'est pas valide."));
+            expect(placeResponse.message.body).toEqual("Commande impossible à réaliser : Le mot n'est pas valide.");
         });
 
         it(' should update the tiles letters', async () => {
             const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
 
             const updateTilesLettersSpy = spyOn(service, 'updateTilesLetters').and.callThrough();
 
@@ -181,9 +200,12 @@ describe('PlaceService', () => {
 
         it(' should update the tiles letters', async () => {
             const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
 
             const updateTilesLettersSpy = spyOn(service, 'updateTilesLetters').and.callThrough();
 
@@ -195,9 +217,12 @@ describe('PlaceService', () => {
         it(' should update the tiles letters', fakeAsync(() => {
             const wordExistsParams = { wordExists: false, errorMessage: "Le mot n'est pas valide." };
             const placementDuration = 3000; // 3000 millisecondes soit 3s;
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
 
             service.placeWord(wordToCheck, coord, direction, true).catch((error) => {
                 return error;
@@ -209,9 +234,12 @@ describe('PlaceService', () => {
     describe('placeWordInstant', () => {
         it('should write word if word is valid on placeWordInstant', () => {
             const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
+            verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
             const writeWordSpy = spyOn(service, 'writeWord').and.callThrough();
 
             service.placeWordInstant(wordToCheck, coord, direction);
