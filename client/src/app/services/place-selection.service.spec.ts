@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { PlaceSelectionService } from './place-selection.service';
 
-describe('PlaceSelectionService', () => {
+fdescribe('PlaceSelectionService', () => {
     let service: PlaceSelectionService;
 
     beforeEach(() => {
@@ -12,4 +12,13 @@ describe('PlaceSelectionService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
+
+    // it(' getClickIndex should return NOT FOUND if false', () => {
+
+    //     const returnValue = 'NOT FOUND'
+
+    //     const getClickIndexSpy = spyOn(service, 'getClickIndex').and.callThrough();
+    //     expect(getClickIndexSpy).toHaveBeenCalledTimes(expectCallTimes)
+    // });
+
 });
