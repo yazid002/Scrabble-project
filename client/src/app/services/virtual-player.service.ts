@@ -200,7 +200,8 @@ export class VirtualPlayerService {
         const rackCombos: string[] = this.makeRackCombos();
         const pointRange = this.decidePoints();
         let i = 0;
-        while (i < rackCombos.length && !hasTimeRanOut) {
+        const max = 1500;
+        while (i < rackCombos.length && i < max) {
             if (this.verifyService.isFirstMove()) {
                 const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange));
                 if (newPossibilities.length > 0) {
