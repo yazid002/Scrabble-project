@@ -1,9 +1,11 @@
 import * as dict from 'src/assets/dictionnary.json';
-import { Dictionary } from './dictionary';
-const dictionary: Dictionary = dict as Dictionary;
+import { DictNode, convertDictToTree } from '@app/classes/dict-node';
+import { Dictionary } from '@app/classes/dictionary';
+const dictList: Dictionary = dict as Dictionary;
+const dictionary: DictNode = convertDictToTree(dictList);
 class ChunkNode {
     parent?: ChunkNode;
-    child: ChunkNode[] = []; // child
+    childs: ChunkNode[] = []; // child
     unTestedChunks: string[] = []; // letters remaining to build chils
     chunk: string; // chunk of note
     constructor(unTestedChunks: string[], indexToRemove?: number, parent?: ChunkNode) {
@@ -18,10 +20,10 @@ class ChunkNode {
         let i = 0;
         while (i < this.unTestedChunks.length) {
             const word = testedChunks + this.unTestedChunks[i];
-            if (doesPatternExist(word)) {
+            if (dictionary.isPatternInDict(word)) {
                 // make child
                 const newChild: ChunkNode = new ChunkNode(unTestedChunkCopy, i, this);
-                this.child.push(newChild);
+                this.childs.push(newChild);
             } else {
                 if (this.unTestedChunks.length === 1) this.unTestedChunks = [];
                 else this.unTestedChunks.splice(i, 1);
@@ -47,10 +49,9 @@ class ChunkNode {
     getChildPatterns(currentNode?: ChunkNode): string[] {
         let patterns: string[] = [];
         if (!currentNode) currentNode = this;
-        for (const child of currentNode.child) {
-            if (child.child.length === 0) {
-                if (doesWordExist(child.currentWord)){
-
+        for (const child of currentNode.childs) {
+            if (child.childs.length === 0) {
+                if (dictionary.isWordInDict(child.currentWord)) {
                     patterns.push(child.currentWord);
                 }
             }
@@ -60,17 +61,6 @@ class ChunkNode {
     }
 }
 
-const doesPatternExist: (pattern: string) => boolean = (pattern: string) => {
-    const result = dictionary.words.find((word) => word.startsWith(pattern));
-    if (result) return true;
-    return false;
-};
-
-const doesWordExist: (pattern: string) => boolean = (pattern: string) => {
-    const result = dictionary.words.find((word) => word === pattern);
-    if (result) return true;
-    return false;
-};
 
 export const generateAnagrams: (rack: string[], pattern: string) => string[] = (rack: string[], pattern: string) => {
     /**
