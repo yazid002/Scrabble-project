@@ -13,7 +13,7 @@ import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
 import { VerifyService } from './verify.service';
-import { ChunkNode } from '@app/classes/chunk-node';
+import { generateAnagrams } from '@app/classes/chunk-node';
 
 type Direction = 'horizontal' | 'vertical';
 interface WordNCoord {
@@ -40,6 +40,12 @@ export class VirtualPlayerService {
     ) {
         this.alreadyInitialized = false;
         this.initialize();
+
+        let wordToTest = ['au', 'a', 'e', 'h', 'r', 'x'];
+        const anagrams = generateAnagrams(wordToTest);
+        console.log(anagrams);
+
+
     }
 
     initialize() {

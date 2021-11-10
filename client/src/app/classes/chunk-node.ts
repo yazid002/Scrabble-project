@@ -1,7 +1,7 @@
 import * as dict from 'src/assets/dictionnary.json';
 import { Dictionary } from './dictionary';
 const dictionary: Dictionary = dict as Dictionary;
-export class ChunkNode {
+class ChunkNode {
     parent?: ChunkNode;
     child: ChunkNode[] = []; // child
     unTestedChunks: string[] = []; // letters remaining to build chils
@@ -24,7 +24,7 @@ export class ChunkNode {
                 this.child.push(newChild);
             } else {
                 if (this.unTestedChunks.length === 1) this.unTestedChunks = [];
-                else this.unTestedChunks.splice(1, i);
+                else this.unTestedChunks.splice(i, 1);
                 i--;
             }
             i++;
@@ -48,8 +48,8 @@ export class ChunkNode {
         let patterns: string[] = [];
         if (!currentNode) currentNode = this;
         for (const child of currentNode.child) {
-            if (child.child.length === 0) patterns.push(this.currentWord);
-            patterns = patterns.concat(this.getChildPatterns(child));
+            if (child.child.length === 0) patterns.push(child.currentWord);
+            patterns = patterns.concat(child.getChildPatterns(child));
         }
         return patterns;
     }
@@ -59,6 +59,22 @@ const doesPatternExist: (pattern: string) => boolean = (pattern: string) => {
     const result = dictionary.words.find((word) => word.startsWith(pattern));
     if (result) return true;
     return false;
+};
+
+
+export const generateAnagrams: (chuncks: string[]) => string[] = (chunks: string[]) => {
+    let words: string[] = [];
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    let i = 0;
+    while (i < chunks.length) {
+        const subAnagrams = new ChunkNode(chunks);
+        words = words.concat(subAnagrams.getChildPatterns());
+        const letterToChange = chunks[i];
+        chunks.splice(i, 1);
+        chunks.push(letterToChange);
+        i++;
+    }
+    return words;
 };
 // const removeAndGetChunks: (chunks: string[], letterToRemove: string) => string[] = (chunks: string[], letterToRemove: string) => {
 //     const letterToRemoveIndex = chunks.findIndex((letter) => letter === letterToRemove);
