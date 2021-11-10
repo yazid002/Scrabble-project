@@ -13,6 +13,7 @@ import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
 import { VerifyService } from './verify.service';
+import { ChunkNode } from '@app/classes/chunk-node';
 
 type Direction = 'horizontal' | 'vertical';
 interface WordNCoord {
@@ -226,7 +227,7 @@ export class VirtualPlayerService {
             computerRack += rackLetter.name;
         }
         const anagrams = this.generateAnagrams(computerRack);
-
+        console.log(anagrams);
         return anagrams;
     }
     private getLetterCombosFromGrid(): WordNCoord[] {
@@ -308,3 +309,5 @@ export class VirtualPlayerService {
         }
     }
 }
+
+
