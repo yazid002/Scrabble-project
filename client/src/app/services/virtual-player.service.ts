@@ -20,6 +20,7 @@ interface WordNCoord {
     word: string;
     coord: Vec2;
     direction: Direction;
+    points?: number;
 }
 
 @Injectable({
@@ -99,10 +100,34 @@ export class VirtualPlayerService {
         this.exchangeService.exchangeLetters(lettersToChange, true);
     }
     private place() {
+        const rack = this.gameService.players[PLAYER.otherPlayer].rack.reduce(
+            (accumulator, currentValue) => (accumulator += currentValue.display),
+            '',
+        );
         const possibilities = this.makePossibilities();
+        const pointRange = this.decidePoints();
+        let rightPoints: WordNCoord[] = [];
+        do {
+            rightPoints = possibilities.filter((possibility) => {
+                if (possibility.points) {
+                    if (possibility.points < pointRange.max && possibility.points >= pointRange.min) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+            for (const possibility of rightPoints) {
+                if (this.tryPossibility(possibility)) {
+                    this.gameService.players[PLAYER.otherPlayer].points += possibility.points ? possibility.points : 0;
+                    break;
+                }
+            }
+            pointRange.min--;
+            pointRange.max++;
+        } while (rightPoints.length === 0 && pointRange.min>=0);
         if (this.debugExecutionService.state) {
-            const message: IChat = { from: SENDER.computer, body: "L'ordinateur aurait pu placer: " };
-            for (const possibility of possibilities) {
+            const message: IChat = { from: SENDER.computer, body: 'rack de lordi: ' + rack + "<br>L'ordinateur aurait pu placer: " };
+            for (const possibility of rightPoints) {
                 message.body += '<br>' + possibility.word;
             }
             this.chatService.addMessage(message);
@@ -127,57 +152,45 @@ export class VirtualPlayerService {
         const randomNumber = Math.floor((SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION) * Math.random());
         return pointMap.get(randomNumber) as { min: number; max: number };
     }
-    private validateWordPoints(word: WordNCoord, pointRange: { min: number; max: number }): boolean {
-        const isPlacementFeasible = this.verifyService.validatePlaceFeasibility(word.word, word.coord, word.direction);
-        if (isPlacementFeasible.error) {
-            return false;
-        }
-        const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
-        const points = this.pointsCountingService.processWordPoints(word.word, word.coord, word.direction, lettersUsedOnBoard);
-        if (points <= pointRange.max && points >= pointRange.min) return true;
+    // private validateWordPoints(word: WordNCoord, pointRange: { min: number; max: number }): boolean {
+    //     const isPlacementFeasible = this.verifyService.validatePlaceFeasibility(word.word, word.coord, word.direction);
+    //     if (isPlacementFeasible.error) {
+    //         return false;
+    //     }
+    //     const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+    //     const points = this.pointsCountingService.processWordPoints(word.word, word.coord, word.direction, lettersUsedOnBoard);
+    //     if (points <= pointRange.max && points >= pointRange.min) return true;
 
-        return false;
-    }
-    private tryPossibility(possibilities: WordNCoord[], pointRange: { min: number; max: number }, gridCombo: WordNCoord): WordNCoord[] {
+    //     return false;
+    // }
+    private tryPossibility(gridCombo: WordNCoord): boolean {
         gridCombo.word = gridCombo.word.toLowerCase();
         let valid = false;
-        const hasRightPoints = this.validateWordPoints(gridCombo, pointRange);
-        if (hasRightPoints) {
-            const isWordInDictionary = this.verifyService.isWordInDictionary(gridCombo.word);
-            if (isWordInDictionary) {
-                if (possibilities.length === 0) {
-                    try {
-                        valid = this.placeService.placeWordInstant(gridCombo.word, gridCombo.coord, gridCombo.direction);
 
-                        if (valid) {
-                            return [gridCombo];
-                        }
-                        return [];
-                    } catch {
-                        return [];
-                    }
-                }
-                return [gridCombo];
+        try {
+            valid = this.placeService.placeWordInstant(gridCombo.word, gridCombo.coord, gridCombo.direction);
+
+            if (valid) {
+                return true;
             }
+            return false;
+        } catch {
+            return false;
         }
-        return [];
     }
     private makePossibilities(): WordNCoord[] {
         const rack = this.gameService.players[PLAYER.otherPlayer].rack.map((rackLetter) => rackLetter.name.toLowerCase());
         const gridCombos = this.getLetterCombosFromGrid();
 
-        let possibilities: WordNCoord[] = [];
-        const pointRange = this.decidePoints();
+        const possibilities: WordNCoord[] = [];
         if (this.verifyService.isFirstMove()) {
-            const gridWord: WordNCoord = { coord: { x: 7, y: 7 }, direction: 'horizontal', word: '' };
             const anagrams = generateAnagrams(rack, '');
             for (const anagram of anagrams) {
+                const gridWord: WordNCoord = { coord: { x: 7, y: 7 }, direction: 'horizontal', word: '' };
                 gridWord.word = anagram;
-                const newPossibilities = possibilities.concat(this.tryPossibility(possibilities, pointRange, gridWord));
-                if (newPossibilities.length > 0) {
-                    possibilities = possibilities.concat(newPossibilities);
-                }
-                if (possibilities.length >= 3) return possibilities;
+                const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+                gridWord.points = this.pointsCountingService.processWordPoints(gridWord.word, gridWord.coord, gridWord.direction, lettersUsedOnBoard);
+                possibilities.push(gridWord);
             }
         }
 
@@ -189,12 +202,11 @@ export class VirtualPlayerService {
         for (const [gridCombo, anagrams] of wordCoordNAnagrams.entries())
             for (const anagram of anagrams) {
                 // const wordCombos = this.bindGridAndRack(anagram, gridPattern);
-                const possibility = this.findWordPosition(anagram, gridCombo);
-                const newPossibilities = possibilities.concat(this.tryPossibility(possibilities, pointRange, possibility));
-                if (newPossibilities.length > 0) {
-                    possibilities = possibilities.concat(newPossibilities);
-                }
-                if (possibilities.length >= 3) return possibilities;
+                const gridWord = this.findWordPosition(anagram, gridCombo);
+                gridWord.word = anagram;
+                const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+                gridWord.points = this.pointsCountingService.processWordPoints(gridWord.word, gridWord.coord, gridWord.direction, lettersUsedOnBoard);
+                possibilities.push(gridWord);
             }
         return possibilities;
     }
