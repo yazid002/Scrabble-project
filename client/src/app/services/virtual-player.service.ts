@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
+import { generateAnagrams } from '@app/classes/chunk-node';
 import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { RACK_SIZE } from '@app/constants/rack-constants';
@@ -13,7 +14,6 @@ import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
 import { VerifyService } from './verify.service';
-import { generateAnagrams } from '@app/classes/chunk-node';
 
 type Direction = 'horizontal' | 'vertical';
 interface WordNCoord {
@@ -40,12 +40,12 @@ export class VirtualPlayerService {
     ) {
         this.alreadyInitialized = false;
         this.initialize();
-
-        let wordToTest = ['au', 'a', 'e', 'h', 'r', 'x'];
-        const anagrams = generateAnagrams(wordToTest);
+        const time = 0;
+        const wordToTest = 'laqxtci';
+        console.log('starting');
+        const anagrams = generateAnagrams(wordToTest.split(''), 'la');
         console.log(anagrams);
-
-
+        console.log('time', time);
     }
 
     initialize() {
@@ -57,20 +57,18 @@ export class VirtualPlayerService {
         });
     }
     private play() {
-        const TURN_TIME = 3000;
         let skipped = false;
-        setTimeout(() => {
-            const oneOfTenProbability = 10;
-            const randomNumber = Math.floor(oneOfTenProbability * Math.random());
-            if (randomNumber === 0) {
-                skipped = true;
-            } else if (randomNumber === 1) {
-                this.exchange();
-            } else {
-                this.place();
-            }
-            this.timerService.resetTimer(skipped);
-        }, TURN_TIME);
+
+        const oneOfTenProbability = 10;
+        const randomNumber = Math.floor(oneOfTenProbability * Math.random());
+        if (randomNumber === 0) {
+            skipped = true;
+        } else if (randomNumber === 1) {
+            this.exchange();
+        } else {
+            this.place();
+        }
+        this.timerService.resetTimer(skipped);
     }
 
     private selectRandomLetterFromRack(numberOfLetters: number): string[] {
@@ -140,101 +138,72 @@ export class VirtualPlayerService {
 
         return false;
     }
-    private bindGridAndRack(rackCombo: string, gridCombo: WordNCoord): WordNCoord[] {
-        const combos: WordNCoord[] = [];
-        for (let index = 0; index <= rackCombo.length; index++) {
-            const before = rackCombo.slice(0, index);
-            const after = rackCombo.slice(index, rackCombo.length + 1);
-            const word = before + gridCombo.word + after;
-            let x = gridCombo.coord.x;
-            let y = gridCombo.coord.y;
-            if (gridCombo.direction === 'horizontal') {
-                x -= index;
-            } else {
-                y -= index;
-            }
-            combos.push({ word, coord: { y, x }, direction: gridCombo.direction });
-        }
-        return combos;
-    }
-    private tryPossibility(
-        rackCombo: string,
-        possibilities: WordNCoord[],
-        pointRange: { min: number; max: number },
-        gridCombo?: WordNCoord,
-    ): WordNCoord[] {
-        const lin = 7;
-        const col = 7;
-        const word: WordNCoord = { word: rackCombo, coord: { x: col, y: lin }, direction: 'horizontal' };
-        if (gridCombo) {
-            word.coord.y = gridCombo.coord.y;
-            word.coord.x = gridCombo.coord.x;
-
-            word.word = gridCombo.word;
-            word.direction = gridCombo.direction;
-        }
-        word.word = word.word.toLowerCase();
+    private tryPossibility(possibilities: WordNCoord[], pointRange: { min: number; max: number }, gridCombo: WordNCoord): WordNCoord[] {
+        gridCombo.word = gridCombo.word.toLowerCase();
         let valid = false;
-        const hasRightPoints = this.validateWordPoints(word, pointRange);
+        const hasRightPoints = this.validateWordPoints(gridCombo, pointRange);
         if (hasRightPoints) {
-            const isWordInDictionary = this.verifyService.isWordInDictionary(word.word);
+            const isWordInDictionary = this.verifyService.isWordInDictionary(gridCombo.word);
             if (isWordInDictionary) {
                 if (possibilities.length === 0) {
                     try {
-                        valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction);
+                        valid = this.placeService.placeWordInstant(gridCombo.word, gridCombo.coord, gridCombo.direction);
 
                         if (valid) {
-                            return [word];
+                            return [gridCombo];
                         }
                         return [];
                     } catch {
                         return [];
                     }
                 }
-                return [word];
+                return [gridCombo];
             }
         }
         return [];
     }
     private makePossibilities(): WordNCoord[] {
+        const rack = this.gameService.players[PLAYER.otherPlayer].rack.map((rackLetter) => rackLetter.name.toLowerCase());
         const gridCombos = this.getLetterCombosFromGrid();
+
         let possibilities: WordNCoord[] = [];
-        const rackCombos: string[] = this.makeRackCombos();
         const pointRange = this.decidePoints();
-        let i = 0;
-        const max = 1500;
-        while (i < rackCombos.length && i < max) {
-            if (this.verifyService.isFirstMove()) {
-                const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange));
+        if (this.verifyService.isFirstMove()) {
+            const gridWord: WordNCoord = { coord: { x: 7, y: 7 }, direction: 'horizontal', word: '' };
+            const anagrams = generateAnagrams(rack, '');
+            for (const anagram of anagrams) {
+                gridWord.word = anagram;
+                const newPossibilities = possibilities.concat(this.tryPossibility(possibilities, pointRange, gridWord));
                 if (newPossibilities.length > 0) {
                     possibilities = possibilities.concat(newPossibilities);
                 }
                 if (possibilities.length >= 3) return possibilities;
             }
-
-            for (const gridCombo of gridCombos) {
-                const wordCombos = this.bindGridAndRack(rackCombos[i], gridCombo);
-
-                for (const wordCombo of wordCombos) {
-                    const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange, wordCombo));
-                    if (newPossibilities.length > 0) {
-                        possibilities = possibilities.concat(newPossibilities);
-                    }
-                    if (possibilities.length >= 3) return possibilities;
-                }
-            }
-            i++;
         }
+
+        const wordCoordNAnagrams: Map<WordNCoord, string[]> = new Map([]);
+        gridCombos.forEach((gridCombo) => {
+            const anagrams = generateAnagrams(rack, gridCombo.word);
+            wordCoordNAnagrams.set(gridCombo, anagrams);
+        });
+        for (const [gridCombo, anagrams] of wordCoordNAnagrams.entries())
+            for (const anagram of anagrams) {
+                // const wordCombos = this.bindGridAndRack(anagram, gridPattern);
+                const possibility = this.findWordPosition(anagram, gridCombo);
+                const newPossibilities = possibilities.concat(this.tryPossibility(possibilities, pointRange, possibility));
+                if (newPossibilities.length > 0) {
+                    possibilities = possibilities.concat(newPossibilities);
+                }
+                if (possibilities.length >= 3) return possibilities;
+            }
         return possibilities;
     }
-    private makeRackCombos(): string[] {
-        let computerRack = '';
-        for (const rackLetter of this.gameService.players[PLAYER.otherPlayer].rack) {
-            computerRack += rackLetter.name;
-        }
-        const anagrams = this.generateAnagrams(computerRack);
-        console.log(anagrams);
-        return anagrams;
+    private findWordPosition(word: string, gridCombo: WordNCoord): WordNCoord {
+        const index = word.indexOf(gridCombo.word);
+        const result: WordNCoord = { coord: { x: gridCombo.coord.x, y: gridCombo.coord.y }, direction: gridCombo.direction, word };
+        if (result.direction === 'horizontal') result.coord.x -= index;
+        else result.coord.y -= index;
+        return result;
     }
     private getLetterCombosFromGrid(): WordNCoord[] {
         /**
@@ -285,35 +254,4 @@ export class VirtualPlayerService {
 
         return possibilities;
     }
-    // http://jsfiddle.net/jtodd/U5dcL/
-    private generateAnagrams(word: string): string[] {
-        if (word.length < 2) {
-            return [word];
-        } else {
-            const anagrams = [];
-            let before;
-            let focus;
-            let after;
-            let shortWord;
-            let subAnagrams;
-            let newEntry;
-            for (let i = 0; i < word.length; i++) {
-                before = word.slice(0, i);
-                focus = word[i];
-                after = word.slice(i + 1, word.length + 1);
-                shortWord = before + after;
-                subAnagrams = this.generateAnagrams(shortWord);
-                if (focus) {
-                    anagrams.push(focus);
-                }
-                for (const j of subAnagrams) {
-                    newEntry = focus + j;
-                    anagrams.push(newEntry);
-                }
-            }
-            return [...new Set(anagrams)];
-        }
-    }
 }
-
-
