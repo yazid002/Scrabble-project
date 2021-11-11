@@ -15,7 +15,7 @@ describe('DebugExecutionService', () => {
     });
 
     describe('execute', () => {
-        it(' should return an IChat interface', () => {
+        it('should return an IChat interface', () => {
             const result: IChat = service.execute();
 
             expect(result.body).toBeDefined();
