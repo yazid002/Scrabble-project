@@ -41,12 +41,6 @@ export class VirtualPlayerService {
     ) {
         this.alreadyInitialized = false;
         this.initialize();
-        const time = 0;
-        const wordToTest = 'laqxtci';
-        console.log('starting');
-        const anagrams = generateAnagrams(wordToTest.split(''), 'la');
-        console.log(anagrams);
-        console.log('time', time);
     }
 
     initialize() {
@@ -58,18 +52,24 @@ export class VirtualPlayerService {
         });
     }
     private play() {
-        let skipped = false;
 
         const oneOfTenProbability = 10;
         const randomNumber = Math.floor(oneOfTenProbability * Math.random());
+        let message: IChat;
         if (randomNumber === 0) {
-            skipped = true;
+            message = { from: SENDER.computer, body: "L'ordi a passé son tour" };
+            const skipTime = 1900;
+
+            this.timerService.resetTimerDelay(skipTime);
+
         } else if (randomNumber === 1) {
-            this.exchange();
+            message = this.exchange();
         } else {
-            this.place();
+            message = this.place();
         }
-        this.timerService.resetTimer(skipped);
+        if (this.debugExecutionService.state) {
+            this.chatService.addMessage(message);
+        }
     }
 
     private selectRandomLetterFromRack(numberOfLetters: number): string[] {
@@ -94,12 +94,24 @@ export class VirtualPlayerService {
         }
         return lettersToChange;
     }
-    private exchange() {
+    private exchange(): IChat {
+        const rackInit = this.gameService.players[PLAYER.otherPlayer].rack.reduce(
+            (accumulator, currentValue) => (accumulator += currentValue.display),
+            '',
+        );
         const numberToChange = Math.floor(Math.random() * RACK_SIZE + 1);
         const lettersToChange = this.selectRandomLetterFromRack(numberToChange);
         this.exchangeService.exchangeLetters(lettersToChange, true);
+
+        const rackEnd = this.gameService.players[PLAYER.otherPlayer].rack.reduce(
+            (accumulator, currentValue) => (accumulator += currentValue.display),
+            '',
+        );
+
+        const message: IChat = { from: SENDER.computer, body: "L'ordi échange. Son rack était de " + rackInit + ' et est maintenant de ' + rackEnd };
+        return message;
     }
-    private place() {
+    private place(): IChat {
         const rack = this.gameService.players[PLAYER.otherPlayer].rack.reduce(
             (accumulator, currentValue) => (accumulator += currentValue.display),
             '',
@@ -107,6 +119,7 @@ export class VirtualPlayerService {
         const possibilities = this.makePossibilities();
         const pointRange = this.decidePoints();
         let rightPoints: WordNCoord[] = [];
+        let sucess = false;
         do {
             rightPoints = possibilities.filter((possibility) => {
                 if (possibility.points) {
@@ -116,22 +129,28 @@ export class VirtualPlayerService {
                 }
                 return false;
             });
-            for (const possibility of rightPoints) {
-                if (this.tryPossibility(possibility)) {
-                    this.gameService.players[PLAYER.otherPlayer].points += possibility.points ? possibility.points : 0;
-                    break;
+            if (!sucess) {
+                for (const possibility of rightPoints) {
+                    if (this.tryPossibility(possibility)) {
+                        this.gameService.players[PLAYER.otherPlayer].points += possibility.points ? possibility.points : 0;
+                        sucess = true;
+                        break;
+                    }
                 }
             }
             pointRange.min--;
             pointRange.max++;
-        } while (rightPoints.length === 0 && pointRange.min>=0);
-        if (this.debugExecutionService.state) {
-            const message: IChat = { from: SENDER.computer, body: 'rack de lordi: ' + rack + "<br>L'ordinateur aurait pu placer: " };
-            for (const possibility of rightPoints) {
-                message.body += '<br>' + possibility.word;
-            }
-            this.chatService.addMessage(message);
+        } while (pointRange.min && (rightPoints.length < 3 || !sucess));
+
+        const message: IChat = { from: SENDER.computer, body: 'rack de lordi: ' + rack + "<br>L'ordinateur aurait pu placer: " };
+        for (const possibility of rightPoints) {
+            message.body += '<br>' + possibility.word + ': ' + possibility.points + ' points x=' + possibility.coord.x + ', y=' + possibility.coord.y;
         }
+        if (!sucess) {
+            message.body = "L'ordi n'a rien pu placer. Elle échange donc à la place<br>";
+            message.body += this.exchange().body;
+        }
+        return message;
     }
     private decidePoints(): { min: number; max: number } {
         const pointMap: Map<number, { min: number; max: number }> = new Map();
@@ -208,7 +227,7 @@ export class VirtualPlayerService {
                 gridWord.points = this.pointsCountingService.processWordPoints(gridWord.word, gridWord.coord, gridWord.direction, lettersUsedOnBoard);
                 possibilities.push(gridWord);
             }
-        return possibilities;
+        return [...new Set(possibilities)];
     }
     private findWordPosition(word: string, gridCombo: WordNCoord): WordNCoord {
         const index = word.indexOf(gridCombo.word);

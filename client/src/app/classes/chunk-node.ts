@@ -3,7 +3,7 @@ import { DictNode, convertDictToTree } from '@app/classes/dict-node';
 import { Dictionary } from '@app/classes/dictionary';
 const dictList: Dictionary = dict as Dictionary;
 const dictionary: DictNode = convertDictToTree(dictList);
-class ChunkNode {
+export class ChunkNode {
     parent?: ChunkNode;
     childs: ChunkNode[] = []; // child
     unTestedChunks: string[] = []; // letters remaining to build chils

@@ -175,10 +175,8 @@ describe('GamePageComponent', () => {
     it('goInRoom should call roomService of  joinRoom if isMaster is false ', () => {
         component.isMaster = false;
 
-        if (component.isMaster) {
-            component.goInRoom();
-            expect(roomServiceSpy.joinRoom).toHaveBeenCalled();
-        }
+        component.goInRoom();
+        expect(roomServiceSpy.joinRoom).toHaveBeenCalled();
     });
 
     it('randomNumber Should call randomizeBonus of randomMode', () => {
