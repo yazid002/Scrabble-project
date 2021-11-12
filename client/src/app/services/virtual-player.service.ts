@@ -50,15 +50,8 @@ export class VirtualPlayerService {
             if (numPlayers !== 'solo') return;
             this.play();
         });
-
-        // On contruction, the gameService may have emited otherplayer signal before virtual
-        // player service was initializes.We need to check manualy if it is our turn
-        if (this.gameService.currentTurn === PLAYER.otherPlayer && this.gameService.numPlayers === 'solo') {
-            setTimeout(() => {
-                this.play();
-            }, 500);
-        }
     }
+
     private play() {
         const oneOfTenProbability = 10;
         const randomNumber = Math.floor(oneOfTenProbability * Math.random());
