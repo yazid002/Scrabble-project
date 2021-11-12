@@ -163,21 +163,6 @@ describe('GamePageComponent', () => {
         component.onMouseWheel(keyEvent);
         expect(selectionManagerSpy.onMouseWheel).toHaveBeenCalled();
     });
-    it('goInRoom should call roomService of  CreatRoom if is Master is True', () => {
-        component.isMaster = true;
-
-        if (component.isMaster) {
-            component.goInRoom();
-            expect(roomServiceSpy.createRoom).toHaveBeenCalled();
-        }
-    });
-
-    it('goInRoom should call roomService of  joinRoom if isMaster is false ', () => {
-        component.isMaster = false;
-
-        component.goInRoom();
-        expect(roomServiceSpy.joinRoom).toHaveBeenCalled();
-    });
 
     it('randomNumber Should call randomizeBonus of randomMode', () => {
         // const randomMin = 0;
