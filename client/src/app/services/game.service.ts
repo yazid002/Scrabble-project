@@ -114,7 +114,6 @@ export class GameService {
                 this.nextPlayer();
             }
         }
-        // TODO: si skip counter trop grand, terminer la partie. Il faut implementer une fin de partie
     }
     private nextPlayer() {
         this.otherPlayerSignal.next(this.numPlayers);
@@ -147,8 +146,6 @@ export class GameService {
 
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
-        if (this.currentTurn === PLAYER.otherPlayer) {
-            this.nextPlayer();
-        }
+        this.changeTurn(false);
     }
 }

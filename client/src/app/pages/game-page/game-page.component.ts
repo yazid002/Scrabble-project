@@ -66,20 +66,7 @@ export class GamePageComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         this.selectionManager.chatboxComponent = this.chatboxComponent;
     }
-
-    // TODO enlever goInRoom une fois que le loby est intégré et créé les salles pour nous
-    goInRoom() {
-        let temp = 'Vous avez ';
-        if (this.isMaster) {
-            this.roomService.createRoom();
-            temp += 'créé une salle ';
-        } else {
-            this.roomService.joinRoom(this.roomName);
-            temp += 'joint la salle ';
-        }
-        this.roomName = temp + this.roomName;
-    }
-
+    
     randomNumber() {
         this.randomMode.randomizeBonus(0, 3);
     }
