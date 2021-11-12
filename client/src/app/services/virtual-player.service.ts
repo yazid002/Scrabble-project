@@ -93,8 +93,8 @@ export class VirtualPlayerService {
         const lettersToChange = this.selectRandomLetterFromRack(numberToChange);
         this.exchangeService.exchangeLetters(lettersToChange, true);
     }
-    private place() {
-        const possibilities = this.makePossibilities();
+    private async place() {
+        const possibilities = await this.makePossibilities();
         if (this.debugExecutionService.state) {
             const message: IChat = { from: SENDER.computer, body: "L'ordinateur aurait pu placer: " };
             for (const possibility of possibilities) {
@@ -150,12 +150,12 @@ export class VirtualPlayerService {
         }
         return combos;
     }
-    private tryPossibility(
+    private async tryPossibility(
         rackCombo: string,
         possibilities: WordNCoord[],
         pointRange: { min: number; max: number },
         gridCombo?: WordNCoord,
-    ): WordNCoord[] {
+    ): Promise<WordNCoord[]> {
         const lin = 7;
         const col = 7;
         const word: WordNCoord = { word: rackCombo, coord: { x: col, y: lin }, direction: 'horizontal' };
@@ -174,7 +174,7 @@ export class VirtualPlayerService {
             if (isWordInDictionary) {
                 if (possibilities.length === 0) {
                     try {
-                        valid = this.placeService.placeWordInstant(word.word, word.coord, word.direction);
+                        valid = await this.placeService.placeWordInstant(word.word, word.coord, word.direction);
 
                         if (valid) {
                             return [word];
@@ -189,7 +189,7 @@ export class VirtualPlayerService {
         }
         return [];
     }
-    private makePossibilities(): WordNCoord[] {
+    private async makePossibilities(): Promise<WordNCoord[]> {
         const gridCombos = this.getLetterCombosFromGrid();
         let possibilities: WordNCoord[] = [];
         const rackCombos: string[] = this.makeRackCombos();
@@ -198,7 +198,7 @@ export class VirtualPlayerService {
         const max = 1500;
         while (i < rackCombos.length && i < max) {
             if (this.verifyService.isFirstMove()) {
-                const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange));
+                const newPossibilities = possibilities.concat(await this.tryPossibility(rackCombos[i], possibilities, pointRange));
                 if (newPossibilities.length > 0) {
                     possibilities = possibilities.concat(newPossibilities);
                 }
@@ -209,7 +209,7 @@ export class VirtualPlayerService {
                 const wordCombos = this.bindGridAndRack(rackCombos[i], gridCombo);
 
                 for (const wordCombo of wordCombos) {
-                    const newPossibilities = possibilities.concat(this.tryPossibility(rackCombos[i], possibilities, pointRange, wordCombo));
+                    const newPossibilities = possibilities.concat(await this.tryPossibility(rackCombos[i], possibilities, pointRange, wordCombo));
                     if (newPossibilities.length > 0) {
                         possibilities = possibilities.concat(newPossibilities);
                     }
