@@ -8,6 +8,7 @@ import { UserSettingsService } from './user-settings.service';
 export class TimerService {
     @Output() timerDone = new BehaviorSubject<boolean>(true); // value of boolean represents wheter or not the player skips his turn
     isEnabled: boolean;
+    nextResetValue: number;
     counter: {
         min: number;
         seconds: number;
@@ -24,6 +25,9 @@ export class TimerService {
         };
         this.isEnabled = true;
     }
+    resetTimerDelay(delay: number) {
+        this.nextResetValue = this.counter.totalTimer + delay;
+    }
     startTimer() {
         this.getTimerSettings();
         const timerIntervalMS = 1000;
@@ -34,7 +38,10 @@ export class TimerService {
         }, timerIntervalMS);
     }
     resetTimer(skipped: boolean = false) {
-        this.counter.totalTimer = this.counter.resetValue;
+        this.nextResetValue = this.counter.resetValue;
+        this.counter.totalTimer = 0; // = this.counter.resetValue;
+        this.calculateMinNSecond();
+        // put a slight delay so if the virtual player plays quuicly, we won't emit two signals at once
         this.timerDone.next(skipped);
     }
     private getTimerSettings() {
@@ -43,16 +50,19 @@ export class TimerService {
         this.counter.resetValue = timer;
     }
     private decrementTime() {
-        const MAX_SECONDS = 60;
         this.counter.totalTimer = (this.counter.totalTimer + 1) % this.counter.resetValue;
+        this.calculateMinNSecond();
+        if (this.counter.totalTimer === 0 || this.counter.totalTimer >= this.nextResetValue) {
+            this.timerDone.next(true);
+        }
+    }
+    private calculateMinNSecond() {
+        const MAX_SECONDS = 60;
         const totalMinutes = this.counter.resetValue / MAX_SECONDS;
         const minutesPassed = this.counter.totalTimer / MAX_SECONDS;
         const secondsPassed = this.counter.totalTimer;
 
         this.counter.seconds = (this.counter.resetValue - secondsPassed) % MAX_SECONDS;
         this.counter.min = Math.max(0, Math.floor(totalMinutes - minutesPassed));
-        if (this.counter.totalTimer === 0) {
-            this.timerDone.next(true);
-        }
     }
 }

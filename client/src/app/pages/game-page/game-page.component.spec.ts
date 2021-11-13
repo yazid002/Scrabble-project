@@ -163,12 +163,6 @@ describe('GamePageComponent', () => {
         component.onMouseWheel(keyEvent);
         expect(selectionManagerSpy.onMouseWheel).toHaveBeenCalled();
     });
-    it('goInRoom should call roomService of  CreatRoom if is Master is True', () => {
-        component.isMaster = true;
-
-        component.goInRoom();
-        expect(roomServiceSpy.createRoom).toHaveBeenCalled();
-    });
 
     it('randomNumber Should call randomizeBonus of randomMode', () => {
         // const randomMin = 0;
