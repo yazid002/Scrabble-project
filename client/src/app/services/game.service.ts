@@ -7,7 +7,7 @@ import { ChatService } from './chat.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
-
+import { ABANDON_SIGNAL } from '@app/classes/signal';
 const MAX_SKIPS = 6;
 @Injectable({
     providedIn: 'root',
@@ -15,6 +15,7 @@ const MAX_SKIPS = 6;
 export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
     @Output() abandonSignal = new BehaviorSubject<string>('');
+    @Output() convertToSoloSignal = new BehaviorSubject<string>('');
 
     players: Player[] = [];
     currentTurn: number;
@@ -38,6 +39,7 @@ export class GameService {
 
     convertGameToSolo() {
         this.numPlayers = 'solo';
+        this.convertToSoloSignal.next(ABANDON_SIGNAL);
         if (this.currentTurn === PLAYER.otherPlayer) {
             this.otherPlayerSignal.next(this.numPlayers);
         }
