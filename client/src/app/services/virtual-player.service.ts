@@ -78,7 +78,7 @@ export class VirtualPlayerService {
         if (randomNumber === 0) {
             message = { from: SENDER.computer, body: "L'ordi a passé son tour" };
             const skipTime = 20;
-            this.sendSkipMessage();
+            service.sendSkipMessage();
             service.timerService.resetTimerDelay(skipTime);
         } else if (randomNumber === 1) {
             message = service.exchange();

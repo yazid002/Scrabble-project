@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { IChat } from '@app/classes/chat';
+import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { PlaceService } from './place.service';
 import { VirtualPlayerService } from './virtual-player.service';
@@ -11,7 +12,7 @@ interface WordNCoord {
     direction: Direction;
     points: number;
 }
-fdescribe('VirtualPlayerService', () => {
+describe('VirtualPlayerService', () => {
     let service: VirtualPlayerService;
     let placeServiceSpy: jasmine.SpyObj<PlaceService>;
     beforeEach(() => {
@@ -94,27 +95,7 @@ fdescribe('VirtualPlayerService', () => {
             expect(spy).toHaveBeenCalled();
         });
     });
-    describe('sortPossibilitiesAdvanced', () => {
-        it('should return an sorted array', () => {
-            const wordList: WordNCoord[] = [];
-            const listSize = 50;
-            const maxPoint = 150;
-            for (let i = 0; i < listSize; i++) {
-                const exampleWord: WordNCoord = { word: 'word', coord: { x: 7, y: 7 }, direction: 'h', points: Math.floor(maxPoint * Math.random()) };
-                wordList.push(exampleWord);
-            }
 
-            // eslint-disable-next-line dot-notation
-            const sortedList = service['sortPossibilitiesAdvanced'](wordList);
-            let pastPoint = 151;
-            let isWellSorted = true;
-            for (const item of sortedList) {
-                if (pastPoint < item.points) isWellSorted = false;
-                pastPoint = item.points;
-            }
-            expect(isWellSorted).toBe(true);
-        });
-    });
     describe('advancedMode', () => {
         beforeEach(() => {
             service.computerLevel = 'advanced';
@@ -128,6 +109,85 @@ fdescribe('VirtualPlayerService', () => {
                 expect(spy).toHaveBeenCalled();
             });
         });
+        describe('sortPossibilitiesAdvanced', () => {
+            it('should return an sorted array', () => {
+                const wordList: WordNCoord[] = [];
+                const listSize = 50;
+                const maxPoint = 150;
+                for (let i = 0; i < listSize; i++) {
+                    const exampleWord: WordNCoord = {
+                        word: 'word',
+                        coord: { x: 7, y: 7 },
+                        direction: 'h',
+                        points: Math.floor(maxPoint * Math.random()),
+                    };
+                    wordList.push(exampleWord);
+                }
+
+                // eslint-disable-next-line dot-notation
+                const sortedList = service['sortPossibilitiesAdvanced'](wordList);
+                let pastPoint = 151;
+                let isWellSorted = true;
+                for (const item of sortedList) {
+                    if (pastPoint < item.points) isWellSorted = false;
+                    pastPoint = item.points;
+                }
+                expect(isWellSorted).toBe(true);
+            });
+        });
+    });
+    describe('beginnerMode', () => {
+        beforeEach(() => {
+            // eslint-disable-next-line dot-notation
+            service['computerLevel'] = 'beginner';
+        });
+        describe('play', () => {
+            it('should call place 80% of the timer, exchange 10% and skip 10% of the time', () => {
+                const returnResponse: IChat = { from: 'someone', body: ' aresponse' };
+                let placeCounter = 0;
+                let exchangeCounter = 0;
+                let skipCounter = 0;
+
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const placeSpy = spyOn<any>(service, 'place');
+                placeSpy.and.callFake(() => {
+                    placeCounter++;
+                    return returnResponse;
+                });
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const exchangeSpy = spyOn<any>(service, 'exchange');
+                exchangeSpy.and.callFake(() => {
+                    exchangeCounter++;
+                    return returnResponse;
+                });
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const skipSpy = spyOn<any>(service, 'sendSkipMessage');
+                skipSpy.and.callFake(() => {
+                    skipCounter++;
+                });
+
+                const amountOfCalls = 10000;
+                for (let i = 0; i < amountOfCalls; i++) {
+                    // eslint-disable-next-line dot-notation
+                    service['play']();
+                }
+
+                const placeMinCalls = 0.7;
+                const placeMaxCalls = 0.9;
+                const exchangeMinCalls = 0.05;
+                const exchangeMaxCalls = 0.15;
+                const skipMinCalls = 0.05;
+                const skipMaxCalls = 0.15;
+
+                expect(placeCounter).toBeGreaterThanOrEqual(placeMinCalls * amountOfCalls);
+                expect(placeCounter).toBeLessThanOrEqual(placeMaxCalls * amountOfCalls);
+
+                expect(exchangeCounter).toBeGreaterThanOrEqual(exchangeMinCalls * amountOfCalls);
+                expect(exchangeCounter).toBeLessThanOrEqual(exchangeMaxCalls * amountOfCalls);
+                expect(skipCounter).toBeGreaterThanOrEqual(skipMinCalls * amountOfCalls);
+                expect(skipCounter).toBeLessThanOrEqual(skipMaxCalls * amountOfCalls);
+            });
+        });
     });
     describe('place', () => {
         it('should return an IChat object', () => {
@@ -135,6 +195,22 @@ fdescribe('VirtualPlayerService', () => {
             const message: IChat = service['place']();
             expect(message).toBeDefined();
         });
+        // it('should not return more than 3 words in output message event if they are valid', () => {
+        //      const h8Coord: Vec2 = { x: 7, y: 7 };
+        //     // eslint-disable-next-line dot-notation
+        //     service['gameService'].players[PLAYER.otherPlayer].rack = [
+        //         { name: 'B', quantity: 9, points: 1, display: 'B' },
+        //         { name: 'O', quantity: 2, points: 3, display: 'O' },
+        //         { name: 'N', quantity: 2, points: 3, display: 'N' },
+        //         { name: 'J', quantity: 3, points: 2, display: 'J' },
+        //         { name: 'O', quantity: 15, points: 1, display: 'O' },
+        //         { name: 'U', quantity: 15, points: 1, display: 'U' },
+        //         { name: 'R', quantity: 15, points: 1, display: 'R' },
+        //     ]; // On peut placer plus de 3 mot: soit Bonjour, jour, ou, nu, on...
+        //     tiles[h8Coord.x][h8Coord.y].letter = ''; // verifyService checks if isFirstMove by looking if center tile is empty
+        //     const returnMessage = service['place']();
+
+        // })
     });
     describe('exchange', () => {
         it('should return an IChat object', () => {
@@ -163,6 +239,17 @@ fdescribe('VirtualPlayerService', () => {
         it('should return a list of WordNCoord objects. Coorss of these objects should be x=7 and y =7 if this is the first move', () => {
             placeServiceSpy.placeWordInstant.and.returnValue(true);
             const h8Coord: Vec2 = { x: 7, y: 7 };
+
+            // eslint-disable-next-line dot-notation
+            service['gameService'].players[PLAYER.otherPlayer].rack = [
+                { name: 'B', quantity: 9, points: 1, display: 'B' },
+                { name: 'O', quantity: 2, points: 3, display: 'O' },
+                { name: 'N', quantity: 2, points: 3, display: 'N' },
+                { name: 'J', quantity: 3, points: 2, display: 'J' },
+                { name: 'O', quantity: 15, points: 1, display: 'O' },
+                { name: 'U', quantity: 15, points: 1, display: 'U' },
+                { name: 'R', quantity: 15, points: 1, display: 'R' },
+            ];
             tiles[h8Coord.x][h8Coord.y].letter = ''; // verifyService checks if isFirstMove by looking if center tile is empty
 
             // eslint-disable-next-line dot-notation
@@ -171,11 +258,14 @@ fdescribe('VirtualPlayerService', () => {
             for (const possibility of possibilities) {
                 if (possibility.coord.x !== h8Coord.x || possibility.coord.y !== h8Coord.y) allCentered = false;
             }
+
             expect(allCentered).toBe(true);
 
-
-
             tiles[h8Coord.x][h8Coord.y].letter = 'a';
+            tiles[h8Coord.x + 1][h8Coord.y].letter = 'l';
+            tiles[h8Coord.x + 2][h8Coord.y].letter = 'l';
+            tiles[h8Coord.x + 3][h8Coord.y].letter = 'o';
+            tiles[h8Coord.x][h8Coord.y + 1].letter = 'a';
 
             // eslint-disable-next-line dot-notation
             possibilities = service['makePossibilities']();
