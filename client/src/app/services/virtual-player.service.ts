@@ -142,8 +142,9 @@ export class VirtualPlayerService {
         } while (pointRange.min && (rightPoints.length < 3 || !sucess));
 
         const message: IChat = { from: SENDER.computer, body: 'rack de lordi: ' + rack + "<br>L'ordinateur aurait pu placer: " };
-        for (const possibility of rightPoints) {
-            message.body += '<br>' + possibility.word + ': ' + possibility.points + ' points x=' + possibility.coord.x + ', y=' + possibility.coord.y;
+        for (let i = 0; i < Math.min(3, rightPoints.length); i++) {
+            message.body +=
+                '<br>' + rightPoints[i].word + ': ' + rightPoints[i].points + ' points x=' + rightPoints[i].coord.x + ', y=' + rightPoints[i].coord.y;
         }
         if (!sucess) {
             message.body = "L'ordi n'a rien pu placer. Elle échange donc à la place<br>";
@@ -219,7 +220,7 @@ export class VirtualPlayerService {
         let possibilityArray = [...new Set(possibilities)];
         possibilityArray = possibilityArray.filter((item, index) => {
             return possibilityArray.indexOf(item) === index;
-        })
+        });
         return possibilityArray;
     }
     private findWordPosition(word: string, gridCombo: WordNCoord): WordNCoord {
