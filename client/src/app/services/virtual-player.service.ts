@@ -58,7 +58,7 @@ export class VirtualPlayerService {
         let message: IChat;
         if (randomNumber === 0) {
             message = { from: SENDER.computer, body: "L'ordi a passé son tour" };
-            const skipTime = 1900;
+            const skipTime = 20;
 
             this.timerService.resetTimerDelay(skipTime);
         } else if (randomNumber === 1) {
@@ -170,17 +170,6 @@ export class VirtualPlayerService {
         const randomNumber = Math.floor((SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION) * Math.random());
         return pointMap.get(randomNumber) as { min: number; max: number };
     }
-    // private validateWordPoints(word: WordNCoord, pointRange: { min: number; max: number }): boolean {
-    //     const isPlacementFeasible = this.verifyService.validatePlaceFeasibility(word.word, word.coord, word.direction);
-    //     if (isPlacementFeasible.error) {
-    //         return false;
-    //     }
-    //     const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
-    //     const points = this.pointsCountingService.processWordPoints(word.word, word.coord, word.direction, lettersUsedOnBoard);
-    //     if (points <= pointRange.max && points >= pointRange.min) return true;
-
-    //     return false;
-    // }
     private tryPossibility(gridCombo: WordNCoord): boolean {
         gridCombo.word = gridCombo.word.toLowerCase();
         let valid = false;
@@ -226,7 +215,12 @@ export class VirtualPlayerService {
                 gridWord.points = this.pointsCountingService.processWordPoints(gridWord.word, gridWord.coord, gridWord.direction, lettersUsedOnBoard);
                 possibilities.push(gridWord);
             }
-        return [...new Set(possibilities)];
+
+        let possibilityArray = [...new Set(possibilities)];
+        possibilityArray = possibilityArray.filter((item, index) => {
+            return possibilityArray.indexOf(item) === index;
+        })
+        return possibilityArray;
     }
     private findWordPosition(word: string, gridCombo: WordNCoord): WordNCoord {
         const index = word.indexOf(gridCombo.word);
