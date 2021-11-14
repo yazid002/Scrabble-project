@@ -13,6 +13,7 @@ import { GameService } from './game.service';
 import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
+import { UserSettingsService } from './user-settings.service';
 import { VerifyService } from './verify.service';
 
 type Direction = 'horizontal' | 'vertical';
@@ -22,12 +23,16 @@ interface WordNCoord {
     direction: Direction;
     points?: number;
 }
+type SortFct = (possibilities: WordNCoord[]) => WordNCoord[];
+type VoidFct = (service: VirtualPlayerService) => void;
+type NumberFct = () => number;
 
 @Injectable({
     providedIn: 'root',
 })
 export class VirtualPlayerService {
     virtualPlayerSignal: Subscription;
+    computerLevel: string;
     private alreadyInitialized: boolean;
     constructor(
         private gameService: GameService,
@@ -38,6 +43,7 @@ export class VirtualPlayerService {
         private pointsCountingService: PointsCountingService,
         private debugExecutionService: DebugExecutionService,
         private chatService: ChatService,
+        private userSettingsService: UserSettingsService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();
@@ -50,9 +56,23 @@ export class VirtualPlayerService {
             if (numPlayers !== 'solo') return;
             this.play();
         });
+        this.computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
     }
 
     private play() {
+        const playAlgos: Map<string, VoidFct> = new Map([
+            ['beginner', this.beginnerPlay as VoidFct],
+            ['advanced', this.advancedPlay as VoidFct],
+        ]);
+        const fctToExecute = playAlgos.get(this.computerLevel) as VoidFct;
+        fctToExecute(this);
+    }
+    private advancedPlay(service: VirtualPlayerService): void {
+        const message = service.place();
+        service.addOutputToMessages(message);
+    }
+
+    private beginnerPlay(service: VirtualPlayerService): void {
         const oneOfTenProbability = 10;
         const randomNumber = Math.floor(oneOfTenProbability * Math.random());
         let message: IChat;
@@ -60,12 +80,16 @@ export class VirtualPlayerService {
             message = { from: SENDER.computer, body: "L'ordi a passé son tour" };
             const skipTime = 20;
 
-            this.timerService.resetTimerDelay(skipTime);
+            service.timerService.resetTimerDelay(skipTime);
         } else if (randomNumber === 1) {
-            message = this.exchange();
+            message = service.exchange();
         } else {
-            message = this.place();
+            message = service.place();
         }
+        service.addOutputToMessages(message);
+
+    }
+    private addOutputToMessages(message: IChat) {
         if (this.debugExecutionService.state) {
             this.chatService.addMessage(message);
         }
@@ -98,8 +122,14 @@ export class VirtualPlayerService {
             (accumulator, currentValue) => (accumulator += currentValue.display),
             '',
         );
-        const numberToChange = Math.floor(Math.random() * RACK_SIZE + 1);
-        const lettersToChange = this.selectRandomLetterFromRack(numberToChange);
+
+        const amoutOfLettersFcts: Map<string, NumberFct> = new Map([
+            ['beginner', () => Math.floor(Math.random() * RACK_SIZE + 1)],
+            ['advanced', () => 7],
+        ]);
+        const amoutOfLettersFct = amoutOfLettersFcts.get(this.computerLevel) as NumberFct;
+        const amountToChange = amoutOfLettersFct();
+        const lettersToChange = this.selectRandomLetterFromRack(amountToChange);
         this.exchangeService.exchangeLetters(lettersToChange, true);
 
         const rackEnd = this.gameService.players[PLAYER.otherPlayer].rack.reduce(
@@ -107,11 +137,20 @@ export class VirtualPlayerService {
             '',
         );
 
-        const message: IChat = { from: SENDER.computer, body: "L'ordi échange. Son rack était de " + rackInit + ' et est maintenant de ' + rackEnd };
+        const message: IChat = {
+            from: SENDER.computer,
+            body: "L'ordi échange. Son rack était de " + rackInit + ' et est maintenant de ' + rackEnd + 'Il a changé ' + amountToChange + 'Lettres',
+        };
         return message;
     }
     private place(): IChat {
-        const possibilities = this.sortPossibilities(this.makePossibilities());
+        const sortTingAlgos: Map<string, SortFct> = new Map([
+            ['beginner', this.sortPossibilitiesBeginner],
+            ['advanced', this.sortPossibilitiesAdvanced],
+        ]);
+        const sortAlgo = sortTingAlgos.get(this.computerLevel) as SortFct;
+
+        const possibilities = sortAlgo(this.makePossibilities());
         const rightPoints: WordNCoord[] = [];
 
         for (const possibility of possibilities) {
@@ -120,7 +159,6 @@ export class VirtualPlayerService {
                     this.gameService.players[PLAYER.otherPlayer].points += possibility.points ? possibility.points : 0;
 
                     rightPoints.push(possibility);
-                    break;
                 }
             } else if (rightPoints.length >= 3) break;
             else rightPoints.push(possibility);
@@ -129,8 +167,26 @@ export class VirtualPlayerService {
         return this.placeDebugOutput(rightPoints);
     }
 
-    private sortPossibilities(possibilities: WordNCoord[]) {
-        const pointRange = this.decidePoints();
+    private sortPossibilitiesBeginner(possibilities: WordNCoord[]) {
+        // decidePoints
+        const pointMap: Map<number, { min: number; max: number }> = new Map();
+        let i = 0;
+        const SMALL_WORD_PROPORTION = 4;
+        const MEDIUM_WORD_PROPORTION = 3;
+        const BIG_WORD_PROPORTION = 3;
+
+        for (i; i < SMALL_WORD_PROPORTION; i++) {
+            pointMap.set(i, { min: 0, max: 6 });
+        }
+        for (i; i < SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION; i++) {
+            pointMap.set(i, { min: 7, max: 12 });
+        }
+        for (i; i < SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION; i++) {
+            pointMap.set(i, { min: 13, max: 18 });
+        }
+        const randomNumber = Math.floor((SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION) * Math.random());
+        const pointRange = pointMap.get(randomNumber) as { min: number; max: number };
+
         possibilities = possibilities.sort((possibilityA: WordNCoord, possibilityB: WordNCoord) => {
             if (!possibilityA.points) possibilityA.points = 0;
             if (!possibilityB.points) possibilityB.points = 0;
@@ -144,6 +200,14 @@ export class VirtualPlayerService {
             if (distanceA === distanceB) return 1;
 
             return distanceA - distanceB;
+        });
+        return possibilities;
+    }
+    private sortPossibilitiesAdvanced(possibilities: WordNCoord[]) {
+        possibilities = possibilities.sort((possibilityA: WordNCoord, possibilityB: WordNCoord) => {
+            if (!possibilityA.points) possibilityA.points = 0;
+            if (!possibilityB.points) possibilityB.points = 0;
+            return possibilityB.points - possibilityA.points;
         });
         return possibilities;
     }
@@ -165,25 +229,6 @@ export class VirtualPlayerService {
             message.body += this.exchange().body;
         }
         return message;
-    }
-    private decidePoints(): { min: number; max: number } {
-        const pointMap: Map<number, { min: number; max: number }> = new Map();
-        let i = 0;
-        const SMALL_WORD_PROPORTION = 4;
-        const MEDIUM_WORD_PROPORTION = 3;
-        const BIG_WORD_PROPORTION = 3;
-
-        for (i; i < SMALL_WORD_PROPORTION; i++) {
-            pointMap.set(i, { min: 0, max: 6 });
-        }
-        for (i; i < SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION; i++) {
-            pointMap.set(i, { min: 7, max: 12 });
-        }
-        for (i; i < SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION; i++) {
-            pointMap.set(i, { min: 13, max: 18 });
-        }
-        const randomNumber = Math.floor((SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION) * Math.random());
-        return pointMap.get(randomNumber) as { min: number; max: number };
     }
     private tryPossibility(gridCombo: WordNCoord): boolean {
         gridCombo.word = gridCombo.word.toLowerCase();
