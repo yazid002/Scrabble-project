@@ -21,11 +21,12 @@ interface WordNCoord {
     word: string;
     coord: Vec2;
     direction: Direction;
-    points?: number;
+    points: number;
 }
 type SortFct = (possibilities: WordNCoord[]) => WordNCoord[];
 type VoidFct = (service: VirtualPlayerService) => void;
 type NumberFct = () => number;
+const MAX_RACK_SIZE = 7;
 
 @Injectable({
     providedIn: 'root',
@@ -48,17 +49,16 @@ export class VirtualPlayerService {
         this.alreadyInitialized = false;
         this.initialize();
     }
-
     initialize() {
         if (this.alreadyInitialized) return;
         this.alreadyInitialized = true;
-        this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
-            if (numPlayers !== 'solo') return;
-            this.play();
-        });
+        this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => this.reactToSignal(numPlayers));
         this.computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
     }
-
+    private reactToSignal(numPlayers: string) {
+        if (numPlayers !== 'solo') return;
+        this.play();
+    }
     private play() {
         const playAlgos: Map<string, VoidFct> = new Map([
             ['beginner', this.beginnerPlay as VoidFct],
@@ -71,7 +71,6 @@ export class VirtualPlayerService {
         const message = service.place();
         service.addOutputToMessages(message);
     }
-
     private beginnerPlay(service: VirtualPlayerService): void {
         const oneOfTenProbability = 10;
         const randomNumber = Math.floor(oneOfTenProbability * Math.random());
@@ -99,20 +98,20 @@ export class VirtualPlayerService {
         const numbs: number[] = [];
         let numb = 0;
 
+        numberOfLetters = Math.min(this.gameService.players[PLAYER.otherPlayer].rack.length, MAX_RACK_SIZE);
         for (let i = 0; i < this.gameService.players[PLAYER.otherPlayer].rack.length; i++) {
             numbs.push(i);
         }
 
-        if (numberOfLetters <= this.gameService.players[PLAYER.otherPlayer].rack.length) {
-            for (let i = 0; i < numberOfLetters; i++) {
-                numb = Math.floor(Math.random() * numbs.length);
-                numbersPicked.push(numbs[numb]);
-                numbs.splice(numb, 1);
-            }
-            for (let i = 0; i < numberOfLetters; i++) {
-                lettersToChange.push(this.gameService.players[PLAYER.otherPlayer].rack[numbersPicked[i]].name);
-            }
+        for (let i = 0; i < numberOfLetters; i++) {
+            numb = Math.floor(Math.random() * numbs.length);
+            numbersPicked.push(numbs[numb]);
+            numbs.splice(numb, 1);
         }
+        for (let i = 0; i < numberOfLetters; i++) {
+            lettersToChange.push(this.gameService.players[PLAYER.otherPlayer].rack[numbersPicked[i]].name);
+        }
+
         return lettersToChange;
     }
     private exchange(): IChat {
@@ -123,7 +122,7 @@ export class VirtualPlayerService {
 
         const amoutOfLettersFcts: Map<string, NumberFct> = new Map([
             ['beginner', () => Math.floor(Math.random() * RACK_SIZE + 1)],
-            ['advanced', () => 7],
+            ['advanced', () => MAX_RACK_SIZE],
         ]);
         const amoutOfLettersFct = amoutOfLettersFcts.get(this.computerLevel) as NumberFct;
         const amountToChange = amoutOfLettersFct();
@@ -154,10 +153,8 @@ export class VirtualPlayerService {
             ['advanced', this.sortPossibilitiesAdvanced],
         ]);
         const sortAlgo = sortTingAlgos.get(this.computerLevel) as SortFct;
-
         const possibilities = sortAlgo(this.makePossibilities());
         const rightPoints: WordNCoord[] = [];
-
         for (const possibility of possibilities) {
             if (rightPoints.length === 0) {
                 if (this.tryPossibility(possibility)) {
@@ -168,7 +165,6 @@ export class VirtualPlayerService {
             } else if (rightPoints.length >= 3) break;
             else rightPoints.push(possibility);
         }
-
         return this.placeDebugOutput(rightPoints);
     }
     private sendSkipMessage() {
@@ -194,7 +190,6 @@ export class VirtualPlayerService {
         const SMALL_WORD_PROPORTION = 4;
         const MEDIUM_WORD_PROPORTION = 3;
         const BIG_WORD_PROPORTION = 3;
-
         for (i; i < SMALL_WORD_PROPORTION; i++) {
             pointMap.set(i, { min: 0, max: 6 });
         }
@@ -206,27 +201,16 @@ export class VirtualPlayerService {
         }
         const randomNumber = Math.floor((SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION) * Math.random());
         const pointRange = pointMap.get(randomNumber) as { min: number; max: number };
-
         possibilities = possibilities.sort((possibilityA: WordNCoord, possibilityB: WordNCoord) => {
-            if (!possibilityA.points) possibilityA.points = 0;
-            if (!possibilityB.points) possibilityB.points = 0;
 
-            let distanceA = 0;
-            let distanceB = 0;
-            if (possibilityA.points < pointRange.min) distanceA += pointRange.min - possibilityA.points;
-            if (possibilityA.points > pointRange.max) distanceA += possibilityA.points - pointRange.max;
-            if (possibilityB.points < pointRange.min) distanceB += pointRange.min - possibilityB.points;
-            if (possibilityB.points > pointRange.max) distanceB += possibilityB.points - pointRange.max;
-            if (distanceA === distanceB) return 1;
-
+            const distanceA = Math.min(0, pointRange.min - possibilityA.points) + possibilityA.points - pointRange.max;
+            const distanceB = Math.min(0, pointRange.min - possibilityB.points) + possibilityB.points - pointRange.max;
             return distanceA - distanceB;
         });
         return possibilities;
     }
     private sortPossibilitiesAdvanced(possibilities: WordNCoord[]) {
         possibilities = possibilities.sort((possibilityA: WordNCoord, possibilityB: WordNCoord) => {
-            if (!possibilityA.points) possibilityA.points = 0;
-            if (!possibilityB.points) possibilityB.points = 0;
             return possibilityB.points - possibilityA.points;
         });
         return possibilities;
@@ -253,7 +237,6 @@ export class VirtualPlayerService {
     private tryPossibility(gridCombo: WordNCoord): boolean {
         gridCombo.word = gridCombo.word.toLowerCase();
         let valid = false;
-
         try {
             valid = this.placeService.placeWordInstant(gridCombo.word, gridCombo.coord, gridCombo.direction);
 
@@ -268,19 +251,17 @@ export class VirtualPlayerService {
     private makePossibilities(): WordNCoord[] {
         const rack = this.gameService.players[PLAYER.otherPlayer].rack.map((rackLetter) => rackLetter.name.toLowerCase());
         const gridCombos = this.getLetterCombosFromGrid();
-
         const possibilities: WordNCoord[] = [];
         if (this.verifyService.isFirstMove()) {
             const anagrams = generateAnagrams(rack, '');
             for (const anagram of anagrams) {
-                const gridWord: WordNCoord = { coord: { x: 7, y: 7 }, direction: 'h', word: '' };
+                const gridWord: WordNCoord = { coord: { x: 7, y: 7 }, direction: 'h', word: '', points: 0 };
                 gridWord.word = anagram;
                 const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
                 gridWord.points = this.pointsCountingService.processWordPoints(gridWord.word, gridWord.coord, gridWord.direction, lettersUsedOnBoard);
                 possibilities.push(gridWord);
             }
         }
-
         const wordCoordNAnagrams: Map<WordNCoord, string[]> = new Map([]);
         gridCombos.forEach((gridCombo) => {
             const anagrams = generateAnagrams(rack, gridCombo.word);
@@ -304,7 +285,7 @@ export class VirtualPlayerService {
     }
     private findWordPosition(word: string, gridCombo: WordNCoord): WordNCoord {
         const index = word.indexOf(gridCombo.word);
-        const result: WordNCoord = { coord: { x: gridCombo.coord.x, y: gridCombo.coord.y }, direction: gridCombo.direction, word };
+        const result: WordNCoord = { coord: { x: gridCombo.coord.x, y: gridCombo.coord.y }, direction: gridCombo.direction, word, points: 0 };
         if (result.direction === 'h') result.coord.x -= index;
         else result.coord.y -= index;
         return result;
@@ -329,14 +310,13 @@ export class VirtualPlayerService {
                     tempWord += tiles[line][col].letter;
                 } else {
                     if (tempWord !== EMPTY) {
-                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'h' };
+                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'h', points: 0 };
                         possibilities.push(temp);
                     }
                     tempWord = EMPTY;
                 }
             }
         }
-
         // get all vertival possibilities
         for (let col = 0; col < tiles[0].length; col++) {
             for (let line = 0; line < tiles.length; line++) {
@@ -348,14 +328,13 @@ export class VirtualPlayerService {
                     tempWord += tiles[line][col].letter;
                 } else {
                     if (tempWord !== EMPTY) {
-                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'v' };
+                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'v', points: 0 };
                         possibilities.push(temp);
                     }
                     tempWord = EMPTY;
                 }
             }
         }
-
         return possibilities;
     }
 }
