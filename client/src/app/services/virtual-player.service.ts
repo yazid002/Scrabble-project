@@ -79,7 +79,7 @@ export class VirtualPlayerService {
         if (randomNumber === 0) {
             message = { from: SENDER.computer, body: "L'ordi a passé son tour" };
             const skipTime = 20;
-
+            this.sendSkipMessage();
             service.timerService.resetTimerDelay(skipTime);
         } else if (randomNumber === 1) {
             message = service.exchange();
@@ -93,7 +93,6 @@ export class VirtualPlayerService {
             this.chatService.addMessage(message);
         }
     }
-
     private selectRandomLetterFromRack(numberOfLetters: number): string[] {
         const lettersToChange: string[] = [];
         const numbersPicked: number[] = [];
@@ -130,7 +129,7 @@ export class VirtualPlayerService {
         const amountToChange = amoutOfLettersFct();
         const lettersToChange = this.selectRandomLetterFromRack(amountToChange);
         this.exchangeService.exchangeLetters(lettersToChange, true);
-
+        this.displayExchangeMessage(lettersToChange);
         const rackEnd = this.gameService.players[PLAYER.otherPlayer].rack.reduce(
             (accumulator, currentValue) => (accumulator += currentValue.display),
             '',
@@ -141,6 +140,13 @@ export class VirtualPlayerService {
             body: "L'ordi échange. Son rack était de " + rackInit + ' et est maintenant de ' + rackEnd + 'Il a changé ' + amountToChange + 'Lettres',
         };
         return message;
+    }
+    private displayExchangeMessage(letters: string[]) {
+        const message: IChat = {
+            from: SENDER.otherPlayer,
+            body: '!echanger ' + letters.join(''),
+        };
+        this.displayMessage(message);
     }
     private place(): IChat {
         const sortTingAlgos: Map<string, SortFct> = new Map([
@@ -164,6 +170,10 @@ export class VirtualPlayerService {
         }
 
         return this.placeDebugOutput(rightPoints);
+    }
+    private sendSkipMessage() {
+        const message: IChat = { from: SENDER.otherPlayer, body: '!passer' };
+        this.displayMessage(message);
     }
     private sendPlacementMessage(combination: WordNCoord) {
         const message: IChat = { from: SENDER.otherPlayer, body: '!placer ' };
