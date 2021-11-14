@@ -111,42 +111,56 @@ export class VirtualPlayerService {
         return message;
     }
     private place(): IChat {
-        const rack = this.gameService.players[PLAYER.otherPlayer].rack.reduce(
-            (accumulator, currentValue) => (accumulator += currentValue.display),
-            '',
-        );
-        const possibilities = this.makePossibilities();
-        const pointRange = this.decidePoints();
-        let rightPoints: WordNCoord[] = [];
-        let sucess = false;
-        do {
-            rightPoints = possibilities.filter((possibility) => {
-                if (possibility.points) {
-                    if (possibility.points < pointRange.max && possibility.points >= pointRange.min) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-            if (!sucess) {
-                for (const possibility of rightPoints) {
-                    if (this.tryPossibility(possibility)) {
-                        this.gameService.players[PLAYER.otherPlayer].points += possibility.points ? possibility.points : 0;
-                        sucess = true;
-                        break;
-                    }
-                }
-            }
-            pointRange.min--;
-            pointRange.max++;
-        } while (pointRange.min && (rightPoints.length < 3 || !sucess));
+        const possibilities = this.sortPossibilities(this.makePossibilities());
+        const rightPoints: WordNCoord[] = [];
 
-        const message: IChat = { from: SENDER.computer, body: 'rack de lordi: ' + rack + "<br>L'ordinateur aurait pu placer: " };
-        for (let i = 0; i < Math.min(3, rightPoints.length); i++) {
-            message.body +=
-                '<br>' + rightPoints[i].word + ': ' + rightPoints[i].points + ' points x=' + rightPoints[i].coord.x + ', y=' + rightPoints[i].coord.y;
+        for (const possibility of possibilities) {
+            if (rightPoints.length === 0) {
+                if (this.tryPossibility(possibility)) {
+                    this.gameService.players[PLAYER.otherPlayer].points += possibility.points ? possibility.points : 0;
+
+                    rightPoints.push(possibility);
+                    break;
+                }
+            } else if (rightPoints.length >= 3) break;
+            else rightPoints.push(possibility);
         }
-        if (!sucess) {
+
+        return this.placeDebugOutput(rightPoints);
+    }
+
+    private sortPossibilities(possibilities: WordNCoord[]) {
+        const pointRange = this.decidePoints();
+        possibilities = possibilities.sort((possibilityA: WordNCoord, possibilityB: WordNCoord) => {
+            if (!possibilityA.points) possibilityA.points = 0;
+            if (!possibilityB.points) possibilityB.points = 0;
+
+            let distanceA = 0;
+            let distanceB = 0;
+            if (possibilityA.points < pointRange.min) distanceA += pointRange.min - possibilityA.points;
+            if (possibilityA.points > pointRange.max) distanceA += possibilityA.points - pointRange.max;
+            if (possibilityB.points < pointRange.min) distanceB += pointRange.min - possibilityB.points;
+            if (possibilityB.points > pointRange.max) distanceB += possibilityB.points - pointRange.max;
+            if (distanceA === distanceB) return 1;
+
+            return distanceA - distanceB;
+        });
+        return possibilities;
+    }
+    private placeDebugOutput(alternativeChoices: WordNCoord[]) {
+        const message: IChat = { from: SENDER.computer, body: "L'ordinateur aurait pu placer: " };
+        for (let i = 0; i < Math.min(3, alternativeChoices.length); i++) {
+            message.body +=
+                '<br>' +
+                alternativeChoices[i].word +
+                ': ' +
+                alternativeChoices[i].points +
+                ' points x=' +
+                alternativeChoices[i].coord.x +
+                ', y=' +
+                alternativeChoices[i].coord.y;
+        }
+        if (alternativeChoices.length === 0) {
             message.body = "L'ordi n'a rien pu placer. Elle échange donc à la place<br>";
             message.body += this.exchange().body;
         }
