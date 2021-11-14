@@ -16,7 +16,7 @@ import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
 import { VerifyService } from './verify.service';
 
-type Direction = 'horizontal' | 'vertical';
+type Direction = 'h' | 'v';
 interface WordNCoord {
     word: string;
     coord: Vec2;
@@ -87,7 +87,6 @@ export class VirtualPlayerService {
             message = service.place();
         }
         service.addOutputToMessages(message);
-
     }
     private addOutputToMessages(message: IChat) {
         if (this.debugExecutionService.state) {
@@ -157,7 +156,7 @@ export class VirtualPlayerService {
             if (rightPoints.length === 0) {
                 if (this.tryPossibility(possibility)) {
                     this.gameService.players[PLAYER.otherPlayer].points += possibility.points ? possibility.points : 0;
-
+                    this.sendPlacementMessage(possibility);
                     rightPoints.push(possibility);
                 }
             } else if (rightPoints.length >= 3) break;
@@ -166,7 +165,18 @@ export class VirtualPlayerService {
 
         return this.placeDebugOutput(rightPoints);
     }
-
+    private sendPlacementMessage(combination: WordNCoord) {
+        const message: IChat = { from: SENDER.otherPlayer, body: '!placer ' };
+        const ASCII_A = 96;
+        const line = String.fromCharCode(combination.coord.x + ASCII_A + 1);
+        const column = combination.coord.y + 1;
+        message.body += line + column + combination.direction + ' ' + combination.word;
+        this.displayMessage(message);
+    }
+    private displayMessage(message: IChat) {
+        if (this.computerLevel !== 'advanced') return;
+        this.chatService.addMessage(message);
+    }
     private sortPossibilitiesBeginner(possibilities: WordNCoord[]) {
         // decidePoints
         const pointMap: Map<number, { min: number; max: number }> = new Map();
@@ -253,7 +263,7 @@ export class VirtualPlayerService {
         if (this.verifyService.isFirstMove()) {
             const anagrams = generateAnagrams(rack, '');
             for (const anagram of anagrams) {
-                const gridWord: WordNCoord = { coord: { x: 7, y: 7 }, direction: 'horizontal', word: '' };
+                const gridWord: WordNCoord = { coord: { x: 7, y: 7 }, direction: 'h', word: '' };
                 gridWord.word = anagram;
                 const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
                 gridWord.points = this.pointsCountingService.processWordPoints(gridWord.word, gridWord.coord, gridWord.direction, lettersUsedOnBoard);
@@ -285,7 +295,7 @@ export class VirtualPlayerService {
     private findWordPosition(word: string, gridCombo: WordNCoord): WordNCoord {
         const index = word.indexOf(gridCombo.word);
         const result: WordNCoord = { coord: { x: gridCombo.coord.x, y: gridCombo.coord.y }, direction: gridCombo.direction, word };
-        if (result.direction === 'horizontal') result.coord.x -= index;
+        if (result.direction === 'h') result.coord.x -= index;
         else result.coord.y -= index;
         return result;
     }
@@ -309,7 +319,7 @@ export class VirtualPlayerService {
                     tempWord += tiles[line][col].letter;
                 } else {
                     if (tempWord !== EMPTY) {
-                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'horizontal' };
+                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'h' };
                         possibilities.push(temp);
                     }
                     tempWord = EMPTY;
@@ -328,7 +338,7 @@ export class VirtualPlayerService {
                     tempWord += tiles[line][col].letter;
                 } else {
                     if (tempWord !== EMPTY) {
-                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'vertical' };
+                        const temp: WordNCoord = { word: tempWord, coord: { y, x }, direction: 'v' };
                         possibilities.push(temp);
                     }
                     tempWord = EMPTY;
