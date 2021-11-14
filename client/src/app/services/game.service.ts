@@ -22,6 +22,7 @@ export class GameService {
     timerDone: Subscription;
     turnDone: Subscription;
     numPlayers: string;
+    computerLevel: string;
     skipCounter: number = 0;
     constructor(
         private userSettingsService: UserSettingsService,
@@ -35,6 +36,7 @@ export class GameService {
             this.changeTurn(skipped);
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
+        this.computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
     }
 
     convertGameToSolo() {
