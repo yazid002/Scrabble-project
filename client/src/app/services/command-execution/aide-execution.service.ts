@@ -6,22 +6,16 @@ import { IChat, SENDER } from '@app/classes/chat';
     providedIn: 'root',
 })
 export class AideExecutionService {
-    // constructor() {}
-    // command: Map<string, string> = new Map([
-    //     ['placer:', '!placer Ligne(a-o)Colone(1-15)Sens(h|v) mot <br> permet de placer un mot sur le board <br>'],
-    //     ['echanger: ', '!echanger lettres à échanger <br> permet de echanger les lettres designees <br>'],
-    // ]);
-
     command: Command[] = [
         {
             nom: 'placer',
             format: '!placer Ligne(a-o)Colone(1-15)Sens(h|v) mot',
-            description: ' permet de placer un mot sur le board',
+            description: 'Permet de placer un mot sur le board',
         },
         {
             nom: 'echanger',
             format: '!echanger "lettres à échanger"',
-            description: 'permet de echanger les lettres <br>mentionnés du rack',
+            description: "Permet d'échanger les lettres <br>mentionnés du rack",
         },
         {
             nom: 'debug',
@@ -31,7 +25,7 @@ export class AideExecutionService {
         {
             nom: 'reserve',
             format: '!reserve',
-            description: 'permet d afficher l état du contenu <br>de la réserve en ordre alphabétique',
+            description: "Permet d'afficher l'état du contenu <br>de la réserve en ordre alphabétique",
         },
     ];
 
