@@ -55,10 +55,24 @@ export class PlaceService {
                 coord,
                 direction,
                 this.lettersUsedOnBoard,
-                );
-                this.rackService.replaceWord(word);
-                this.timerService.resetTimer();
+            );
+
+            console.log(this.gameService.players[this.gameService.currentTurn].goal);
+            console.log('Currunt',this.gameService.players[this.gameService.currentTurn]);
+
+
+            for (const goal of this.gameService.players[this.gameService.currentTurn].goal) {
+                console.log(goal.complete);
+                if (!goal.complete) {
+                    console.log(goal.command(word));
+                    if (goal.command(word)) {
+                        this.gameService.players[this.gameService.currentTurn].points += goal.bonus;
+                    }
+                }
             }
+            this.rackService.replaceWord(word);
+            this.timerService.resetTimer();
+        }
 
         return wordValidationParameters.wordExists;
     }

@@ -124,6 +124,7 @@ export class GameService {
             name: this.userSettingsService.nameOption.userChoice,
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
+            goal: [],
             placementParameters: {
                 selectedCoord: { x: -1, y: -1 },
                 direction: true,
@@ -140,6 +141,7 @@ export class GameService {
             name: this.userSettingsService.getComputerName(),
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
+            goal: [],
         };
         this.players.push(computer);
     }

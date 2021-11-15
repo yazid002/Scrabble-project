@@ -11,7 +11,11 @@
         [id]="i === playerIndex.realPlayer ? 'me' : 'otherPlayer'"
         [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"
     >
-        <mat-card-title>{{ player.name }}</mat-card-title>
+        <mat-card-title>{{ player.name }}</mat-card-title> 
+        <mat-card-title *ngFor="let goal of player.goal">{{ goal.description }}</mat-card-title> 
+
+        <mat-card-title>{{ goals.description }}</mat-card-title>
+
         <mat-card-content *ngIf="gameService.numPlayers === 'solo' && i === playerIndex.otherPlayer">Niveau {{ computerLevel }}</mat-card-content>
         <mat-card-content>Nombre de points: {{ player.points }}</mat-card-content>
         <mat-card-content *ngIf="i === gameService.currentTurn">
