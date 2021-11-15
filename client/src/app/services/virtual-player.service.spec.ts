@@ -3,7 +3,6 @@ import { tiles } from '@app/classes/board';
 import { IChat } from '@app/classes/chat';
 import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
-import { PlaceService } from './place.service';
 import { VirtualPlayerService } from './virtual-player.service';
 type Direction = 'h' | 'v';
 interface WordNCoord {
@@ -14,11 +13,9 @@ interface WordNCoord {
 }
 describe('VirtualPlayerService', () => {
     let service: VirtualPlayerService;
-    let placeServiceSpy: jasmine.SpyObj<PlaceService>;
     beforeEach(() => {
-        placeServiceSpy = jasmine.createSpyObj('PlaceService', ['placeWordInstant']);
         TestBed.configureTestingModule({
-            providers: [{ provide: PlaceService, useValue: placeServiceSpy }],
+
         });
         service = TestBed.inject(VirtualPlayerService);
     });
@@ -207,13 +204,15 @@ describe('VirtualPlayerService', () => {
     describe('tryPossibility', () => {
         it('should return true only if placeservice says the possibility is valid', () => {
             const possibility: WordNCoord = { word: 'kjdv', coord: { x: 4, y: 1000 }, direction: 'h', points: 100 };
-
-            placeServiceSpy.placeWordInstant.and.returnValue(false);
+            // eslint-disable-next-line dot-notation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const spy = spyOn<any>(service['placeService'], 'placeWordInstant');
+            spy.and.returnValue(false);
             // eslint-disable-next-line dot-notation
             let actualValue = service['tryPossibility'](possibility);
             expect(actualValue).toBe(false);
 
-            placeServiceSpy.placeWordInstant.and.returnValue(true);
+            spy.and.returnValue(true);
             // eslint-disable-next-line dot-notation
             actualValue = service['tryPossibility'](possibility);
             expect(actualValue).toBe(true);
@@ -221,7 +220,10 @@ describe('VirtualPlayerService', () => {
     });
     describe('makePossibilities', () => {
         it('should return a list of WordNCoord objects. Coorss of these objects should be x=7 and y =7 if this is the first move', () => {
-            placeServiceSpy.placeWordInstant.and.returnValue(true);
+            // eslint-disable-next-line dot-notation
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const spy = spyOn<any>(service['placeService'], 'placeWordInstant');
+            spy.and.returnValue(true);
             const h8Coord: Vec2 = { x: 7, y: 7 };
 
             // eslint-disable-next-line dot-notation
