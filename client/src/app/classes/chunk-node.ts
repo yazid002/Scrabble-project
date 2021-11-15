@@ -22,8 +22,7 @@ export class ChunkNode {
             const word = testedChunks + this.unTestedChunks[i];
             if (dictionary.isPatternInDict(word)) {
                 // make child
-                const newChild: ChunkNode = new ChunkNode(unTestedChunkCopy, i, this);
-                this.childs.push(newChild);
+                this.addChild(unTestedChunkCopy, i);
             } else {
                 if (this.unTestedChunks.length === 1) this.unTestedChunks = [];
                 else this.unTestedChunks.splice(i, 1);
@@ -59,8 +58,16 @@ export class ChunkNode {
         }
         return patterns;
     }
+    private addChild(untestedChunks: string[], indexToremove: number) {
+        const childLetter = untestedChunks[indexToremove];
+        // find if there is an existing child with this letter
+        for (const child of this.childs) {
+            if (child.chunk === childLetter) return;
+        }
+        const newChild: ChunkNode = new ChunkNode(untestedChunks, indexToremove, this);
+        this.childs.push(newChild);
+    }
 }
-
 
 export const generateAnagrams: (rack: string[], pattern: string) => string[] = (rack: string[], pattern: string) => {
     /**
@@ -68,9 +75,8 @@ export const generateAnagrams: (rack: string[], pattern: string) => string[] = (
      * @param rack: provide the player's rack. To not include the pattern in the player's rack
      * @param pattern: anagrams will need to contain this pattern
      * @returns a list of words (strings) that contain only letters from the rack + the required pattern
-     */
+    */
     let words: string[] = [];
-    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     let i = 0;
     const chunks: string[] = [];
     rack.forEach((letter) => chunks.push(letter));
@@ -83,12 +89,5 @@ export const generateAnagrams: (rack: string[], pattern: string) => string[] = (
         chunks.push(letterToChange);
         i++;
     }
-    return words.filter((word) => word.includes(pattern));
+    return [...new Set(words.filter((word) => word.includes(pattern)))];
 };
-// const removeAndGetChunks: (chunks: string[], letterToRemove: string) => string[] = (chunks: string[], letterToRemove: string) => {
-//     const letterToRemoveIndex = chunks.findIndex((letter) => letter === letterToRemove);
-//     if (letterToRemoveIndex !== -1) {
-//         chunks.splice(letterToRemoveIndex, 1);
-//     }
-//     return chunks;
-// };

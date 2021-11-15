@@ -58,11 +58,14 @@ export class PointsCountingService {
         for (let i = 0; i < wordToCheck.length; i++) {
             const x = this.verifyService.computeCoordByDirection(direction, coord, i).x;
             const y = this.verifyService.computeCoordByDirection(direction, coord, i).y;
+            const BAD_WORD = -100;
+            if (x < 0 || y < 0 || x >= tiles.length || y >= tiles.length) return BAD_WORD;
             let basePoints = 0;
             const length = lettersUsedOnBoard.filter((letter) => letter.coord.x === x && letter.coord.y === y);
             if (length.length === 0) {
                 basePoints = this.getLetterPoints(wordToCheck[i]);
-                const letterPoints = this.letterBonusesMapping.get(tiles[y][x].bonus) as (basePoints: number) => number;
+                const bonus = tiles[y][x].bonus;
+                const letterPoints = this.letterBonusesMapping.get(bonus) as (basePoints: number) => number;
                 point += letterPoints ? letterPoints(basePoints) : basePoints;
 
                 switch (tiles[y][x].bonus) {
