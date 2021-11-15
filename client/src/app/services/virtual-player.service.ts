@@ -77,7 +77,7 @@ export class VirtualPlayerService {
         let message: IChat;
         if (randomNumber === 0) {
             message = { from: SENDER.computer, body: "L'ordi a passé son tour" };
-            const skipTime = 20;
+            const skipTime = 1;
             service.sendSkipMessage();
             service.timerService.resetTimerDelay(skipTime);
         } else if (randomNumber === 1) {
@@ -153,7 +153,8 @@ export class VirtualPlayerService {
             ['advanced', this.sortPossibilitiesAdvanced],
         ]);
         const sortAlgo = sortTingAlgos.get(this.computerLevel) as SortFct;
-        const possibilities = sortAlgo(this.makePossibilities());
+        let possibilities = sortAlgo(this.makePossibilities());
+        possibilities = possibilities.filter((possibility) => possibility.points > 0);
         const rightPoints: WordNCoord[] = [];
         for (const possibility of possibilities) {
             if (rightPoints.length === 0) {
@@ -202,7 +203,6 @@ export class VirtualPlayerService {
         const randomNumber = Math.floor((SMALL_WORD_PROPORTION + MEDIUM_WORD_PROPORTION + BIG_WORD_PROPORTION) * Math.random());
         const pointRange = pointMap.get(randomNumber) as { min: number; max: number };
         possibilities = possibilities.sort((possibilityA: WordNCoord, possibilityB: WordNCoord) => {
-
             const distanceA = Math.min(0, pointRange.min - possibilityA.points) + possibilityA.points - pointRange.max;
             const distanceB = Math.min(0, pointRange.min - possibilityB.points) + possibilityB.points - pointRange.max;
             return distanceA - distanceB;
@@ -261,22 +261,28 @@ export class VirtualPlayerService {
                 gridWord.points = this.pointsCountingService.processWordPoints(gridWord.word, gridWord.coord, gridWord.direction, lettersUsedOnBoard);
                 possibilities.push(gridWord);
             }
-        }
-        const wordCoordNAnagrams: Map<WordNCoord, string[]> = new Map([]);
-        gridCombos.forEach((gridCombo) => {
-            const anagrams = generateAnagrams(rack, gridCombo.word);
-            wordCoordNAnagrams.set(gridCombo, anagrams);
-        });
-        for (const [gridCombo, anagrams] of wordCoordNAnagrams.entries())
-            for (const anagram of anagrams) {
-                // const wordCombos = this.bindGridAndRack(anagram, gridPattern);
-                const gridWord = this.findWordPosition(anagram, gridCombo);
-                gridWord.word = anagram;
-                const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
-                gridWord.points = this.pointsCountingService.processWordPoints(gridWord.word, gridWord.coord, gridWord.direction, lettersUsedOnBoard);
-                possibilities.push(gridWord);
-            }
+        } else {
+            const wordCoordNAnagrams: Map<WordNCoord, string[]> = new Map([]);
+            gridCombos.forEach((gridCombo) => {
+                const anagrams = generateAnagrams(rack, gridCombo.word);
+                wordCoordNAnagrams.set(gridCombo, anagrams);
+            });
+            for (const [gridCombo, anagrams] of wordCoordNAnagrams.entries())
+                for (const anagram of anagrams) {
+                    // const wordCombos = this.bindGridAndRack(anagram, gridPattern);
+                    const gridWord = this.findWordPosition(anagram, gridCombo);
 
+                    gridWord.word = anagram;
+                    const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+                    gridWord.points = this.pointsCountingService.processWordPoints(
+                        gridWord.word,
+                        gridWord.coord,
+                        gridWord.direction,
+                        lettersUsedOnBoard,
+                    );
+                    possibilities.push(gridWord);
+                }
+        }
         let possibilityArray = [...new Set(possibilities)];
         possibilityArray = possibilityArray.filter((item, index) => {
             return possibilityArray.indexOf(item) === index;

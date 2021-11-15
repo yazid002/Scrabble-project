@@ -255,8 +255,10 @@ describe('VirtualPlayerService', () => {
             // eslint-disable-next-line dot-notation
             let possibilities = service['makePossibilities']();
             let allCentered = true;
+            console.log(possibilities);
             for (const possibility of possibilities) {
                 if (possibility.coord.x !== h8Coord.x || possibility.coord.y !== h8Coord.y) allCentered = false;
+                console.log(possibility);
             }
 
             expect(allCentered).toBe(true);
