@@ -195,22 +195,6 @@ describe('VirtualPlayerService', () => {
             const message: IChat = service['place']();
             expect(message).toBeDefined();
         });
-        // it('should not return more than 3 words in output message event if they are valid', () => {
-        //      const h8Coord: Vec2 = { x: 7, y: 7 };
-        //     // eslint-disable-next-line dot-notation
-        //     service['gameService'].players[PLAYER.otherPlayer].rack = [
-        //         { name: 'B', quantity: 9, points: 1, display: 'B' },
-        //         { name: 'O', quantity: 2, points: 3, display: 'O' },
-        //         { name: 'N', quantity: 2, points: 3, display: 'N' },
-        //         { name: 'J', quantity: 3, points: 2, display: 'J' },
-        //         { name: 'O', quantity: 15, points: 1, display: 'O' },
-        //         { name: 'U', quantity: 15, points: 1, display: 'U' },
-        //         { name: 'R', quantity: 15, points: 1, display: 'R' },
-        //     ]; // On peut placer plus de 3 mot: soit Bonjour, jour, ou, nu, on...
-        //     tiles[h8Coord.x][h8Coord.y].letter = ''; // verifyService checks if isFirstMove by looking if center tile is empty
-        //     const returnMessage = service['place']();
-
-        // })
     });
     describe('exchange', () => {
         it('should return an IChat object', () => {
@@ -255,10 +239,8 @@ describe('VirtualPlayerService', () => {
             // eslint-disable-next-line dot-notation
             let possibilities = service['makePossibilities']();
             let allCentered = true;
-            console.log(possibilities);
             for (const possibility of possibilities) {
                 if (possibility.coord.x !== h8Coord.x || possibility.coord.y !== h8Coord.y) allCentered = false;
-                console.log(possibility);
             }
 
             expect(allCentered).toBe(true);
