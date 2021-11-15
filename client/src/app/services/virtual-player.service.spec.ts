@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { IChat } from '@app/classes/chat';
@@ -14,10 +16,11 @@ interface WordNCoord {
 describe('VirtualPlayerService', () => {
     let service: VirtualPlayerService;
     beforeEach(() => {
-        TestBed.configureTestingModule({
-
-        });
+        TestBed.configureTestingModule({});
         service = TestBed.inject(VirtualPlayerService);
+
+        const exchangeRackServiceSpy = spyOn<any>(service['exchangeService']['rackService'], 'fillRackPortion');
+        exchangeRackServiceSpy.and.returnValue(undefined);
     });
 
     it('should be created', () => {
@@ -26,14 +29,11 @@ describe('VirtualPlayerService', () => {
     describe('reactToSignal', () => {
         it('should call play if and only if numplayer = solo', () => {
             let numPlayers = 'randomString';
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const playSpy = spyOn<any>(service, 'play');
-            // eslint-disable-next-line dot-notation
             service['reactToSignal'](numPlayers);
             expect(playSpy).not.toHaveBeenCalled();
 
             numPlayers = 'solo';
-            // eslint-disable-next-line dot-notation
             service['reactToSignal'](numPlayers);
             expect(playSpy).toHaveBeenCalled();
         });
@@ -41,7 +41,6 @@ describe('VirtualPlayerService', () => {
     describe('initialize', () => {
         it('should only run if "alreadyInitialized if false', () => {
             const initialValue = 'a random string';
-            // eslint-disable-next-line dot-notation
             service['alreadyInitialized'] = false;
             service.computerLevel = initialValue;
             service.initialize();
@@ -49,7 +48,6 @@ describe('VirtualPlayerService', () => {
             const expectedComputerLevel = 'beginner';
             expect(service.computerLevel).toBe(expectedComputerLevel);
 
-            // eslint-disable-next-line dot-notation
             service['alreadyInitialized'] = true;
             service.computerLevel = initialValue;
             service.initialize();
@@ -59,17 +57,12 @@ describe('VirtualPlayerService', () => {
     describe('addOutputToMessages', () => {
         it('should add message to the chatService message array if debug state is active', () => {
             const message: IChat = { from: 'someone', body: 'content' };
-            // eslint-disable-next-line dot-notation
             const spy = spyOn(service['chatService'], 'addMessage');
-            // eslint-disable-next-line dot-notation
             service['debugExecutionService'].state = false;
-            // eslint-disable-next-line dot-notation
             service['addOutputToMessages'](message);
             expect(spy).not.toHaveBeenCalled();
 
-            // eslint-disable-next-line dot-notation
             service['debugExecutionService'].state = true;
-            // eslint-disable-next-line dot-notation
             service['addOutputToMessages'](message);
             expect(spy).toHaveBeenCalled();
         });
@@ -77,17 +70,12 @@ describe('VirtualPlayerService', () => {
     describe('displayMessages', () => {
         it('should only add message if Virtual player is in advanced mode', () => {
             const message: IChat = { from: 'someone', body: 'content' };
-            // eslint-disable-next-line dot-notation
             const spy = spyOn(service['chatService'], 'addMessage');
-            // eslint-disable-next-line dot-notation
             service['computerLevel'] = ' a random string';
-            // eslint-disable-next-line dot-notation
             service['displayMessage'](message);
             expect(spy).not.toHaveBeenCalled();
 
-            // eslint-disable-next-line dot-notation
             service['computerLevel'] = 'advanced';
-            // eslint-disable-next-line dot-notation
             service['displayMessage'](message);
             expect(spy).toHaveBeenCalled();
         });
@@ -99,9 +87,7 @@ describe('VirtualPlayerService', () => {
         });
         describe('play', () => {
             it('should call play function', () => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const spy = spyOn<any>(service, 'place');
-                // eslint-disable-next-line dot-notation
                 service['play']();
                 expect(spy).toHaveBeenCalled();
             });
@@ -121,7 +107,6 @@ describe('VirtualPlayerService', () => {
                     wordList.push(exampleWord);
                 }
 
-                // eslint-disable-next-line dot-notation
                 const sortedList = service['sortPossibilitiesAdvanced'](wordList);
                 let pastPoint = 151;
                 let isWellSorted = true;
@@ -135,7 +120,6 @@ describe('VirtualPlayerService', () => {
     });
     describe('beginnerMode', () => {
         beforeEach(() => {
-            // eslint-disable-next-line dot-notation
             service['computerLevel'] = 'beginner';
         });
         describe('play', () => {
@@ -145,19 +129,18 @@ describe('VirtualPlayerService', () => {
                 let exchangeCounter = 0;
                 let skipCounter = 0;
 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const placeSpy = spyOn<any>(service, 'place');
                 placeSpy.and.callFake(() => {
                     placeCounter++;
                     return returnResponse;
                 });
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
                 const exchangeSpy = spyOn<any>(service, 'exchange');
                 exchangeSpy.and.callFake(() => {
                     exchangeCounter++;
                     return returnResponse;
                 });
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
                 const skipSpy = spyOn<any>(service, 'sendSkipMessage');
                 skipSpy.and.callFake(() => {
                     skipCounter++;
@@ -165,7 +148,6 @@ describe('VirtualPlayerService', () => {
 
                 const amountOfCalls = 10000;
                 for (let i = 0; i < amountOfCalls; i++) {
-                    // eslint-disable-next-line dot-notation
                     service['play']();
                 }
 
@@ -188,14 +170,12 @@ describe('VirtualPlayerService', () => {
     });
     describe('place', () => {
         it('should return an IChat object', () => {
-            // eslint-disable-next-line dot-notation
             const message: IChat = service['place']();
             expect(message).toBeDefined();
         });
     });
     describe('exchange', () => {
         it('should return an IChat object', () => {
-            // eslint-disable-next-line dot-notation
             const message: IChat = service['exchange']();
             expect(message).toBeDefined();
         });
@@ -204,29 +184,25 @@ describe('VirtualPlayerService', () => {
     describe('tryPossibility', () => {
         it('should return true only if placeservice says the possibility is valid', () => {
             const possibility: WordNCoord = { word: 'kjdv', coord: { x: 4, y: 1000 }, direction: 'h', points: 100 };
-            // eslint-disable-next-line dot-notation
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
             const spy = spyOn<any>(service['placeService'], 'placeWordInstant');
             spy.and.returnValue(false);
-            // eslint-disable-next-line dot-notation
+
             let actualValue = service['tryPossibility'](possibility);
             expect(actualValue).toBe(false);
 
             spy.and.returnValue(true);
-            // eslint-disable-next-line dot-notation
+
             actualValue = service['tryPossibility'](possibility);
             expect(actualValue).toBe(true);
         });
     });
     describe('makePossibilities', () => {
         it('should return a list of WordNCoord objects. Coorss of these objects should be x=7 and y =7 if this is the first move', () => {
-            // eslint-disable-next-line dot-notation
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const spy = spyOn<any>(service['placeService'], 'placeWordInstant');
             spy.and.returnValue(true);
             const h8Coord: Vec2 = { x: 7, y: 7 };
 
-            // eslint-disable-next-line dot-notation
             service['gameService'].players[PLAYER.otherPlayer].rack = [
                 { name: 'B', quantity: 9, points: 1, display: 'B' },
                 { name: 'O', quantity: 2, points: 3, display: 'O' },
@@ -238,7 +214,6 @@ describe('VirtualPlayerService', () => {
             ];
             tiles[h8Coord.x][h8Coord.y].letter = ''; // verifyService checks if isFirstMove by looking if center tile is empty
 
-            // eslint-disable-next-line dot-notation
             let possibilities = service['makePossibilities']();
             let allCentered = true;
             for (const possibility of possibilities) {
@@ -253,7 +228,6 @@ describe('VirtualPlayerService', () => {
             tiles[h8Coord.x + 3][h8Coord.y].letter = 'o';
             tiles[h8Coord.x][h8Coord.y + 1].letter = 'a';
 
-            // eslint-disable-next-line dot-notation
             possibilities = service['makePossibilities']();
             for (const possibility of possibilities) {
                 if (possibility.coord.x !== h8Coord.x || possibility.coord.y !== h8Coord.y) allCentered = false;
