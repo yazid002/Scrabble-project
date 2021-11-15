@@ -15,10 +15,15 @@ describe('DebugExecutionService', () => {
     });
 
     describe('execute', () => {
-        it('should return an IChat interface', () => {
-            const result: IChat = service.execute();
+        it(' should return an IChat interface', () => {
+            service.state = false;
+            let result: IChat = service.execute();
 
-            expect(result.body).toBeDefined();
+            expect(result.body).toEqual('affichages de débogage activés');
+
+            service.state = true;
+            result = service.execute();
+            expect(result.body).toEqual('affichages de débogage désactivés');
         });
     });
 });

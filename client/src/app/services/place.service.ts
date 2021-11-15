@@ -55,10 +55,10 @@ export class PlaceService {
                 coord,
                 direction,
                 this.lettersUsedOnBoard,
-                );
-                this.rackService.replaceWord(word);
-                this.timerService.resetTimer();
-            }
+            );
+            this.rackService.replaceWord(word);
+            this.timerService.resetTimer();
+        }
 
         return wordValidationParameters.wordExists;
     }
