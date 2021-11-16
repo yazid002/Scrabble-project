@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
+import { Goal } from '@app/classes/goal';
 import { Vec2 } from '@app/classes/vec2';
 import { SelectionType } from '@app/enums/selection-enum';
 import { VerifyService } from '@app/services/verify.service';
@@ -57,19 +58,6 @@ export class PlaceService {
                 this.lettersUsedOnBoard,
             );
 
-            console.log(this.gameService.players[this.gameService.currentTurn].goal);
-            console.log('Currunt',this.gameService.players[this.gameService.currentTurn]);
-
-
-            for (const goal of this.gameService.players[this.gameService.currentTurn].goal) {
-                console.log(goal.complete);
-                if (!goal.complete) {
-                    console.log(goal.command(word));
-                    if (goal.command(word)) {
-                        this.gameService.players[this.gameService.currentTurn].points += goal.bonus;
-                    }
-                }
-            }
             this.rackService.replaceWord(word);
             this.timerService.resetTimer();
         }
@@ -135,6 +123,12 @@ export class PlaceService {
                         direction,
                         this.lettersUsedOnBoard,
                     );
+
+                    console.log(this.gameService.players[this.gameService.currentTurn].goal);
+                    console.log('Currunt', this.gameService.players[this.gameService.currentTurn]);
+                    console.log(this.verifyService.formedWords);
+                    this.applyGoalsBonus(this.verifyService.formedWords);
+
                     this.updateTilesLetters(word, coord, direction);
                     this.placeSelectionService.selectedTilesForPlacement = [];
                     this.placeSelectionService.wordToVerify = [];
@@ -155,6 +149,28 @@ export class PlaceService {
         return promise;
     }
 
+    checkFormedWordRespectGoals(wordsFormed: string[], goal: Goal): boolean {
+        console.log('goal complete ', goal.complete);
+        if (goal.complete) {
+            return false;
+        }
+        for (const word of wordsFormed) {
+            console.log('word ', word, goal.command(word));
+            if (goal.command(word)) {
+                goal.complete = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    applyGoalsBonus(wordsFormed: string[]): void {
+        for (const goal of this.gameService.players[this.gameService.currentTurn].goal) {
+            if (this.checkFormedWordRespectGoals(wordsFormed, goal)) {
+                this.gameService.players[this.gameService.currentTurn].points += goal.bonus;
+            }
+        }
+    }
     updateTilesLetters(word: string, coord: Vec2, direction: string): void {
         for (let i = 0; i < word.length; i++) {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
