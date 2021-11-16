@@ -77,7 +77,7 @@ export class GameOverviewComponent implements OnInit {
             this.numPlayers = numPlayers.value;
             this.computerLevel = computerLevel.value;
             this.timer = timer.value;
-            this.publicGoals = [...publicGoals];
+            this.publicGoals = publicGoals;
         }
     }
 }

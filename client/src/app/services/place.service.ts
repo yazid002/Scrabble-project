@@ -168,13 +168,16 @@ export class PlaceService {
         if (goal.complete) {
             return false;
         }
+        console.log('goal complete 2', goal.complete);
         for (const word of wordsFormed) {
+            console.log('goal complete 3', word);
+            console.log('ici o ', goal.command(word));
             const isGoalRespected = goal.command(word);
             console.log('word ', word, isGoalRespected, goal.description);
             if (isGoalRespected) {
                 goal.complete = true;
                 goal.completeBy = this.gameService.players[this.gameService.currentTurn];
-                this.goalService.completeGoalSound();
+                //  this.goalService.completeGoalSound();
                 return true;
             }
         }

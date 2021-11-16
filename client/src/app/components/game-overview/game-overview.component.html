@@ -6,16 +6,13 @@
     </mat-card-title-group>
 
     <mat-card-content>Il y a {{ nbLettersReserve }} lettres restantes dans la réserve</mat-card-content>
-    <mat-card id="publicGoals">
-        <mat-card-title id="publicGoalsTitle">Objectifs publiques: </mat-card-title>
-        <mat-card-content [style]="this.goalService.completedGoalStyle(goal)" id="publicGoalsContent" *ngFor="let goal of publicGoals">
+    <mat-card class="goals">
+        <mat-card-title class="goalsTitle">Objectifs publiques: </mat-card-title>
+        <mat-card-content [style]="this.goalService.completedGoalStyle(goal)" class="goalsContent" *ngFor="let goal of publicGoals">
             {{ goal.description }}
             <div *ngIf="goal.complete">Completé par {{ goal.completeBy?.name }}!</div>
         </mat-card-content>
     </mat-card>
-    <!-- this.goalService.completedGoalStyle(goal) -->
-
-    <button (click)="this.goalService.completeGoalSound()">music</button>
 
     <mat-card
         *ngFor="let player of gameService.players; let i = index"
@@ -23,12 +20,16 @@
         [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"
     >
         <mat-card-title>{{ player.name }}</mat-card-title>
-        <!-- <div *ngIf="i === playerIndex.realPlayer"> -->
-        <mat-card-title *ngFor="let goal of player.privateGoals"
-            >Objectifs privés: {{ goal.description }}
-            <div *ngIf="goal.complete">Completé !</div>
+
+        <mat-card-title class="goalsTitle" *ngFor="let goal of player.privateGoals">
+            <div *ngIf="i === playerIndex.realPlayer">Objectifs privés: {{ goal.description }}</div>
         </mat-card-title>
-        <!-- </div> -->
+        <mat-card-content [style]="this.goalService.completedGoalStyle(goal)" class="goalsContent" *ngFor="let goal of player.privateGoals">
+            <div *ngIf="i === playerIndex.realPlayer">
+                {{ goal.description }}
+            </div>
+            <div *ngIf="goal.complete">Completé !</div>
+        </mat-card-content>
 
         <mat-card-content *ngIf="gameService.numPlayers === 'solo' && i === playerIndex.otherPlayer">Niveau {{ computerLevel }}</mat-card-content>
         <mat-card-content>Nombre de points: {{ player.points }}</mat-card-content>

@@ -148,6 +148,8 @@ export class GoalService {
     }
 
     placeInTenSecondsGoal(): boolean {
+        console.log('placeInTenSecondsGoal');
+
         if (this.timerService.counter.totalTimer <= 10) {
             this.gameService.players[this.gameService.currentTurn].placeInTenSecondsGoalCounter += 1;
         } else {
@@ -162,6 +164,8 @@ export class GoalService {
     }
 
     playFiveTimesWithoutSkipAndExchange(): boolean {
+        console.log('playFiveTimesWithoutSkipAndExchange');
+
         console.log('counter ', this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter);
         if (this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter === 5) {
             return true;
@@ -170,6 +174,7 @@ export class GoalService {
     }
 
     playTheSameWordThreeTimes(): boolean {
+        console.log('playTheSameWordThreeTimes');
         const wordsFormedMapping = new Map<string, number>();
         for (const w of this.gameService.players[this.gameService.currentTurn].words) {
             if (wordsFormedMapping.has(w.toLowerCase())) {
@@ -187,6 +192,7 @@ export class GoalService {
     }
 
     playTheRandomWord(): boolean {
+        console.log('playTheRandomWord');
         for (const word of this.gameService.players[this.gameService.currentTurn].words) {
             if (word === this.randomWord) {
                 return true;
@@ -210,7 +216,7 @@ export class GoalService {
 
     completeGoalSound() {
         const audio = new Audio();
-        audio.src = './bonus.wav';
+        audio.src = 'assets/sounds/bonus.wav';
         audio.load();
         audio.play();
     }
