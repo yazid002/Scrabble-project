@@ -18,7 +18,10 @@ const NUM_PLAYERS: IOptionList = {
 
 const COMPUTER_LEVEL: IOptionList = {
     settingName: "Niveau de l'ordinateur",
-    availableChoices: [{ key: 'beginner', value: 'Débutant' }],
+    availableChoices: [
+        { key: 'beginner', value: 'Débutant' },
+        { key: 'advanced', value: 'Avancé' },
+    ],
 };
 const COMPUTER_NAMES: string[] = ['Ordi Illetré', 'Dictionnaire en Personne', 'Word Master'];
 const TIMER: IOptionList = {

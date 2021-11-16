@@ -6,3 +6,9 @@ export interface CommandFormat {
     notAllowedMessage: string;
     command: () => Promise<IChat> | IChat;
 }
+
+export interface Command {
+    nom: string;
+    format: string;
+    description: string;
+}
