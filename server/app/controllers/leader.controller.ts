@@ -35,16 +35,16 @@ export class LeaderBoardController {
             }
         });
 
-        // this.router.get('/:subjectCode', async (req: Request, res: Response) => {
-        //     this.coursesService
-        //         .getCourse(req.params.subjectCode)
-        //         .then((leaderboard: Leaderboard) => {
-        //             res.json(leaderboard);
-        //         })
-        //         .catch((error: Error) => {
-        //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-        //         });
-        // });
+        this.router.get('/:name', async (req: Request, res: Response) => {
+            this.classicLeaderboardService
+                .getPlayersScore(req.params.name)
+                .then((leaderboard: string) => {
+                    res.json(leaderboard);
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
 
         // this.router.post('/', async (req: Request, res: Response) => {
         //     console.log(req.body);
@@ -57,6 +57,17 @@ export class LeaderBoardController {
         //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
         //         });
         // });
+
+        this.router.post('/', async (req: Request, res: Response) => {
+            this.classicLeaderboardService
+                .addPlayer(req.body)
+                .then(() => {
+                    res.status(Httpstatus.StatusCodes.CREATED).send();
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
 
         // this.router.patch('/', async (req: Request, res: Response) => {
         //     this.coursesService

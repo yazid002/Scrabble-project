@@ -5,14 +5,19 @@ import { Service } from 'typedi';
 import { DatabaseService } from './database.service';
 
 // CHANGE the URL for your database information
-const DATABASE_COLLECTION = 'Classic';
+const DATABASE_COLLECTION_CLASSIC = 'Classic';
+const DATABASE_COLLECTION_2990 = 'Mode 2990';
 
 @Service()
 export class ClassicLeaderBoardService {
     constructor(private databaseService: DatabaseService) {}
 
-    get collection(): Collection<Leaderboard> {
-        return this.databaseService.database.collection(DATABASE_COLLECTION);
+    get collectionC(): Collection<Leaderboard> {
+        return this.databaseService.database.collection(DATABASE_COLLECTION_CLASSIC);
+    }
+
+    get collection2(): Collection<Leaderboard> {
+        return this.databaseService.database.collection(DATABASE_COLLECTION_2990);
     }
 
     // async getAllCourses(): Promise<Leaderboard[]> {
@@ -24,7 +29,7 @@ export class ClassicLeaderBoardService {
     //         });
     // }
     async getAllPlayers(): Promise<Leaderboard[]> {
-        return this.collection
+        return this.collection2
             .find({})
             .toArray()
             .then((leaderboards: Leaderboard[]) => {
@@ -38,6 +43,18 @@ export class ClassicLeaderBoardService {
     //         return course;
     //     });
     // }
+
+    async getPlayersScore(player: string): Promise<string> {
+        return this.collection2.findOne({ name: player }).then((score: Leaderboard) => {
+            return score.id;
+        });
+    }
+
+    async addPlayer(player: Leaderboard): Promise<void> {
+        await this.collection2.insertOne(player);
+    }
+
+    // private validatePlayer(player: Leaderboard): boolean {}
 
     // async addCourse(course: Leaderboard): Promise<void> {
     //     if (this.validateCourse(course)) {

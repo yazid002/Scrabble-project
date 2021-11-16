@@ -41,7 +41,7 @@ export class Application {
     }
 
     bindRoutes(): void {
-        this.app.use('/blabla', this.leaderboardController.router); // database
+        this.app.use('/leaderboard', this.leaderboardController.router); // database
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
         this.app.use('/api/example', this.exampleController.router);
         this.app.use('/api/date', this.dateController.router);
