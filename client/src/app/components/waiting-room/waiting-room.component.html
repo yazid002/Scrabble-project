@@ -25,4 +25,10 @@
     <button mat-raised-button color="primary" mat-dialog-close (click)="openSwitchToSoloDialog()" id="solo_button">Switch to Solo</button>
     <button mat-raised-button color="primary" [routerLink]="['/lobby']" id="join" (click)="roomService.quitRoom()">Joindre un Room</button>
     <button mat-raised-button color="primary" (click)="openQuitMultiplayerDialog()" id="quitter">Quitter</button>
+
+    <button mat-raised-button color="primary" [disabled]="roomService.rooms.length === 1" id="random">Placement aléatoire</button>
+
+    <!-- <button mat-raised-button color="primary" *ngIf="roomService.rooms.length < 1" [disabled]="roomService.rooms.length === 1" id="random">
+        Placement aléatoire
+    </button> -->
 </div>
