@@ -57,7 +57,7 @@ export class PlaceService {
                 direction,
                 this.lettersUsedOnBoard,
             );
-
+            this.applyGoalsBonus(this.verifyService.formedWords);
             this.rackService.replaceWord(word);
             this.timerService.resetTimer();
         }
