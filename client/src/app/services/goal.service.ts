@@ -21,49 +21,49 @@ export class GoalService {
 
         this.goalHandler = [
             {
-                description: 'Vous devez placer un palindrome',
+                description: ' placer un palindrome',
                 bonus: 10,
                 complete: false,
                 command: (word?: string): boolean => this.isWordPalindrome(word as string),
             },
             {
-                description: 'Vous devez placer un mot qui contient la lettre e',
+                description: 'placer un mot qui contient la lettre e',
                 bonus: 10,
                 complete: false,
                 command: (word?: string): boolean => this.doesWordContainQwithoutU(word as string),
             },
             {
-                description: 'Vous devez former un mot contenant 4 letters',
+                description: 'former un mot contenant 4 letters',
                 bonus: 10,
                 complete: false,
                 command: (word?: string): boolean => this.isWordLengthEqualToFifteen(word as string),
             },
-            // {
-            //     description: 'Vous devez placer un mot contenant 3 consomme consecutive',
-            //     bonus: 10,
-            //     complete: false,
-            //     command: (word?: string): boolean => this.doesWordContainConsecutiveConsonant(word as string),
-            // },
             {
-                description: 'Pour 3 tours de suite, vous devez placer en moins de 10 secondes',
+                description: ' placer un mot contenant 3 consomme consecutive',
+                bonus: 10,
+                complete: false,
+                command: (word?: string): boolean => this.doesWordContainConsecutiveConsonant(word as string),
+            },
+            {
+                description: 'Pour 3 tours de suite, placer en moins de 10 secondes',
                 bonus: 70,
                 complete: false,
                 command: (): boolean => this.placeInTenSecondsGoal(),
             },
             {
-                description: 'Vous devez jouer 5 tours de suite sans passer ou échanger',
+                description: 'Jouer 5 tours de suite sans passer ou échanger',
                 bonus: 40,
                 complete: false,
                 command: (): boolean => this.playFiveTimesWithoutSkipAndExchange(),
             },
             {
-                description: 'Vous devez former le même mot 3 fois dans une même partie',
+                description: 'Former le même mot 3 fois dans une même partie',
                 bonus: 30,
                 complete: false,
                 command: (): boolean => this.playTheSameWordThreeTimes(),
             },
             {
-                description: `Vous devez former le mot ${this.randomWord}`,
+                description: `Former le mot ${this.randomWord}`,
                 bonus: 10,
                 complete: false,
                 command: (): boolean => this.playTheRandomWord(),
@@ -108,11 +108,15 @@ export class GoalService {
     doesWordContainConsecutiveConsonant(word: string) {
         console.log('inside3');
         const consonant: string[] = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z'];
-        const secondPosition = 2;
-        const thirdPosition = 3;
+        const secondPosition = 1;
+        const thirdPosition = 2;
 
-        for (let i = 0; word.length; i++) {
-            if (consonant.includes(word[i]) && consonant.includes(word[i + secondPosition]) && consonant.includes(word[i + thirdPosition])) {
+        for (let i = 0; i < word.length - thirdPosition; i++) {
+            if (
+                consonant.includes(word[i].toLowerCase()) &&
+                consonant.includes(word[i + secondPosition].toLowerCase()) &&
+                consonant.includes(word[i + thirdPosition].toLowerCase())
+            ) {
                 return true;
             }
         }
@@ -138,7 +142,7 @@ export class GoalService {
     }
 
     displayGoals(): Goal {
-        const index = this.generateUniqueIndex(0, 6);
+        const index = this.generateUniqueIndex(0, 7);
         console.log(index);
         return this.goalHandler[index];
     }
