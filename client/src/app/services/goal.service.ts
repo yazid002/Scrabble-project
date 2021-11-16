@@ -13,19 +13,21 @@ export class GoalService {
     goalHandler: Goal[];
     dictionary: Dictionary;
     randomWord: string;
+    publicGoals: Goal[];
     constructor(private timerService: TimerService, private gameService: GameService) {
         this.dictionary = dictionary as Dictionary;
         this.usedIndex = [];
         this.randomWord = this.generateRandomWord();
+
         this.goalHandler = [
             {
-                description: 'Vous de devez placer un palindrome',
+                description: 'Vous devez placer un palindrome',
                 bonus: 10,
                 complete: false,
                 command: (word?: string): boolean => this.isWordPalindrome(word as string),
             },
             {
-                description: 'Vous de devez placer un mot qui contient la lettre e',
+                description: 'Vous devez placer un mot qui contient la lettre e',
                 bonus: 10,
                 complete: false,
                 command: (word?: string): boolean => this.doesWordContainQwithoutU(word as string),
@@ -36,12 +38,12 @@ export class GoalService {
                 complete: false,
                 command: (word?: string): boolean => this.isWordLengthEqualToFifteen(word as string),
             },
-            {
-                description: 'Vous devez placer un mot contenant 3 consomme consecutive',
-                bonus: 10,
-                complete: false,
-                command: (word?: string): boolean => this.doesWordContainConsecutiveConsonant(word as string),
-            },
+            // {
+            //     description: 'Vous devez placer un mot contenant 3 consomme consecutive',
+            //     bonus: 10,
+            //     complete: false,
+            //     command: (word?: string): boolean => this.doesWordContainConsecutiveConsonant(word as string),
+            // },
             {
                 description: 'Pour 3 tours de suite, vous devez placer en moins de 10 secondes',
                 bonus: 70,
@@ -49,19 +51,19 @@ export class GoalService {
                 command: (): boolean => this.placeInTenSecondsGoal(),
             },
             {
-                description: 'Jouer 5 tours de suite sans passer ou échanger',
+                description: 'Vous devez jouer 5 tours de suite sans passer ou échanger',
                 bonus: 40,
                 complete: false,
                 command: (): boolean => this.playFiveTimesWithoutSkipAndExchange(),
             },
             {
-                description: 'Former le même mot 3 fois dans une même partie',
+                description: 'Vous devez former le même mot 3 fois dans une même partie',
                 bonus: 30,
                 complete: false,
                 command: (): boolean => this.playTheSameWordThreeTimes(),
             },
             {
-                description: `Former le mot ${this.randomWord}`,
+                description: `Vous devez former le mot ${this.randomWord}`,
                 bonus: 10,
                 complete: false,
                 command: (): boolean => this.playTheRandomWord(),
@@ -136,7 +138,8 @@ export class GoalService {
     }
 
     displayGoals(): Goal {
-        const index = this.generateUniqueIndex(0, 7);
+        const index = this.generateUniqueIndex(0, 6);
+        console.log(index);
         return this.goalHandler[index];
     }
 

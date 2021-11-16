@@ -3,6 +3,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { PLAYER } from '@app/classes/player';
 import { GameService } from '@app/services/game.service';
+import { GoalService } from '@app/services/goal.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 @Component({
@@ -21,6 +22,7 @@ export class GameModeDialogComponent {
         public gameService: GameService,
         private randomMode: RandomModeService,
         public matDialog: MatDialog,
+        public goalService: GoalService,
     ) {}
 
     validateName() {
@@ -32,6 +34,7 @@ export class GameModeDialogComponent {
     configureGame() {
         this.gameService.players[PLAYER.realPlayer].name = this.userSettingsService.nameOption.userChoice;
         this.gameService.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
+        this.goalService.publicGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()];
     }
 
     applyRandomMode(event: MatCheckboxChange) {
