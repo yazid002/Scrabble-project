@@ -5,6 +5,7 @@ import { DebugExecutionService } from './debug-execution.service';
 describe('CommandExecutionService', () => {
     let service: CommandExecutionService;
     let debugServiceSpy: jasmine.SpyObj<DebugExecutionService>;
+
     beforeEach(() => {
         debugServiceSpy = jasmine.createSpyObj('DebugExecutionService', ['execute']);
         TestBed.configureTestingModule({
@@ -37,11 +38,21 @@ describe('CommandExecutionService', () => {
         const response: { error: boolean; message: IChat } = await service.executeCommand(command, true);
         expect(response).toBeDefined();
     });
-    it('should return error = true with a descriptionis not allowed to make this command', async () => {
+    it('should return error = true with a description is not allowed to make this command', async () => {
         debugServiceSpy.state = false;
         const result = await service.interpretCommand('!reserve');
 
         expect(result.error).toBeTrue();
         expect((await result.function()).body).toEqual('<strong>debug</strong> doit être activé');
+    });
+
+    it('should return an IChat object when executeCommand() is called with a valid command', async () => {
+        interface IChat {
+            from: string;
+            body: string;
+        }
+        const command = '!aide';
+        const response: { error: boolean; message: IChat } = await service.executeCommand(command, true);
+        expect(response).toBeDefined();
     });
 });

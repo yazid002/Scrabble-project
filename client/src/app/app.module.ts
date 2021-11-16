@@ -20,6 +20,7 @@ import { LobbyComponent } from './lobby/lobby.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
 import { QuitMultiplayerDialogComponent } from './components/quit-multiplayer-dialog/quit-multiplayer-dialog.component';
 import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
+import { OpponentQuitDialogComponent } from './components/opponent-quit-dialog/opponent-quit-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -44,6 +45,7 @@ import { WaitingRoomComponent } from './components/waiting-room/waiting-room.com
         QuitConfirmationDialogComponent,
         QuitMultiplayerDialogComponent,
         WaitingRoomComponent,
+        OpponentQuitDialogComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],

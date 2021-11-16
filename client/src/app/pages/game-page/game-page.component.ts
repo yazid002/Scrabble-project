@@ -1,8 +1,12 @@
 import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
+import { OpponentQuitDialogComponent } from '@app/components/opponent-quit-dialog/opponent-quit-dialog.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
 import { GameSyncService } from '@app/services/game-sync.service';
+import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { Room, RoomService } from '@app/services/room.service';
@@ -33,10 +37,15 @@ export class GamePageComponent implements AfterViewInit {
         private selectionManager: SelectionManagerService,
         private randomMode: RandomModeService,
         private timerService: TimerService,
+        private matDialog: MatDialog,
+        private gameService: GameService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
         this.timerService.startTimer();
+        this.gameService.convertToSoloSignal.subscribe((signal: string) => {
+            this.showAbandonDIalog(signal);
+        });
     }
 
     @HostListener('keyup', ['$event'])
@@ -65,19 +74,6 @@ export class GamePageComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.selectionManager.chatboxComponent = this.chatboxComponent;
-    }
-
-    // TODO enlever goInRoom une fois que le loby est intégré et créé les salles pour nous
-    goInRoom() {
-        let temp = 'Vous avez ';
-        if (this.isMaster) {
-            this.roomService.createRoom();
-            temp += 'créé une salle ';
-        } else {
-            this.roomService.joinRoom(this.roomName);
-            temp += 'joint la salle ';
-        }
-        this.roomName = temp + this.roomName;
     }
 
     randomNumber() {
@@ -136,5 +132,8 @@ export class GamePageComponent implements AfterViewInit {
 
     get operationType(): typeof OperationType {
         return OperationType;
+    }
+    private showAbandonDIalog(signal: string) {
+        if (signal === ABANDON_SIGNAL) this.matDialog.open(OpponentQuitDialogComponent);
     }
 }

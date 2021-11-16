@@ -7,7 +7,7 @@ import { ChatService } from './chat.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
-
+import { ABANDON_SIGNAL } from '@app/classes/signal';
 const MAX_SKIPS = 6;
 @Injectable({
     providedIn: 'root',
@@ -15,6 +15,7 @@ const MAX_SKIPS = 6;
 export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
     @Output() abandonSignal = new BehaviorSubject<string>('');
+    @Output() convertToSoloSignal = new BehaviorSubject<string>('');
 
     players: Player[] = [];
     currentTurn: number;
@@ -34,10 +35,12 @@ export class GameService {
             this.changeTurn(skipped);
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
+
     }
 
     convertGameToSolo() {
         this.numPlayers = 'solo';
+        this.convertToSoloSignal.next(ABANDON_SIGNAL);
         if (this.currentTurn === PLAYER.otherPlayer) {
             this.otherPlayerSignal.next(this.numPlayers);
         }
@@ -114,7 +117,6 @@ export class GameService {
                 this.nextPlayer();
             }
         }
-        // TODO: si skip counter trop grand, terminer la partie. Il faut implementer une fin de partie
     }
     private nextPlayer() {
         this.otherPlayerSignal.next(this.numPlayers);
@@ -147,8 +149,6 @@ export class GameService {
 
     private randomTurn() {
         this.currentTurn = Math.floor(2 * Math.random());
-        if (this.currentTurn === PLAYER.otherPlayer) {
-            this.nextPlayer();
-        }
+        this.changeTurn(false);
     }
 }

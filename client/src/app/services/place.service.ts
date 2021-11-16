@@ -57,6 +57,7 @@ export class PlaceService {
                 this.lettersUsedOnBoard,
             );
             this.rackService.replaceWord(word);
+            this.timerService.resetTimer();
         }
 
         return wordValidationParameters.wordExists;
