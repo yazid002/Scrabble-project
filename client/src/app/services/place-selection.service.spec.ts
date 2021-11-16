@@ -5,8 +5,10 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Dictionary } from '@app/classes/dictionary';
 import { ICharacter } from '@app/classes/letter';
 import { PLAYER } from '@app/classes/player';
+import { SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { NOT_FOUND } from '@app/constants/common-constants';
 import { KeyboardKeys } from '@app/enums/keyboard-enum';
+import { MouseButton } from '@app/enums/mouse-enums';
 import { GameService } from './game.service';
 import { GridService } from './grid.service';
 import { PlaceSelectionService } from './place-selection.service';
@@ -15,7 +17,7 @@ import { VerifyService } from './verify.service';
 
 const CANVAS_WIDTH = 500;
 const CANVAS_HEIGHT = 500;
-describe('PlaceSelectionService', () => {
+fdescribe('PlaceSelectionService', () => {
     let service: PlaceSelectionService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
     let gridServiceSpy: jasmine.SpyObj<GridService>;
@@ -148,7 +150,7 @@ describe('PlaceSelectionService', () => {
         expect(result).toEqual(expected);
     });
 
-    it('buildPlacementCommand should return empty string', () => {
+    it('buildPlacementCommand should return the right vertical', () => {
         const coord = { x: 7, y: 7 };
         tiles[coord.y][coord.x].text = 'a';
         tiles[coord.y + 1][coord.x].text = 'b';
@@ -407,18 +409,31 @@ describe('PlaceSelectionService', () => {
         expect(result).toEqual({ x: coord.x, y: expectedY });
     });
 
-    it('cancelUniqueBoardClick should cancel only one selection', () => {
-        const coord = { x: 7, y: 7 };
+    it('incrementNextCoord should go to the next coord empty if we are at the bottom but write horizontally', () => {
+        const coord = { x: 7, y: 14 };
         tiles[coord.y][coord.x].text = 'a';
-        tiles[coord.y + 1][coord.x].text = 'b';
-        tiles[coord.y + 2][coord.x].text = 'f';
-        tiles[coord.y][coord.x + 1].text = 'c';
-        tiles[coord.y][coord.x + 2].text = 'd';
-        service.direction = false;
-        service.selectedTilesForPlacement = [coord, { x: coord.x, y: coord.y + 1 }];
+        service.direction = true;
 
-        service.cancelUniqueBoardClick();
-        expect(service.selectedTilesForPlacement.length).toEqual(1);
+        const expectedX = 8;
+
+        const result = service.incrementNextCoord(coord);
+        expect(result).toEqual({ x: expectedX, y: coord.y });
+    });
+
+    it('incrementNextCoord should return the current coords if the placement cannot go further horizontally', () => {
+        const coord = { x: SQUARE_NUMBER - 1, y: 7 };
+        service.direction = true;
+
+        const result = service.incrementNextCoord(coord);
+        expect(result).toEqual({ x: coord.x, y: coord.y });
+    });
+
+    it('incrementNextCoord should return the current coords if the placement cannot go further vertically', () => {
+        const coord = { x: 7, y: SQUARE_NUMBER - 1 };
+        service.direction = false;
+
+        const result = service.incrementNextCoord(coord);
+        expect(result).toEqual({ x: coord.x, y: coord.y });
     });
 
     it('cancelUniqueBoardClick should cancel only one selection', () => {
@@ -433,7 +448,252 @@ describe('PlaceSelectionService', () => {
 
         service.cancelUniqueBoardClick();
         expect(service.selectedTilesForPlacement.length).toEqual(1);
+    });
+
+    it('cancelUniqueBoardClick should call fillGridPortion, remove and draw arrow one time each', () => {
+        const coord = { x: 7, y: 7 };
+        tiles[coord.y][coord.x].text = 'a';
+        tiles[coord.y + 1][coord.x].text = 'b';
+        tiles[coord.y + 2][coord.x].text = 'f';
+        tiles[coord.y][coord.x + 1].text = 'c';
+        tiles[coord.y][coord.x + 2].text = 'd';
+        service.direction = false;
+        service.selectedTilesForPlacement = [coord, { x: coord.x, y: coord.y + 1 }];
+
+        service.cancelUniqueBoardClick();
+        expect(service.selectedTilesForPlacement.length).toEqual(1);
         expect(gridServiceSpy.removeArrow).toHaveBeenCalledTimes(1);
         expect(gridServiceSpy.drawArrow).toHaveBeenCalledTimes(1);
+        expect(gridServiceSpy.fillGridPortion).toHaveBeenCalledTimes(1);
+    });
+
+    it('cancelUniqueBoardClick should remove arrow and reinitialize selected coord if there is selection but there is no letter placed', () => {
+        const coord = { x: 7, y: 7 };
+        service.selectedCoord = coord;
+
+        service.direction = false;
+        service.selectedTilesForPlacement = [];
+
+        const expectedTimes = 2;
+        const expectedCoords = { x: NOT_FOUND, y: NOT_FOUND };
+
+        service.cancelUniqueBoardClick();
+        expect(gridServiceSpy.removeArrow).toHaveBeenCalledTimes(expectedTimes);
+        expect(gridServiceSpy.drawArrow).not.toHaveBeenCalled();
+        expect(service.selectedCoord).toEqual(expectedCoords);
+    });
+
+    it('checkBoardClickFeasibility should return false if the tile is not empty', () => {
+        const coord = { x: 7, y: 7 };
+        tiles[coord.y][coord.x].letter = 'a';
+
+        service.direction = false;
+        service.selectedTilesForPlacement = [];
+
+        const result = service.checkBoardClickFeasibility(coord, true);
+
+        expect(result).toEqual(false);
+    });
+
+    it('checkBoardClickFeasibility should return false if the coord.y is not valid', () => {
+        const coord = { x: 0, y: NOT_FOUND };
+
+        service.direction = false;
+        service.selectedTilesForPlacement = [];
+
+        const result = service.checkBoardClickFeasibility(coord, true);
+
+        expect(result).toEqual(false);
+    });
+
+    it('checkBoardClickFeasibility should return false if the coord.x is not valid', () => {
+        const coord = { x: NOT_FOUND, y: 0 };
+
+        service.direction = false;
+        service.selectedTilesForPlacement = [];
+
+        const result = service.checkBoardClickFeasibility(coord, true);
+
+        expect(result).toEqual(false);
+    });
+
+    it('checkBoardClickFeasibility should return false if we try to change direction after a placement', () => {
+        const coord = { x: 7, y: 0 };
+
+        service.direction = true;
+        service.selectedRackIndexesForPlacement = [1];
+
+        const result = service.checkBoardClickFeasibility(coord, true);
+
+        expect(result).toEqual(false);
+    });
+
+    it('checkBoardClickFeasibility should return true', () => {
+        const coord = { x: 7, y: 7 };
+        tiles[coord.y][coord.x].letter = '';
+
+        service.direction = false;
+        service.selectedTilesForPlacement = [];
+
+        const result = service.checkBoardClickFeasibility(coord, true);
+
+        expect(result).toEqual(true);
+    });
+
+    it('hideOperation should return true if there is no placement', () => {
+        service.selectedRackIndexesForPlacement = [];
+
+        const result = service.hideOperation();
+
+        expect(result).toEqual(true);
+    });
+
+    it('hideOperation should return false if there is a placement', () => {
+        service.selectedRackIndexesForPlacement = [1];
+
+        const result = service.hideOperation();
+
+        expect(result).toEqual(false);
+    });
+
+    it('onBoardClick should not select tile if the placement is not feasible', () => {
+        const coord = { x: 7, y: 7 };
+        spyOn(service, 'checkBoardClickFeasibility').and.returnValue(false);
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+        } as MouseEvent;
+
+        service.onBoardClick(event, true);
+
+        expect(gridServiceSpy.drawArrow).not.toHaveBeenCalled();
+        expect(gridServiceSpy.removeArrow).not.toHaveBeenCalled();
+    });
+
+    it('onBoardClick should not select draw without removing arrow if it is the first click', () => {
+        const coord = { x: 7, y: 7 };
+        spyOn(service, 'checkBoardClickFeasibility').and.returnValue(true);
+        service.selectedCoord = { x: NOT_FOUND, y: NOT_FOUND };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+        } as MouseEvent;
+
+        service.onBoardClick(event, true);
+
+        expect(gridServiceSpy.drawArrow).toHaveBeenCalled();
+        expect(gridServiceSpy.removeArrow).not.toHaveBeenCalled();
+    });
+
+    it('onBoardClick should reinitialize direction and removeArrow if we click on another tile without any placement', () => {
+        const coord = { x: 7, y: 7 };
+        spyOn(service, 'checkBoardClickFeasibility').and.returnValue(true);
+        service.selectedCoord = { x: coord.x, y: coord.y - 1 };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+        } as MouseEvent;
+        service.direction = false;
+
+        service.onBoardClick(event, true);
+
+        expect(gridServiceSpy.drawArrow).toHaveBeenCalled();
+        expect(gridServiceSpy.removeArrow).toHaveBeenCalled();
+        expect(service.direction).toEqual(true);
+    });
+
+    it('onBoardClick should change direction and removeArrow if we click on the same tile', () => {
+        const coord = { x: 7, y: 7 };
+        spyOn(service, 'checkBoardClickFeasibility').and.returnValue(true);
+        service.selectedCoord = { x: coord.x, y: coord.y };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+        } as MouseEvent;
+        service.direction = true;
+
+        service.onBoardClick(event, true);
+
+        expect(gridServiceSpy.drawArrow).toHaveBeenCalled();
+        expect(gridServiceSpy.removeArrow).toHaveBeenCalled();
+        expect(service.direction).toEqual(false);
+    });
+
+    it('onBoardClick should not reinitialize direction and removeArrow if we click on another tile after a placement', () => {
+        const coord = { x: 7, y: 7 };
+        spyOn(service, 'checkBoardClickFeasibility').and.returnValue(true);
+        service.selectedCoord = { x: coord.x, y: coord.y - 1 };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+        } as MouseEvent;
+        service.direction = false;
+
+        service.onBoardClick(event, false);
+
+        expect(gridServiceSpy.drawArrow).toHaveBeenCalled();
+        expect(gridServiceSpy.removeArrow).toHaveBeenCalled();
+        expect(service.direction).toEqual(false);
+    });
+
+    it('cancelPlacement should cancel placement while there is a placement', () => {
+        const coord = { x: 7, y: 7 };
+
+        service.selectedRackIndexesForPlacement = [1, 2];
+        service.selectedTilesForPlacement = [coord, { x: coord.x, y: coord.y + 1 }];
+        service.selectedCoord = { x: coord.x, y: coord.y + 2 };
+
+        const cancelUniqueSelectionFromRackSpy = spyOn(service, 'cancelUniqueSelectionFromRack').and.callThrough();
+        const cancelUniqueBoardClickSpy = spyOn(service, 'cancelUniqueBoardClick').and.callThrough();
+        const expectedCallTimes = 2;
+        service.cancelPlacement();
+
+        expect(cancelUniqueSelectionFromRackSpy).toHaveBeenCalledTimes(expectedCallTimes);
+        expect(cancelUniqueBoardClickSpy).toHaveBeenCalledTimes(expectedCallTimes);
+    });
+
+    it('cancelUniqueSelectionFromRack should not call fillRackPortion if there is no selection', () => {
+        service.selectedRackIndexesForPlacement = [];
+
+        service.cancelUniqueSelectionFromRack();
+
+        expect(rackServiceSpy.fillRackPortion).not.toHaveBeenCalled();
+    });
+
+    it('cancelUniqueSelectionFromRack should cancel only one selection', () => {
+        service.selectedRackIndexesForPlacement = [1, 2];
+        const expectedResult = [1];
+
+        service.cancelUniqueSelectionFromRack();
+
+        expect(rackServiceSpy.fillRackPortion).toHaveBeenCalledTimes(1);
+        expect(service.selectedRackIndexesForPlacement).toEqual(expectedResult);
+    });
+
+    it('moveToNextEmptyTile should not call onBoardClick if the nextCoord is the same than the current one', () => {
+        const coord = { x: 7, y: 7 };
+
+        spyOn(service, 'incrementNextCoord').and.returnValue(coord);
+        const onBoardClickSpy = spyOn(service, 'onBoardClick').and.callThrough();
+
+        service.moveToNextEmptyTile(coord);
+
+        expect(onBoardClickSpy).not.toHaveBeenCalled();
+    });
+
+    it('moveToNextEmptyTile should call onBoardClick if the nextCoord is not the same than the current one', () => {
+        const coord = { x: 7, y: 7 };
+
+        spyOn(service, 'incrementNextCoord').and.returnValue({ x: coord.x, y: coord.y + 1 });
+        const onBoardClickSpy = spyOn(service, 'onBoardClick').and.callThrough();
+
+        service.moveToNextEmptyTile(coord);
+
+        expect(onBoardClickSpy).toHaveBeenCalled();
     });
 });
