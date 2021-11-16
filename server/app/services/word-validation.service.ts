@@ -27,21 +27,4 @@ export class WordValidationService {
     isWordInDictionary(wordToCheck: string): boolean {
         return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
-
-    // async validateWord(): Promise<{ wordExists: boolean; errorMessage: string }> {
-    //     return this.dateService
-    //         .currentTime()
-    //         .then((timeMessage: Message) => {
-    //             return {
-    //                 title: 'Hello world',
-    //                 body: 'Time is ' + timeMessage.body,
-    //             };
-    //         })
-    //         .catch((error: unknown) => {
-    //             return {
-    //                 title: 'Error',
-    //                 body: error as string,
-    //             };
-    //         });
-    // }
 }
