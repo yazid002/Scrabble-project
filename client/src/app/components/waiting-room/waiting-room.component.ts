@@ -41,12 +41,15 @@ export class WaitingRoomComponent implements OnInit {
     //         this.roomService.joinRoom(this.roomService.rooms[random].id);
     //     }
     // }
-
     private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined) {
         if (name && mode && timer) {
             this.name = name;
             this.mode = mode.value;
             this.timer = timer.value;
         }
+    }
+    get numbers(): number {
+        // console.log('length = ' + this.roomService.rooms.length);
+        return this.roomService.rooms.length;
     }
 }

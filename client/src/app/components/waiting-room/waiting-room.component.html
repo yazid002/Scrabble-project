@@ -26,7 +26,14 @@
     <button mat-raised-button color="primary" [routerLink]="['/lobby']" id="join" (click)="roomService.quitRoom()">Joindre un Room</button>
     <button mat-raised-button color="primary" (click)="openQuitMultiplayerDialog()" id="quitter">Quitter</button>
 
-    <button mat-raised-button color="primary" [disabled]="roomService.rooms.length === 1" id="random" (click)="roomService.joinRandomRoom()">
+    <button
+        mat-raised-button
+        color="primary"
+        [class.hidden]="numbers === 1"
+        [disabled]="numbers === 2"
+        id="random"
+        (click)="roomService.joinRandomRoom()"
+    >
         Placement aléatoire
     </button>
 
