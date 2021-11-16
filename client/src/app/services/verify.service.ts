@@ -16,6 +16,7 @@ export class VerifyService {
     bonuses: string[] = ['dl', 'tw', 'tl', 'dw'];
     success: boolean = true;
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+    formedWords: string[] = [];
     constructor(private rackService: RackService) {}
 
     isFitting(coord: Vec2, direction: string, word: string): { error: boolean; message: IChat } {
@@ -76,33 +77,44 @@ export class VerifyService {
         let wordFound = '';
 
         let i = 0;
-        const words: string[] = [];
+        const wordsFound: string[] = [];
 
         while (i < word.length && coord.y + i < SQUARE_NUMBER) {
-            wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
-            words.push(wordFound);
-
-            i++;
-            if (wordFound.length >= 2) {
-                if (!this.isWordInDictionary(wordFound)) {
-                    return { wordExists: false, errorMessage: `le mot ${wordFound} n'existe pas dans le dictionnaire` };
+            const newCords = { x: coord.x, y: coord.y + i };
+            if (
+                word[i].toLowerCase() === tiles[newCords.y][newCords.x].text.toLowerCase() &&
+                tiles[newCords.y][newCords.x].letter.toLowerCase() === ''
+            ) {
+                wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
+                if (wordFound.length >= 2) {
+                    wordsFound.push(wordFound);
                 }
             }
+            i++;
         }
         i = 0;
         while (i < word.length && coord.x + i < SQUARE_NUMBER) {
-            wordFound = this.findVerticalAdjacentWord({ x: coord.x + i, y: coord.y });
-            words.push(wordFound);
-
-            i++;
-            if (wordFound.length >= 2) {
-                if (!this.isWordInDictionary(wordFound)) {
-                    return { wordExists: false, errorMessage: `le mot ${wordFound} n'existe pas dans le dictionnaire` };
+            const newCords = { x: coord.x + i, y: coord.y };
+            if (
+                word[i].toLowerCase() === tiles[newCords.y][newCords.x].text.toLowerCase() &&
+                tiles[newCords.y][newCords.x].letter.toLowerCase() === ''
+            ) {
+                wordFound = this.findVerticalAdjacentWord({ x: coord.x + i, y: coord.y });
+                if (wordFound.length >= 2) {
+                    wordsFound.push(wordFound);
                 }
             }
+            i++;
         }
 
-        console.log('words', words);
+        for (const w of wordsFound) {
+            if (!this.isWordInDictionary(w)) {
+                return { wordExists: false, errorMessage: `le mot ${w} n'existe pas dans le dictionnaire` };
+            }
+        }
+        this.formedWords = wordsFound;
+        // console.log(this.formedWords);
+
         return { wordExists: true, errorMessage: '' };
     }
 
