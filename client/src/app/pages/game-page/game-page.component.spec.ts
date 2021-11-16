@@ -1,3 +1,4 @@
+import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -216,5 +217,20 @@ describe('GamePageComponent', () => {
 
         component.onSubmitExchange(selectionTypeTest);
         expect(selectionManagerSpy.onSubmitExchange).toHaveBeenCalled();
+    });
+
+    describe('ahowAbandonDialog', () => {
+        it('should open a dialog if the received signal is the ABANDON SIGNAL', () => {
+            // eslint-disable-next-line dot-notation
+            const matDialogSpy = spyOn(component['matDialog'], 'open');
+            const aRandomSignal = 'some signal';
+            // eslint-disable-next-line dot-notation
+            component['showAbandonDIalog'](aRandomSignal);
+            expect(matDialogSpy).not.toHaveBeenCalled();
+
+            // eslint-disable-next-line dot-notation
+            component['showAbandonDIalog'](ABANDON_SIGNAL);
+            expect(matDialogSpy).toHaveBeenCalled();
+        });
     });
 });

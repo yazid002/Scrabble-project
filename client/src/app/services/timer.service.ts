@@ -53,7 +53,7 @@ export class TimerService {
         this.counter.totalTimer = (this.counter.totalTimer + 1) % this.counter.resetValue;
         this.calculateMinNSecond();
         if (this.counter.totalTimer === 0 || this.counter.totalTimer >= this.nextResetValue) {
-            this.timerDone.next(true);
+            this.resetTimer(true);
         }
     }
     private calculateMinNSecond() {

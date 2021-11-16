@@ -50,21 +50,15 @@ export class PlaceService {
             }
         } else {
             this.updateTilesLetters(word, coord, direction);
+
             this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
                 word,
                 coord,
                 direction,
                 this.lettersUsedOnBoard,
             );
-
-            console.log(this.gameService.players[this.gameService.currentTurn].goal);
-            console.log('Currunt',this.gameService.players[this.gameService.currentTurn]);
-
-
             for (const goal of this.gameService.players[this.gameService.currentTurn].goal) {
-                console.log(goal.complete);
                 if (!goal.complete) {
-                    console.log(goal.command(word));
                     if (goal.command(word)) {
                         this.gameService.players[this.gameService.currentTurn].points += goal.bonus;
                     }
@@ -135,6 +129,18 @@ export class PlaceService {
                         direction,
                         this.lettersUsedOnBoard,
                     );
+
+                    console.log('Currunt avant point', this.gameService.currentTurn);
+                    console.log('Currunt', this.gameService.players);
+                    for (const goal of this.gameService.players[this.gameService.currentTurn].goal) {
+                        console.log(goal.complete);
+                        if (!goal.complete) {
+                            console.log(goal.command(word));
+                            if (goal.command(word)) {
+                                this.gameService.players[this.gameService.currentTurn].points += goal.bonus;
+                            }
+                        }
+                    }
                     this.updateTilesLetters(word, coord, direction);
                     this.placeSelectionService.selectedTilesForPlacement = [];
                     this.placeSelectionService.wordToVerify = [];

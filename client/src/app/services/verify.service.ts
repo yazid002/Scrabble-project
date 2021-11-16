@@ -74,10 +74,13 @@ export class VerifyService {
             }
         }
         let wordFound = '';
+
         let i = 0;
+        const words: string[] = [];
 
         while (i < word.length && coord.y + i < SQUARE_NUMBER) {
             wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
+            words.push(wordFound);
 
             i++;
             if (wordFound.length >= 2) {
@@ -89,6 +92,8 @@ export class VerifyService {
         i = 0;
         while (i < word.length && coord.x + i < SQUARE_NUMBER) {
             wordFound = this.findVerticalAdjacentWord({ x: coord.x + i, y: coord.y });
+            words.push(wordFound);
+
             i++;
             if (wordFound.length >= 2) {
                 if (!this.isWordInDictionary(wordFound)) {
@@ -97,6 +102,7 @@ export class VerifyService {
             }
         }
 
+        console.log('words', words);
         return { wordExists: true, errorMessage: '' };
     }
 

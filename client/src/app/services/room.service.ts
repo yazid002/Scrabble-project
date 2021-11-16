@@ -33,6 +33,7 @@ export class RoomService {
         private router: Router,
     ) {
         this.urlString = 'ec2-99-79-57-8.ca-central-1.compute.amazonaws.com:3000';
+        this.urlString = '127.0.0.1:3000'; // TODO delete avant la remise
         this.socket = io(this.urlString);
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
@@ -60,8 +61,7 @@ export class RoomService {
         });
         this.socket.on('abandon', (id: string) => {
             if (id === this.socket.id) return;
-            this.gameService.endGame(true);
-            // this.gameService.convertGameToSolo(); Uncomment for sprint 3
+            this.gameService.convertGameToSolo(); // Uncomment for sprint 3
         });
         this.socket.on('askMasterSync', () => {
             this.router.navigateByUrl('/game');

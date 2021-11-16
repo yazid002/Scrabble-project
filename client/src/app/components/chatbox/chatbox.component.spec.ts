@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { IChat } from '@app/classes/chat';
+import { IChat, SENDER } from '@app/classes/chat';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 import { GameService } from '@app/services/game.service';
@@ -50,16 +50,23 @@ describe('ChatboxComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('validateFormat should call commandExecutionServiceSpy.interpretCommand if the body starts with !', () => {
+    it('validateFormat should call commandExecutionServiceSpy.interpretCommand if the body starts with !', async () => {
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, function: () => result };
         const executedTimes = 1;
         component.inputBox = '!passer';
-        component.validateFormat();
+        commandExecutionServiceSpy.interpretCommand.and.returnValue(response);
+        await component.validateFormat();
+
         expect(commandExecutionServiceSpy.interpretCommand).toHaveBeenCalledTimes(executedTimes);
     });
     // On teste le contraire du if
-    it('validateFormat should not call commandExecutionServiceSpy.interpretCommand if the body does not start with !', () => {
+    it('validateFormat should not call commandExecutionServiceSpy.interpretCommand if the body does not start with !', async () => {
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, function: () => result };
         component.inputBox = 'resersve';
-        component.validateFormat();
+        commandExecutionServiceSpy.interpretCommand.and.returnValue(response);
+        await component.validateFormat();
         expect(commandExecutionServiceSpy.interpretCommand).not.toHaveBeenCalled();
     });
 

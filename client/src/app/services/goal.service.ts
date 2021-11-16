@@ -42,6 +42,7 @@ export class GoalService {
     // constructor() {}
 
     isWordPalindrome(word: string) {
+        console.log('inside 0');
         //    // const re = /[^A-Za-z0-9]/g;
         //  word = word.toLowerCase().replace(re, '');
         const length = word.length;
@@ -54,7 +55,7 @@ export class GoalService {
     }
 
     doesWordContainQwithoutU(word: string) {
-        console.log(word);
+        console.log('inside1');
         for (let i = 0; word.length; i++) {
             if (word[i].toLowerCase() === 'e') {
                 console.log('inside obj');
@@ -66,11 +67,13 @@ export class GoalService {
     }
 
     isWordLengthEqualToFifteen(word: string) {
+        console.log('inside2');
         const length = 4;
         return word.length === length;
     }
 
     doesWordContainConsecutiveConsonant(word: string) {
+        console.log('inside3');
         const consonant: string[] = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z'];
         const secondPosition = 2;
         const thirdPosition = 3;
