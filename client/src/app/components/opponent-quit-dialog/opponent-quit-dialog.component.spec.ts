@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatCardModule } from '@angular/material/card';
 import { OpponentQuitDialogComponent } from './opponent-quit-dialog.component';
 
 describe('OpponentQuitDialogComponent', () => {
@@ -8,6 +9,7 @@ describe('OpponentQuitDialogComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [OpponentQuitDialogComponent],
+            imports: [MatCardModule],
         }).compileComponents();
     });
 
