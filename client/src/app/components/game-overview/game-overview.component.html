@@ -6,15 +6,26 @@
     </mat-card-title-group>
 
     <mat-card-content>Il y a {{ nbLettersReserve }} lettres restantes dans la réserve</mat-card-content>
+    <mat-card id="publicGoals">
+        <mat-card-title id="publicGoalsTitle">Objectifs publiques: </mat-card-title>
+        <mat-card-content id="publicGoalsContent" *ngFor="let goal of publicGoals">
+            {{ goal.description }}
+            <div *ngIf="goal.complete">Completé par {{ goal.completeBy?.name }}!</div>
+        </mat-card-content>
+    </mat-card>
+
     <mat-card
         *ngFor="let player of gameService.players; let i = index"
         [id]="i === playerIndex.realPlayer ? 'me' : 'otherPlayer'"
         [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"
     >
-        <mat-card-title>{{ player.name }}</mat-card-title> 
-        <mat-card-title *ngFor="let goal of player.goal">{{ goal.description }}</mat-card-title> 
-
-        <mat-card-title>{{ goals.description }}</mat-card-title>
+        <mat-card-title>{{ player.name }}</mat-card-title>
+        <!-- <div *ngIf="i === playerIndex.realPlayer"> -->
+        <mat-card-title *ngFor="let goal of player.privateGoals"
+            >Objectifs privés: {{ goal.description }}
+            <div *ngIf="goal.complete">Completé !</div>
+        </mat-card-title>
+        <!-- </div> -->
 
         <mat-card-content *ngIf="gameService.numPlayers === 'solo' && i === playerIndex.otherPlayer">Niveau {{ computerLevel }}</mat-card-content>
         <mat-card-content>Nombre de points: {{ player.points }}</mat-card-content>

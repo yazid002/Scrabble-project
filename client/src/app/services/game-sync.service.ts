@@ -1,10 +1,12 @@
 import { Injectable, Output } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { Case } from '@app/classes/case';
+import { Goal } from '@app/classes/goal';
 import { ICharacter } from '@app/classes/letter';
 import { Player, PLAYER } from '@app/classes/player';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GameService } from './game.service';
+import { GoalService } from './goal.service';
 import { GridService } from './grid.service';
 import { PlaceSelectionService } from './place-selection.service';
 import { ReserveService } from './reserve.service';
@@ -17,6 +19,7 @@ export interface GameState {
     skipCounter: number;
     timer: number;
     grid: Case[][];
+    publicGoals: Goal[];
 }
 @Injectable({
     providedIn: 'root',
@@ -34,7 +37,8 @@ export class GameSyncService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private gridService: GridService,
-        public placeSelectionService: PlaceSelectionService,
+        private placeSelectionService: PlaceSelectionService,
+        private goalService: GoalService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();
@@ -65,6 +69,7 @@ export class GameSyncService {
         this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
         this.gameService.skipCounter = gameState.skipCounter;
         this.timerService.counter.totalTimer = gameState.timer;
+        this.goalService.publicGoals = gameState.publicGoals;
         for (let i = 0; i < tiles.length; i++) {
             tiles[i] = gameState.grid[i];
         }
@@ -118,6 +123,7 @@ export class GameSyncService {
             skipCounter: this.gameService.skipCounter,
             timer: this.timerService.counter.totalTimer,
             grid: tempGrid,
+            publicGoals: this.goalService.publicGoals,
         };
         return gameState;
     }
@@ -136,6 +142,7 @@ export class GameSyncService {
             skipCounter: 0,
             timer: 0,
             grid: resetGrid,
+            publicGoals: this.goalService.publicGoals,
         };
 
         return gameState;

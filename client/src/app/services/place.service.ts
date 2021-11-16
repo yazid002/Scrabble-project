@@ -6,6 +6,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SelectionType } from '@app/enums/selection-enum';
 import { VerifyService } from '@app/services/verify.service';
 import { GameService } from './game.service';
+import { GoalService } from './goal.service';
 import { GridService } from './grid.service';
 import { PlaceSelectionService } from './place-selection.service';
 import { PointsCountingService } from './points-counting.service';
@@ -27,6 +28,7 @@ export class PlaceService {
         private gameService: GameService,
         private placeSelectionService: PlaceSelectionService,
         private selectionManagerService: SelectionManagerService,
+        private goalService: GoalService,
     ) {}
     placeWordInstant(word: string, coord: Vec2, direction: string): boolean {
         word = this.verifyService.normalizeWord(word);
@@ -59,7 +61,8 @@ export class PlaceService {
                 this.lettersUsedOnBoard,
             );
             this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter += 1;
-            this.applyGoalsBonus(this.verifyService.formedWords);
+            this.applyPrivateGoalsBonus(this.verifyService.formedWords);
+            this.applyPublicGoalsBonus(this.verifyService.formedWords);
             this.rackService.replaceWord(word);
             this.timerService.resetTimer();
         }
@@ -132,8 +135,8 @@ export class PlaceService {
                     this.gameService.players[this.gameService.currentTurn].words.push(...this.verifyService.formedWords);
                     console.log('words du player ', this.gameService.players[this.gameService.currentTurn].words);
                     this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter += 1;
-                    this.applyGoalsBonus(this.verifyService.formedWords);
-
+                    this.applyPrivateGoalsBonus(this.verifyService.formedWords);
+                    this.applyPublicGoalsBonus(this.verifyService.formedWords);
                     this.updateTilesLetters(word, coord, direction);
 
                     this.placeSelectionService.selectedTilesForPlacement = [];
@@ -169,14 +172,26 @@ export class PlaceService {
             console.log('word ', word, isGoalRespected, goal.description);
             if (isGoalRespected) {
                 goal.complete = true;
+                goal.completeBy = this.gameService.players[this.gameService.currentTurn];
                 return true;
             }
         }
         return false;
     }
 
-    applyGoalsBonus(wordsFormed: string[]): void {
-        for (const goal of this.gameService.players[this.gameService.currentTurn].goal) {
+    applyPrivateGoalsBonus(wordsFormed: string[]): void {
+        for (const goal of this.gameService.players[this.gameService.currentTurn].privateGoals) {
+            console.log('apply bonus, ', goal.description, goal.bonus);
+            const check = this.checkFormedWordRespectGoals(wordsFormed, goal);
+            console.log('check ', check);
+            if (check) {
+                this.gameService.players[this.gameService.currentTurn].points += goal.bonus;
+            }
+        }
+    }
+
+    applyPublicGoalsBonus(wordsFormed: string[]): void {
+        for (const goal of this.goalService.publicGoals) {
             console.log('apply bonus, ', goal.description, goal.bonus);
             const check = this.checkFormedWordRespectGoals(wordsFormed, goal);
             console.log('check ', check);
