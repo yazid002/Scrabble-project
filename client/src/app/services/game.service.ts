@@ -1,13 +1,13 @@
 import { Injectable, Output } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Player, PLAYER } from '@app/classes/player';
+import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
-import { ABANDON_SIGNAL } from '@app/classes/signal';
 const MAX_SKIPS = 6;
 @Injectable({
     providedIn: 'root',
@@ -35,7 +35,6 @@ export class GameService {
             this.changeTurn(skipped);
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
-
     }
 
     convertGameToSolo() {

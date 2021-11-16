@@ -1,6 +1,6 @@
-import { Command } from './../../classes/command-format';
 import { Injectable } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
+import { Command } from './../../classes/command-format';
 
 @Injectable({
     providedIn: 'root',
