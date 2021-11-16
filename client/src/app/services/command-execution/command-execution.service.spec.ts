@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { CommandExecutionService } from './command-execution.service';
 import { DebugExecutionService } from './debug-execution.service';
@@ -10,6 +11,7 @@ describe('CommandExecutionService', () => {
         debugServiceSpy = jasmine.createSpyObj('DebugExecutionService', ['execute']);
         TestBed.configureTestingModule({
             providers: [{ provide: DebugExecutionService, useValue: debugServiceSpy }],
+            imports: [HttpClientModule],
         });
         service = TestBed.inject(CommandExecutionService);
     });

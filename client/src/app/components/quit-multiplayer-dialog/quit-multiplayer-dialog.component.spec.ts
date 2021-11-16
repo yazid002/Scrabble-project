@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -21,10 +22,16 @@ describe('QuitMultiplayerDialogComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [MatButtonModule, MatDialogModule, RouterTestingModule.withRoutes([{ path: 'home', component: MainPageComponent }])],
+            imports: [
+                MatButtonModule,
+                MatDialogModule,
+                HttpClientModule,
+                RouterTestingModule.withRoutes([{ path: 'home', component: MainPageComponent }]),
+            ],
             declarations: [QuitMultiplayerDialogComponent],
             providers: [{ provide: MatDialog, useClass: MatDialogMock }, { provide: RoomService }],
         }).compileComponents();
+        // RoomService -> GameSyncService -> PlaceSelectionService -> VerifyService -> HttpClient -> HttpClient
     });
 
     beforeEach(async () => {
