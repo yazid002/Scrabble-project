@@ -59,7 +59,7 @@ export class GameOverviewComponent implements OnInit {
             );
 
             const publicGoals = this.goalService.publicGoals
-                ? [...this.goalService.publicGoals]
+                ? this.goalService.publicGoals
                 : (this.goalService.publicGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()]);
             this.assignValues(mode, numPlayers, computerLevel, timer, publicGoals);
             this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();

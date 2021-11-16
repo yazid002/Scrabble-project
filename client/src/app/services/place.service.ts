@@ -174,6 +174,7 @@ export class PlaceService {
             if (isGoalRespected) {
                 goal.complete = true;
                 goal.completeBy = this.gameService.players[this.gameService.currentTurn];
+                this.goalService.completeGoalSound();
                 return true;
             }
         }

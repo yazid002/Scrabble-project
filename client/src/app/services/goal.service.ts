@@ -203,4 +203,15 @@ export class GoalService {
 
         return this.dictionary.words[randomIndex];
     }
+
+    completedGoalStyle(goal: Goal): string {
+        return goal.complete ? 'color:green' : 'color:black';
+    }
+
+    completeGoalSound() {
+        const audio = new Audio();
+        audio.src = './bonus.wav';
+        audio.load();
+        audio.play();
+    }
 }
