@@ -21,6 +21,9 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
 import { QuitMultiplayerDialogComponent } from './components/quit-multiplayer-dialog/quit-multiplayer-dialog.component';
 import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
 import { OpponentQuitDialogComponent } from './components/opponent-quit-dialog/opponent-quit-dialog.component';
+import { AdminPageComponent } from './pages/admin-page/admin-page.component';
+import { DictionaryOptionsComponent } from './components/admin/dictionary-options/dictionary-options.component';
+import { PlayerNamesOptionsComponent } from './components/admin/player-names-options/player-names-options.component';
 
 /**
  * Main module that is used in main.ts.
@@ -46,6 +49,9 @@ import { OpponentQuitDialogComponent } from './components/opponent-quit-dialog/o
         QuitMultiplayerDialogComponent,
         WaitingRoomComponent,
         OpponentQuitDialogComponent,
+        AdminPageComponent,
+        DictionaryOptionsComponent,
+        PlayerNamesOptionsComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],
