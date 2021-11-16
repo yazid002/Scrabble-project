@@ -35,7 +35,6 @@ export class GameService {
             this.changeTurn(skipped);
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
-
     }
 
     convertGameToSolo() {

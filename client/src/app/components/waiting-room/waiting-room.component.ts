@@ -34,6 +34,14 @@ export class WaitingRoomComponent implements OnInit {
     openQuitMultiplayerDialog() {
         this.matDialog.open(QuitMultiplayerDialogComponent);
     }
+
+    // joinRandomRoom() {
+    //     const random = Math.floor(Math.random() * this.roomService.rooms.length);
+    //     if (this.roomService.rooms[random].settings.mode === this.mode) {
+    //         this.roomService.joinRoom(this.roomService.rooms[random].id);
+    //     }
+    // }
+
     private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined) {
         if (name && mode && timer) {
             this.name = name;
