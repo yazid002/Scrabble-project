@@ -93,14 +93,6 @@ export class RoomService {
         } while (this.rooms[random].settings.mode !== settings.mode);
         this.joinRoom(this.rooms[random].id);
     }
-
-    // joinRandomRoom() {
-    // const settings = this.userSettingsService.getSettings();
-    //     const random = Math.floor(Math.random() * this.rooms.length);
-    //     if (this.rooms[random].settings.mode === settings.mode) {
-    //         this.joinRoom(this.rooms[random].id);
-    //     }
-    // }
     createRoom() {
         const settings = this.userSettingsService.getSettings();
         const userName = this.gameService.players[0].name;

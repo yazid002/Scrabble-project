@@ -18,7 +18,6 @@ export class WaitingRoomComponent implements OnInit {
     constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public roomService: RoomService) {}
     ngOnInit(): void {
         const name = this.userSettingsService.nameOption.userChoice;
-        if (!localStorage.getItem('test')) localStorage.setItem('test', name);
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
         );
