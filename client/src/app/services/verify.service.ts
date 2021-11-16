@@ -112,7 +112,7 @@ export class VerifyService {
             }
         }
         this.formedWords = wordsFound;
-        console.log(this.formedWords);
+        // console.log(this.formedWords);
 
         return { wordExists: true, errorMessage: '' };
     }

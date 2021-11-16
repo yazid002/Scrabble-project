@@ -49,6 +49,7 @@ export class PlaceService {
 
                 this.gridService.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
             }
+            this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter = 0;
         } else {
             this.updateTilesLetters(word, coord, direction);
             this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
@@ -57,6 +58,7 @@ export class PlaceService {
                 direction,
                 this.lettersUsedOnBoard,
             );
+            this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter += 1;
             this.applyGoalsBonus(this.verifyService.formedWords);
             this.rackService.replaceWord(word);
             this.timerService.resetTimer();
@@ -113,6 +115,7 @@ export class PlaceService {
 
                         localStorage.setItem('bonusGrid', JSON.stringify(tiles));
                     }
+                    this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter = 0;
                     response.error = true;
                     response.message.body = 'Commande impossible à réaliser : ' + wordValidationParameters.errorMessage;
                     reject(response);
@@ -124,22 +127,29 @@ export class PlaceService {
                         this.lettersUsedOnBoard,
                     );
 
-                    console.log(this.gameService.players[this.gameService.currentTurn].goal);
                     console.log('Currunt', this.gameService.players[this.gameService.currentTurn]);
                     console.log(this.verifyService.formedWords);
+                    this.gameService.players[this.gameService.currentTurn].words.push(...this.verifyService.formedWords);
+                    console.log('words du player ', this.gameService.players[this.gameService.currentTurn].words);
+                    this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter += 1;
                     this.applyGoalsBonus(this.verifyService.formedWords);
 
                     this.updateTilesLetters(word, coord, direction);
+
                     this.placeSelectionService.selectedTilesForPlacement = [];
                     this.placeSelectionService.wordToVerify = [];
                     this.gridService.border.squareBorderColor = 'black';
+
                     this.writeWord(word, coord, direction);
                     this.gridService.removeArrow(this.placeSelectionService.selectedCoord);
+
                     this.placeSelectionService.selectedCoord = { x: -1, y: -1 };
                     while (this.placeSelectionService.selectedRackIndexesForPlacement.length > 0) {
                         this.placeSelectionService.cancelUniqueSelectionFromRack();
                     }
+
                     this.selectionManagerService.updateSelectionType(SelectionType.Rack);
+
                     this.rackService.replaceWord(word);
                     resolve(response);
                     this.timerService.resetTimer();
@@ -155,8 +165,9 @@ export class PlaceService {
             return false;
         }
         for (const word of wordsFormed) {
-            console.log('word ', word, goal.command(word));
-            if (goal.command(word)) {
+            const isGoalRespected = goal.command(word);
+            console.log('word ', word, isGoalRespected, goal.description);
+            if (isGoalRespected) {
                 goal.complete = true;
                 return true;
             }
@@ -166,7 +177,10 @@ export class PlaceService {
 
     applyGoalsBonus(wordsFormed: string[]): void {
         for (const goal of this.gameService.players[this.gameService.currentTurn].goal) {
-            if (this.checkFormedWordRespectGoals(wordsFormed, goal)) {
+            console.log('apply bonus, ', goal.description, goal.bonus);
+            const check = this.checkFormedWordRespectGoals(wordsFormed, goal);
+            console.log('check ', check);
+            if (check) {
                 this.gameService.players[this.gameService.currentTurn].points += goal.bonus;
             }
         }
