@@ -14,10 +14,8 @@ export class WordValidationService {
 
     validateWord(words: string[]): { wordExists: boolean; errorMessage: string } {
         for (const word of words) {
-            if (word.length >= 2) {
-                if (!this.isWordInDictionary(word)) {
-                    return { wordExists: false, errorMessage: `le mot ${word} n'existe pas dans le dictionnaire` };
-                }
+            if (word.length >= 2 && !this.isWordInDictionary(word)) {
+                return { wordExists: false, errorMessage: `le mot ${word} n'existe pas dans le dictionnaire` };
             }
         }
         return { wordExists: true, errorMessage: '' };

@@ -29,14 +29,4 @@ describe('Example service', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
-    it('should not validate words with lenght <2', (done) => {
-        setTimeout(() => {
-            const words: string[] = ['', 's', 'patate'];
-            const expectedResult = { wordExists: true, errorMessage: '' };
-            const actualResult = service.validateWord(words);
-            expect(actualResult.wordExists).equal(expectedResult.wordExists);
-            done();
-        }, RESPONSE_DELAY);
-    });
 });
