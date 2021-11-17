@@ -6,11 +6,10 @@ export class WordValidationService {
     // rawDictionary = fs.readFileSync('../../../client/src/assets/dictionnary.json');
     dictionary: Dictionary;
     constructor() {
-        fs.readFile('../client/src/assets/dictionnary.json', (err, data) => {
-            if (err) throw err;
-            this.dictionary = JSON.parse(data.toString());
-            console.log(this.dictionary.title);
-        });
+        this.initialize('../client/src/assets/dictionnary.json');
+    }
+    initialize(dictPath: string) {
+        this.importDict(dictPath);
     }
 
     validateWord(words: string[]): { wordExists: boolean; errorMessage: string } {
@@ -26,5 +25,12 @@ export class WordValidationService {
 
     isWordInDictionary(wordToCheck: string): boolean {
         return this.dictionary.words.includes(wordToCheck.toLowerCase());
+    }
+    private importDict(dictPath: string) {
+        fs.readFile(dictPath, (err, data) => {
+            if (err) throw err;
+            this.dictionary = JSON.parse(data.toString());
+            console.log(this.dictionary.title);
+        });
     }
 }

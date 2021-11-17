@@ -1,6 +1,6 @@
 import { WordValidationService } from '@app/services/word-validation.service';
 import { expect } from 'chai';
-
+const RESPONSE_DELAY = 1000;
 describe('Example service', () => {
     let service: WordValidationService;
 
@@ -8,7 +8,7 @@ describe('Example service', () => {
         service = new WordValidationService();
     });
 
-    it.only('should return an error if at least one word is not found in the french dictionary', (done) => {
+    it('should return an error if at least one word is not found in the french dictionary', (done) => {
         setTimeout(() => {
 
             const badWord = 'ckjsnkjfdsnc';
@@ -17,6 +17,26 @@ describe('Example service', () => {
             const actualResult = service.validateWord(words);
             expect(actualResult.wordExists).equal(expectedResult.wordExists);
             done();
-        }, 1000);
+        }, RESPONSE_DELAY);
+    });
+
+    it('should return that words exists if they exists', (done) => {
+        setTimeout(() => {
+            const words: string[] = ['allo', 'bonjour', 'patate'];
+            const expectedResult = { wordExists: true, errorMessage: '' };
+            const actualResult = service.validateWord(words);
+            expect(actualResult.wordExists).equal(expectedResult.wordExists);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('should not validate words with lenght <2', (done) => {
+        setTimeout(() => {
+            const words: string[] = ['', 's', 'patate'];
+            const expectedResult = { wordExists: true, errorMessage: '' };
+            const actualResult = service.validateWord(words);
+            expect(actualResult.wordExists).equal(expectedResult.wordExists);
+            done();
+        }, RESPONSE_DELAY);
     });
 });
