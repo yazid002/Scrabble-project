@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Dictionary } from '@app/classes/dictionary';
 import { Goal } from '@app/classes/goal';
+import { Player } from '@app/classes/player';
+import { GoalType } from '@app/enums/goals-enum';
 import * as dictionary from 'src/assets/dictionnary.json';
-import { GameService } from './game.service';
 import { TimerService } from './timer.service';
 
 @Injectable({
@@ -14,67 +15,84 @@ export class GoalService {
     dictionary: Dictionary;
     randomWord: string;
     publicGoals: Goal[];
-    constructor(private timerService: TimerService, private gameService: GameService) {
+    goalsFunctions: ((wordOrPlayer: string | Player) => boolean)[];
+    constructor(private timerService: TimerService) {
         this.dictionary = dictionary as Dictionary;
         this.usedIndex = [];
         this.randomWord = this.generateRandomWord();
 
+        this.goalsFunctions = [
+            (wordOrPlayer: string | Player): boolean => this.isWordPalindrome(wordOrPlayer as string),
+            (wordOrPlayer: string | Player): boolean => this.doesWordContainQWithoutU(wordOrPlayer as string),
+            (wordOrPlayer: string | Player): boolean => this.isWordLengthEqualToFifteen(wordOrPlayer as string),
+            (wordOrPlayer: string | Player): boolean => this.doesWordContainConsecutiveConsonant(wordOrPlayer as string),
+            (wordOrPlayer: string | Player): boolean => this.placeInTenSecondsGoal(wordOrPlayer as Player),
+            (wordOrPlayer: string | Player): boolean => this.playFiveTimesWithoutSkipAndExchange(wordOrPlayer as Player),
+            (wordOrPlayer: string | Player): boolean => this.playTheSameWordThreeTimes(wordOrPlayer as Player),
+            (wordOrPlayer: string | Player): boolean => this.playTheRandomWord(wordOrPlayer as Player),
+        ];
+
         this.goalHandler = [
             {
-                description: ' placer un palindrome',
+                description: 'Placer un palindrome',
                 bonus: 10,
                 complete: false,
-                command: (word?: string): boolean => this.isWordPalindrome(word as string),
+                goalType: GoalType.WritePalindromeWord,
+                usesWord: true,
             },
             {
-                description: 'placer un mot qui contient la lettre e',
+                description: 'Placer un mot qui contient la lettre e',
                 bonus: 10,
                 complete: false,
-                command: (word?: string): boolean => this.doesWordContainQwithoutU(word as string),
+                goalType: GoalType.WriteWordContainingQwithoutU,
+                usesWord: true,
             },
             {
-                description: 'former un mot contenant 4 letters',
+                description: 'Former un mot contenant 4 letters',
                 bonus: 10,
                 complete: false,
-                command: (word?: string): boolean => this.isWordLengthEqualToFifteen(word as string),
+                goalType: GoalType.WriteWordLengthEqualToFifteen,
+                usesWord: true,
             },
             {
-                description: ' placer un mot contenant 3 consomme consecutive',
+                description: 'Placer un mot contenant 3 consonnes consecutives',
                 bonus: 10,
                 complete: false,
-                command: (word?: string): boolean => this.doesWordContainConsecutiveConsonant(word as string),
+                goalType: GoalType.WriteWordContainingConsecutiveConsonants,
+                usesWord: true,
             },
             {
                 description: 'Pour 3 tours de suite, placer en moins de 10 secondes',
                 bonus: 70,
                 complete: false,
-                command: (): boolean => this.placeInTenSecondsGoal(),
+                goalType: GoalType.PlayInTenSeconds,
+                usesWord: false,
             },
             {
                 description: 'Jouer 5 tours de suite sans passer ou échanger',
                 bonus: 40,
                 complete: false,
-                command: (): boolean => this.playFiveTimesWithoutSkipAndExchange(),
+                goalType: GoalType.PlayFiveTimesWithoutSkipAndExchange,
+                usesWord: false,
             },
             {
                 description: 'Former le même mot 3 fois dans une même partie',
                 bonus: 30,
                 complete: false,
-                command: (): boolean => this.playTheSameWordThreeTimes(),
+                goalType: GoalType.PlayTheSameWordThreeTimes,
+                usesWord: false,
             },
             {
                 description: `Former le mot ${this.randomWord}`,
                 bonus: 10,
                 complete: false,
-                command: (): boolean => this.playTheRandomWord(),
+                goalType: GoalType.PlayTheRandomWord,
+                usesWord: false,
             },
         ];
-        // this.generateUniqueIndex(0, 2);
     }
 
-    // constructor() {}
-
-    isWordPalindrome(word: string) {
+    isWordPalindrome(word: string): boolean {
         console.log('inside 0');
         //    // const re = /[^A-Za-z0-9]/g;
         //  word = word.toLowerCase().replace(re, '');
@@ -87,7 +105,7 @@ export class GoalService {
         return true;
     }
 
-    doesWordContainQwithoutU(word: string) {
+    doesWordContainQWithoutU(word: string): boolean {
         console.log('inside1');
         for (let i = 0; word.length; i++) {
             if (word[i].toLowerCase() === 'e') {
@@ -99,13 +117,13 @@ export class GoalService {
         return false;
     }
 
-    isWordLengthEqualToFifteen(word: string) {
+    isWordLengthEqualToFifteen(word: string): boolean {
         console.log('inside2');
         const length = 4;
         return word.length === length;
     }
 
-    doesWordContainConsecutiveConsonant(word: string) {
+    doesWordContainConsecutiveConsonant(word: string): boolean {
         console.log('inside3');
         const consonant: string[] = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z'];
         const secondPosition = 1;
@@ -142,41 +160,40 @@ export class GoalService {
     }
 
     displayGoals(): Goal {
-        const index = this.generateUniqueIndex(0, 7);
+        const index = this.generateUniqueIndex(0, this.goalsFunctions.length - 1);
         console.log(index);
         return this.goalHandler[index];
     }
 
-    placeInTenSecondsGoal(): boolean {
+    placeInTenSecondsGoal(player: Player): boolean {
         console.log('placeInTenSecondsGoal');
 
         if (this.timerService.counter.totalTimer <= 10) {
-            this.gameService.players[this.gameService.currentTurn].placeInTenSecondsGoalCounter += 1;
+            player.placeInTenSecondsGoalCounter += 1;
         } else {
-            this.gameService.players[this.gameService.currentTurn].placeInTenSecondsGoalCounter = 0;
+            player.placeInTenSecondsGoalCounter = 0;
         }
 
-        if (this.gameService.players[this.gameService.currentTurn].placeInTenSecondsGoalCounter === 3) {
-            this.gameService.players[this.gameService.currentTurn].placeInTenSecondsGoalCounter = 0;
+        if (player.placeInTenSecondsGoalCounter === 3) {
+            player.placeInTenSecondsGoalCounter = 0;
             return true;
         }
         return false;
     }
 
-    playFiveTimesWithoutSkipAndExchange(): boolean {
+    playFiveTimesWithoutSkipAndExchange(player: Player): boolean {
         console.log('playFiveTimesWithoutSkipAndExchange');
-
-        console.log('counter ', this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter);
-        if (this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter === 5) {
+        console.log('counter ', player.turnWithoutSkipAndExchangeCounter);
+        if (player.turnWithoutSkipAndExchangeCounter === 5) {
             return true;
         }
         return false;
     }
 
-    playTheSameWordThreeTimes(): boolean {
+    playTheSameWordThreeTimes(player: Player): boolean {
         console.log('playTheSameWordThreeTimes');
         const wordsFormedMapping = new Map<string, number>();
-        for (const w of this.gameService.players[this.gameService.currentTurn].words) {
+        for (const w of player.words) {
             if (wordsFormedMapping.has(w.toLowerCase())) {
                 const numberOfW = wordsFormedMapping.get(w.toLowerCase()) as number;
                 wordsFormedMapping.set(w.toLowerCase(), numberOfW + 1);
@@ -191,9 +208,9 @@ export class GoalService {
         return false;
     }
 
-    playTheRandomWord(): boolean {
+    playTheRandomWord(player: Player): boolean {
         console.log('playTheRandomWord');
-        for (const word of this.gameService.players[this.gameService.currentTurn].words) {
+        for (const word of player.words) {
             if (word === this.randomWord) {
                 return true;
             }
@@ -214,7 +231,7 @@ export class GoalService {
         return goal.complete ? 'color:green' : 'color:black';
     }
 
-    completeGoalSound() {
+    completeGoalSound(): void {
         const audio = new Audio();
         audio.src = 'assets/sounds/bonus.wav';
         audio.load();

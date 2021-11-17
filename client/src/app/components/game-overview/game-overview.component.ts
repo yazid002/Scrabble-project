@@ -35,10 +35,10 @@ export class GameOverviewComponent implements OnInit {
     ngOnInit(): void {
         this.updateData();
         console.log(this.goalService);
-        for (const player of this.gameService.players) {
-            player.privateGoals.push(this.goalService.displayGoals());
-            console.log(this.goalService.usedIndex);
-        }
+        // for (const player of this.gameService.players) {
+        //     player.privateGoals.push(this.goalService.displayGoals());
+        //     console.log(this.goalService.usedIndex);
+        // }
     }
 
     private updateData(): void {
@@ -59,9 +59,10 @@ export class GameOverviewComponent implements OnInit {
             );
 
             const publicGoals = this.goalService.publicGoals
-                ? this.goalService.publicGoals
+                ? [...this.goalService.publicGoals]
                 : (this.goalService.publicGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()]);
             this.assignValues(mode, numPlayers, computerLevel, timer, publicGoals);
+
             this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();
         }, reserveRefreshRate);
     }
@@ -77,7 +78,7 @@ export class GameOverviewComponent implements OnInit {
             this.numPlayers = numPlayers.value;
             this.computerLevel = computerLevel.value;
             this.timer = timer.value;
-            this.publicGoals = publicGoals;
+            this.publicGoals = [...publicGoals];
         }
     }
 }

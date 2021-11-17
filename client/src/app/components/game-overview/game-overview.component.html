@@ -10,7 +10,7 @@
         <mat-card-title class="goalsTitle">Objectifs publiques: </mat-card-title>
         <mat-card-content [style]="this.goalService.completedGoalStyle(goal)" class="goalsContent" *ngFor="let goal of publicGoals">
             {{ goal.description }}
-            <div *ngIf="goal.complete">Completé par {{ goal.completeBy?.name }}!</div>
+            <div *ngIf="goal.complete">Completé par {{ goal.completedBy?.name }}!</div>
         </mat-card-content>
     </mat-card>
 

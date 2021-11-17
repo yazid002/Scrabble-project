@@ -23,7 +23,10 @@ export class GameModeDialogComponent {
         private randomMode: RandomModeService,
         public matDialog: MatDialog,
         public goalService: GoalService,
-    ) {}
+    ) {
+        this.goalService.publicGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()];
+        console.log(this.goalService);
+    }
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);
@@ -34,7 +37,6 @@ export class GameModeDialogComponent {
     configureGame() {
         this.gameService.players[PLAYER.realPlayer].name = this.userSettingsService.nameOption.userChoice;
         this.gameService.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
-        this.goalService.publicGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()];
     }
 
     applyRandomMode(event: MatCheckboxChange) {
