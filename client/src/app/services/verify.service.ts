@@ -5,6 +5,7 @@ import { IChat, SENDER } from '@app/classes/chat';
 import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
 import { bonuses, SQUARE_NUMBER } from '@app/constants/board-constants';
+import { SERVER_URL } from '@app/constants/url';
 import { RackService } from '@app/services/rack.service';
 import * as dictionary from 'src/assets/dictionnary.json';
 
@@ -12,7 +13,7 @@ import * as dictionary from 'src/assets/dictionnary.json';
     providedIn: 'root',
 })
 export class VerifyService {
-    urlString = 'http://localhost:3000/api/validate';
+    urlString = SERVER_URL + '/api/validate';
     dictionary: Dictionary = dictionary as Dictionary;
     invalidSymbols: string[] = ['-', "'"];
     bonuses: string[] = ['dl', 'tw', 'tl', 'dw'];
