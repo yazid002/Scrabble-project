@@ -22,6 +22,7 @@ import { RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { of } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
+import { HttpClientModule } from '@angular/common/http';
 
 class MatDialogMock {
     open() {
@@ -82,6 +83,7 @@ describe('GamePageComponent', () => {
                 MatButtonModule,
                 AppRoutingModule,
                 RouterModule,
+                HttpClientModule,
             ],
             providers: [
                 { provide: GridService, useValue: gridServiceSpy },

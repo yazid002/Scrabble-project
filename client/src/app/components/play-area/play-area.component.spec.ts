@@ -1,4 +1,5 @@
 /* eslint-disable dot-notation */
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
@@ -10,7 +11,7 @@ describe('PlayAreaComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [PlayAreaComponent],
-            imports: [MatButtonModule],
+            imports: [MatButtonModule, HttpClientModule],
         }).compileComponents();
     });
 

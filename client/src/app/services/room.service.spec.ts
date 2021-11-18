@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -11,7 +12,7 @@ describe('RoomService', () => {
     beforeEach(() => {
         clientSocket = jasmine.createSpyObj('socket', ['on', 'emit'], { id: '1' }) as unknown as Socket;
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
+            imports: [HttpClientModule, RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
         }).compileComponents();
         service = TestBed.inject(RoomService);
         service.socket = clientSocket;
