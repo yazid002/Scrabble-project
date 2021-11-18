@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -36,7 +37,7 @@ describe('ChatboxComponent', () => {
                 { provide: ChatService, useValue: chatServiceSpy },
                 { provide: GameService, useValue: gameServiceSpy },
             ],
-            imports: [BrowserAnimationsModule, MatCardModule, FormsModule, MatInputModule, MatIconModule],
+            imports: [BrowserAnimationsModule, MatCardModule, FormsModule, MatInputModule, MatIconModule, HttpClientModule],
         }).compileComponents();
     });
 

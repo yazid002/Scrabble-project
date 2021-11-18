@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { Vec2 } from '@app/classes/vec2';
@@ -8,7 +9,7 @@ describe('PointsCountingService', () => {
     let service: PointsCountingService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({ imports: [HttpClientModule] });
         service = TestBed.inject(PointsCountingService);
     });
 

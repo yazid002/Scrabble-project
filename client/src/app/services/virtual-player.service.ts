@@ -67,11 +67,11 @@ export class VirtualPlayerService {
         const fctToExecute = playAlgos.get(this.computerLevel) as VoidFct;
         fctToExecute(this);
     }
-    private advancedPlay(service: VirtualPlayerService): void {
-        const message = service.place();
+    private async advancedPlay(service: VirtualPlayerService): Promise<void> {
+        const message = await service.place();
         service.addOutputToMessages(message);
     }
-    private beginnerPlay(service: VirtualPlayerService): void {
+    private async beginnerPlay(service: VirtualPlayerService): Promise<void> {
         const oneOfTenProbability = 10;
         const randomNumber = Math.floor(oneOfTenProbability * Math.random());
         let message: IChat;
@@ -83,7 +83,7 @@ export class VirtualPlayerService {
         } else if (randomNumber === 1) {
             message = service.exchange();
         } else {
-            message = service.place();
+            message = await service.place();
         }
         service.addOutputToMessages(message);
     }
@@ -147,7 +147,7 @@ export class VirtualPlayerService {
         };
         this.displayMessage(message);
     }
-    private place(): IChat {
+    private async place(): Promise<IChat> {
         const sortTingAlgos: Map<string, SortFct> = new Map([
             ['beginner', this.sortPossibilitiesBeginner],
             ['advanced', this.sortPossibilitiesAdvanced],
@@ -158,7 +158,7 @@ export class VirtualPlayerService {
         const rightPoints: WordNCoord[] = [];
         for (const possibility of possibilities) {
             if (rightPoints.length === 0) {
-                if (this.tryPossibility(possibility)) {
+                if (await this.tryPossibility(possibility)) {
                     this.gameService.players[PLAYER.otherPlayer].points += possibility.points ? possibility.points : 0;
                     this.sendPlacementMessage(possibility);
                     rightPoints.push(possibility);
@@ -234,11 +234,11 @@ export class VirtualPlayerService {
         }
         return message;
     }
-    private tryPossibility(gridCombo: WordNCoord): boolean {
+    private async tryPossibility(gridCombo: WordNCoord): Promise<boolean> {
         gridCombo.word = gridCombo.word.toLowerCase();
         let valid = false;
         try {
-            valid = this.placeService.placeWordInstant(gridCombo.word, gridCombo.coord, gridCombo.direction);
+            valid = await this.placeService.placeWordInstant(gridCombo.word, gridCombo.coord, gridCombo.direction);
 
             if (valid) {
                 return true;

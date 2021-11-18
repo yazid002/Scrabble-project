@@ -27,7 +27,7 @@ export class PlaceService {
         private placeSelectionService: PlaceSelectionService,
         private selectionManagerService: SelectionManagerService,
     ) {}
-    placeWordInstant(word: string, coord: Vec2, direction: string): boolean {
+    async placeWordInstant(word: string, coord: Vec2, direction: string): Promise<boolean> {
         word = this.verifyService.normalizeWord(word);
         const isPlacementFeasible = this.verifyService.validatePlaceFeasibility(word, coord, direction);
         if (isPlacementFeasible.error) {
@@ -35,7 +35,7 @@ export class PlaceService {
         }
         this.lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
         this.writeWord(word, coord, direction);
-        const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
+        const wordValidationParameters = await this.verifyService.checkAllWordsExist(word, coord);
         if (!wordValidationParameters.wordExists) {
             for (let i = 0; i < word.length; i++) {
                 const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
@@ -83,59 +83,61 @@ export class PlaceService {
                     this.writeWord(word, coord, direction);
                 }
 
-                const wordValidationParameters = this.verifyService.checkAllWordsExist(word, coord);
-                if (!wordValidationParameters.wordExists) {
-                    const placementDuration = 3000; // 3000 millisecondes soit 3s;
-                    for (let i = 0; i < word.length; i++) {
-                        const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
-                        const x = computingCoord.x;
-                        const y = computingCoord.y;
+                // const wordValidationParameters = await this.verifyService.checkAllWordsExist(word, coord);
+                this.verifyService.checkAllWordsExist(word, coord).then((wordValidationParameters) => {
+                    if (!wordValidationParameters.wordExists) {
+                        const placementDuration = 3000; // 3000 millisecondes soit 3s;
+                        for (let i = 0; i < word.length; i++) {
+                            const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
+                            const x = computingCoord.x;
+                            const y = computingCoord.y;
 
-                        tiles[y][x].text = tiles[y][x].oldText;
-                        tiles[y][x].style.color = tiles[y][x].oldStyle.color;
-                        tiles[y][x].style.font = tiles[y][x].oldStyle.font;
-                        setTimeout(() => {
-                            if (!isCalledThoughtChat) {
-                                this.placeSelectionService.cancelPlacement();
-                            } else {
-                                this.gridService.fillGridPortion(
-                                    { y, x },
-                                    tiles[y][x].text,
-                                    tiles[y][x].style.color as string,
-                                    tiles[y][x].style.font as string,
-                                );
-                            }
-                            this.selectionManagerService.updateSelectionType(SelectionType.Rack);
-                            this.timerService.resetTimer();
-                        }, placementDuration);
+                            tiles[y][x].text = tiles[y][x].oldText;
+                            tiles[y][x].style.color = tiles[y][x].oldStyle.color;
+                            tiles[y][x].style.font = tiles[y][x].oldStyle.font;
+                            setTimeout(() => {
+                                if (!isCalledThoughtChat) {
+                                    this.placeSelectionService.cancelPlacement();
+                                } else {
+                                    this.gridService.fillGridPortion(
+                                        { y, x },
+                                        tiles[y][x].text,
+                                        tiles[y][x].style.color as string,
+                                        tiles[y][x].style.font as string,
+                                    );
+                                }
+                                this.selectionManagerService.updateSelectionType(SelectionType.Rack);
+                                this.timerService.resetTimer();
+                            }, placementDuration);
 
-                        localStorage.setItem('bonusGrid', JSON.stringify(tiles));
+                            localStorage.setItem('bonusGrid', JSON.stringify(tiles));
+                        }
+                        response.error = true;
+                        response.message.body = 'Commande impossible à réaliser : ' + wordValidationParameters.errorMessage;
+                        reject(response);
+                    } else {
+                        this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
+                            word,
+                            coord,
+                            direction,
+                            this.lettersUsedOnBoard,
+                        );
+                        this.updateTilesLetters(word, coord, direction);
+                        this.placeSelectionService.selectedTilesForPlacement = [];
+                        this.placeSelectionService.wordToVerify = [];
+                        this.gridService.border.squareBorderColor = 'black';
+                        this.writeWord(word, coord, direction);
+                        this.gridService.removeArrow(this.placeSelectionService.selectedCoord);
+                        this.placeSelectionService.selectedCoord = { x: -1, y: -1 };
+                        while (this.placeSelectionService.selectedRackIndexesForPlacement.length > 0) {
+                            this.placeSelectionService.cancelUniqueSelectionFromRack();
+                        }
+                        this.selectionManagerService.updateSelectionType(SelectionType.Rack);
+                        this.rackService.replaceWord(word);
+                        resolve(response);
+                        this.timerService.resetTimer();
                     }
-                    response.error = true;
-                    response.message.body = 'Commande impossible à réaliser : ' + wordValidationParameters.errorMessage;
-                    reject(response);
-                } else {
-                    this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
-                        word,
-                        coord,
-                        direction,
-                        this.lettersUsedOnBoard,
-                    );
-                    this.updateTilesLetters(word, coord, direction);
-                    this.placeSelectionService.selectedTilesForPlacement = [];
-                    this.placeSelectionService.wordToVerify = [];
-                    this.gridService.border.squareBorderColor = 'black';
-                    this.writeWord(word, coord, direction);
-                    this.gridService.removeArrow(this.placeSelectionService.selectedCoord);
-                    this.placeSelectionService.selectedCoord = { x: -1, y: -1 };
-                    while (this.placeSelectionService.selectedRackIndexesForPlacement.length > 0) {
-                        this.placeSelectionService.cancelUniqueSelectionFromRack();
-                    }
-                    this.selectionManagerService.updateSelectionType(SelectionType.Rack);
-                    this.rackService.replaceWord(word);
-                    resolve(response);
-                    this.timerService.resetTimer();
-                }
+                });
             }
         });
         return promise;
