@@ -84,6 +84,15 @@ export class RoomService {
         this.roomId = roomId;
         this.gameSyncService.isMasterClient = false;
     }
+
+    joinRandomRoom() {
+        const settings = this.userSettingsService.getSettings();
+        let random: number;
+        do {
+            random = Math.floor(Math.random() * this.rooms.length);
+        } while (this.rooms[random].settings.mode !== settings.mode);
+        this.joinRoom(this.rooms[random].id);
+    }
     createRoom() {
         const settings = this.userSettingsService.getSettings();
         const userName = this.gameService.players[0].name;

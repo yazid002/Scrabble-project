@@ -18,7 +18,6 @@ export class WaitingRoomComponent implements OnInit {
     constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public roomService: RoomService) {}
     ngOnInit(): void {
         const name = this.userSettingsService.nameOption.userChoice;
-        if (!localStorage.getItem('test')) localStorage.setItem('test', name);
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
         );
@@ -34,11 +33,22 @@ export class WaitingRoomComponent implements OnInit {
     openQuitMultiplayerDialog() {
         this.matDialog.open(QuitMultiplayerDialogComponent);
     }
+
+    // joinRandomRoom() {
+    //     const random = Math.floor(Math.random() * this.roomService.rooms.length);
+    //     if (this.roomService.rooms[random].settings.mode === this.mode) {
+    //         this.roomService.joinRoom(this.roomService.rooms[random].id);
+    //     }
+    // }
     private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined) {
         if (name && mode && timer) {
             this.name = name;
             this.mode = mode.value;
             this.timer = timer.value;
         }
+    }
+    get numbers(): number {
+        // console.log('length = ' + this.roomService.rooms.length);
+        return this.roomService.rooms.length;
     }
 }
