@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { IChat, SENDER } from '@app/classes/chat';
@@ -83,6 +84,7 @@ describe('PlaceService', () => {
                 { provide: VerifyService, useValue: verifyServiceSpy },
                 { provide: GameService, useValue: gameServiceSpy },
             ],
+            imports: [HttpClientModule],
         });
         service = TestBed.inject(PlaceService);
         wordToCheck = 'taper';
@@ -111,7 +113,7 @@ describe('PlaceService', () => {
 
     describe('placeWord', () => {
         it(' should call verifyServiceSpy.validatePlaceFeasibility', async () => {
-            const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const wordExistsParams = Promise.resolve({ wordExists: true, errorMessage: '' });
             const result: IChat = { from: SENDER.computer, body: '' };
             const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
@@ -124,7 +126,7 @@ describe('PlaceService', () => {
         });
 
         it(' should call verifyServiceSpy.validatePlaceFeasibility', async () => {
-            const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const wordExistsParams = Promise.resolve({ wordExists: true, errorMessage: '' });
             const result: IChat = { from: SENDER.computer, body: '' };
             const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
@@ -138,7 +140,7 @@ describe('PlaceService', () => {
         });
 
         it(' should call writeWord', async () => {
-            const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const wordExistsParams = Promise.resolve({ wordExists: true, errorMessage: '' });
             const result: IChat = { from: SENDER.computer, body: '' };
             const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
@@ -153,7 +155,7 @@ describe('PlaceService', () => {
         });
 
         it(' should call verifyServiceSpy.checkAllWordsExist', async () => {
-            const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const wordExistsParams = Promise.resolve({ wordExists: true, errorMessage: '' });
             const result: IChat = { from: SENDER.computer, body: '' };
             const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
@@ -167,7 +169,7 @@ describe('PlaceService', () => {
         });
 
         it(' should throw ImpossibleCommand', async () => {
-            const wordExistsParams = { wordExists: false, errorMessage: "Le mot n'est pas valide." };
+            const wordExistsParams = Promise.resolve({ wordExists: false, errorMessage: "Le mot n'est pas valide." });
             const result: IChat = { from: SENDER.computer, body: '' };
             const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
@@ -183,7 +185,7 @@ describe('PlaceService', () => {
         });
 
         it(' should update the tiles letters', async () => {
-            const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const wordExistsParams = Promise.resolve({ wordExists: true, errorMessage: '' });
             const result: IChat = { from: SENDER.computer, body: '' };
             const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
@@ -199,7 +201,7 @@ describe('PlaceService', () => {
         });
 
         it(' should update the tiles letters', async () => {
-            const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const wordExistsParams = Promise.resolve({ wordExists: true, errorMessage: '' });
             const result: IChat = { from: SENDER.computer, body: '' };
             const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
@@ -215,7 +217,7 @@ describe('PlaceService', () => {
         });
 
         it(' should update the tiles letters', fakeAsync(() => {
-            const wordExistsParams = { wordExists: false, errorMessage: "Le mot n'est pas valide." };
+            const wordExistsParams = Promise.resolve({ wordExists: false, errorMessage: "Le mot n'est pas valide." });
             const placementDuration = 3000; // 3000 millisecondes soit 3s;
             const result: IChat = { from: SENDER.computer, body: '' };
             const response = { error: false, message: result };
@@ -233,7 +235,7 @@ describe('PlaceService', () => {
     });
     describe('placeWordInstant', () => {
         it('should write word if word is valid on placeWordInstant', () => {
-            const wordExistsParams = { wordExists: true, errorMessage: '' };
+            const wordExistsParams = Promise.resolve({ wordExists: true, errorMessage: '' });
             const result: IChat = { from: SENDER.computer, body: '' };
             const response = { error: false, message: result };
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);

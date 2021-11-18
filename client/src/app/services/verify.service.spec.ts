@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { HttpClientTestingModule /*, HttpTestingController*/ } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
@@ -10,11 +11,12 @@ import { VerifyService } from '@app/services/verify.service';
 describe('VerifyService', () => {
     let service: VerifyService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
-
+    // let httpMock: HttpTestingController;
+    // let baseUrl: string;
     beforeEach(() => {
         rackServiceSpy = jasmine.createSpyObj('RackService', ['findJokersNumberOnRack', 'isLetterOnRack']);
 
-        TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }] });
+        TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }], imports: [HttpClientTestingModule] });
         service = TestBed.inject(VerifyService);
         const dictionary = {
             title: 'dictionnaire test',
@@ -22,6 +24,9 @@ describe('VerifyService', () => {
             words: ['aa', 'finir', 'manger', 'rouler'],
         } as Dictionary;
         service.dictionary = dictionary;
+        // baseUrl = service.urlString;
+        // httpMock = TestBed.get(HttpTestingController);
+
     });
 
     it('should be created', () => {
@@ -670,7 +675,7 @@ describe('VerifyService', () => {
         expect(result).toEqual(expectedResult);
     });
 
-    it(' checkAllWordsExist should return an error if it is first move and the given word length is less than 2', () => {
+    it(' checkAllWordsExist should return an error if it is first move and the given word length is less than 2', async () => {
         const coord = { x: 1, y: 1 };
         const word = 'm';
 
@@ -683,14 +688,18 @@ describe('VerifyService', () => {
             errorMessage: `il vous faut former des mots d'une longueur minimale de 2, mais le mot ${word} a une longueur de 1.`,
         };
 
-        const result = service.checkAllWordsExist(word, coord);
+
+        const spy = spyOn<any>(service,'validateWords');
+        spy.and.returnValue(Promise.resolve(expectedResult));
+
+        const result = await service.checkAllWordsExist(word, coord);
         expect(result).toEqual(expectedResult);
     });
 
     it(
         ' checkAllWordsExist should return an error if findHorizontalAdjacentWord' +
             ' return a word that length is less more than 2 and does not exist in the dictionary',
-        () => {
+        async () => {
             const coord = { x: 1, y: 1 };
             const word = 'mmm';
 
@@ -703,8 +712,9 @@ describe('VerifyService', () => {
             spyOn<any>(service, 'findHorizontalAdjacentWord').and.returnValue(word);
 
             const expectedResult = { wordExists: false, errorMessage: `le mot ${word} n'existe pas dans le dictionnaire` };
-
-            const result = service.checkAllWordsExist(word, coord);
+            const spy = spyOn<any>(service,'validateWords');
+            spy.and.returnValue(Promise.resolve(expectedResult));
+            const result = await service.checkAllWordsExist(word, coord);
             expect(result).toEqual(expectedResult);
         },
     );
@@ -712,7 +722,7 @@ describe('VerifyService', () => {
     it(
         ' checkAllWordsExist should return an error if findVerticalAdjacentWord' +
             ' return a word that length is less more than 2 and does not exist in the dictionary',
-        () => {
+        async () => {
             const coord = { x: 1, y: 1 };
             const word = 'papa';
             const horizontalWord = 'finir';
@@ -730,14 +740,18 @@ describe('VerifyService', () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'findVerticalAdjacentWord').and.returnValue(verticalWord);
 
-            const expectedResult = { wordExists: false, errorMessage: `le mot ${verticalWord} n'existe pas dans le dictionnaire` };
 
-            const result = service.checkAllWordsExist(word, coord);
+
+            const expectedResult = { wordExists: false, errorMessage: `le mot ${verticalWord} n'existe pas dans le dictionnaire` };
+            const spy = spyOn<any>(service,'validateWords');
+            spy.and.returnValue(Promise.resolve(expectedResult));
+
+            const result = await service.checkAllWordsExist(word, coord);
             expect(result).toEqual(expectedResult);
         },
     );
 
-    it(' checkAllWordsExist should return true if the words exist', () => {
+    it(' checkAllWordsExist should return true if the words exist', async () => {
         const coord = { x: 1, y: 1 };
         const word = 'papa';
         const horizontalWord = 'finir';
@@ -756,8 +770,9 @@ describe('VerifyService', () => {
         spyOn<any>(service, 'findVerticalAdjacentWord').and.returnValue(verticalWord);
 
         const expectedResult = { wordExists: true, errorMessage: '' };
-
-        const result = service.checkAllWordsExist(word, coord);
+        const spy = spyOn<any>(service,'validateWords');
+        spy.and.returnValue(Promise.resolve(expectedResult));
+        const result = await service.checkAllWordsExist(word, coord);
         expect(result).toEqual(expectedResult);
     });
 

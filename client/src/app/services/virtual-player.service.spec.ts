@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable dot-notation */
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { IChat } from '@app/classes/chat';
@@ -16,7 +17,7 @@ interface WordNCoord {
 describe('VirtualPlayerService', () => {
     let service: VirtualPlayerService;
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({ imports: [HttpClientModule] });
         service = TestBed.inject(VirtualPlayerService);
 
         const exchangeRackServiceSpy = spyOn<any>(service['exchangeService']['rackService'], 'fillRackPortion');
@@ -169,8 +170,8 @@ describe('VirtualPlayerService', () => {
         });
     });
     describe('place', () => {
-        it('should return an IChat object', () => {
-            const message: IChat = service['place']();
+        it('should return an IChat object', async () => {
+            const message: IChat = await service['place']();
             expect(message).toBeDefined();
         });
     });
@@ -182,18 +183,18 @@ describe('VirtualPlayerService', () => {
     });
 
     describe('tryPossibility', () => {
-        it('should return true only if placeservice says the possibility is valid', () => {
+        it('should return true only if placeservice says the possibility is valid', async () => {
             const possibility: WordNCoord = { word: 'kjdv', coord: { x: 4, y: 1000 }, direction: 'h', points: 100 };
 
             const spy = spyOn<any>(service['placeService'], 'placeWordInstant');
             spy.and.returnValue(false);
 
-            let actualValue = service['tryPossibility'](possibility);
+            let actualValue = await service['tryPossibility'](possibility);
             expect(actualValue).toBe(false);
 
             spy.and.returnValue(true);
 
-            actualValue = service['tryPossibility'](possibility);
+            actualValue = await service['tryPossibility'](possibility);
             expect(actualValue).toBe(true);
         });
     });
