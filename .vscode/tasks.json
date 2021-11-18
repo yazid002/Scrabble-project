@@ -1,0 +1,79 @@
+{
+    "version": "2.0.0",
+    "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true
+    },
+    "tasks": [
+        {
+            "label": "Start client and server",
+            "dependsOn": ["run", "t-client"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
+        },
+        {
+            "label": "r-client",
+            "type": "shell",
+            "windows": {
+                "command": "cd client;npm start"
+            },
+            "isBackground": false,
+            "problemMatcher": [],
+            "presentation": {
+                "group": "my-group",
+                "reveal": "always",
+                "echo": true
+            }
+        },
+        {
+            "label": "t-client",
+            "type": "shell",
+            "windows": {
+                "command": "cd client;npm run coverage"
+            },
+            "isBackground": false,
+            "problemMatcher": [],
+            "presentation": {
+                "group": "my-group",
+                "reveal": "always",
+                "echo": true
+            }
+        },
+        {
+            "label": "r-server",
+            "type": "shell",
+            "windows": {
+                "command": "cd server;npm start"
+            },
+            "isBackground": false,
+            "problemMatcher": [],
+            "presentation": {
+                "group": "my-group",
+                "reveal": "always",
+                "echo": true
+            }
+        },
+        {
+            "label": "run",
+            "type": "shell",
+            "windows": {
+                "command": "& python npmStart.py"
+            },
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "group": "my-group",
+                "reveal": "always",
+                "echo": true
+            }
+        }
+    ]
+}
