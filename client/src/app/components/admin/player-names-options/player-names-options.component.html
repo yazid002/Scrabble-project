@@ -1,1 +1,4 @@
-<p>player-names-options works!</p>
+<mat-card *ngFor="let name of nameService.names">
+    <mat-card-title>{{name.name}}</mat-card-title>
+    <mat-card-subtitle>Joueur {{name.isAdvanced? "avancé": "débutant"}}</mat-card-subtitle>
+</mat-card>

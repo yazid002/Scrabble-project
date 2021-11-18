@@ -9,6 +9,7 @@ import * as logger from 'morgan';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
+import { VirtualPlayerNamesController } from './controllers/virtual-player-names.controller';
 import { WordValidationController } from './controllers/word-validation.controller';
 
 @Service()
@@ -21,6 +22,7 @@ export class Application {
         private readonly exampleController: ExampleController,
         private readonly dateController: DateController,
         private readonly wordValidationController: WordValidationController,
+        private readonly virtualPlayerNamesController: VirtualPlayerNamesController,
     ) {
         this.app = express();
 
@@ -45,6 +47,7 @@ export class Application {
         this.app.use('/api/example', this.exampleController.router);
         this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/validate', this.wordValidationController.router);
+        this.app.use('/api/virtual/', this.virtualPlayerNamesController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');
         });
