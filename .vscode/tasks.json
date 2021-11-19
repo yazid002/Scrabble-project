@@ -10,7 +10,7 @@
     "tasks": [
         {
             "label": "Start client and server",
-            "dependsOn": ["run", "t-client"],
+            "dependsOn": ["r-client", "r-server", "t-client"],
             "group": {
                 "kind": "build",
                 "isDefault": true
