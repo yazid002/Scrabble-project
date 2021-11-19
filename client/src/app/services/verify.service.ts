@@ -113,11 +113,6 @@ export class VerifyService {
             i++;
         }
 
-        for (const w of wordsFound) {
-            if (!this.isWordInDictionary(w)) {
-                return { wordExists: false, errorMessage: `le mot ${w} n'existe pas dans le dictionnaire` };
-            }
-        }
         this.formedWords = wordsFound;
         // console.log(this.formedWords);
 
