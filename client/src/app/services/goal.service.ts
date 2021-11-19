@@ -49,14 +49,14 @@ export class GoalService {
                 usesWord: true,
             },
             {
-                description: 'Former un mot contenant 15 letters',
+                description: 'Former un mot contenant 15 lettres',
                 bonus: 10,
                 complete: false,
                 goalType: GoalType.WriteWordLengthEqualToFifteen,
                 usesWord: true,
             },
             {
-                description: 'Placer un mot contenant 3 consonnes consecutives',
+                description: 'Placer un mot contenant 3 consonnes consécutives',
                 bonus: 10,
                 complete: false,
                 goalType: GoalType.WriteWordContainingConsecutiveConsonants,

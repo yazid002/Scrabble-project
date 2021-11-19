@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
 import { GameSyncService } from './game-sync.service';
@@ -16,7 +17,10 @@ describe('GameSyncService', () => {
                 return;
             },
         };
-        TestBed.configureTestingModule({ providers: [{ provide: GridService, useValue: gridServiceMock }] }).compileComponents();
+        TestBed.configureTestingModule({
+            providers: [{ provide: GridService, useValue: gridServiceMock }],
+            imports: [HttpClientModule],
+        }).compileComponents();
         service = TestBed.inject(GameSyncService);
     });
 

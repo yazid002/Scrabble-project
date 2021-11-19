@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { ReserveService } from '@app/services/reserve.service';
@@ -12,7 +13,7 @@ describe('GameOverviewComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [GameOverviewComponent],
-            imports: [MatCardModule],
+            imports: [MatCardModule, HttpClientModule],
             providers: [UserSettingsService, ReserveService, TimerService],
         }).compileComponents();
     });

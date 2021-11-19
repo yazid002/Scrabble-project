@@ -1,9 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
 import { bonuses, SQUARE_NUMBER } from '@app/constants/board-constants';
+import { SERVER_URL } from '@app/constants/url';
 import { RackService } from '@app/services/rack.service';
 import * as dictionary from 'src/assets/dictionnary.json';
 
@@ -11,13 +13,17 @@ import * as dictionary from 'src/assets/dictionnary.json';
     providedIn: 'root',
 })
 export class VerifyService {
+    urlString = SERVER_URL + '/api/validate';
     dictionary: Dictionary = dictionary as Dictionary;
     invalidSymbols: string[] = ['-', "'"];
     bonuses: string[] = ['dl', 'tw', 'tl', 'dw'];
     success: boolean = true;
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
     formedWords: string[] = [];
-    constructor(private rackService: RackService) {}
+
+    constructor(private rackService: RackService, private http: HttpClient) {
+        //  this.valideWords(this.wordsToValidate).subscribe(())
+    }
 
     isFitting(coord: Vec2, direction: string, word: string): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
@@ -65,7 +71,7 @@ export class VerifyService {
         return word;
     }
 
-    checkAllWordsExist(word: string, coord: Vec2): { wordExists: boolean; errorMessage: string } {
+    async checkAllWordsExist(word: string, coord: Vec2): Promise<{ wordExists: boolean; errorMessage: string }> {
         if (this.isFirstMove()) {
             if (word.length < 2) {
                 return {
@@ -115,7 +121,7 @@ export class VerifyService {
         this.formedWords = wordsFound;
         // console.log(this.formedWords);
 
-        return { wordExists: true, errorMessage: '' };
+        return await this.validateWords(this.formedWords);
     }
 
     computeCoordByDirection(direction: string, coord: Vec2, step: number): Vec2 {
@@ -326,6 +332,18 @@ export class VerifyService {
             response.error = true;
             response.message.body = "Erreur de syntaxe : Les symboles (-) et (') sont invalides.";
         }
+        return response;
+    }
+
+    private async validateWords(words: string[]): Promise<{ wordExists: boolean; errorMessage: string }> {
+        let response = { wordExists: true, errorMessage: '' };
+        await this.http
+            .post<{ wordExists: boolean; errorMessage: string }>(this.urlString, words)
+            .toPromise()
+            .then((res) => {
+                response = res;
+            });
+        console.log(response);
         return response;
     }
 }

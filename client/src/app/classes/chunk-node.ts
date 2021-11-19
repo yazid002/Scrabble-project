@@ -1,6 +1,6 @@
-import * as dict from 'src/assets/dictionnary.json';
-import { DictNode, convertDictToTree } from '@app/classes/dict-node';
+import { convertDictToTree, DictNode } from '@app/classes/dict-node';
 import { Dictionary } from '@app/classes/dictionary';
+import * as dict from 'src/assets/dictionnary.json';
 const dictList: Dictionary = dict as Dictionary;
 const dictionary: DictNode = convertDictToTree(dictList);
 export class ChunkNode {
@@ -72,10 +72,11 @@ export class ChunkNode {
 export const generateAnagrams: (rack: string[], pattern: string) => string[] = (rack: string[], pattern: string) => {
     /**
      * Function to generate anagrams of valid words (words that are in the dictionary) and that contain a certain pattern in them
+     *
      * @param rack: provide the player's rack. To not include the pattern in the player's rack
      * @param pattern: anagrams will need to contain this pattern
      * @returns a list of words (strings) that contain only letters from the rack + the required pattern
-    */
+     */
     let words: string[] = [];
     let i = 0;
     const chunks: string[] = [];

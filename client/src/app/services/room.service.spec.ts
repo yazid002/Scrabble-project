@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -11,7 +12,7 @@ describe('RoomService', () => {
     beforeEach(() => {
         clientSocket = jasmine.createSpyObj('socket', ['on', 'emit'], { id: '1' }) as unknown as Socket;
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
+            imports: [HttpClientModule, RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
         }).compileComponents();
         service = TestBed.inject(RoomService);
         service.socket = clientSocket;
@@ -110,7 +111,7 @@ describe('RoomService', () => {
         expect(spy).not.toHaveBeenCalled();
     });
 
-    it('shouldshould call gameService.convertGameToSolo when receive abandon signal from opponent', () => {
+    it('should call gameService.convertGameToSolo when receive abandon signal from opponent', () => {
         // eslint-disable-next-line dot-notation
         clientSocket.on = (eventName: string, roomMessageCallback: (id: string) => void) => {
             if (eventName === 'abandon') {
@@ -189,6 +190,7 @@ describe('RoomService', () => {
         service.configureRoomCommunication();
         expect(service.rooms).toEqual(room);
     });
+
     it('should set its roomId on "setRoomId"', () => {
         const id = 'someId';
         clientSocket.on = (eventName: string, roomMessageCallback: (roomId: string) => void) => {
@@ -201,6 +203,13 @@ describe('RoomService', () => {
         service.configureRoomCommunication();
         expect(service.roomId).toEqual(id);
     });
+
+    // it('should join a random room', () => {
+    //     const spy = spyOn(service, 'joinRoom');
+    //     service.joinRandomRoom();
+    //     expect(spy).toHaveBeenCalled();
+    // });
+
     it('should quit current room when trying to join another room', () => {
         const spy = spyOn(service, 'quitRoom');
         service.roomId = '';
