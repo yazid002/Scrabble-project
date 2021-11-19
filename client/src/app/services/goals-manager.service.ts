@@ -1,13 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Goal } from '@app/classes/goal';
+import { Subscription } from 'rxjs';
 import { GameService } from './game.service';
 import { GoalService } from './goal.service';
+import { TimerService } from './timer.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class GoalsManagerService {
-    constructor(private gameService: GameService, private goalService: GoalService) {}
+    resetTurnCounter: Subscription;
+    constructor(private gameService: GameService, private goalService: GoalService, private timerService: TimerService) {
+        this.resetTurnCounter = this.timerService.resetTurnCounter.subscribe((shouldResetTurnCounter: boolean) => {
+            console.log(this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter);
+            if (shouldResetTurnCounter) {
+                this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter = 0;
+            }
+        });
+    }
 
     applyPrivateGoalsBonus(wordsFormed: string[]): void {
         //   const goal = this.gameService.players[this.gameService.currentTurn].privateGoal;
