@@ -20,6 +20,7 @@ export interface GameState {
     timer: number;
     grid: Case[][];
     publicGoals: Goal[];
+    privateGoals: Goal[];
 }
 @Injectable({
     providedIn: 'root',
@@ -66,10 +67,23 @@ export class GameSyncService {
         this.reserveService.alphabets = gameState.alphabetReserve;
         // who is the 'Other Player' is different for the other player
         this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
+
         this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
         this.gameService.skipCounter = gameState.skipCounter;
         this.timerService.counter.totalTimer = gameState.timer;
-        this.goalService.publicGoals = gameState.publicGoals;
+
+        console.log('already initialized ', this.alreadyInitialized);
+        console.log('already sync ', this.alreadySynced);
+        console.log('current ', this.gameService.currentTurn);
+        console.log('public ', 'goalservice: ', this.goalService.publicGoals, 'gamestate: ', gameState.publicGoals);
+
+        if (this.gameService.currentTurn === PLAYER.otherPlayer) {
+            this.goalService.publicGoals = gameState.publicGoals;
+
+            this.goalService.privateGoals[PLAYER.realPlayer] = gameState.privateGoals[PLAYER.otherPlayer];
+            this.goalService.privateGoals[PLAYER.otherPlayer] = gameState.privateGoals[PLAYER.realPlayer];
+        }
+
         for (let i = 0; i < tiles.length; i++) {
             tiles[i] = gameState.grid[i];
         }
@@ -78,6 +92,11 @@ export class GameSyncService {
         if (!this.alreadySynced) {
             this.alreadySynced = true;
             this.sendToServer();
+        } else {
+            this.goalService.publicGoals = gameState.publicGoals;
+
+            this.goalService.privateGoals[PLAYER.realPlayer] = gameState.privateGoals[PLAYER.otherPlayer];
+            this.goalService.privateGoals[PLAYER.otherPlayer] = gameState.privateGoals[PLAYER.realPlayer];
         }
     }
 
@@ -124,6 +143,7 @@ export class GameSyncService {
             timer: this.timerService.counter.totalTimer,
             grid: tempGrid,
             publicGoals: this.goalService.publicGoals,
+            privateGoals: this.goalService.privateGoals,
         };
         return gameState;
     }
@@ -142,7 +162,8 @@ export class GameSyncService {
             skipCounter: 0,
             timer: 0,
             grid: resetGrid,
-            publicGoals: this.goalService.publicGoals,
+            publicGoals: [],
+            privateGoals: [],
         };
 
         return gameState;
@@ -160,5 +181,7 @@ export class GameSyncService {
             tiles[i] = resetGame.grid[i];
         }
         this.gridService.drawGrid();
+        this.goalService.privateGoals = resetGame.privateGoals;
+        this.goalService.publicGoals = resetGame.publicGoals;
     }
 }

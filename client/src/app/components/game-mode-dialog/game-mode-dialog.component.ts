@@ -23,10 +23,7 @@ export class GameModeDialogComponent {
         private randomMode: RandomModeService,
         public matDialog: MatDialog,
         public goalService: GoalService,
-    ) {
-        this.goalService.publicGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()];
-        console.log(this.goalService);
-    }
+    ) {}
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);

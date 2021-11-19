@@ -5,7 +5,6 @@ import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
-import { GoalService } from './goal.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
@@ -29,7 +28,6 @@ export class GameService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private chatService: ChatService,
-        private goalService: GoalService,
     ) {
         this.initPlayers();
         this.randomTurn();
@@ -128,8 +126,6 @@ export class GameService {
             name: this.userSettingsService.nameOption.userChoice,
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
-            privateGoals: [this.goalService.displayGoals()],
-            publicGoals: [],
             placeInTenSecondsGoalCounter: 0,
             turnWithoutSkipAndExchangeCounter: 0,
             words: [],
@@ -142,8 +138,6 @@ export class GameService {
             name: this.userSettingsService.getComputerName(),
             rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
             points: 0,
-            privateGoals: [],
-            publicGoals: [],
             placeInTenSecondsGoalCounter: 0,
             turnWithoutSkipAndExchangeCounter: 0,
             words: [],

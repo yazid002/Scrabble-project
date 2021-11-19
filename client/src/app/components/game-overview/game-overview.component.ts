@@ -24,6 +24,7 @@ export class GameOverviewComponent implements OnInit {
     nbLettersReserve: number = 0;
     otherPlayerName: string = '';
     publicGoals: Goal[];
+    privateGoals: Goal[];
     constructor(
         public userSettingsService: UserSettingsService,
         public timerService: TimerService,
@@ -33,12 +34,8 @@ export class GameOverviewComponent implements OnInit {
         public goalService: GoalService,
     ) {}
     ngOnInit(): void {
+        this.initializeGoals();
         this.updateData();
-        console.log(this.goalService);
-        // for (const player of this.gameService.players) {
-        //     player.privateGoals.push(this.goalService.displayGoals());
-        //     console.log(this.goalService.usedIndex);
-        // }
     }
 
     private updateData(): void {
@@ -58,27 +55,28 @@ export class GameOverviewComponent implements OnInit {
                 (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
             );
 
-            const publicGoals = this.goalService.publicGoals
-                ? [...this.goalService.publicGoals]
-                : (this.goalService.publicGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()]);
-            this.assignValues(mode, numPlayers, computerLevel, timer, publicGoals);
-
+            this.assignValues(mode, numPlayers, computerLevel, timer);
+            this.publicGoals = this.goalService.publicGoals;
+            this.privateGoals = this.goalService.privateGoals;
             this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();
         }, reserveRefreshRate);
     }
-    private assignValues(
-        mode: IOption | undefined,
-        numPlayers: IOption | undefined,
-        computerLevel: IOption | undefined,
-        timer: IOption | undefined,
-        publicGoals: Goal[] | undefined,
-    ) {
-        if (mode && numPlayers && computerLevel && timer && publicGoals) {
+    private assignValues(mode: IOption | undefined, numPlayers: IOption | undefined, computerLevel: IOption | undefined, timer: IOption | undefined) {
+        if (mode && numPlayers && computerLevel && timer) {
             this.mode = mode.value;
             this.numPlayers = numPlayers.value;
             this.computerLevel = computerLevel.value;
             this.timer = timer.value;
-            this.publicGoals = [...publicGoals];
         }
+    }
+
+    private initializeGoals(): void {
+        this.publicGoals = this.goalService.publicGoals
+            ? [...this.goalService.publicGoals]
+            : (this.goalService.publicGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()]);
+
+        this.privateGoals = this.goalService.privateGoals
+            ? [...this.goalService.privateGoals]
+            : (this.goalService.privateGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()]);
     }
 }

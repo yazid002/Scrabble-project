@@ -17,5 +17,17 @@ mat-card mat-card {
 }
 
 .goalsContent {
+    font-weight: bolder;
+    border-style: dotted;
+}
+
+.goalsPoints {
     font-style: oblique;
+    font-weight: 500;
+}
+
+.goalsDescription {
+    font-style: oblique;
+    font-weight: bolder;
+    color: dodgerblue;
 }

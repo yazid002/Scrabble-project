@@ -7,4 +7,5 @@ export enum GoalType {
     PlayFiveTimesWithoutSkipAndExchange = 5,
     PlayTheSameWordThreeTimes = 6,
     PlayTheRandomWord = 7,
+    None = -1,
 }

@@ -10,13 +10,13 @@ export class GoalsManagerService {
     constructor(private gameService: GameService, private goalService: GoalService) {}
 
     applyPrivateGoalsBonus(wordsFormed: string[]): void {
-        for (const goal of this.gameService.players[this.gameService.currentTurn].privateGoals) {
-            console.log('apply bonus, ', goal.description, goal.bonus);
-            const check = this.checkFormedWordRespectGoals(wordsFormed, goal);
-            console.log('check ', check);
-            if (check) {
-                this.gameService.players[this.gameService.currentTurn].points += goal.bonus;
-            }
+        //   const goal = this.gameService.players[this.gameService.currentTurn].privateGoal;
+        const goal = this.goalService.privateGoals[this.gameService.currentTurn];
+        console.log('apply bonus, ', goal.description, goal.bonus);
+        const check = this.checkFormedWordRespectGoals(wordsFormed, goal);
+        console.log('check ', check);
+        if (check) {
+            this.gameService.players[this.gameService.currentTurn].points += goal.bonus;
         }
     }
 

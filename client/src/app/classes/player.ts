@@ -1,4 +1,3 @@
-import { Goal } from './goal';
 import { ICharacter } from './letter';
 
 export interface Player {
@@ -7,8 +6,8 @@ export interface Player {
     rack: ICharacter[];
     points: number;
     won?: string;
-    privateGoals: Goal[];
-    publicGoals: Goal[];
+    // privateGoal: Goal;
+    // publicGoals: Goal[];
     placeInTenSecondsGoalCounter: number;
     turnWithoutSkipAndExchangeCounter: number;
     words: string[];

@@ -15,6 +15,7 @@ export class GoalService {
     dictionary: Dictionary;
     randomWord: string;
     publicGoals: Goal[];
+    privateGoals: Goal[];
     goalsFunctions: ((wordOrPlayer: string | Player) => boolean)[];
     constructor(private timerService: TimerService) {
         this.dictionary = dictionary as Dictionary;
@@ -34,21 +35,21 @@ export class GoalService {
 
         this.goalHandler = [
             {
-                description: 'Placer un palindrome',
+                description: 'Former un palindrome',
                 bonus: 10,
                 complete: false,
                 goalType: GoalType.WritePalindromeWord,
                 usesWord: true,
             },
             {
-                description: 'Placer un mot qui contient la lettre e',
+                description: 'Former un mot qui contient des "q" sans "u" consécutif',
                 bonus: 10,
                 complete: false,
                 goalType: GoalType.WriteWordContainingQwithoutU,
                 usesWord: true,
             },
             {
-                description: 'Former un mot contenant 4 letters',
+                description: 'Former un mot contenant 15 letters',
                 bonus: 10,
                 complete: false,
                 goalType: GoalType.WriteWordLengthEqualToFifteen,
@@ -90,6 +91,9 @@ export class GoalService {
                 usesWord: false,
             },
         ];
+
+        this.publicGoals = [this.displayGoals(), this.displayGoals()];
+        this.privateGoals = [this.displayGoals(), this.displayGoals()];
     }
 
     isWordPalindrome(word: string): boolean {
@@ -98,7 +102,7 @@ export class GoalService {
         //  word = word.toLowerCase().replace(re, '');
         const length = word.length;
         for (let i = 0; i < length / 2; i++) {
-            if (word[i] !== word[length - 1 - i]) {
+            if (word[i].toLowerCase() !== word[length - 1 - i].toLowerCase()) {
                 return false;
             }
         }
@@ -107,24 +111,25 @@ export class GoalService {
 
     doesWordContainQWithoutU(word: string): boolean {
         console.log('inside1');
-        for (let i = 0; word.length; i++) {
-            if (word[i].toLowerCase() === 'e') {
-                console.log('inside obj');
-                return true;
+        console.log('w ', word);
+        let wordContainsQ = false;
+        for (let i = 0; i < word.length - 1; i++) {
+            if (word[i].toLowerCase() === 'q') {
+                wordContainsQ = true;
+                if (word[i + 1].toLowerCase() === 'u') {
+                    return false;
+                }
             }
         }
-
-        return false;
+        return wordContainsQ || word[word.length - 1].toLowerCase() === 'q';
     }
 
     isWordLengthEqualToFifteen(word: string): boolean {
-        console.log('inside2');
-        const length = 4;
+        const length = 15;
         return word.length === length;
     }
 
     doesWordContainConsecutiveConsonant(word: string): boolean {
-        console.log('inside3');
         const consonant: string[] = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z'];
         const secondPosition = 1;
         const thirdPosition = 2;
@@ -154,27 +159,25 @@ export class GoalService {
 
         this.usedIndex.push(index);
 
-        console.log(index);
-
         return index;
     }
 
     displayGoals(): Goal {
         const index = this.generateUniqueIndex(0, this.goalsFunctions.length - 1);
-        console.log(index);
         return this.goalHandler[index];
     }
 
     placeInTenSecondsGoal(player: Player): boolean {
-        console.log('placeInTenSecondsGoal');
+        const tenSecondGoalLimitTime = 10;
+        const numberOfTurnsToWin = 3;
 
-        if (this.timerService.counter.totalTimer <= 10) {
+        if (this.timerService.counter.totalTimer <= tenSecondGoalLimitTime) {
             player.placeInTenSecondsGoalCounter += 1;
         } else {
             player.placeInTenSecondsGoalCounter = 0;
         }
 
-        if (player.placeInTenSecondsGoalCounter === 3) {
+        if (player.placeInTenSecondsGoalCounter === numberOfTurnsToWin) {
             player.placeInTenSecondsGoalCounter = 0;
             return true;
         }
@@ -182,16 +185,14 @@ export class GoalService {
     }
 
     playFiveTimesWithoutSkipAndExchange(player: Player): boolean {
-        console.log('playFiveTimesWithoutSkipAndExchange');
-        console.log('counter ', player.turnWithoutSkipAndExchangeCounter);
-        if (player.turnWithoutSkipAndExchangeCounter === 5) {
+        const numberOfTurnsToWin = 5;
+        if (player.turnWithoutSkipAndExchangeCounter === numberOfTurnsToWin) {
             return true;
         }
         return false;
     }
 
     playTheSameWordThreeTimes(player: Player): boolean {
-        console.log('playTheSameWordThreeTimes');
         const wordsFormedMapping = new Map<string, number>();
         for (const w of player.words) {
             if (wordsFormedMapping.has(w.toLowerCase())) {
@@ -203,13 +204,11 @@ export class GoalService {
             } else {
                 wordsFormedMapping.set(w.toLowerCase(), 1);
             }
-            console.log(wordsFormedMapping);
         }
         return false;
     }
 
     playTheRandomWord(player: Player): boolean {
-        console.log('playTheRandomWord');
         for (const word of player.words) {
             if (word === this.randomWord) {
                 return true;
