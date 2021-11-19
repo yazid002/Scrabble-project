@@ -1,3 +1,5 @@
+import { Dictionary } from './../../classes/dictionary';
+import { GameModeDialogComponent } from './../game-mode-dialog/game-mode-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
@@ -15,7 +17,13 @@ export class WaitingRoomComponent implements OnInit {
     name: string;
     mode: string;
     timer: string;
-    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public roomService: RoomService) {}
+    dictionnaire: Dictionary;
+    constructor(
+        public userSettingsService: UserSettingsService,
+        public matDialog: MatDialog,
+        public roomService: RoomService,
+        public gameModeDialogComponent: GameModeDialogComponent,
+    ) {}
     ngOnInit(): void {
         const name = this.userSettingsService.nameOption.userChoice;
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(

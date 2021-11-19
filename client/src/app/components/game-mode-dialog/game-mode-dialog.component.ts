@@ -1,3 +1,4 @@
+import { Dictionary } from './../../classes/dictionary';
 import { Component } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -5,6 +6,7 @@ import { PLAYER } from '@app/classes/player';
 import { GameService } from '@app/services/game.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
+import { FormControl, Validators } from '@angular/forms';
 @Component({
     selector: 'app-game-mode-dialog',
     templateUrl: './game-mode-dialog.component.html',
@@ -15,6 +17,11 @@ export class GameModeDialogComponent {
     errorMessage: string = '';
     isChecked: boolean = false;
     message: string = '';
+    dictionaryControl = new FormControl('', Validators.required);
+    dictionnaires: Dictionary[] = [
+        { title: 'Espagnol', description: 'Langue Espagnol', words: [] },
+        { title: 'Anglais', description: 'Langue Anglaise', words: [] },
+    ];
 
     constructor(
         public userSettingsService: UserSettingsService,
