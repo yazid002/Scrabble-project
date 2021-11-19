@@ -23,7 +23,7 @@
         <mat-card-title>{{ player.name }}</mat-card-title>
 
         <mat-card-title class="goalsTitle">
-            <div *ngIf="i === playerIndex.realPlayer">Objectif privé:</div>
+            <div *ngIf="i === playerIndex.realPlayer || privateGoals[i].complete === true">Objectif privé:</div>
         </mat-card-title>
         <mat-card-content
             *ngIf="i === playerIndex.realPlayer || privateGoals[i].complete === true"
@@ -36,8 +36,6 @@
             </div>
             <div *ngIf="privateGoals[i].complete">Completé !</div>
         </mat-card-content>
-
-        <!--   *ngIf="i === playerIndex.realPlayer || privateGoals[i].complete === true" -->
 
         <mat-card-content *ngIf="gameService.numPlayers === 'solo' && i === playerIndex.otherPlayer">Niveau {{ computerLevel }}</mat-card-content>
         <mat-card-content>Nombre de points: {{ player.points }}</mat-card-content>

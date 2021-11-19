@@ -210,7 +210,7 @@ export class GoalService {
 
     playTheRandomWord(player: Player): boolean {
         for (const word of player.words) {
-            if (word === this.randomWord) {
+            if (word.toLowerCase() === this.randomWord.toLowerCase()) {
                 return true;
             }
         }
