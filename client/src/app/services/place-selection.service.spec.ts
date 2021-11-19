@@ -17,7 +17,7 @@ import { VerifyService } from './verify.service';
 
 const CANVAS_WIDTH = 500;
 const CANVAS_HEIGHT = 500;
-fdescribe('PlaceSelectionService', () => {
+describe('PlaceSelectionService', () => {
     let service: PlaceSelectionService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
     let gridServiceSpy: jasmine.SpyObj<GridService>;
@@ -65,6 +65,9 @@ fdescribe('PlaceSelectionService', () => {
                     { name: 'E', quantity: 15, points: 1, display: 'E' },
                 ],
                 points: 0,
+                turnWithoutSkipAndExchangeCounter: 0,
+                placeInTenSecondsGoalCounter: 0,
+                words: [],
             },
         ];
 

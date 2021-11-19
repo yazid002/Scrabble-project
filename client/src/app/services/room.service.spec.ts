@@ -74,6 +74,8 @@ describe('RoomService', () => {
             skipCounter: 0,
             timer: 0,
             grid: [],
+            privateGoals: [],
+            publicGoals: [],
         };
         clientSocket.on = (eventName: string, roomMessageCallback: (id: string, gameState: GameState) => void) => {
             if (eventName === 'syncGameData') {
@@ -97,6 +99,8 @@ describe('RoomService', () => {
             skipCounter: 0,
             timer: 0,
             grid: [],
+            privateGoals: [],
+            publicGoals: [],
         };
         clientSocket.on = (eventName: string, roomMessageCallback: (id: string, gameState: GameState) => void) => {
             if (eventName === 'syncGameData') {
