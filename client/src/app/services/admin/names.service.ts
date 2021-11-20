@@ -16,7 +16,7 @@ export class NamesService {
     constructor(private http: HttpClient) {
         this.urlString = SERVER_URL + '/api/virtual/';
         // this.fetchNames();
-        this.addName('allo', false);
+        // this.addName('allo', false);
     }
 
     async fetchNames(): Promise<NameProperties[]> {

@@ -6,9 +6,9 @@ import { NamesService } from '@app/services/admin/names.service';
     styleUrls: ['./player-names-options.component.scss'],
 })
 export class PlayerNamesOptionsComponent implements OnInit {
-    name = '';
-    isAdvanced :boolean;
-    error : boolean;
+    name: string = '';
+    isAdvanced: boolean = false;
+    error: boolean = false;
     constructor(public nameService: NamesService) {}
 
     async ngOnInit() {
