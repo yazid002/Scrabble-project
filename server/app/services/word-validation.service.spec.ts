@@ -10,7 +10,6 @@ describe('Example service', () => {
 
     it('should return an error if at least one word is not found in the french dictionary', (done) => {
         setTimeout(() => {
-
             const badWord = 'ckjsnkjfdsnc';
             const words: string[] = ['allo', 'bonjour', badWord];
             const expectedResult = { wordExists: false, errorMessage: `le mot ${badWord} n'existe pas dans le dictionnaire` };
