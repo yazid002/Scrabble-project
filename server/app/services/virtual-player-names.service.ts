@@ -18,10 +18,14 @@ export class VirtualPlayerNamesService {
         ];
     }
 
-    // addName(name: string, isAdvanced: true): void {
-    //     const item = this.names.get(name);
-    //     if (!item) this.names.set(name, { default: false, isAdvanced });
-    // }
+    addName(name: NameProperties): void {
+        console.log('adding name ', name);
+        const item = this.names.find((n) => n.name === name.name);
+        if (!item) {
+            name.default = false; // Make sure the client did not try to add a default value
+            this.names.push(name);
+        }
+    }
     // removeName(name: string) {
     //     const itemToRemove = this.names.get(name);
     //     if (itemToRemove && !itemToRemove?.default) {

@@ -16,12 +16,23 @@ export class NamesService {
     constructor(private http: HttpClient) {
         this.urlString = SERVER_URL + '/api/virtual/';
         // this.fetchNames();
+        this.addName('allo', false);
     }
 
     async fetchNames(): Promise<NameProperties[]> {
         this.names = [];
-        const response = this.http.post<NameProperties[]>(this.urlString, '');
+        const response = this.http.get<NameProperties[]>(this.urlString);
         response.subscribe((names) => (this.names = names));
         return this.names;
+    }
+    async addName(name: string, isAdvanced: boolean) {
+        const nameObj: NameProperties = { name, default: false, isAdvanced };
+        const response = this.http.post<NameProperties>(this.urlString + 'add', nameObj);
+        response.subscribe((names) => this.names.push(names));
+        await this.fetchNames();
+    }
+    validateFormat(name: string): boolean {
+        if (name === 'allo') return true;
+        return false;
     }
 }
