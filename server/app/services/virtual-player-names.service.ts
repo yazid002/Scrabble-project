@@ -33,6 +33,9 @@ export class VirtualPlayerNamesService {
     //         this.names.delete(name);
     //     }
     // }
+    reset(): void {
+        this.names = this.names.filter((item) => item.default);
+    }
     getNames(): NameProperties[] {
         // console.log(this.names);
         return this.names;

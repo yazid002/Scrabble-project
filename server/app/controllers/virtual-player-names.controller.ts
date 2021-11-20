@@ -19,8 +19,14 @@ export class VirtualPlayerNamesController {
             const names = this.virtualPlayerNamesService.addName(req.body);
             res.json(names);
         });
+        this.router.get('/reset', async (req: Request, res: Response) => {
+            console.log('reset controler ', req.body);
+
+            const names = this.virtualPlayerNamesService.reset();
+            res.json(names);
+        });
         this.router.get('/', async (req: Request, res: Response) => {
-            console.log('get name ocntroller ', req.body);
+            console.log('get name controller ', req.body);
 
             const names = this.virtualPlayerNamesService.getNames();
             res.json(names);
