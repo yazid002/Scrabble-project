@@ -7,7 +7,7 @@ import { UserSettingsService } from './user-settings.service';
 })
 export class TimerService {
     @Output() timerDone = new BehaviorSubject<boolean>(true); // value of boolean represents whether or not the player skips his turn
-    // value of boolean represents whether or not the player finishes its time whitout placing
+    // value of boolean represents whether or not the player has finished its time without placing
     @Output() resetTurnCounter = new BehaviorSubject<boolean>(true);
 
     isEnabled: boolean;
