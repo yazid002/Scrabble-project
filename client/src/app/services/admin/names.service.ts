@@ -10,25 +10,28 @@ interface NameProperties {
     providedIn: 'root',
 })
 export class NamesService {
-    names: NameProperties[];
+    beginnerNames: NameProperties[];
+    advancedNames: NameProperties[];
     urlString: string;
 
     constructor(private http: HttpClient) {
         this.urlString = SERVER_URL + '/api/virtual/';
-        // this.fetchNames();
-        // this.addName('allo', false);
     }
 
-    async fetchNames(): Promise<NameProperties[]> {
-        this.names = [];
+    async fetchNames() {
+        this.beginnerNames = [];
+        this.advancedNames = [];
         const response = this.http.get<NameProperties[]>(this.urlString);
-        response.subscribe((names) => (this.names = names));
-        return this.names;
+        response.subscribe((nameProperties) => {
+            this.beginnerNames = nameProperties.filter((nameProperty) => !nameProperty.isAdvanced);
+            this.advancedNames = nameProperties.filter((nameProperty) => nameProperty.isAdvanced);
+
+        });
     }
     async addName(name: string, isAdvanced: boolean) {
         const nameObj: NameProperties = { name, default: false, isAdvanced };
         const response = this.http.post<NameProperties>(this.urlString + 'add', nameObj);
-        response.subscribe((names) => this.names.push(names));
+        response.subscribe();
         await this.fetchNames();
     }
     validateFormat(name: string): boolean {

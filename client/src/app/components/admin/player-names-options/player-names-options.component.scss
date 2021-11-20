@@ -1,7 +1,11 @@
-.big-title{
-    font-size: 2rem;
+section {
+    display: flex;
+    flex-direction: row;
+}
+.container {
+    flex-grow: 1;
 }
 
-.small-title{
-    font-size: 1.3rem;
+.matCard {
+    height: 100%
 }

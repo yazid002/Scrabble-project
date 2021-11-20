@@ -11,11 +11,8 @@ export class PlayerNamesOptionsComponent implements OnInit {
     error: boolean = false;
     constructor(public nameService: NamesService) {}
 
-    async ngOnInit() {
-        this.name = '';
-        this.isAdvanced = false;
-        this.error = false;
-        await this.nameService.fetchNames();
+    ngOnInit() {
+        this.nameService.fetchNames();
     }
     async addName() {
         await this.nameService.addName(this.name, this.isAdvanced);

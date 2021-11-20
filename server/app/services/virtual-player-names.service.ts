@@ -24,6 +24,7 @@ export class VirtualPlayerNamesService {
         if (!item) {
             name.default = false; // Make sure the client did not try to add a default value
             this.names.push(name);
+            console.log(this.names);
         }
     }
     // removeName(name: string) {

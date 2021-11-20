@@ -1,20 +1,45 @@
 <mat-card>
-    <form (keyup)="validateName()" (click)="validateName()" aria-details="w">
-        <!-- <mat-form-field appearance="outline" [color]="form.error? 'warn': 'primary'" ngDefaultControl> -->
+    <mat-card-title>Ajouter un nom de joueur virtuel</mat-card-title>
+    <form (keyup)="validateName()" aria-details="w">
+        <mat-form-field appearance="outline" [color]="error? 'warn': 'primary'" ngDefaultControl>
             <mat-label innerHTML="Tapez un message"></mat-label>
             <input matInput autocomplete="off" [(ngModel)]="name" name="first" [ngModelOptions]="{standalone: true}"/>
-        <!-- </mat-form-field> -->
+        </mat-form-field>
         <!-- <mat-form-field appearance="outline" color="primary" ngDefaultControl> -->
-            <mat-label innerHTML="Tapez un message">Joueur avancé</mat-label>
+            <!-- <mat-label innerHTML="Tapez un message">Joueur avancé</mat-label> -->
             <mat-checkbox [(ngModel)]="isAdvanced" [ngModelOptions]="{standalone: true}">Joueur avancé</mat-checkbox>
         <!-- </mat-form-field> -->
         <button mat-raised-button type="submit" color="primary" (click)="addName()">Ajouter</button>
     </form>
 </mat-card>
-<mat-card>
-    <mat-card-title class="big-title">Nom des joueurs</mat-card-title>
-    <div *ngFor="let name of nameService.names">
-        <mat-card-title class="small-title">{{ name.name }}</mat-card-title>
-        <mat-card-subtitle>Joueur {{ name.isAdvanced ? 'avancé' : 'débutant' }}</mat-card-subtitle>
+
+<section>
+
+    <div class="container">
+
+        <mat-card class="matCard">
+            <mat-card-title class="big-title">Joueurs Débutants</mat-card-title>
+            <div *ngFor="let name of nameService.beginnerNames">
+                <div *ngIf="name">
+
+                    <mat-card-content class="small-title">{{ name.name }}</mat-card-content>
+
+                </div>
+            </div>
+        </mat-card>
     </div>
-</mat-card>
+    <div class="container">
+
+        <mat-card class="matCard">
+            <mat-card-title class="big-title">Joueurs Avancé</mat-card-title>
+            <div *ngFor="let name of nameService.advancedNames">
+                <div *ngIf="name">
+
+                    <mat-card-content class="small-title">{{ name.name }}</mat-card-content>
+
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</section>
+
