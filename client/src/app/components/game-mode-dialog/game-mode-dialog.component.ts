@@ -20,7 +20,7 @@ export class GameModeDialogComponent {
     constructor(
         public userSettingsService: UserSettingsService,
         public gameService: GameService,
-        private randomMode: RandomModeService,
+        private randomModeService: RandomModeService,
         public matDialog: MatDialog,
         private goalsManagerService: GoalsManagerService,
     ) {}
@@ -38,8 +38,8 @@ export class GameModeDialogComponent {
     }
 
     applyRandomMode(event: MatCheckboxChange) {
-        this.randomMode.isChecked = event.checked;
-        this.message = 'MODE BONUS ALEATOIRE ACTIVÉ ';
+        this.randomModeService.isChecked = event.checked;
+        this.message = 'MODE BONUS ALEATOIRE ACTIVÉ';
         if (!event.checked) {
             this.message = 'MODE BONUS ALEATOIRE DESACTIVÉ';
         }

@@ -65,6 +65,27 @@ describe('GameSyncService', () => {
         expect(setGoalsFromGameStateSpy).toHaveBeenCalledTimes(1);
     });
 
+    it("should not sync the master's goals when receiving from server if it is the first time", () => {
+        const gameState: GameState = {
+            players: [],
+            alphabetReserve: [],
+            currentTurn: 1,
+            skipCounter: 0,
+            timer: 0,
+            grid: tiles,
+            publicGoals: [],
+            privateGoals: [],
+        };
+
+        // eslint-disable-next-line dot-notation
+        service['alreadySynced'] = false;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const setGoalsFromGameStateSpy = spyOn<any>(service, 'setGoalsFromGameState').and.returnValue(void '');
+
+        service.receiveFromServer(gameState);
+        expect(setGoalsFromGameStateSpy).not.toHaveBeenCalled();
+    });
+
     it("should also sync goals master's goals when receiving from server if it is not the first time", () => {
         const gameState: GameState = {
             players: [],
