@@ -165,6 +165,7 @@ export class GoalService {
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
     private generateUniqueIndex(min: number, max: number): number {
         let index = this.generateNumber(min, max);
         while (this.usedIndex.includes(index)) {
@@ -195,10 +196,7 @@ export class GoalService {
 
     private playFiveTimesWithoutSkipAndExchange(player: Player): boolean {
         const numberOfTurnsToWin = 5;
-        if (player.turnWithoutSkipAndExchangeCounter === numberOfTurnsToWin) {
-            return true;
-        }
-        return false;
+        return player.turnWithoutSkipAndExchangeCounter === numberOfTurnsToWin;
     }
 
     private playTheSameWordThreeTimes(player: Player): boolean {
