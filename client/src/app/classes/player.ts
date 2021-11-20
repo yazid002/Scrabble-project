@@ -6,8 +6,6 @@ export interface Player {
     rack: ICharacter[];
     points: number;
     won?: string;
-    // privateGoal: Goal;
-    // publicGoals: Goal[];
     placeInTenSecondsGoalCounter: number;
     turnWithoutSkipAndExchangeCounter: number;
     words: string[];
