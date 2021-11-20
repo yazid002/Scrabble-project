@@ -10,14 +10,17 @@ import { TimerService } from './timer.service';
     providedIn: 'root',
 })
 export class GoalService {
-    usedIndex: number[];
+    isEnabled: boolean;
     goalHandler: Goal[];
-    dictionary: Dictionary;
-    randomWord: string;
     publicGoals: Goal[];
     privateGoals: Goal[];
     goalsFunctions: ((wordOrPlayer: string | Player) => boolean)[];
+    private dictionary: Dictionary;
+    private usedIndex: number[];
+    private randomWord: string;
+
     constructor(private timerService: TimerService) {
+        this.isEnabled = false;
         this.dictionary = dictionary as Dictionary;
         this.usedIndex = [];
         this.randomWord = this.generateRandomWord();
@@ -92,14 +95,27 @@ export class GoalService {
             },
         ];
 
-        this.publicGoals = [this.displayGoals(), this.displayGoals()];
-        this.privateGoals = [this.displayGoals(), this.displayGoals()];
+        this.publicGoals = [this.getAUniqueGoal(), this.getAUniqueGoal()];
+        this.privateGoals = [this.getAUniqueGoal(), this.getAUniqueGoal()];
     }
 
-    isWordPalindrome(word: string): boolean {
-        console.log('inside 0');
-        //    // const re = /[^A-Za-z0-9]/g;
-        //  word = word.toLowerCase().replace(re, '');
+    getAUniqueGoal(): Goal {
+        const index = this.generateUniqueIndex(0, this.goalsFunctions.length - 1);
+        return this.goalHandler[index];
+    }
+
+    completedGoalStyle(goal: Goal): string {
+        return goal.complete ? 'color:green' : 'color:black';
+    }
+
+    completeGoalSound(): void {
+        const audio = new Audio();
+        audio.src = 'assets/sounds/bonus.wav';
+        audio.load();
+        audio.play();
+    }
+
+    private isWordPalindrome(word: string): boolean {
         const length = word.length;
         for (let i = 0; i < length / 2; i++) {
             if (word[i].toLowerCase() !== word[length - 1 - i].toLowerCase()) {
@@ -109,9 +125,7 @@ export class GoalService {
         return true;
     }
 
-    doesWordContainQWithoutU(word: string): boolean {
-        console.log('inside1');
-        console.log('w ', word);
+    private doesWordContainQWithoutU(word: string): boolean {
         let wordContainsQ = false;
         for (let i = 0; i < word.length - 1; i++) {
             if (word[i].toLowerCase() === 'q') {
@@ -124,12 +138,12 @@ export class GoalService {
         return wordContainsQ || word[word.length - 1].toLowerCase() === 'q';
     }
 
-    isWordLengthEqualToFifteen(word: string): boolean {
+    private isWordLengthEqualToFifteen(word: string): boolean {
         const length = 15;
         return word.length === length;
     }
 
-    doesWordContainConsecutiveConsonant(word: string): boolean {
+    private doesWordContainConsecutiveConsonant(word: string): boolean {
         const consonant: string[] = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z'];
         const secondPosition = 1;
         const thirdPosition = 2;
@@ -145,13 +159,13 @@ export class GoalService {
         }
         return false;
     }
-    generateNumber(min: number, max: number): number {
+
+    private generateNumber(min: number, max: number): number {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-
-    generateUniqueIndex(min: number, max: number): number {
+    private generateUniqueIndex(min: number, max: number): number {
         let index = this.generateNumber(min, max);
         while (this.usedIndex.includes(index)) {
             index = this.generateNumber(min, max);
@@ -162,12 +176,7 @@ export class GoalService {
         return index;
     }
 
-    displayGoals(): Goal {
-        const index = this.generateUniqueIndex(0, this.goalsFunctions.length - 1);
-        return this.goalHandler[index];
-    }
-
-    placeInTenSecondsGoal(player: Player): boolean {
+    private placeInTenSecondsGoal(player: Player): boolean {
         const tenSecondGoalLimitTime = 10;
         const numberOfTurnsToWin = 3;
 
@@ -184,7 +193,7 @@ export class GoalService {
         return false;
     }
 
-    playFiveTimesWithoutSkipAndExchange(player: Player): boolean {
+    private playFiveTimesWithoutSkipAndExchange(player: Player): boolean {
         const numberOfTurnsToWin = 5;
         if (player.turnWithoutSkipAndExchangeCounter === numberOfTurnsToWin) {
             return true;
@@ -192,7 +201,7 @@ export class GoalService {
         return false;
     }
 
-    playTheSameWordThreeTimes(player: Player): boolean {
+    private playTheSameWordThreeTimes(player: Player): boolean {
         const wordsFormedMapping = new Map<string, number>();
         for (const w of player.words) {
             if (wordsFormedMapping.has(w.toLowerCase())) {
@@ -208,7 +217,7 @@ export class GoalService {
         return false;
     }
 
-    playTheRandomWord(player: Player): boolean {
+    private playTheRandomWord(player: Player): boolean {
         for (const word of player.words) {
             if (word.toLowerCase() === this.randomWord.toLowerCase()) {
                 return true;
@@ -217,23 +226,14 @@ export class GoalService {
         return false;
     }
 
-    generateRandomWord(): string {
+    private generateRandomWord(): string {
+        const maxLength = 7;
+        const minLength = 5;
         let randomIndex = this.generateNumber(0, this.dictionary.words.length - 1);
-        while (this.dictionary.words[randomIndex].length < 5 || this.dictionary.words[randomIndex].length > 7) {
+        while (this.dictionary.words[randomIndex].length < minLength || this.dictionary.words[randomIndex].length > maxLength) {
             randomIndex = this.generateNumber(0, this.dictionary.words.length - 1);
         }
 
         return this.dictionary.words[randomIndex];
-    }
-
-    completedGoalStyle(goal: Goal): string {
-        return goal.complete ? 'color:green' : 'color:black';
-    }
-
-    completeGoalSound(): void {
-        const audio = new Audio();
-        audio.src = 'assets/sounds/bonus.wav';
-        audio.load();
-        audio.play();
     }
 }

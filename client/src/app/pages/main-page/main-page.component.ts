@@ -17,7 +17,7 @@ export class MainPageComponent implements OnInit {
     chooseMode(modeKey: string) {
         this.userSettingsService.settings.mode.currentChoiceKey = modeKey;
         this.openDialog();
-        //this.playSound();
+        // this.playSound();
     }
 
     // playSound() {

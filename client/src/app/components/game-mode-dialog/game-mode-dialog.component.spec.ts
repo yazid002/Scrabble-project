@@ -7,6 +7,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { GameService } from '@app/services/game.service';
+import { GoalsManagerService } from '@app/services/goals-manager.service';
 import { GridService } from '@app/services/grid.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
@@ -60,6 +61,7 @@ describe('GameModeDialogComponent', () => {
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     let gameServiceSpy: jasmine.SpyObj<GameService>;
     let gridServiceServiceSpy: jasmine.SpyObj<GridService>;
+    let goalsManagerServiceSpy: jasmine.SpyObj<GoalsManagerService>;
 
     beforeEach(async () => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName']);
@@ -72,6 +74,7 @@ describe('GameModeDialogComponent', () => {
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         gridServiceServiceSpy = jasmine.createSpyObj('GridService', ['applyRandomMode']);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initPlayers']);
+        goalsManagerServiceSpy = jasmine.createSpyObj('GoalsManagerService', ['initPlayers']);
 
         userSettingsServiceSpy.computerName = '';
         await TestBed.configureTestingModule({
@@ -84,6 +87,7 @@ describe('GameModeDialogComponent', () => {
                 { provide: UserSettingsService, useValue: userSettingsServiceSpy },
                 { provide: GridService, useValue: gridServiceServiceSpy },
                 { provide: GameService, useValue: gameServiceSpy },
+                { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
             ],
             imports: [BrowserAnimationsModule, MatRadioModule, MatCardModule, FormsModule, MatInputModule, MatDialogModule],
         }).compileComponents();

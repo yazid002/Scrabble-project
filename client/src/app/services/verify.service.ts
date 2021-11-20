@@ -21,9 +21,7 @@ export class VerifyService {
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
     formedWords: string[] = [];
 
-    constructor(private rackService: RackService, private http: HttpClient) {
-        //  this.valideWords(this.wordsToValidate).subscribe(())
-    }
+    constructor(private rackService: RackService, private http: HttpClient) {}
 
     isFitting(coord: Vec2, direction: string, word: string): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
@@ -114,7 +112,6 @@ export class VerifyService {
         }
 
         this.formedWords = wordsFound;
-        // console.log(this.formedWords);
 
         return await this.validateWords(this.formedWords);
     }
@@ -338,7 +335,6 @@ export class VerifyService {
             .then((res) => {
                 response = res;
             });
-        console.log(response);
         return response;
     }
 }

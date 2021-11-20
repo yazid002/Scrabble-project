@@ -72,16 +72,8 @@ export class GameSyncService {
         this.gameService.skipCounter = gameState.skipCounter;
         this.timerService.counter.totalTimer = gameState.timer;
 
-        console.log('already initialized ', this.alreadyInitialized);
-        console.log('already sync ', this.alreadySynced);
-        console.log('current ', this.gameService.currentTurn);
-        console.log('public ', 'goalservice: ', this.goalService.publicGoals, 'gamestate: ', gameState.publicGoals);
-
         if (this.gameService.currentTurn === PLAYER.otherPlayer) {
-            this.goalService.publicGoals = gameState.publicGoals;
-
-            this.goalService.privateGoals[PLAYER.realPlayer] = gameState.privateGoals[PLAYER.otherPlayer];
-            this.goalService.privateGoals[PLAYER.otherPlayer] = gameState.privateGoals[PLAYER.realPlayer];
+            this.setGoalsFromGameState(gameState);
         }
 
         for (let i = 0; i < tiles.length; i++) {
@@ -93,11 +85,15 @@ export class GameSyncService {
             this.alreadySynced = true;
             this.sendToServer();
         } else {
-            this.goalService.publicGoals = gameState.publicGoals;
-
-            this.goalService.privateGoals[PLAYER.realPlayer] = gameState.privateGoals[PLAYER.otherPlayer];
-            this.goalService.privateGoals[PLAYER.otherPlayer] = gameState.privateGoals[PLAYER.realPlayer];
+            this.setGoalsFromGameState(gameState);
         }
+    }
+
+    setGoalsFromGameState(gameState: GameState): void {
+        this.goalService.publicGoals = gameState.publicGoals;
+
+        this.goalService.privateGoals[PLAYER.realPlayer] = gameState.privateGoals[PLAYER.otherPlayer];
+        this.goalService.privateGoals[PLAYER.otherPlayer] = gameState.privateGoals[PLAYER.realPlayer];
     }
 
     sendToServer() {

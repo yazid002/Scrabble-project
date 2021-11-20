@@ -73,10 +73,10 @@ export class GameOverviewComponent implements OnInit {
     private initializeGoals(): void {
         this.publicGoals = this.goalService.publicGoals
             ? [...this.goalService.publicGoals]
-            : (this.goalService.publicGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()]);
+            : (this.goalService.publicGoals = [this.goalService.getAUniqueGoal(), this.goalService.getAUniqueGoal()]);
 
         this.privateGoals = this.goalService.privateGoals
             ? [...this.goalService.privateGoals]
-            : (this.goalService.privateGoals = [this.goalService.displayGoals(), this.goalService.displayGoals()]);
+            : (this.goalService.privateGoals = [this.goalService.getAUniqueGoal(), this.goalService.getAUniqueGoal()]);
     }
 }
