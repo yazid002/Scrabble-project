@@ -6,7 +6,7 @@ import { GoalService } from './goal.service';
 import { GoalsManagerService } from './goals-manager.service';
 import { TimerService } from './timer.service';
 
-fdescribe('GoalsManagerService', () => {
+describe('GoalsManagerService', () => {
     let service: GoalsManagerService;
     let goalServiceSpy: GoalService;
     let gameServiceSpy: GameService;
