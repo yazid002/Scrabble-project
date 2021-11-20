@@ -28,7 +28,6 @@ export class WordValidationService {
         fs.readFile(dictPath, (err, data) => {
             if (err) throw err;
             this.dictionary = JSON.parse(data.toString());
-            console.log(this.dictionary.title);
         });
     }
 }

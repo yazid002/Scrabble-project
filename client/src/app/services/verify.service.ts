@@ -21,9 +21,7 @@ export class VerifyService {
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
     wordsToValidate: string[] = [];
 
-    constructor(private rackService: RackService, private http: HttpClient) {
-        //  this.valideWords(this.wordsToValidate).subscribe(())
-    }
+    constructor(private rackService: RackService, private http: HttpClient) {}
 
     isFitting(coord: Vec2, direction: string, word: string): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
@@ -66,6 +64,23 @@ export class VerifyService {
         return response;
     }
 
+    getLettersUsedOnBoardFromPlacement(coord: Vec2, direction: string, word: string): { letter: string; coord: Vec2 }[] {
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+        for (let i = 0; i < word.length; i++) {
+            const computedCoord = this.computeCoordByDirection(direction, coord, i);
+            const x = computedCoord.x;
+            const y = computedCoord.y;
+            const charInBox = tiles[y][x].letter;
+            const letter = word.charAt(i) === word.charAt(i).toUpperCase() ? '*' : word.charAt(i);
+            if (!this.isCaseEmpty(charInBox)) {
+                if (this.isLetterOnBoardTheSame(charInBox.toLowerCase(), word.charAt(i).toLowerCase())) {
+                    lettersUsedOnBoard.push({ letter, coord: { y, x } });
+                }
+            }
+        }
+        return lettersUsedOnBoard;
+    }
+
     normalizeWord(wordToProcess: string): string {
         const word = wordToProcess.normalize('NFD').replace(/\p{Diacritic}/gu, '');
         return word;
@@ -88,24 +103,13 @@ export class VerifyService {
             wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
             wordsToValidate.push(wordFound);
             i++;
-            // if (wordFound.length >= 2) {
-            //     if (!this.isWordInDictionary(wordFound)) {
-            //         return { wordExists: false, errorMessage: `le mot ${wordFound} n'existe pas dans le dictionnaire` };
-            //     }
-            // }
         }
         i = 0;
         while (i < word.length && coord.x + i < SQUARE_NUMBER) {
             wordFound = this.findVerticalAdjacentWord({ x: coord.x + i, y: coord.y });
             wordsToValidate.push(wordFound);
             i++;
-            // if (wordFound.length >= 2) {
-            //     if (!this.isWordInDictionary(wordFound)) {
-            //         return { wordExists: false, errorMessage: `le mot ${wordFound} n'existe pas dans le dictionnaire` };
-            //     }
-            // }
         }
-        //  le response = { wordExists: true, errorMessage: '' };
 
         return await this.validateWords(wordsToValidate);
     }
@@ -116,9 +120,7 @@ export class VerifyService {
 
         return { y, x };
     }
-    isWordInDictionary(wordToCheck: string): boolean {
-        return this.dictionary.words.includes(wordToCheck.toLowerCase());
-    }
+
     areCoordValid(coord: Vec2): boolean {
         return coord.y < SQUARE_NUMBER && coord.x < SQUARE_NUMBER && coord.x >= 0 && coord.y >= 0;
     }
@@ -284,11 +286,9 @@ export class VerifyService {
     private isCaseEmpty(letterOnBoard: string): boolean {
         return letterOnBoard === '';
     }
-
     private isLetterOnBoardTheSame(letterOnBoard: string, letterToPlace: string): boolean {
         return letterOnBoard === letterToPlace;
     }
-
     private validateJokersOccurrencesMatch(word: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
         const response = { error: false, message: result };
@@ -308,7 +308,6 @@ export class VerifyService {
         }
         return response;
     }
-
     private validateInvalidSymbols(word: string): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
         const response = { error: false, message: result };
@@ -320,7 +319,6 @@ export class VerifyService {
         }
         return response;
     }
-
     private async validateWords(words: string[]): Promise<{ wordExists: boolean; errorMessage: string }> {
         let response = { wordExists: true, errorMessage: '' };
         await this.http
@@ -329,7 +327,6 @@ export class VerifyService {
             .then((res) => {
                 response = res;
             });
-        console.log(response);
         return response;
     }
 }
