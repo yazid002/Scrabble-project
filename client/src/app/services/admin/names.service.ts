@@ -25,14 +25,12 @@ export class NamesService {
         response.subscribe((nameProperties) => {
             this.beginnerNames = nameProperties.filter((nameProperty) => !nameProperty.isAdvanced);
             this.advancedNames = nameProperties.filter((nameProperty) => nameProperty.isAdvanced);
-
         });
     }
     async addName(name: string, isAdvanced: boolean) {
         const nameObj: NameProperties = { name, default: false, isAdvanced };
         const response = this.http.post<NameProperties>(this.urlString + 'add', nameObj);
-        response.subscribe();
-        await this.fetchNames();
+        response.subscribe(async () => this.fetchNames());
     }
     validateFormat(name: string): boolean {
         if (name === 'allo') return true;
