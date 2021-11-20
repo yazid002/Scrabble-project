@@ -33,7 +33,7 @@ export class PlaceService {
         if (isPlacementFeasible.error) {
             return !isPlacementFeasible.error;
         }
-        this.lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+
         this.writeWord(word, coord, direction);
         const wordValidationParameters = await this.verifyService.checkAllWordsExist(word, coord);
         if (!wordValidationParameters.wordExists) {
@@ -50,12 +50,6 @@ export class PlaceService {
             }
         } else {
             this.updateTilesLetters(word, coord, direction);
-            this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
-                word,
-                coord,
-                direction,
-                this.lettersUsedOnBoard,
-            );
             this.rackService.replaceWord(word);
             this.timerService.resetTimer();
         }

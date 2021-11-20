@@ -50,7 +50,6 @@ export class WordValidationController {
          *           $ref: '#/definitions/Message'
          */
         this.router.post('/', async (req: Request, res: Response) => {
-            console.log(req.body);
             try {
                 const wordExists = this.wordValidationService.validateWord(req.body);
                 res.json(wordExists);
