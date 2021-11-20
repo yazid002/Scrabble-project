@@ -89,41 +89,34 @@ export class GameSyncService {
         }
     }
 
-    setGoalsFromGameState(gameState: GameState): void {
-        this.goalService.publicGoals = gameState.publicGoals;
-
-        this.goalService.privateGoals[PLAYER.realPlayer] = gameState.privateGoals[PLAYER.otherPlayer];
-        this.goalService.privateGoals[PLAYER.otherPlayer] = gameState.privateGoals[PLAYER.realPlayer];
-    }
-
     sendToServer() {
         const gameState = this.getGameState();
         this.sendGameStateSignal.next(gameState);
     }
 
-    recieveFromLocalStorege() {
-        const gameState = JSON.parse(localStorage.getItem('gameState') as string) as GameState;
+    // recieveFromLocalStorege() {
+    //     const gameState = JSON.parse(localStorage.getItem('gameState') as string) as GameState;
 
-        this.reserveService.alphabets = gameState.alphabetReserve;
-        this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
-        this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
-        this.gameService.skipCounter = gameState.skipCounter;
-        this.timerService.counter.totalTimer = gameState.timer;
-        for (let i = 0; i < tiles.length; i++) {
-            tiles[i] = gameState.grid[i];
-        }
-        this.gridService.drawGrid();
-    }
+    //     this.reserveService.alphabets = gameState.alphabetReserve;
+    //     this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
+    //     this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
+    //     this.gameService.skipCounter = gameState.skipCounter;
+    //     this.timerService.counter.totalTimer = gameState.timer;
+    //     for (let i = 0; i < tiles.length; i++) {
+    //         tiles[i] = gameState.grid[i];
+    //     }
+    //     this.gridService.drawGrid();
+    // }
 
-    sendToLocalStorage() {
-        const sendingDelay = 1000;
-        setInterval(() => {
-            const gameState = this.getGameState();
-            localStorage.clear();
+    // sendToLocalStorage() {
+    //     const sendingDelay = 1000;
+    //     setInterval(() => {
+    //         const gameState = this.getGameState();
+    //         localStorage.clear();
 
-            localStorage.setItem('gameState', JSON.stringify(gameState));
-        }, sendingDelay);
-    }
+    //         localStorage.setItem('gameState', JSON.stringify(gameState));
+    //     }, sendingDelay);
+    // }
     getGameState(): GameState {
         this.placeSelectionService.cancelPlacement();
 
@@ -179,5 +172,12 @@ export class GameSyncService {
         this.gridService.drawGrid();
         this.goalService.privateGoals = resetGame.privateGoals;
         this.goalService.publicGoals = resetGame.publicGoals;
+    }
+
+    private setGoalsFromGameState(gameState: GameState): void {
+        this.goalService.publicGoals = gameState.publicGoals;
+
+        this.goalService.privateGoals[PLAYER.realPlayer] = gameState.privateGoals[PLAYER.otherPlayer];
+        this.goalService.privateGoals[PLAYER.otherPlayer] = gameState.privateGoals[PLAYER.realPlayer];
     }
 }
