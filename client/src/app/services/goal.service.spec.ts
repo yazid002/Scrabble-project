@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { Dictionary } from '@app/classes/dictionary';
-import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
 import { GoalService } from './goal.service';
@@ -324,39 +323,6 @@ describe('GoalService', () => {
 
         expect(result).toEqual(expectedResult);
     });
-
-    it('completedGoalStyle should return green if the goal is completed', () => {
-        const aGoal: Goal = {
-            description: 'random goal',
-            bonus: 5,
-            complete: true,
-            goalType: GoalType.PlayTheRandomWord,
-            usesWord: false,
-        };
-
-        const expectedResult = 'color:green';
-
-        const result = service.completedGoalStyle(aGoal);
-
-        expect(result).toEqual(expectedResult);
-    });
-
-    it('completedGoalStyle should return black if the goal is completed', () => {
-        const aGoal: Goal = {
-            description: 'random goal',
-            bonus: 5,
-            complete: false,
-            goalType: GoalType.PlayTheRandomWord,
-            usesWord: false,
-        };
-
-        const expectedResult = 'color:black';
-
-        const result = service.completedGoalStyle(aGoal);
-
-        expect(result).toEqual(expectedResult);
-    });
-
     it('completeGoalSound should play an audio', () => {
         const anAudio: HTMLAudioElement = {
             src: 'une source',

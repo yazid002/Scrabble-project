@@ -104,10 +104,6 @@ export class GoalService {
         return this.goalHandler[index];
     }
 
-    completedGoalStyle(goal: Goal): string {
-        return goal.complete ? 'color:green' : 'color:black';
-    }
-
     completeGoalSound(): void {
         const audio = new Audio();
         audio.src = 'assets/sounds/bonus.wav';
