@@ -32,24 +32,6 @@ describe('VerifyService', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' isWordInDictionary should return true if the word exists in the dictionary', () => {
-        const wordToCheck = 'manger';
-
-        // Car isWordInDictionary est privée
-        // eslint-disable-next-line dot-notation
-        const result = service['isWordInDictionary'](wordToCheck);
-        expect(result).toBeTrue();
-    });
-
-    it(' isWordInDictionary should return false if the word does not exist in the dictionary', () => {
-        const wordToCheck = 'monter';
-
-        // Car isWordInDictionary est privée
-        // eslint-disable-next-line dot-notation
-        const result = service['isWordInDictionary'](wordToCheck);
-        expect(result).toBeFalse();
-    });
-
     it(' normalizeWord should return the word without accents and diacritics', () => {
         const wordToCheck = 'éîöPÑ-è';
         const expectedResult = 'eioPN-e';

@@ -35,7 +35,7 @@ export class PlaceService {
         if (isPlacementFeasible.error) {
             return !isPlacementFeasible.error;
         }
-        this.lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+
         this.writeWord(word, coord, direction);
         const wordValidationParameters = await this.verifyService.checkAllWordsExist(word, coord);
         if (!wordValidationParameters.wordExists) {
@@ -91,19 +91,18 @@ export class PlaceService {
     }
 
     restoreAfterPlacement(word: string, direction: string, coord: Vec2, instant: boolean): void {
-        this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
-            word,
-            coord,
-            direction,
-            this.lettersUsedOnBoard,
-        );
-
         this.gameService.players[this.gameService.currentTurn].words.push(...this.verifyService.formedWords);
         this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter += 1;
         this.goalManagerService.applyAllGoalsBonus(this.verifyService.formedWords);
 
         this.updateTilesLetters(word, coord, direction);
         if (!instant) {
+            this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
+                word,
+                coord,
+                direction,
+                this.lettersUsedOnBoard,
+            );
             this.gridService.border.squareBorderColor = 'black';
             this.writeWord(word, coord, direction);
             this.gridService.removeArrow(this.placeSelectionService.selectedCoord);

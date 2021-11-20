@@ -64,6 +64,23 @@ export class VerifyService {
         return response;
     }
 
+    getLettersUsedOnBoardFromPlacement(coord: Vec2, direction: string, word: string): { letter: string; coord: Vec2 }[] {
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+        for (let i = 0; i < word.length; i++) {
+            const computedCoord = this.computeCoordByDirection(direction, coord, i);
+            const x = computedCoord.x;
+            const y = computedCoord.y;
+            const charInBox = tiles[y][x].letter;
+            const letter = word.charAt(i) === word.charAt(i).toUpperCase() ? '*' : word.charAt(i);
+            if (!this.isCaseEmpty(charInBox)) {
+                if (this.isLetterOnBoardTheSame(charInBox.toLowerCase(), word.charAt(i).toLowerCase())) {
+                    lettersUsedOnBoard.push({ letter, coord: { y, x } });
+                }
+            }
+        }
+        return lettersUsedOnBoard;
+    }
+
     normalizeWord(wordToProcess: string): string {
         const word = wordToProcess.normalize('NFD').replace(/\p{Diacritic}/gu, '');
         return word;
@@ -122,9 +139,7 @@ export class VerifyService {
 
         return { y, x };
     }
-    isWordInDictionary(wordToCheck: string): boolean {
-        return this.dictionary.words.includes(wordToCheck.toLowerCase());
-    }
+
     areCoordValid(coord: Vec2): boolean {
         return coord.y < SQUARE_NUMBER && coord.x < SQUARE_NUMBER && coord.x >= 0 && coord.y >= 0;
     }
@@ -265,36 +280,30 @@ export class VerifyService {
         }
         return false;
     }
-
     private findAdjacentDown(coord: Vec2) {
         if (coord.y < SQUARE_NUMBER - 1) {
             return tiles[coord.y + 1][coord.x].letter !== '';
         }
         return false;
     }
-
     private findAdjacentRight(coord: Vec2) {
         if (coord.x < SQUARE_NUMBER - 1) {
             return tiles[coord.y][coord.x + 1].letter !== '';
         }
         return false;
     }
-
     private findAdjacentLeft(coord: Vec2) {
         if (coord.x > 0) {
             return tiles[coord.y][coord.x - 1].letter !== '';
         }
         return false;
     }
-
     private isCaseEmpty(letterOnBoard: string): boolean {
         return letterOnBoard === '';
     }
-
     private isLetterOnBoardTheSame(letterOnBoard: string, letterToPlace: string): boolean {
         return letterOnBoard === letterToPlace;
     }
-
     private validateJokersOccurrencesMatch(word: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
         const response = { error: false, message: result };
@@ -314,7 +323,6 @@ export class VerifyService {
         }
         return response;
     }
-
     private validateInvalidSymbols(word: string): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
         const response = { error: false, message: result };
@@ -326,7 +334,6 @@ export class VerifyService {
         }
         return response;
     }
-
     private async validateWords(words: string[]): Promise<{ wordExists: boolean; errorMessage: string }> {
         let response = { wordExists: true, errorMessage: '' };
         await this.http

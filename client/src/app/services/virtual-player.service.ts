@@ -257,7 +257,7 @@ export class VirtualPlayerService {
             for (const anagram of anagrams) {
                 const gridWord: WordNCoord = { coord: { x: 7, y: 7 }, direction: 'h', word: '', points: 0 };
                 gridWord.word = anagram;
-                const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+                const lettersUsedOnBoard = this.verifyService.getLettersUsedOnBoardFromPlacement(gridWord.coord, gridWord.direction, gridWord.word);
                 gridWord.points = this.pointsCountingService.processWordPoints(gridWord.word, gridWord.coord, gridWord.direction, lettersUsedOnBoard);
                 possibilities.push(gridWord);
             }
@@ -271,9 +271,12 @@ export class VirtualPlayerService {
                 for (const anagram of anagrams) {
                     // const wordCombos = this.bindGridAndRack(anagram, gridPattern);
                     const gridWord = this.findWordPosition(anagram, gridCombo);
-
                     gridWord.word = anagram;
-                    const lettersUsedOnBoard = this.verifyService.lettersUsedOnBoard;
+                    const lettersUsedOnBoard = this.verifyService.getLettersUsedOnBoardFromPlacement(
+                        gridWord.coord,
+                        gridWord.direction,
+                        gridWord.word,
+                    );
                     gridWord.points = this.pointsCountingService.processWordPoints(
                         gridWord.word,
                         gridWord.coord,
