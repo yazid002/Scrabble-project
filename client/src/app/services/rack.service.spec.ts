@@ -2,6 +2,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { PLAYER } from '@app/classes/player';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH, RACK_SIZE } from '@app/constants/rack-constants';
 import { GameService } from '@app/services/game.service';
 import { RackService } from './rack.service';
@@ -102,13 +103,12 @@ describe('RackService', () => {
 
     describe('findLetterPosition', () => {
         it('should return notFound', () => {
-            const notFound = -1;
             const letterToCheck = 'Z';
             // Car findLetterPosition est privée
             // eslint-disable-next-line dot-notation
             const result = service['findLetterPosition'](letterToCheck);
 
-            expect(result).toEqual(notFound);
+            expect(result).toEqual(NOT_FOUND);
         });
 
         it('should return the letter position', () => {
@@ -118,6 +118,32 @@ describe('RackService', () => {
             // Car findLetterPosition est privée
             // eslint-disable-next-line dot-notation
             const result = service['findLetterPosition'](letterToCheck);
+
+            expect(result).toEqual(position);
+        });
+
+        it('should use the rack in parameters', () => {
+            const rack = [
+                { name: 'P', quantity: 2, points: 3, display: 'P' },
+                { name: 'Q', quantity: 1, points: 8, display: 'Q' },
+                { name: 'R', quantity: 6, points: 1, display: 'R' },
+                { name: 'S', quantity: 6, points: 1, display: 'S' },
+            ];
+            let letterToCheck = 'A';
+
+            // Car findLetterPosition est privée
+            // eslint-disable-next-line dot-notation
+            let result = service['findLetterPosition'](letterToCheck, rack);
+
+            expect(result).toEqual(NOT_FOUND);
+
+            const position = 3;
+
+            letterToCheck = 'S';
+
+            // Car findLetterPosition est privée
+            // eslint-disable-next-line dot-notation
+            result = service['findLetterPosition'](letterToCheck, rack);
 
             expect(result).toEqual(position);
         });
@@ -266,6 +292,30 @@ describe('RackService', () => {
     });
 
     describe('replaceLetter', () => {
+        it('should use the index in parameter', () => {
+            const index = 2;
+            const letterToReplace = 'O';
+            const replacementLetter = { name: 'X', quantity: 1, points: 10, display: 'X' };
+
+            // Car findLetterPosition est privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const findLetterPositionSpy = spyOn<any>(service, 'findLetterPosition').and.returnValue(NOT_FOUND);
+
+            reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
+
+            // Car fillRackPortion est privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();
+
+            // Car replaceLetterOnRackOnly est privée
+            // eslint-disable-next-line dot-notation
+            service['replaceLetter'](letterToReplace, true, index);
+
+            expect(findLetterPositionSpy).not.toHaveBeenCalled();
+            expect(reserveServiceSpy.getLettersFromReserve).toHaveBeenCalledWith(letterToReplace.length);
+            expect(fillRackPortionSpy).toHaveBeenCalled();
+        });
+
         it('should call reserveServiceSpy.getLettersFromReserve if the letter to replace is on the rack', () => {
             const letterToReplace = 'A';
             const replacementLetter = { name: 'X', quantity: 1, points: 10, display: 'X' };

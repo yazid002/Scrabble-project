@@ -4,7 +4,7 @@ import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
-import { bonuses, SQUARE_NUMBER } from '@app/constants/board-constants';
+import { BONUSES, SQUARE_NUMBER } from '@app/constants/board-constants';
 import { SERVER_URL } from '@app/constants/url';
 import { RackService } from '@app/services/rack.service';
 import * as dictionary from 'src/assets/dictionnary.json';
@@ -16,7 +16,6 @@ export class VerifyService {
     urlString = SERVER_URL + '/api/validate';
     dictionary: Dictionary = dictionary as Dictionary;
     invalidSymbols: string[] = ['-', "'"];
-    bonuses: string[] = ['dl', 'tw', 'tl', 'dw'];
     success: boolean = true;
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
     formedWords: string[] = [];
@@ -80,12 +79,10 @@ export class VerifyService {
         }
         return lettersUsedOnBoard;
     }
-
     normalizeWord(wordToProcess: string): string {
         const word = wordToProcess.normalize('NFD').replace(/\p{Diacritic}/gu, '');
         return word;
     }
-
     async checkAllWordsExist(word: string, coord: Vec2): Promise<{ wordExists: boolean; errorMessage: string }> {
         if (this.isFirstMove()) {
             if (word.length < 2) {
@@ -95,8 +92,11 @@ export class VerifyService {
                 };
             }
         }
+        this.formedWords = this.getAllFormedWords(word, coord);
+        return await this.validateWords(this.formedWords);
+    }
+    getAllFormedWords(word: string, coord: Vec2): string[] {
         let wordFound = '';
-
         let i = 0;
         const wordsFound: string[] = [];
 
@@ -127,10 +127,7 @@ export class VerifyService {
             }
             i++;
         }
-
-        this.formedWords = wordsFound;
-
-        return await this.validateWords(this.formedWords);
+        return wordsFound;
     }
 
     computeCoordByDirection(direction: string, coord: Vec2, step: number): Vec2 {
@@ -230,14 +227,14 @@ export class VerifyService {
         let down = coord.y;
         let wordFound = '';
 
-        if (this.bonuses.includes(tiles[coord.y][coord.x].text)) {
+        if (BONUSES.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
 
-        while (up > 0 && tiles[up - 1][coord.x].text !== '' && !this.bonuses.includes(tiles[up - 1][coord.x].text)) {
+        while (up > 0 && tiles[up - 1][coord.x].text !== '' && !BONUSES.includes(tiles[up - 1][coord.x].text)) {
             up--;
         }
-        while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.x].text !== '' && !this.bonuses.includes(tiles[down + 1][coord.x].text)) {
+        while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.x].text !== '' && !BONUSES.includes(tiles[down + 1][coord.x].text)) {
             down++;
         }
 
@@ -245,7 +242,7 @@ export class VerifyService {
             wordFound += tiles[i][coord.x].text;
         }
 
-        if (bonuses.includes(wordFound)) {
+        if (BONUSES.includes(wordFound)) {
             wordFound = '';
         }
         return wordFound;
@@ -256,20 +253,20 @@ export class VerifyService {
         let left = coord.x;
         let wordFound = '';
 
-        if (this.bonuses.includes(tiles[coord.y][coord.x].text)) {
+        if (BONUSES.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
-        while (left > 0 && tiles[coord.y][left - 1].text !== '' && !this.bonuses.includes(tiles[coord.y][left - 1].text)) {
+        while (left > 0 && tiles[coord.y][left - 1].text !== '' && !BONUSES.includes(tiles[coord.y][left - 1].text)) {
             left--;
         }
-        while (right < SQUARE_NUMBER - 1 && tiles[coord.y][right + 1].text !== '' && !this.bonuses.includes(tiles[coord.y][right + 1].text)) {
+        while (right < SQUARE_NUMBER - 1 && tiles[coord.y][right + 1].text !== '' && !BONUSES.includes(tiles[coord.y][right + 1].text)) {
             right++;
         }
 
         for (let i = left; i <= right; i++) {
             wordFound += tiles[coord.y][i].text;
         }
-        if (bonuses.includes(wordFound)) {
+        if (BONUSES.includes(wordFound)) {
             wordFound = '';
         }
         return wordFound;

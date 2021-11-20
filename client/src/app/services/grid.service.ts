@@ -3,7 +3,7 @@ import { tiles } from '@app/classes/board';
 import { CaseStyle } from '@app/classes/case-style';
 import { ICharacter as ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
-import { bonuses, DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
+import { BONUSES, DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { NOT_FOUND } from '@app/constants/common-constants';
 import { ReserveService } from '@app/services/reserve.service';
 
@@ -196,7 +196,7 @@ export class GridService {
         this.pointStyle.font = pointPolice.toString() + 'px serif';
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                if (!bonuses.includes(tiles[y][x].text) && tiles[y][x].text !== '') {
+                if (!BONUSES.includes(tiles[y][x].text) && tiles[y][x].text !== '') {
                     tiles[y][x].style.font = this.letterStyle.font;
                     this.squareColor = 'black';
                     this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
