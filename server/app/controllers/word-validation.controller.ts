@@ -9,6 +9,7 @@ export class WordValidationController {
 
     constructor(private readonly wordValidationService: WordValidationService) {
         this.configureRouter();
+        this.router.post = this.router.post.bind(this);
     }
 
     private configureRouter(): void {
@@ -18,36 +19,39 @@ export class WordValidationController {
          * @swagger
          *
          * definitions:
-         *   Message:
+         *   DictionaryValidationResponse:
          *     type: object
          *     properties:
-         *       title:
-         *         type: string
-         *       body:
+         *       wordExists:
+         *         type: boolean
+         *       errorMessage:
          *         type: string
          */
 
         /**
          * @swagger
          * tags:
-         *   - name: Time
-         *     description: Time endpoints
+         *   - name: Validation
+         *     description: Validation endpoints
          */
 
         /**
          * @swagger
          *
          * /api/validate:
-         *   get:
-         *     description: Return current time
+         *   post:
+         *     description: Verifies if all the words sent exist in the current dictionary
          *     tags:
-         *       - Time
+         *       - Validation
          *     produces:
          *       - application/json
          *     responses:
          *       200:
          *         schema:
-         *           $ref: '#/definitions/Message'
+         *           $ref: '#/definitions/DictionaryValidationResponse'
+         *       503:
+         *         schema:
+         *             type: string
          */
         this.router.post('/', async (req: Request, res: Response) => {
             try {
