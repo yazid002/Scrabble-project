@@ -1,16 +1,22 @@
+/* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { SENDER } from '@app/classes/chat';
 import { PLAYER } from '@app/classes/player';
+import { ExchangeSelectionService } from './exchange-selection.service';
 import { ExchangeService } from './exchange.service';
 import { GameService } from './game.service';
 import { RackService } from './rack.service';
+import { TimerService } from './timer.service';
 
 describe('ExchangeService', () => {
     let service: ExchangeService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
     let gameServiceSpy: jasmine.SpyObj<GameService>;
+    let timerServiceSpy: jasmine.SpyObj<TimerService>;
+    let exchangeSelectionServiceSpy: jasmine.SpyObj<ExchangeSelectionService>;
 
     beforeEach(() => {
+        exchangeSelectionServiceSpy = jasmine.createSpyObj('ExchangeSelectionService', ['onMouseRightClick']);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
         gameServiceSpy.currentTurn = PLAYER.realPlayer;
         gameServiceSpy.players = [
@@ -25,9 +31,12 @@ describe('ExchangeService', () => {
                     { name: 'E', quantity: 15, points: 1, display: 'E' },
                 ],
                 points: 0,
+                turnWithoutSkipAndExchangeCounter: 0,
+                placeInTenSecondsGoalCounter: 0,
+                words: [],
             },
         ];
-
+        timerServiceSpy = jasmine.createSpyObj('TimerService', ['resetTimer']);
         rackServiceSpy = jasmine.createSpyObj('RackService', [
             'replaceLetter',
             'findLetterPosition',
@@ -40,8 +49,12 @@ describe('ExchangeService', () => {
             providers: [
                 { provide: RackService, useValue: rackServiceSpy },
                 { provide: GameService, useValue: gameServiceSpy },
+                { provide: TimerService, useValue: timerServiceSpy },
+                { provide: ExchangeSelectionService, useValue: exchangeSelectionServiceSpy },
             ],
         });
+        exchangeSelectionServiceSpy.selectedIndexes = [];
+        timerServiceSpy.resetTimer.and.returnValue(void '');
         service = TestBed.inject(ExchangeService);
     });
 
@@ -187,6 +200,20 @@ describe('ExchangeService', () => {
         expect(result).toEqual(expectedResult);
     });
 
+    it('exchangeLetters should return error if exchange is not feasible', () => {
+        const lettersToChange = ['B', 'D'];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateExchangeFeasibility').and.returnValue({
+            error: true,
+            message: { from: SENDER.computer, body: 'une erreur' },
+        });
+
+        const result = service.exchangeLetters(lettersToChange, true);
+
+        expect(result.error).toEqual(true);
+        expect(result.message.body).toEqual('une erreur');
+    });
+
     it('exchangeLetters should call replaceLetter of rackServiceSpy on each letter to change', () => {
         const lettersToChange = ['B', 'D'];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -199,6 +226,78 @@ describe('ExchangeService', () => {
 
         expect(validateExchangeFeasibilitySpy).toHaveBeenCalled();
         expect(rackServiceSpy.replaceLetter).toHaveBeenCalledTimes(lettersToChange.length);
+    });
+
+    it('exchangeLetters should call exchangeLettersViaCommand it is called through chat', () => {
+        const lettersToChange = ['B', 'D'];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateExchangeFeasibility').and.returnValue({
+            error: false,
+            message: { from: SENDER.computer, body: '' },
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const exchangeLettersViaCommandSpy = spyOn<any>(service, 'exchangeLettersViaCommand').and.returnValue(() => void '');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const exchangeLettersViaClickSpy = spyOn<any>(service, 'exchangeLettersViaClick').and.returnValue(() => void '');
+
+        service.exchangeLetters(lettersToChange, true);
+
+        expect(exchangeLettersViaCommandSpy).toHaveBeenCalled();
+        expect(exchangeLettersViaClickSpy).not.toHaveBeenCalled();
+    });
+
+    it('exchangeLetters should call exchangeLettersViaClick it is not called through chat', () => {
+        const lettersToChange = ['B', 'D'];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateExchangeFeasibility').and.returnValue({
+            error: false,
+            message: { from: SENDER.computer, body: '' },
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const exchangeLettersViaCommandSpy = spyOn<any>(service, 'exchangeLettersViaCommand').and.returnValue(() => void '');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const exchangeLettersViaClickSpy = spyOn<any>(service, 'exchangeLettersViaClick').and.returnValue(() => void '');
+
+        service.exchangeLetters(lettersToChange, false);
+
+        expect(exchangeLettersViaCommandSpy).not.toHaveBeenCalled();
+        expect(exchangeLettersViaClickSpy).toHaveBeenCalled();
+    });
+
+    it('exchangeLetters should update turnWithoutSkipAndExchangeCounter of the player', () => {
+        const lettersToChange = ['B', 'D'];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateExchangeFeasibility').and.returnValue({
+            error: false,
+            message: { from: SENDER.computer, body: '' },
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'exchangeLettersViaCommand').and.returnValue(() => void '');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'exchangeLettersViaClick').and.returnValue(() => void '');
+
+        gameServiceSpy.players[PLAYER.realPlayer].turnWithoutSkipAndExchangeCounter = 2;
+
+        service.exchangeLetters(lettersToChange, false);
+
+        expect(gameServiceSpy.players[PLAYER.realPlayer].turnWithoutSkipAndExchangeCounter).toEqual(0);
+    });
+
+    it('exchangeLetters should call resetTimer', () => {
+        const lettersToChange = ['B', 'D'];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateExchangeFeasibility').and.returnValue({
+            error: false,
+            message: { from: SENDER.computer, body: '' },
+        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'exchangeLettersViaCommand').and.returnValue(() => void '');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'exchangeLettersViaClick').and.returnValue(() => void '');
+
+        service.exchangeLetters(lettersToChange, false);
+
+        expect(timerServiceSpy.resetTimer).toHaveBeenCalled();
     });
 
     it('validateExchangeFeasibility should return ImpossibleCommand', () => {
@@ -280,5 +379,18 @@ describe('ExchangeService', () => {
         const result = service['validateExchangeFeasibility'](lettersToChange);
 
         expect(result.error).toEqual(false);
+    });
+
+    it('exchangeLettersViaClick should call replaceLetter', () => {
+        const lettersToChange = ['B', 'D'];
+        const indexes = [1, 2];
+
+        rackServiceSpy.replaceLetter.and.returnValue(void '');
+        exchangeSelectionServiceSpy.selectedIndexes = indexes;
+        // eslint-disable-next-line dot-notation
+        service['exchangeLettersViaClick'](lettersToChange);
+
+        expect(rackServiceSpy.replaceLetter).toHaveBeenCalledWith('B', false, 1);
+        expect(rackServiceSpy.replaceLetter).toHaveBeenCalledWith('D', false, 2);
     });
 });

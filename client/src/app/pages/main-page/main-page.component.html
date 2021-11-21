@@ -7,7 +7,7 @@
             <div *ngFor="let mode of userSettingsService.settings.mode.setting.availableChoices">
                 <button mat-raised-button (click)="chooseMode(mode.key)" [disabled]="mode.disabled">{{ mode.value }}</button>
             </div>
-            <button mat-raised-button [routerLink]="['/leaderboard']">Meilleurs scores</button>
+            <button mat-raised-button  [routerLink]="['/leaderboard']">Meilleurs scores</button>
         </div>
     </section>
 

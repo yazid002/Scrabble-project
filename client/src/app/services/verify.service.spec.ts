@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
-import { HttpClientTestingModule /*, HttpTestingController*/ } from '@angular/common/http/testing';
+import { HttpResponse } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
@@ -7,16 +8,19 @@ import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
 import { RackService } from '@app/services/rack.service';
 import { VerifyService } from '@app/services/verify.service';
+import { Observable } from 'rxjs';
 
 describe('VerifyService', () => {
     let service: VerifyService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
+    let httpTestingController: HttpTestingController;
     // let httpMock: HttpTestingController;
     // let baseUrl: string;
     beforeEach(() => {
         rackServiceSpy = jasmine.createSpyObj('RackService', ['findJokersNumberOnRack', 'isLetterOnRack']);
 
         TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }], imports: [HttpClientTestingModule] });
+        httpTestingController = TestBed.inject(HttpTestingController);
         service = TestBed.inject(VerifyService);
         const dictionary = {
             title: 'dictionnaire test',
@@ -26,29 +30,14 @@ describe('VerifyService', () => {
         service.dictionary = dictionary;
         // baseUrl = service.urlString;
         // httpMock = TestBed.get(HttpTestingController);
+    });
 
+    afterEach(() => {
+        httpTestingController.verify();
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
-    });
-
-    it(' isWordInDictionary should return true if the word exists in the dictionary', () => {
-        const wordToCheck = 'manger';
-
-        // Car isWordInDictionary est privée
-        // eslint-disable-next-line dot-notation
-        const result = service['isWordInDictionary'](wordToCheck);
-        expect(result).toBeTrue();
-    });
-
-    it(' isWordInDictionary should return false if the word does not exist in the dictionary', () => {
-        const wordToCheck = 'monter';
-
-        // Car isWordInDictionary est privée
-        // eslint-disable-next-line dot-notation
-        const result = service['isWordInDictionary'](wordToCheck);
-        expect(result).toBeFalse();
     });
 
     it(' normalizeWord should return the word without accents and diacritics', () => {
@@ -528,6 +517,177 @@ describe('VerifyService', () => {
         );
     });
 
+    it(' validatePlaceFeasibility should return an error true if the coords are not valid', () => {
+        const coord = { x: 1, y: 15 };
+        const word = 'moto';
+        const direction = 'v';
+
+        const isFittingSpy = spyOn(service, 'isFitting').and.callThrough();
+        const isFirstMoveSpy = spyOn(service, 'isFirstMove').and.callThrough();
+
+        // Car hasAdjacent est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const hasAdjacentSpy = spyOn<any>(service, 'hasAdjacent').and.callThrough();
+
+        const validatePlaceFeasibilityResult = service.validatePlaceFeasibility(word, coord, direction);
+        expect(validatePlaceFeasibilityResult.error).toEqual(true);
+        expect(validatePlaceFeasibilityResult.message.body).toEqual('Commande impossible à réaliser : Les coordonnées ne sont pas valides');
+        expect(isFirstMoveSpy).not.toHaveBeenCalled();
+        expect(isFittingSpy).not.toHaveBeenCalled();
+        expect(hasAdjacentSpy).not.toHaveBeenCalled();
+    });
+
+    it(' validatePlaceFeasibility should return an error true if the word does not fit', () => {
+        const coord = { x: 1, y: 14 };
+        const word = 'moto';
+        const direction = 'v';
+
+        const expectedResult = [
+            "Commande impossible à réaliser : Il y a déjà une lettre dans l'une des cases ciblées.",
+            "Commande impossible à réaliser : Il n'y a pas assez de place pour écrire ce mot.",
+            'Commande impossible à réaliser : Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet.',
+        ];
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+        // const isFittingSpy = spyOn(service, 'isFitting').and.returnValue(response);
+        const isFirstMoveSpy = spyOn(service, 'isFirstMove').and.callThrough();
+
+        // Car hasAdjacent est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const hasAdjacentSpy = spyOn<any>(service, 'hasAdjacent').and.returnValue(false);
+
+        const validatePlaceFeasibilityResult = service.validatePlaceFeasibility(word, coord, direction);
+        expect(validatePlaceFeasibilityResult.error).toEqual(true);
+        expect(expectedResult).toContain(validatePlaceFeasibilityResult.message.body);
+        expect(isFirstMoveSpy).not.toHaveBeenCalled();
+        expect(hasAdjacentSpy).not.toHaveBeenCalled();
+    });
+
+    it(' validatePlaceFeasibility should return an error true if the first move is not valid', () => {
+        const coord = { x: 6, y: 7 };
+        tiles[coord.y][coord.x + 1].letter = '';
+        const word = 'moto';
+        const direction = 'v';
+
+        const expectedResult = [
+            'Commande impossible à réaliser : Ceci est votre premier tour, au moins une de vos lettres doit être placée sur la case H8.',
+        ];
+
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
+
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+        spyOn(service, 'isFitting').and.returnValue(response);
+
+        // Car hasAdjacent est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const hasAdjacentSpy = spyOn<any>(service, 'hasAdjacent').and.callThrough();
+
+        const validatePlaceFeasibilityResult = service.validatePlaceFeasibility(word, coord, direction);
+        expect(validatePlaceFeasibilityResult.error).toEqual(true);
+        expect(expectedResult).toContain(validatePlaceFeasibilityResult.message.body);
+        expect(hasAdjacentSpy).not.toHaveBeenCalled();
+    });
+
+    it(' validatePlaceFeasibility should return an error true if the number of jokers is not coherent', () => {
+        const coord = { x: 6, y: 7 };
+        tiles[coord.y][coord.x + 1].letter = '';
+        const word = 'moTo';
+        const direction = 'v';
+
+        const expectedResult = [
+            "Erreur de syntaxe : Il n'y a pas assez d'occurrences sur le chevalet pour les lettres: " +
+                ' * (lettres blanches) représentant les lettres "T" demandées.',
+        ];
+
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
+
+        rackServiceSpy.findJokersNumberOnRack.and.returnValue(0);
+
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+        spyOn(service, 'isFitting').and.returnValue(response);
+        spyOn(service, 'isFirstMove').and.returnValue(false);
+
+        service.lettersUsedOnBoard = [];
+
+        // Car hasAdjacent est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
+
+        // Car validateInvalidSymbols est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const validateInvalidSymbolsSpy = spyOn<any>(service, 'validateInvalidSymbols').and.callThrough();
+
+        const validatePlaceFeasibilityResult = service.validatePlaceFeasibility(word, coord, direction);
+        expect(validatePlaceFeasibilityResult.error).toEqual(true);
+        expect(expectedResult).toContain(validatePlaceFeasibilityResult.message.body);
+        expect(validateInvalidSymbolsSpy).not.toHaveBeenCalled();
+    });
+
+    it(' validatePlaceFeasibility should return an error true if the word contains invalid symbols', () => {
+        const coord = { x: 6, y: 7 };
+        tiles[coord.y][coord.x + 1].letter = '';
+        const word = 'mo-To';
+        const direction = 'v';
+
+        const expectedResult = ["Erreur de syntaxe : Les symboles (-) et (') sont invalides."];
+
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
+
+        rackServiceSpy.findJokersNumberOnRack.and.returnValue(0);
+
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+        spyOn(service, 'isFitting').and.returnValue(response);
+        spyOn(service, 'isFirstMove').and.returnValue(false);
+
+        service.lettersUsedOnBoard = [];
+
+        // Car hasAdjacent est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
+
+        // Car validateJokersOccurrencesMatch est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateJokersOccurrencesMatch').and.returnValue(response);
+
+        const validatePlaceFeasibilityResult = service.validatePlaceFeasibility(word, coord, direction);
+        expect(validatePlaceFeasibilityResult.error).toEqual(true);
+        expect(expectedResult).toContain(validatePlaceFeasibilityResult.message.body);
+    });
+
+    it(' validatePlaceFeasibility should return an error false', () => {
+        const coord = { x: 6, y: 7 };
+        tiles[coord.y][coord.x + 1].letter = '';
+        const word = 'moto';
+        const direction = 'v';
+
+        const expectedResult = [''];
+
+        const result: IChat = { from: SENDER.computer, body: '' };
+        const response = { error: false, message: result };
+
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+        spyOn(service, 'isFitting').and.returnValue(response);
+        spyOn(service, 'isFirstMove').and.returnValue(false);
+
+        // Car hasAdjacent est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
+
+        // Car validateInvalidSymbols est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateInvalidSymbols').and.returnValue(response);
+
+        // Car validateJokersOccurrencesMatch est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateJokersOccurrencesMatch').and.returnValue(response);
+
+        const validatePlaceFeasibilityResult = service.validatePlaceFeasibility(word, coord, direction);
+        expect(validatePlaceFeasibilityResult.error).toEqual(false);
+        expect(expectedResult).toContain(validatePlaceFeasibilityResult.message.body);
+    });
+
     it(' findHorizontalAdjacentWord should return an empty string if the text at the given coords is a bonus', () => {
         const coord = { x: 1, y: 1 };
         tiles[coord.y][coord.x].text = 'dl';
@@ -688,90 +848,36 @@ describe('VerifyService', () => {
             errorMessage: `il vous faut former des mots d'une longueur minimale de 2, mais le mot ${word} a une longueur de 1.`,
         };
 
-
-        const spy = spyOn<any>(service,'validateWords');
+        // Car validateWords est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const spy = spyOn<any>(service, 'validateWords');
         spy.and.returnValue(Promise.resolve(expectedResult));
 
         const result = await service.checkAllWordsExist(word, coord);
         expect(result).toEqual(expectedResult);
     });
 
-    it(
-        ' checkAllWordsExist should return an error if findHorizontalAdjacentWord' +
-            ' return a word that length is less more than 2 and does not exist in the dictionary',
-        async () => {
-            const coord = { x: 1, y: 1 };
-            const word = 'mmm';
-
-            // Car isFirstMove est privée
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'isFirstMove').and.returnValue(false);
-
-            // Car findHorizontalAdjacentWord est privée
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'findHorizontalAdjacentWord').and.returnValue(word);
-
-            const expectedResult = { wordExists: false, errorMessage: `le mot ${word} n'existe pas dans le dictionnaire` };
-            const spy = spyOn<any>(service,'validateWords');
-            spy.and.returnValue(Promise.resolve(expectedResult));
-            const result = await service.checkAllWordsExist(word, coord);
-            expect(result).toEqual(expectedResult);
-        },
-    );
-
-    it(
-        ' checkAllWordsExist should return an error if findVerticalAdjacentWord' +
-            ' return a word that length is less more than 2 and does not exist in the dictionary',
-        async () => {
-            const coord = { x: 1, y: 1 };
-            const word = 'papa';
-            const horizontalWord = 'finir';
-            const verticalWord = 'mmm';
-
-            // Car isFirstMove est privée
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'isFirstMove').and.returnValue(false);
-
-            // Car findHorizontalAdjacentWord est privée
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'findHorizontalAdjacentWord').and.returnValue(horizontalWord);
-
-            // Car findVerticalAdjacentWord est privée
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'findVerticalAdjacentWord').and.returnValue(verticalWord);
-
-
-
-            const expectedResult = { wordExists: false, errorMessage: `le mot ${verticalWord} n'existe pas dans le dictionnaire` };
-            const spy = spyOn<any>(service,'validateWords');
-            spy.and.returnValue(Promise.resolve(expectedResult));
-
-            const result = await service.checkAllWordsExist(word, coord);
-            expect(result).toEqual(expectedResult);
-        },
-    );
-
-    it(' checkAllWordsExist should return true if the words exist', async () => {
+    it(' checkAllWordsExist should return the promise from validateWords', async () => {
         const coord = { x: 1, y: 1 };
         const word = 'papa';
-        const horizontalWord = 'finir';
-        const verticalWord = 'manger';
+        const horizontalWord = 'mmm';
 
         // Car isFirstMove est privée
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isFirstMove').and.returnValue(false);
 
-        // Car findHorizontalAdjacentWord est privée
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        spyOn<any>(service, 'findHorizontalAdjacentWord').and.returnValue(horizontalWord);
+        spyOn(service, 'getAllFormedWords').and.returnValue([horizontalWord, word]);
 
-        // Car findVerticalAdjacentWord est privée
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        spyOn<any>(service, 'findVerticalAdjacentWord').and.returnValue(verticalWord);
+        const expectedResult = { wordExists: false, errorMessage: `le mot ${horizontalWord} n'existe pas dans le dictionnaire` };
 
-        const expectedResult = { wordExists: true, errorMessage: '' };
-        const spy = spyOn<any>(service,'validateWords');
-        spy.and.returnValue(Promise.resolve(expectedResult));
+        const anObservable: Observable<{ wordExists: boolean; errorMessage: string }> = {
+            next: () => void '',
+            toPromise: async () => Promise.resolve(expectedResult),
+        } as unknown as Observable<{ wordExists: boolean; errorMessage: string }>;
+        // Car validateWords est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateWords').and.callFake(() => anObservable);
+
         const result = await service.checkAllWordsExist(word, coord);
         expect(result).toEqual(expectedResult);
     });
@@ -857,5 +963,185 @@ describe('VerifyService', () => {
         ];
 
         expect(service.lettersUsedOnBoard).toEqual(expectedResult);
+    });
+
+    it(' getLettersUsedOnBoardFromPlacement should return empty array if all tiles are empty', () => {
+        const coord = { y: 9, x: 1 };
+        const word = 'papa';
+        const direction = 'v';
+
+        // Car isCaseEmpty est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'isCaseEmpty').and.returnValue(true);
+
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+
+        // Car isLetterOnBoardTheSame est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.returnValue(false);
+
+        const result = service.getLettersUsedOnBoardFromPlacement(coord, direction, word);
+        expect(isLetterOnBoardTheSameSpy).not.toHaveBeenCalled();
+        expect(result).toEqual([]);
+    });
+
+    it(' getLettersUsedOnBoardFromPlacement should return empty array if tiles are not empty but letters are not the same', () => {
+        const coord = { y: 9, x: 1 };
+        const word = 'papa';
+        const direction = 'v';
+        tiles[coord.y][coord.x].letter = 'c';
+        tiles[coord.y + 1][coord.x].letter = 'i';
+        tiles[coord.y + 2][coord.x].letter = 'n';
+        tiles[coord.y + 3][coord.x].letter = 'q';
+
+        // Car isCaseEmpty est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'isCaseEmpty').and.callThrough();
+
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+
+        // Car isLetterOnBoardTheSame est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.callThrough();
+
+        const result = service.getLettersUsedOnBoardFromPlacement(coord, direction, word);
+        expect(isLetterOnBoardTheSameSpy).toHaveBeenCalled();
+        expect(result).toEqual([]);
+    });
+
+    it(' getLettersUsedOnBoardFromPlacement should return all the letters that would be used on board if the placement is validated', () => {
+        const coord = { y: 9, x: 1 };
+        const word = 'papa';
+        const direction = 'v';
+        tiles[coord.y][coord.x].letter = 'c';
+        tiles[coord.y + 1][coord.x].letter = 'a';
+        tiles[coord.y + 2][coord.x].letter = 'c';
+        tiles[coord.y + 3][coord.x].letter = 'a';
+
+        const expectedResult = [
+            { letter: 'a', coord: { y: 10, x: 1 } },
+            { letter: 'a', coord: { y: 12, x: 1 } },
+        ];
+
+        // Car isCaseEmpty est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'isCaseEmpty').and.callThrough();
+
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+
+        // Car isLetterOnBoardTheSame est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.callThrough();
+
+        const result = service.getLettersUsedOnBoardFromPlacement(coord, direction, word);
+        expect(isLetterOnBoardTheSameSpy).toHaveBeenCalled();
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' getLettersUsedOnBoardFromPlacement should return return empty array if coords are not valid', () => {
+        const coord = { y: 15, x: 1 };
+        const word = 'papa';
+        const direction = 'v';
+
+        // Car isCaseEmpty est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'isCaseEmpty').and.callThrough();
+
+        spyOn(service, 'areCoordValid').and.returnValue(false);
+
+        // Car isLetterOnBoardTheSame est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.callThrough();
+
+        const result = service.getLettersUsedOnBoardFromPlacement(coord, direction, word);
+        expect(isLetterOnBoardTheSameSpy).not.toHaveBeenCalled();
+        expect(result).toEqual([]);
+    });
+
+    it(' getAllFormedWords should return all words newly formed', () => {
+        const coordOfAlreadyPlaced = { y: 9, x: 1 };
+        tiles[coordOfAlreadyPlaced.y][coordOfAlreadyPlaced.x - 1].letter = '';
+        tiles[coordOfAlreadyPlaced.y - 1][coordOfAlreadyPlaced.x].letter = '';
+        tiles[coordOfAlreadyPlaced.y][coordOfAlreadyPlaced.x].letter = 'c';
+        tiles[coordOfAlreadyPlaced.y + 1][coordOfAlreadyPlaced.x].letter = 'a';
+        tiles[coordOfAlreadyPlaced.y + 2][coordOfAlreadyPlaced.x].letter = 'c';
+        tiles[coordOfAlreadyPlaced.y + 3][coordOfAlreadyPlaced.x].letter = 'a';
+
+        tiles[coordOfAlreadyPlaced.y][coordOfAlreadyPlaced.x].text = 'c';
+        tiles[coordOfAlreadyPlaced.y + 1][coordOfAlreadyPlaced.x].text = 'a';
+        tiles[coordOfAlreadyPlaced.y + 2][coordOfAlreadyPlaced.x].text = 'c';
+        tiles[coordOfAlreadyPlaced.y + 3][coordOfAlreadyPlaced.x].text = 'a';
+
+        const coord = { y: 13, x: 1 };
+        const word = 'samedi';
+        tiles[coord.y][coord.x].text = 's';
+        tiles[coord.y][coord.x + 1].text = 'a';
+        tiles[coord.y][coord.x + 2].text = 'm';
+        tiles[coord.y][coord.x + 3].text = 'e';
+        tiles[coord.y][coord.x + word.length - 2].text = 'd';
+        tiles[coord.y][coord.x + word.length - 1].text = 'i';
+
+        tiles[coord.y][coord.x - 1].letter = '';
+        tiles[coord.y][coord.x].letter = '';
+        tiles[coord.y][coord.x + 1].letter = '';
+        tiles[coord.y][coord.x + 2].letter = '';
+        tiles[coord.y][coord.x + 3].letter = '';
+        tiles[coord.y][coord.x + word.length - 2].letter = '';
+        tiles[coord.y][coord.x + word.length - 1].letter = '';
+        tiles[coord.y][coord.x + word.length].letter = '';
+
+        const expectedResult = ['samedi', 'cacas'];
+        const result = service.getAllFormedWords(word, coord);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' getAllFormedWords should return all words newly formed bigger than 2', () => {
+        const coordOfAlreadyPlaced = { y: 9, x: 1 };
+        tiles[coordOfAlreadyPlaced.y][coordOfAlreadyPlaced.x - 1].letter = '';
+        tiles[coordOfAlreadyPlaced.y - 1][coordOfAlreadyPlaced.x].letter = '';
+        tiles[coordOfAlreadyPlaced.y][coordOfAlreadyPlaced.x].letter = 'c';
+        tiles[coordOfAlreadyPlaced.y + 1][coordOfAlreadyPlaced.x].letter = 'a';
+        tiles[coordOfAlreadyPlaced.y + 2][coordOfAlreadyPlaced.x].letter = 'c';
+        tiles[coordOfAlreadyPlaced.y + 3][coordOfAlreadyPlaced.x].letter = 'a';
+
+        tiles[coordOfAlreadyPlaced.y][coordOfAlreadyPlaced.x].text = 'c';
+        tiles[coordOfAlreadyPlaced.y + 1][coordOfAlreadyPlaced.x].text = 'a';
+        tiles[coordOfAlreadyPlaced.y + 2][coordOfAlreadyPlaced.x].text = 'c';
+        tiles[coordOfAlreadyPlaced.y + 3][coordOfAlreadyPlaced.x].text = 'a';
+
+        const coord = { y: 13, x: 1 };
+        const word = 's';
+        tiles[coord.y][coord.x].text = 's';
+        tiles[coord.y][coord.x - 1].text = '';
+        tiles[coord.y][coord.x + word.length].text = '';
+
+        tiles[coord.y][coord.x - 1].letter = '';
+        tiles[coord.y][coord.x].letter = '';
+        tiles[coord.y][coord.x + word.length].letter = '';
+
+        const expectedResult = ['cacas'];
+        const result = service.getAllFormedWords(word, coord);
+        expect(result).toEqual(expectedResult);
+    });
+
+    describe('validateWords', () => {
+        it('should send words to validate to the serveur and receive a response', async () => {
+            const wordsToValidate = ['bla', 'maman'];
+            const response = { wordExists: false, errorMessage: '' };
+
+            // eslint-disable-next-line dot-notation
+            service['validateWords'](wordsToValidate).subscribe((doesWordExists) =>
+                expect(doesWordExists).withContext('should send wordExists as true').toEqual(response),
+            );
+
+            // validateWords devrait faire une seule requete pour 'POST' les mots à valider
+            const req = httpTestingController.expectOne(service.urlString);
+            expect(req.request.method).toEqual('POST');
+            expect(req.request.body).toEqual(wordsToValidate);
+
+            // Le serveur devrait retourner que les mots existent après le 'POST'
+            const expectedResponse = new HttpResponse({ body: response });
+            req.event(expectedResponse);
+        });
     });
 });

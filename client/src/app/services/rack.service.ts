@@ -21,16 +21,18 @@ export class RackService {
 
     replaceLetter(letterToReplace: string, onRackOnly: boolean, index?: number): void {
         const indexOnRack = index ? index : this.findLetterPosition(letterToReplace);
-        if (indexOnRack !== NOT_FOUND) {
-            const newCharacters = this.reserveService.getLettersFromReserve(1);
-            if (newCharacters.length !== 0) {
-                if (!onRackOnly) {
-                    this.reserveService.addLetterInReserve(this.gameService.players[this.gameService.currentTurn].rack[indexOnRack].name);
-                }
-                this.gameService.players[this.gameService.currentTurn].rack[indexOnRack] = newCharacters[0];
-                this.fillRackPortion(indexOnRack);
-            }
+        if (indexOnRack === NOT_FOUND) {
+            return;
         }
+        const newCharacters = this.reserveService.getLettersFromReserve(1);
+        if (newCharacters.length === 0) {
+            return;
+        }
+        if (!onRackOnly) {
+            this.reserveService.addLetterInReserve(this.gameService.players[this.gameService.currentTurn].rack[indexOnRack].name);
+        }
+        this.gameService.players[this.gameService.currentTurn].rack[indexOnRack] = newCharacters[0];
+        this.fillRackPortion(indexOnRack);
     }
 
     replaceWord(word: string) {
