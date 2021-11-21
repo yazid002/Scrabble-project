@@ -153,10 +153,6 @@ export class PlaceSelectionService {
         return this.selectedTilesForPlacement.includes(coord);
     }
 
-    // areCoordValid(coord: Vec2): boolean {
-    //     return coord.y < SQUARE_NUMBER && coord.x < SQUARE_NUMBER && coord.x >= 0 && coord.y >= 0;
-    // }
-
     incrementNextCoord(coord: Vec2): Vec2 {
         let nextCoord = { x: coord.x, y: coord.y };
         while (!(tiles[nextCoord.y][nextCoord.x].text === '' || tiles[nextCoord.y][nextCoord.x].text.length === 2)) {

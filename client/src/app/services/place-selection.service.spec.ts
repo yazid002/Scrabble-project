@@ -87,7 +87,7 @@ describe('PlaceSelectionService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('getIndexOnRackFromKey should the first index of letter on rack', () => {
+    it('getIndexOnRackFromKey return should the first index of letter on rack', () => {
         const keyEvent = {
             key: 'b',
             preventDefault: () => void '',
@@ -124,6 +124,27 @@ describe('PlaceSelectionService', () => {
         service.selectedRackIndexesForPlacement = [1];
 
         const expected = 2;
+        const result = service.getIndexOnRackFromKey(keyEvent.key, rack);
+
+        expect(result).toEqual(expected);
+    });
+
+    it('getIndexOnRackFromKey should the third index of letter on rack (*)', () => {
+        const keyEvent = {
+            key: 'B',
+            preventDefault: () => void '',
+        } as KeyboardEvent;
+
+        const rack: ICharacter[] = [
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: '*', quantity: 2, points: 0, display: '*' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+        ];
+        service.selectedRackIndexesForPlacement = [1];
+
+        const expected = 3;
         const result = service.getIndexOnRackFromKey(keyEvent.key, rack);
 
         expect(result).toEqual(expected);
@@ -452,6 +473,7 @@ describe('PlaceSelectionService', () => {
         service.direction = false;
 
         const expectedY = 10;
+        tiles[expectedY][coord.x].text = '';
 
         const result = service.incrementNextCoord(coord);
         expect(result).toEqual({ x: coord.x, y: expectedY });
@@ -764,5 +786,31 @@ describe('PlaceSelectionService', () => {
         const result = service.isTileAlreadySelected(coord);
 
         expect(result).toEqual(false);
+    });
+
+    it('getClickCoords the right coords', () => {
+        const coord = { x: 9, y: 7 };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+        } as MouseEvent;
+
+        const result = service.getClickCoords(event);
+
+        expect(result).toEqual(coord);
+    });
+
+    it('getClickCoords not found', () => {
+        const coord = { x: 15, y: 7 };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+        } as MouseEvent;
+
+        const result = service.getClickCoords(event);
+
+        expect(result).toEqual({ x: NOT_FOUND, y: NOT_FOUND });
     });
 });

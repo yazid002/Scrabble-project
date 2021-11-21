@@ -239,11 +239,7 @@ export class VirtualPlayerService {
         let valid = false;
         try {
             valid = await this.placeService.placeWordInstant(gridCombo.word, gridCombo.coord, gridCombo.direction);
-
-            if (valid) {
-                return true;
-            }
-            return false;
+            return valid;
         } catch {
             return false;
         }
