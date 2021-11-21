@@ -326,7 +326,7 @@ export class VirtualPlayerService {
                 }
             }
         }
-        // get all vertival possibilities
+        // get all vertical possibilities
         for (let col = 0; col < tiles[0].length; col++) {
             for (let line = 0; line < tiles.length; line++) {
                 if (tiles[line][col].letter !== EMPTY) {

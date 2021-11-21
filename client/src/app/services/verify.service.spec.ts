@@ -680,7 +680,7 @@ describe('VerifyService', () => {
 
     it(
         ' checkAllWordsExist should return an error if findHorizontalAdjacentWord' +
-            ' return a word that length is less more than 2 and does not exist in the dictionary',
+            ' return a word that length is more than 2 and does not exist in the dictionary',
         async () => {
             const coord = { x: 1, y: 1 };
             const word = 'mmm';

@@ -34,21 +34,30 @@ export class PointsCountingService {
     processWordPoints(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): number {
         let points = this.applyBoardBonuses(wordToCheck, coord, direction, lettersUsedOnBoard);
 
-        points = this.applyBingo(wordToCheck, points);
-
+        points = this.applyBingo(wordToCheck, coord, direction, points, lettersUsedOnBoard);
         return points;
     }
 
     private getLetterPoints(letter: string): number {
         const aLetter = this.reserveService.findLetterInReserve(letter);
-        if (aLetter !== NOT_FOUND) {
-            return (aLetter as ICharacter).points;
-        }
-        return NOT_FOUND;
+        return aLetter !== NOT_FOUND ? (aLetter as ICharacter).points : NOT_FOUND;
     }
 
-    private applyBingo(wordToCheck: string, basePoints: number): number {
-        return wordToCheck.length === BINGO_LENGTH ? basePoints + BINGO_BONUS : basePoints;
+    private applyBingo(
+        wordToCheck: string,
+        coord: Vec2,
+        direction: string,
+        basePoints: number,
+        lettersUsedOnBoard: { letter: string; coord: Vec2 }[],
+    ): number {
+        let numberOfLettersFromRack = wordToCheck.length;
+        for (let i = 0; i < wordToCheck.length; i++) {
+            const x = this.verifyService.computeCoordByDirection(direction, coord, i).x;
+            const y = this.verifyService.computeCoordByDirection(direction, coord, i).y;
+            const length = lettersUsedOnBoard.filter((letter) => letter.coord.x === x && letter.coord.y === y).length;
+            numberOfLettersFromRack -= length;
+        }
+        return numberOfLettersFromRack === BINGO_LENGTH ? basePoints + BINGO_BONUS : basePoints;
     }
 
     private applyBoardBonuses(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): number {
@@ -59,7 +68,7 @@ export class PointsCountingService {
             const x = this.verifyService.computeCoordByDirection(direction, coord, i).x;
             const y = this.verifyService.computeCoordByDirection(direction, coord, i).y;
             const BAD_WORD = -100;
-            if (x < 0 || y < 0 || x >= tiles.length || y >= tiles.length) return BAD_WORD;
+            if (!this.verifyService.areCoordValid({ x, y })) return BAD_WORD;
             let basePoints = 0;
             const length = lettersUsedOnBoard.filter((letter) => letter.coord.x === x && letter.coord.y === y);
             if (length.length === 0) {

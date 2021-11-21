@@ -145,18 +145,12 @@ export class SelectionManagerService {
 
     isLetterKeyAlreadySelectedForExchange(event: KeyboardEvent): boolean {
         const index = this.rackLettersManipulationService.getIndexFromKey(event, this.gameService.players[PLAYER.realPlayer].rack);
-        if (index === NOT_FOUND) {
-            return false;
-        }
-        return this.exchangeSelectionService.isLetterAlreadySelected(index);
+        return index === NOT_FOUND ? false : this.exchangeSelectionService.isLetterAlreadySelected(index);
     }
 
     isLetterClickAlreadySelectedForExchange(event: MouseEvent): boolean {
         const index = this.selectionUtilsService.getMouseClickIndex(event, this.gameService.players[PLAYER.realPlayer].rack);
-        if (index === NOT_FOUND) {
-            return false;
-        }
-        return this.exchangeSelectionService.isLetterAlreadySelected(index);
+        return index === NOT_FOUND ? false : this.exchangeSelectionService.isLetterAlreadySelected(index);
     }
 
     onMouseWheel(event: WheelEvent) {

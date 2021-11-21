@@ -17,7 +17,16 @@ export class MainPageComponent implements OnInit {
     chooseMode(modeKey: string) {
         this.userSettingsService.settings.mode.currentChoiceKey = modeKey;
         this.openDialog();
+        // this.playSound();
     }
+
+    // playSound() {
+    //     const sound = new Audio();
+    //     sound.src = '../sounds/hover.wav';
+    //     sound.load();
+    //     sound.play();
+    //     console.log('DOM');
+    // }
 
     ngOnInit(): void {
         localStorage.clear();

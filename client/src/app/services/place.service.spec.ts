@@ -8,6 +8,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { GridService } from '@app/services/grid.service';
 import { VerifyService } from '@app/services/verify.service';
 import { GameService } from './game.service';
+import { GoalsManagerService } from './goals-manager.service';
 import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
@@ -26,6 +27,7 @@ describe('PlaceService', () => {
     let coord: Vec2;
     let direction: string;
     let gameServiceSpy: GameService;
+    let goalsManagerServiceSpy: GoalsManagerService;
 
     beforeEach(() => {
         verifyServiceSpy = jasmine.createSpyObj('VerifyService', [
@@ -40,6 +42,7 @@ describe('PlaceService', () => {
             words: ['aa', 'finir', 'manger', 'rouler'],
         } as Dictionary;
         verifyServiceSpy.dictionary = dictionary;
+        verifyServiceSpy.formedWords = [];
 
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
         gameServiceSpy.currentTurn = PLAYER.realPlayer;
@@ -55,6 +58,9 @@ describe('PlaceService', () => {
                     { name: 'E', quantity: 15, points: 1, display: 'E' },
                 ],
                 points: 0,
+                turnWithoutSkipAndExchangeCounter: 0,
+                placeInTenSecondsGoalCounter: 0,
+                words: [],
             },
         ];
 
@@ -76,6 +82,7 @@ describe('PlaceService', () => {
         gridServiceSpy.pointStyle = { color: 'NavajoWhite', font: '10px serif' };
         gridServiceSpy.border = { squareBorderColor: 'black' };
         pointsCountingServiceSpy = jasmine.createSpyObj('PointsCountingService', ['processWordPoints']);
+        goalsManagerServiceSpy = jasmine.createSpyObj('GoalsManagerService', ['applyAllGoalsBonus']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: GridService, useValue: gridServiceSpy },
@@ -83,6 +90,7 @@ describe('PlaceService', () => {
                 { provide: RackService, useValue: rackServiceSpy },
                 { provide: VerifyService, useValue: verifyServiceSpy },
                 { provide: GameService, useValue: gameServiceSpy },
+                { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
             ],
             imports: [HttpClientModule],
         });
