@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { PLAYER } from '@app/classes/player';
 import { SQUARE_WIDTH } from '@app/constants/board-constants';
 import { NOT_FOUND } from '@app/constants/common-constants';
+import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { MouseButton } from '@app/enums/mouse-enums';
 import { SelectionType } from '@app/enums/selection-enum';
 import { BehaviorSubject } from 'rxjs';
@@ -180,7 +181,8 @@ describe('SelectionManagerService', () => {
         } as MouseEvent;
 
         gameServiceSpy.currentTurn = PLAYER.realPlayer;
-        service.handleGridSelectionOnLeftClick(event);
+        // eslint-disable-next-line dot-notation
+        service['handleGridSelectionOnLeftClick'](event);
 
         expect(rackLettersManipulationServiceSpy.cancelManipulation).toHaveBeenCalled();
         expect(exchangeSelectionServiceSpy.cancelExchange).toHaveBeenCalled();
@@ -197,7 +199,8 @@ describe('SelectionManagerService', () => {
 
         gameServiceSpy.currentTurn = PLAYER.otherPlayer;
 
-        service.handleGridSelectionOnLeftClick(event);
+        // eslint-disable-next-line dot-notation
+        service['handleGridSelectionOnLeftClick'](event);
 
         expect(rackLettersManipulationServiceSpy.cancelManipulation).not.toHaveBeenCalled();
         expect(exchangeSelectionServiceSpy.cancelExchange).not.toHaveBeenCalled();
@@ -212,9 +215,11 @@ describe('SelectionManagerService', () => {
             offsetY: casePosition * SQUARE_WIDTH,
         } as MouseEvent;
 
-        const isLetterClickAlreadySelectedForExchangeSpy = spyOn(service, 'isLetterClickAlreadySelectedForExchange').and.returnValue(false);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const isLetterClickAlreadySelectedForExchangeSpy = spyOn<any>(service, 'isLetterClickAlreadySelectedForExchange').and.returnValue(false);
 
-        service.handleRackSelectionOnLeftClick(event);
+        // eslint-disable-next-line dot-notation
+        service['handleRackSelectionOnLeftClick'](event);
 
         expect(isLetterClickAlreadySelectedForExchangeSpy).toHaveBeenCalled();
         expect(exchangeSelectionServiceSpy.cancelExchange).toHaveBeenCalled();
@@ -222,7 +227,8 @@ describe('SelectionManagerService', () => {
         expect(rackLettersManipulationServiceSpy.onMouseLeftClick).toHaveBeenCalled();
     });
     it(' handleNoneSelectionOnLeftClick should call cancelPlacement and cancelManipulation', () => {
-        service.handleNoneSelectionOnLeftClick();
+        // eslint-disable-next-line dot-notation
+        service['handleNoneSelectionOnLeftClick']();
 
         expect(placeSelectionServiceSpy.cancelPlacement).toHaveBeenCalled();
         expect(rackLettersManipulationServiceSpy.cancelManipulation).toHaveBeenCalled();
@@ -231,7 +237,8 @@ describe('SelectionManagerService', () => {
         exchangeSelectionServiceSpy.hideOperation.and.returnValue(true);
         exchangeSelectionServiceSpy.cancelExchange.and.returnValue(void '');
         service.selectionType = SelectionType.Grid;
-        service.handleNoneSelectionOnLeftClick();
+        // eslint-disable-next-line dot-notation
+        service['handleNoneSelectionOnLeftClick']();
 
         expect(service.selectionType).toEqual(2);
         expect(exchangeSelectionServiceSpy.cancelExchange).not.toHaveBeenCalled();
@@ -240,7 +247,8 @@ describe('SelectionManagerService', () => {
         exchangeSelectionServiceSpy.hideOperation.and.returnValue(false);
         exchangeSelectionServiceSpy.cancelExchange.and.returnValue(void '');
         service.selectionType = SelectionType.Grid;
-        service.handleNoneSelectionOnLeftClick();
+        // eslint-disable-next-line dot-notation
+        service['handleNoneSelectionOnLeftClick']();
 
         expect(service.selectionType).toEqual(SelectionType.Grid);
         expect(exchangeSelectionServiceSpy.cancelExchange).toHaveBeenCalled();
@@ -442,6 +450,199 @@ describe('SelectionManagerService', () => {
             expect(flagToCheck).toEqual('NOT_FOUND');
             expect(handleGridSelectionOnKeyBoardClickSpy).not.toHaveBeenCalled();
             expect(handleRackSelectionOnKeyBoardClickSpy).not.toHaveBeenCalled();
+        });
+    });
+    describe('handleGridSelectionOnKeyBoardClick', () => {
+        it('should  updateSelectionType and not call onKeyBoardClick if it is not my turn', () => {
+            gameServiceSpy.currentTurn = PLAYER.otherPlayer;
+            const keyEvent = {
+                key: 'b',
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+            service.selectionType = SelectionType.Grid;
+            // eslint-disable-next-line dot-notation
+            service['handleGridSelectionOnKeyBoardClick'](keyEvent);
+
+            expect(service.selectionType).toEqual(2);
+            expect(placeSelectionServiceSpy.onKeyBoardClick).not.toHaveBeenCalled();
+        });
+
+        it('should not  updateSelectionType and call onKeyBoardClick if it is my turn', () => {
+            gameServiceSpy.currentTurn = PLAYER.realPlayer;
+            const keyEvent = {
+                key: 'b',
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+            service.selectionType = SelectionType.Grid;
+            // eslint-disable-next-line dot-notation
+            service['handleGridSelectionOnKeyBoardClick'](keyEvent);
+
+            expect(service.selectionType).toEqual(SelectionType.Grid);
+            expect(placeSelectionServiceSpy.onKeyBoardClick).toHaveBeenCalled();
+        });
+
+        it('should updateSelectionType if it is my turn and the placement is cancelled by escape', () => {
+            gameServiceSpy.currentTurn = PLAYER.realPlayer;
+            const keyEvent = {
+                key: KeyboardKeys.Escape,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+            service.selectionType = SelectionType.Grid;
+            // eslint-disable-next-line dot-notation
+            service['handleGridSelectionOnKeyBoardClick'](keyEvent);
+
+            expect(service.selectionType).toEqual(2);
+        });
+
+        it('should updateSelectionType if it is my turn and the placement is cancelled by taking off all letters by backspace', () => {
+            gameServiceSpy.currentTurn = PLAYER.realPlayer;
+            const keyEvent = {
+                key: KeyboardKeys.Backspace,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+            service.selectionType = SelectionType.Grid;
+            placeSelectionServiceSpy.selectedTilesForPlacement = [];
+            // eslint-disable-next-line dot-notation
+            service['handleGridSelectionOnKeyBoardClick'](keyEvent);
+
+            expect(service.selectionType).toEqual(2);
+        });
+
+        it('should call activePlacement the key is enter and it is my turn', () => {
+            gameServiceSpy.currentTurn = PLAYER.realPlayer;
+            const keyEvent = {
+                key: KeyboardKeys.Enter,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const activePlacementSpy = spyOn<any>(service, 'activePlacement').and.returnValue(void '');
+
+            // eslint-disable-next-line dot-notation
+            service['handleGridSelectionOnKeyBoardClick'](keyEvent);
+
+            expect(activePlacementSpy).toHaveBeenCalled();
+        });
+    });
+    describe('onMouseWheel', () => {
+        it('should not call onKeyBoardClick if the rack is not selected', () => {
+            const wheelEvent = {
+                deltaY: 0,
+                deltaX: 0,
+                deltaZ: 0,
+            } as WheelEvent;
+            service.selectionType = SelectionType.Grid;
+            const onKeyBoardClickSpy = spyOn(service, 'onKeyBoardClick').and.returnValue(void '');
+            // eslint-disable-next-line dot-notation
+            service['onMouseWheel'](wheelEvent);
+
+            expect(onKeyBoardClickSpy).not.toHaveBeenCalled();
+        });
+
+        it('should call onKeyBoardClick with arrowLeft (move the letter to the left)', () => {
+            const wheelEvent = {
+                deltaY: -2,
+                deltaX: 0,
+                deltaZ: 0,
+            } as WheelEvent;
+            service.selectionType = SelectionType.Rack;
+            const onKeyBoardClickSpy = spyOn(service, 'onKeyBoardClick').and.returnValue(void '');
+            // eslint-disable-next-line dot-notation
+            service['onMouseWheel'](wheelEvent);
+
+            expect(onKeyBoardClickSpy).toHaveBeenCalled();
+        });
+
+        it('should call onKeyBoardClick with arrowRight (move the letter to the right)', () => {
+            const wheelEvent = {
+                deltaY: 2,
+                deltaX: 0,
+                deltaZ: 0,
+            } as WheelEvent;
+            service.selectionType = SelectionType.Rack;
+            const onKeyBoardClickSpy = spyOn(service, 'onKeyBoardClick').and.returnValue(void '');
+            // eslint-disable-next-line dot-notation
+            service['onMouseWheel'](wheelEvent);
+
+            expect(onKeyBoardClickSpy).toHaveBeenCalled();
+        });
+    });
+    describe('onCancelManipulation', () => {
+        it('should update selection type and cancel manipulation', () => {
+            service.selectionType = SelectionType.Grid;
+            service.onCancelManipulation(SelectionType.Rack);
+
+            expect(service.selectionType).toEqual(2);
+            expect(rackLettersManipulationServiceSpy.cancelManipulation).toHaveBeenCalled();
+        });
+    });
+    describe('disableManipulation', () => {
+        it('should return true', () => {
+            rackLettersManipulationServiceSpy.selectedIndexes = [];
+            const result = service.disableManipulation();
+            expect(result).toEqual(true);
+        });
+        it('should return false', () => {
+            rackLettersManipulationServiceSpy.selectedIndexes = [1];
+            const result = service.disableManipulation();
+            expect(result).toEqual(false);
+        });
+    });
+
+    describe('disableExchange', () => {
+        it('should return true if it is not my turn', () => {
+            const availableLetters = 9;
+            gameServiceSpy.currentTurn = PLAYER.otherPlayer;
+            reserveServiceSpy.getQuantityOfAvailableLetters.and.returnValue(availableLetters);
+            const result = service.disableExchange();
+            expect(result).toEqual(true);
+        });
+        it('should return true if there are not enough letters left in reserve', () => {
+            const availableLetters = 1;
+            gameServiceSpy.currentTurn = PLAYER.realPlayer;
+            reserveServiceSpy.getQuantityOfAvailableLetters.and.returnValue(availableLetters);
+            const result = service.disableExchange();
+            expect(result).toEqual(true);
+        });
+
+        it('should return true if there are not enough letters left in reserve and it is not my turn', () => {
+            const availableLetters = 1;
+            gameServiceSpy.currentTurn = PLAYER.otherPlayer;
+            reserveServiceSpy.getQuantityOfAvailableLetters.and.returnValue(availableLetters);
+            const result = service.disableExchange();
+            expect(result).toEqual(true);
+        });
+        it('should return false it is my turn and there are enough letters in reserve', () => {
+            const availableLetters = 9;
+            gameServiceSpy.currentTurn = PLAYER.realPlayer;
+            reserveServiceSpy.getQuantityOfAvailableLetters.and.returnValue(availableLetters);
+            const result = service.disableExchange();
+            expect(result).toEqual(false);
+        });
+    });
+
+    describe('hideExchangeButton', () => {
+        it('should return true if there is no selected letter for exchange', () => {
+            exchangeSelectionServiceSpy.selectedIndexes = [];
+            const result = service.hideExchangeButton();
+
+            expect(result).toEqual(true);
+        });
+
+        it('should return false if there are letters selected for exchange', () => {
+            exchangeSelectionServiceSpy.selectedIndexes = [0];
+            const result = service.hideExchangeButton();
+
+            expect(result).toEqual(false);
+        });
+    });
+    describe('onCancelExchange', () => {
+        it('should update selection type and cancel exchange', () => {
+            service.selectionType = SelectionType.Rack;
+            service.onCancelExchange(SelectionType.Grid);
+
+            expect(service.selectionType).toEqual(1);
+            expect(exchangeSelectionServiceSpy.cancelExchange).toHaveBeenCalled();
         });
     });
 });
