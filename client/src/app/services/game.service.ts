@@ -29,14 +29,11 @@ export class GameService {
         private timerService: TimerService,
         private chatService: ChatService,
     ) {
-        this.initPlayers();
-        this.randomTurn();
         this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {
             this.changeTurn(skipped);
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
     }
-
     convertGameToSolo() {
         this.numPlayers = 'solo';
         this.convertToSoloSignal.next(ABANDON_SIGNAL);
@@ -94,7 +91,32 @@ export class GameService {
 
         return hasEnded;
     }
+    initPlayers() {
+        if (this.players.length !== 0) return;
+        const realPlayer: Player = {
+            id: PLAYER.realPlayer,
+            name: this.userSettingsService.nameOption.userChoice,
+            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
+            points: 0,
+            placeInTenSecondsGoalCounter: 0,
+            turnWithoutSkipAndExchangeCounter: 0,
+            words: [],
+        };
+        this.players.push(realPlayer);
 
+        // make computer just two have two players
+        const computer: Player = {
+            id: PLAYER.otherPlayer,
+            name: this.userSettingsService.getComputerName(),
+            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
+            points: 0,
+            placeInTenSecondsGoalCounter: 0,
+            turnWithoutSkipAndExchangeCounter: 0,
+            words: [],
+        };
+        this.players.push(computer);
+        this.randomTurn();
+    }
     private subtractPoint(player: Player): number {
         let pointToSub = 0;
         for (const letter of player.rack) {
@@ -119,30 +141,6 @@ export class GameService {
     }
     private nextPlayer() {
         this.otherPlayerSignal.next(this.numPlayers);
-    }
-    private initPlayers() {
-        const realPlayer: Player = {
-            id: PLAYER.realPlayer,
-            name: this.userSettingsService.nameOption.userChoice,
-            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
-            points: 0,
-            placeInTenSecondsGoalCounter: 0,
-            turnWithoutSkipAndExchangeCounter: 0,
-            words: [],
-        };
-        this.players.push(realPlayer);
-
-        // make computer just two have two players
-        const computer: Player = {
-            id: PLAYER.otherPlayer,
-            name: this.userSettingsService.getComputerName(),
-            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
-            points: 0,
-            placeInTenSecondsGoalCounter: 0,
-            turnWithoutSkipAndExchangeCounter: 0,
-            words: [],
-        };
-        this.players.push(computer);
     }
 
     private randomTurn() {

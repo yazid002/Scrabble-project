@@ -8,14 +8,7 @@ interface NameProperties {
 export class VirtualPlayerNamesService {
     names: NameProperties[];
     constructor() {
-        this.names = [
-            { name: 'Ordi Illetré', default: true, isAdvanced: false },
-            { name: 'Étudiant de la maternelle', default: true, isAdvanced: false },
-            { name: 'Analphabète', default: true, isAdvanced: false },
-            { name: 'Dictionnaire en Personne', default: true, isAdvanced: true },
-            { name: 'Word Master', default: true, isAdvanced: true },
-            { name: 'Étudiant en littérature', default: true, isAdvanced: true },
-        ];
+        this.reset();
     }
 
     addName(name: NameProperties): void {
@@ -34,10 +27,13 @@ export class VirtualPlayerNamesService {
     //     }
     // }
     reset(): void {
-        this.names = this.names.filter((item) => item.default);
-    }
-    getNames(): NameProperties[] {
-        // console.log(this.names);
-        return this.names;
+        this.names = [
+            { name: 'Ordi Illetré', default: true, isAdvanced: false },
+            { name: 'Étudiant de la maternelle', default: true, isAdvanced: false },
+            { name: 'Analphabète', default: true, isAdvanced: false },
+            { name: 'Dictionnaire en Personne', default: true, isAdvanced: true },
+            { name: 'Word Master', default: true, isAdvanced: true },
+            { name: 'Étudiant en littérature', default: true, isAdvanced: true },
+        ];
     }
 }
