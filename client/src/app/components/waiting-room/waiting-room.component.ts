@@ -1,5 +1,5 @@
 import { Dictionary } from './../../classes/dictionary';
-import { GameModeDialogComponent } from './../game-mode-dialog/game-mode-dialog.component';
+// import { GameModeDialogComponent } from './../game-mode-dialog/game-mode-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
@@ -21,8 +21,7 @@ export class WaitingRoomComponent implements OnInit {
     constructor(
         public userSettingsService: UserSettingsService,
         public matDialog: MatDialog,
-        public roomService: RoomService,
-        public gameModeDialogComponent: GameModeDialogComponent,
+        public roomService: RoomService, // public gameModeDialogComponent: GameModeDialogComponent,
     ) {}
     ngOnInit(): void {
         const name = this.userSettingsService.nameOption.userChoice;
@@ -32,7 +31,9 @@ export class WaitingRoomComponent implements OnInit {
         const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
         );
-        this.assignValues(name, mode, timer);
+        const dictionnaire = this.userSettingsService.selectedDictionary;
+        // const dictionnaire = this.gameModeDialogComponent.selectedDictionary;
+        this.assignValues(name, mode, timer, dictionnaire);
         this.roomService.createRoom();
     }
     openSwitchToSoloDialog() {
@@ -48,15 +49,21 @@ export class WaitingRoomComponent implements OnInit {
     //         this.roomService.joinRoom(this.roomService.rooms[random].id);
     //     }
     // }
-    private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined) {
-        if (name && mode && timer) {
+    private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined, dictionnaire: Dictionary) {
+        if (name && mode && timer && dictionnaire) {
             this.name = name;
             this.mode = mode.value;
             this.timer = timer.value;
+            this.dictionnaire = dictionnaire;
         }
     }
     get numbers(): number {
         // console.log('length = ' + this.roomService.rooms.length);
         return this.roomService.rooms.length;
+    }
+
+    get selected(): Dictionary {
+        console.log('selected dictionnary = ' + this.userSettingsService.selectedDictionary);
+        return this.dictionnaire;
     }
 }
