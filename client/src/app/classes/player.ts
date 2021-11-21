@@ -1,14 +1,14 @@
 import { ICharacter } from './letter';
-import { PlacementParameters } from './placement';
 
 export interface Player {
     name: string;
+    turnWithoutSkipAndExchangeCounter: number;
     id: number;
     rack: ICharacter[];
     points: number;
-    // TODO: enlever si non utilisé
-    placementParameters?: PlacementParameters;
     won?: string;
+    placeInTenSecondsGoalCounter: number;
+    words: string[];
 }
 export const PLAYER = {
     realPlayer: 0,

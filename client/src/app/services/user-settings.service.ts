@@ -7,7 +7,7 @@ const MODE: IOptionList = {
     settingName: 'Mode de jeux',
     availableChoices: [
         { key: 'classic', value: 'Classique' },
-        { key: 'log2990', value: 'LOG2990', disabled: true },
+        { key: 'log2990', value: 'LOG2990' },
     ],
 };
 const NUM_PLAYERS: IOptionList = {
@@ -56,13 +56,16 @@ export class UserSettingsService {
         computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
+
     dictionaryControl = new FormControl('', Validators.required);
     dictionnaires: Dictionary[] = [
-        { title: 'Espagnol', description: 'Langue espagnole', words: [] },
-        { title: 'Anglais', description: 'Langue anglaise', words: [] },
-        { title: 'Italien', description: 'Langue italienne', words: [] },
+        { title: 'Espagnol', description: 'Langue espagnole', words: [], isAvailable: true },
+        { title: 'Anglais', description: 'Langue anglaise', words: [], isAvailable: true },
+        { title: 'Italien', description: 'Langue italienne', words: [], isAvailable: false },
+        { title: 'Russe', description: 'Langue Russe', words: [], isAvailable: true },
     ];
     selectedDictionary: Dictionary;
+
     nameOption = NAME_OPTION;
     computerName: string;
 

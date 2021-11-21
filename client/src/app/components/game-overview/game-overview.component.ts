@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { IOption } from '@app/classes/game-options';
+import { Goal } from '@app/classes/goal';
 import { PLAYER } from '@app/classes/player';
 import { GameService } from '@app/services/game.service';
+import { GoalService } from '@app/services/goal.service';
 import { PlaceService } from '@app/services/place.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
@@ -13,6 +15,7 @@ import { UserSettingsService } from '@app/services/user-settings.service';
     styleUrls: ['./game-overview.component.scss'],
 })
 export class GameOverviewComponent implements OnInit {
+    goals: Goal;
     mode: string;
     numPlayers: string;
     computerLevel: string;
@@ -20,16 +23,21 @@ export class GameOverviewComponent implements OnInit {
     playerIndex = PLAYER;
     nbLettersReserve: number = 0;
     otherPlayerName: string = '';
+    publicGoals: Goal[];
+    privateGoals: Goal[];
     constructor(
         public userSettingsService: UserSettingsService,
         public timerService: TimerService,
         public reserveService: ReserveService,
         public placeService: PlaceService,
         public gameService: GameService,
+        public goalService: GoalService,
     ) {}
     ngOnInit(): void {
+        this.initializeGoals();
         this.updateData();
     }
+
     private updateData(): void {
         const reserveRefreshRate = 1000;
         setInterval(() => {
@@ -46,7 +54,10 @@ export class GameOverviewComponent implements OnInit {
             const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
                 (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
             );
+
             this.assignValues(mode, numPlayers, computerLevel, timer);
+            this.publicGoals = this.goalService.publicGoals;
+            this.privateGoals = this.goalService.privateGoals;
             this.nbLettersReserve = this.reserveService.getQuantityOfAvailableLetters();
         }, reserveRefreshRate);
     }
@@ -57,5 +68,15 @@ export class GameOverviewComponent implements OnInit {
             this.computerLevel = computerLevel.value;
             this.timer = timer.value;
         }
+    }
+
+    private initializeGoals(): void {
+        this.publicGoals = this.goalService.publicGoals
+            ? [...this.goalService.publicGoals]
+            : (this.goalService.publicGoals = [this.goalService.getAUniqueGoal(), this.goalService.getAUniqueGoal()]);
+
+        this.privateGoals = this.goalService.privateGoals
+            ? [...this.goalService.privateGoals]
+            : (this.goalService.privateGoals = [this.goalService.getAUniqueGoal(), this.goalService.getAUniqueGoal()]);
     }
 }

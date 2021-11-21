@@ -29,11 +29,13 @@ export class ExchangeService {
         } else {
             this.exchangeLettersViaClick(lettersToChange);
         }
-        this.timerService.resetTimer();
+
         const result: IChat = {
             from: SENDER.computer,
             body: 'Échange de lettres réussi !',
         };
+        this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter = 0;
+        this.timerService.resetTimer();
         return { error: false, message: result };
     }
 

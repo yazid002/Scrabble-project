@@ -17,7 +17,7 @@ import { VerifyService } from './verify.service';
 
 const CANVAS_WIDTH = 500;
 const CANVAS_HEIGHT = 500;
-fdescribe('PlaceSelectionService', () => {
+describe('PlaceSelectionService', () => {
     let service: PlaceSelectionService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
     let gridServiceSpy: jasmine.SpyObj<GridService>;
@@ -65,6 +65,9 @@ fdescribe('PlaceSelectionService', () => {
                     { name: 'E', quantity: 15, points: 1, display: 'E' },
                 ],
                 points: 0,
+                turnWithoutSkipAndExchangeCounter: 0,
+                placeInTenSecondsGoalCounter: 0,
+                words: [],
             },
         ];
 
@@ -384,8 +387,10 @@ fdescribe('PlaceSelectionService', () => {
         tiles[coord.y][coord.x].text = 'a';
         tiles[coord.y + 1][coord.x].text = 'b';
         tiles[coord.y + 2][coord.x].text = 'f';
+        tiles[coord.y + 3][coord.x].text = '';
         tiles[coord.y][coord.x + 1].text = 'c';
         tiles[coord.y][coord.x + 2].text = 'd';
+        tiles[coord.y][coord.x + 3].text = '';
         service.direction = true;
 
         const expectedX = 10;
@@ -399,8 +404,10 @@ fdescribe('PlaceSelectionService', () => {
         tiles[coord.y][coord.x].text = 'a';
         tiles[coord.y + 1][coord.x].text = 'b';
         tiles[coord.y + 2][coord.x].text = 'f';
+        tiles[coord.y + 3][coord.x].text = '';
         tiles[coord.y][coord.x + 1].text = 'c';
         tiles[coord.y][coord.x + 2].text = 'd';
+        tiles[coord.y][coord.x + 3].text = '';
         service.direction = false;
 
         const expectedY = 10;
@@ -412,6 +419,7 @@ fdescribe('PlaceSelectionService', () => {
     it('incrementNextCoord should go to the next coord empty if we are at the bottom but write horizontally', () => {
         const coord = { x: 7, y: 14 };
         tiles[coord.y][coord.x].text = 'a';
+        tiles[coord.y][coord.x + 1].text = 'a=';
         service.direction = true;
 
         const expectedX = 8;

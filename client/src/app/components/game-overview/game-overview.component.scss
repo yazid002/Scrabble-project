@@ -11,10 +11,31 @@ mat-card mat-card {
     color: red;
 }
 
-.dictionnaire {
-    margin-bottom: 50px;
+.goalsTitle {
+    justify-content: space-between;
+    font-size: 20px;
 }
 
-.mat-label {
-    margin-top: 30px;
+.goalsContent {
+    font-weight: bolder;
+    border-style: dotted;
+}
+
+.goalsPoints {
+    font-style: oblique;
+    font-weight: 500;
+}
+
+.goalsDescription {
+    font-style: oblique;
+    font-weight: bolder;
+    color: dodgerblue;
+}
+
+.completedGoal {
+    color: green;
+}
+
+.uncompletedGoal {
+    color: black;
 }

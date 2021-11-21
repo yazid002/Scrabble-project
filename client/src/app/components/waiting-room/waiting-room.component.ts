@@ -62,8 +62,8 @@ export class WaitingRoomComponent implements OnInit {
         return this.roomService.rooms.length;
     }
 
-    get selected(): Dictionary {
-        console.log('selected dictionnary = ' + this.userSettingsService.selectedDictionary);
-        return this.dictionnaire;
-    }
+    // get selected(): Dictionary {
+    //     console.log('selected dictionnary = ' + this.userSettingsService.selectedDictionary);
+    //     return this.dictionnaire;
+    // }
 }

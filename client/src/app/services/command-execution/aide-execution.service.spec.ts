@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { IChat } from '@app/classes/chat';
-
 import { AideExecutionService } from './aide-execution.service';
 
 describe('AideExecutionService', () => {

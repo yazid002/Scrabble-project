@@ -1,10 +1,12 @@
 import { Injectable, Output } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { Case } from '@app/classes/case';
+import { Goal } from '@app/classes/goal';
 import { ICharacter } from '@app/classes/letter';
 import { Player, PLAYER } from '@app/classes/player';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GameService } from './game.service';
+import { GoalService } from './goal.service';
 import { GridService } from './grid.service';
 import { PlaceSelectionService } from './place-selection.service';
 import { ReserveService } from './reserve.service';
@@ -17,6 +19,8 @@ export interface GameState {
     skipCounter: number;
     timer: number;
     grid: Case[][];
+    publicGoals: Goal[];
+    privateGoals: Goal[];
 }
 @Injectable({
     providedIn: 'root',
@@ -34,7 +38,8 @@ export class GameSyncService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private gridService: GridService,
-        public placeSelectionService: PlaceSelectionService,
+        private placeSelectionService: PlaceSelectionService,
+        private goalService: GoalService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();
@@ -62,9 +67,15 @@ export class GameSyncService {
         this.reserveService.alphabets = gameState.alphabetReserve;
         // who is the 'Other Player' is different for the other player
         this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
+
         this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
         this.gameService.skipCounter = gameState.skipCounter;
         this.timerService.counter.totalTimer = gameState.timer;
+
+        if (this.gameService.currentTurn === PLAYER.otherPlayer) {
+            this.setGoalsFromGameState(gameState);
+        }
+
         for (let i = 0; i < tiles.length; i++) {
             tiles[i] = gameState.grid[i];
         }
@@ -73,6 +84,8 @@ export class GameSyncService {
         if (!this.alreadySynced) {
             this.alreadySynced = true;
             this.sendToServer();
+        } else {
+            this.setGoalsFromGameState(gameState);
         }
     }
 
@@ -81,29 +94,29 @@ export class GameSyncService {
         this.sendGameStateSignal.next(gameState);
     }
 
-    recieveFromLocalStorege() {
-        const gameState = JSON.parse(localStorage.getItem('gameState') as string) as GameState;
+    // recieveFromLocalStorege() {
+    //     const gameState = JSON.parse(localStorage.getItem('gameState') as string) as GameState;
 
-        this.reserveService.alphabets = gameState.alphabetReserve;
-        this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
-        this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
-        this.gameService.skipCounter = gameState.skipCounter;
-        this.timerService.counter.totalTimer = gameState.timer;
-        for (let i = 0; i < tiles.length; i++) {
-            tiles[i] = gameState.grid[i];
-        }
-        this.gridService.drawGrid();
-    }
+    //     this.reserveService.alphabets = gameState.alphabetReserve;
+    //     this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
+    //     this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
+    //     this.gameService.skipCounter = gameState.skipCounter;
+    //     this.timerService.counter.totalTimer = gameState.timer;
+    //     for (let i = 0; i < tiles.length; i++) {
+    //         tiles[i] = gameState.grid[i];
+    //     }
+    //     this.gridService.drawGrid();
+    // }
 
-    sendToLocalStorage() {
-        const sendingDelay = 1000;
-        setInterval(() => {
-            const gameState = this.getGameState();
-            localStorage.clear();
+    // sendToLocalStorage() {
+    //     const sendingDelay = 1000;
+    //     setInterval(() => {
+    //         const gameState = this.getGameState();
+    //         localStorage.clear();
 
-            localStorage.setItem('gameState', JSON.stringify(gameState));
-        }, sendingDelay);
-    }
+    //         localStorage.setItem('gameState', JSON.stringify(gameState));
+    //     }, sendingDelay);
+    // }
     getGameState(): GameState {
         this.placeSelectionService.cancelPlacement();
 
@@ -118,6 +131,8 @@ export class GameSyncService {
             skipCounter: this.gameService.skipCounter,
             timer: this.timerService.counter.totalTimer,
             grid: tempGrid,
+            publicGoals: this.goalService.publicGoals,
+            privateGoals: this.goalService.privateGoals,
         };
         return gameState;
     }
@@ -136,6 +151,8 @@ export class GameSyncService {
             skipCounter: 0,
             timer: 0,
             grid: resetGrid,
+            publicGoals: [],
+            privateGoals: [],
         };
 
         return gameState;
@@ -153,5 +170,14 @@ export class GameSyncService {
             tiles[i] = resetGame.grid[i];
         }
         this.gridService.drawGrid();
+        this.goalService.privateGoals = resetGame.privateGoals;
+        this.goalService.publicGoals = resetGame.publicGoals;
+    }
+
+    private setGoalsFromGameState(gameState: GameState): void {
+        this.goalService.publicGoals = gameState.publicGoals;
+
+        this.goalService.privateGoals[PLAYER.realPlayer] = gameState.privateGoals[PLAYER.otherPlayer];
+        this.goalService.privateGoals[PLAYER.otherPlayer] = gameState.privateGoals[PLAYER.realPlayer];
     }
 }

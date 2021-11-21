@@ -22,6 +22,9 @@ describe('VirtualPlayerService', () => {
 
         const exchangeRackServiceSpy = spyOn<any>(service['exchangeService']['rackService'], 'fillRackPortion');
         exchangeRackServiceSpy.and.returnValue(undefined);
+
+        const verifyServiceSpy = spyOn<any>(service['verifyService'], 'getLettersUsedOnBoardFromPlacement');
+        verifyServiceSpy.and.returnValue([]);
     });
 
     it('should be created', () => {

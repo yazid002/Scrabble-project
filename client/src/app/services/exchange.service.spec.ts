@@ -25,6 +25,9 @@ describe('ExchangeService', () => {
                     { name: 'E', quantity: 15, points: 1, display: 'E' },
                 ],
                 points: 0,
+                turnWithoutSkipAndExchangeCounter: 0,
+                placeInTenSecondsGoalCounter: 0,
+                words: [],
             },
         ];
 

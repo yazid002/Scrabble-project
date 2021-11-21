@@ -3,6 +3,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { PLAYER } from '@app/classes/player';
 import { GameService } from '@app/services/game.service';
+import { GoalsManagerService } from '@app/services/goals-manager.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 @Component({
@@ -26,8 +27,9 @@ export class GameModeDialogComponent {
     constructor(
         public userSettingsService: UserSettingsService,
         public gameService: GameService,
-        private randomMode: RandomModeService,
+        private randomModeService: RandomModeService,
         public matDialog: MatDialog,
+        private goalsManagerService: GoalsManagerService,
     ) {}
 
     validateName() {
@@ -39,11 +41,12 @@ export class GameModeDialogComponent {
     configureGame() {
         this.gameService.players[PLAYER.realPlayer].name = this.userSettingsService.nameOption.userChoice;
         this.gameService.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
+        this.goalsManagerService.isEnabled = this.userSettingsService.settings.mode.currentChoiceKey === 'log2990';
     }
 
     applyRandomMode(event: MatCheckboxChange) {
-        this.randomMode.isChecked = event.checked;
-        this.message = 'MODE BONUS ALEATOIRE ACTIVÉ ';
+        this.randomModeService.isChecked = event.checked;
+        this.message = 'MODE BONUS ALEATOIRE ACTIVÉ';
         if (!event.checked) {
             this.message = 'MODE BONUS ALEATOIRE DESACTIVÉ';
         }

@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { HttpClientTestingModule /*, HttpTestingController*/ } from '@angular/common/http/testing';
+import { HttpClientTestingModule /* , HttpTestingController*/ } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
@@ -26,29 +26,10 @@ describe('VerifyService', () => {
         service.dictionary = dictionary;
         // baseUrl = service.urlString;
         // httpMock = TestBed.get(HttpTestingController);
-
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
-    });
-
-    it(' isWordInDictionary should return true if the word exists in the dictionary', () => {
-        const wordToCheck = 'manger';
-
-        // Car isWordInDictionary est privée
-        // eslint-disable-next-line dot-notation
-        const result = service['isWordInDictionary'](wordToCheck);
-        expect(result).toBeTrue();
-    });
-
-    it(' isWordInDictionary should return false if the word does not exist in the dictionary', () => {
-        const wordToCheck = 'monter';
-
-        // Car isWordInDictionary est privée
-        // eslint-disable-next-line dot-notation
-        const result = service['isWordInDictionary'](wordToCheck);
-        expect(result).toBeFalse();
     });
 
     it(' normalizeWord should return the word without accents and diacritics', () => {
@@ -688,8 +669,9 @@ describe('VerifyService', () => {
             errorMessage: `il vous faut former des mots d'une longueur minimale de 2, mais le mot ${word} a une longueur de 1.`,
         };
 
-
-        const spy = spyOn<any>(service,'validateWords');
+        // Car validateWords est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const spy = spyOn<any>(service, 'validateWords');
         spy.and.returnValue(Promise.resolve(expectedResult));
 
         const result = await service.checkAllWordsExist(word, coord);
@@ -698,7 +680,7 @@ describe('VerifyService', () => {
 
     it(
         ' checkAllWordsExist should return an error if findHorizontalAdjacentWord' +
-            ' return a word that length is less more than 2 and does not exist in the dictionary',
+            ' return a word that length is more than 2 and does not exist in the dictionary',
         async () => {
             const coord = { x: 1, y: 1 };
             const word = 'mmm';
@@ -712,7 +694,10 @@ describe('VerifyService', () => {
             spyOn<any>(service, 'findHorizontalAdjacentWord').and.returnValue(word);
 
             const expectedResult = { wordExists: false, errorMessage: `le mot ${word} n'existe pas dans le dictionnaire` };
-            const spy = spyOn<any>(service,'validateWords');
+
+            // Car validateWords est privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const spy = spyOn<any>(service, 'validateWords');
             spy.and.returnValue(Promise.resolve(expectedResult));
             const result = await service.checkAllWordsExist(word, coord);
             expect(result).toEqual(expectedResult);
@@ -739,11 +724,11 @@ describe('VerifyService', () => {
             // Car findVerticalAdjacentWord est privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'findVerticalAdjacentWord').and.returnValue(verticalWord);
-
-
-
             const expectedResult = { wordExists: false, errorMessage: `le mot ${verticalWord} n'existe pas dans le dictionnaire` };
-            const spy = spyOn<any>(service,'validateWords');
+
+            // Car validateWords est privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const spy = spyOn<any>(service, 'validateWords');
             spy.and.returnValue(Promise.resolve(expectedResult));
 
             const result = await service.checkAllWordsExist(word, coord);
@@ -770,7 +755,10 @@ describe('VerifyService', () => {
         spyOn<any>(service, 'findVerticalAdjacentWord').and.returnValue(verticalWord);
 
         const expectedResult = { wordExists: true, errorMessage: '' };
-        const spy = spyOn<any>(service,'validateWords');
+
+        // Car validateWords est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const spy = spyOn<any>(service, 'validateWords');
         spy.and.returnValue(Promise.resolve(expectedResult));
         const result = await service.checkAllWordsExist(word, coord);
         expect(result).toEqual(expectedResult);
