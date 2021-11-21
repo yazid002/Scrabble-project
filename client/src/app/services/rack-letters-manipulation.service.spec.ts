@@ -561,4 +561,91 @@ describe('RackLettersManipulationService', () => {
 
         expect(cancelManipulationSpy).toHaveBeenCalledTimes(1);
     });
+
+    describe('onKeyBoardClick', () => {
+        let moveToTheLeftSpy: jasmine.Spy<() => void>;
+        let moveToTheRightSpy: jasmine.Spy<() => void>;
+        let flagToCheck: string;
+
+        beforeEach(() => {
+            service = TestBed.inject(RackLettersManipulationService);
+            flagToCheck = 'NOT_FOUND';
+            // Car moveToTheLeft privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            moveToTheLeftSpy = spyOn<any>(service, 'moveToTheLeft').and.callFake(() => {
+                flagToCheck = 'moveToTheLeft';
+            });
+            // Car moveToTheRight privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            moveToTheRightSpy = spyOn<any>(service, 'moveToTheRight').and.callFake(() => {
+                flagToCheck = 'moveToTheRight';
+            });
+        });
+
+        it('onKeyBoardClick should move to the left', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.ArrowLeft,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
+
+            service.onKeyBoardClick(keyEvent, rack);
+
+            expect(flagToCheck).toEqual('moveToTheLeft');
+            expect(moveToTheLeftSpy).toHaveBeenCalled();
+            expect(moveToTheRightSpy).not.toHaveBeenCalled();
+        });
+
+        it('onKeyBoardClick should move to the right', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.ArrowRight,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
+
+            service.onKeyBoardClick(keyEvent, rack);
+
+            expect(flagToCheck).toEqual('moveToTheRight');
+            expect(moveToTheLeftSpy).not.toHaveBeenCalled();
+            expect(moveToTheRightSpy).toHaveBeenCalled();
+        });
+
+        it('onKeyBoardClick should not get the right function', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.Backspace,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
+
+            service.onKeyBoardClick(keyEvent, rack);
+
+            expect(flagToCheck).toEqual('NOT_FOUND');
+            expect(moveToTheLeftSpy).not.toHaveBeenCalled();
+            expect(moveToTheRightSpy).not.toHaveBeenCalled();
+        });
+    });
 });

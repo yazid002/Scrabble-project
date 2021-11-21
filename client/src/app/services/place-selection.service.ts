@@ -140,7 +140,7 @@ export class PlaceSelectionService {
         if (index === NOT_FOUND) {
             return false;
         }
-        if (!this.areCoordValid(coord)) {
+        if (!this.verifyService.areCoordValid(coord)) {
             return false;
         }
         if (this.isTileAlreadySelected(coord)) {
@@ -151,10 +151,6 @@ export class PlaceSelectionService {
 
     isTileAlreadySelected(coord: Vec2): boolean {
         return this.selectedTilesForPlacement.includes(coord);
-    }
-
-    areCoordValid(coord: Vec2): boolean {
-        return coord.y < SQUARE_NUMBER && coord.x < SQUARE_NUMBER && coord.x >= 0 && coord.y >= 0;
     }
 
     incrementNextCoord(coord: Vec2): Vec2 {
