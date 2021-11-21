@@ -974,6 +974,8 @@ describe('VerifyService', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.returnValue(true);
 
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+
         // Car isLetterOnBoardTheSame est privée
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.returnValue(false);
@@ -995,6 +997,8 @@ describe('VerifyService', () => {
         // Car isCaseEmpty est privée
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.callThrough();
+
+        spyOn(service, 'areCoordValid').and.returnValue(true);
 
         // Car isLetterOnBoardTheSame est privée
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1023,6 +1027,8 @@ describe('VerifyService', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.callThrough();
 
+        spyOn(service, 'areCoordValid').and.returnValue(true);
+
         // Car isLetterOnBoardTheSame est privée
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.callThrough();
@@ -1030,6 +1036,26 @@ describe('VerifyService', () => {
         const result = service.getLettersUsedOnBoardFromPlacement(coord, direction, word);
         expect(isLetterOnBoardTheSameSpy).toHaveBeenCalled();
         expect(result).toEqual(expectedResult);
+    });
+
+    it(' getLettersUsedOnBoardFromPlacement should return return empty array if coords are not valid', () => {
+        const coord = { y: 15, x: 1 };
+        const word = 'papa';
+        const direction = 'v';
+
+        // Car isCaseEmpty est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'isCaseEmpty').and.callThrough();
+
+        spyOn(service, 'areCoordValid').and.returnValue(false);
+
+        // Car isLetterOnBoardTheSame est privée
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.callThrough();
+
+        const result = service.getLettersUsedOnBoardFromPlacement(coord, direction, word);
+        expect(isLetterOnBoardTheSameSpy).not.toHaveBeenCalled();
+        expect(result).toEqual([]);
     });
 
     it(' getAllFormedWords should return all words newly formed', () => {

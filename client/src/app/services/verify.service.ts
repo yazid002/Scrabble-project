@@ -52,7 +52,6 @@ export class VerifyService {
                     response.message.body = "Commande impossible à réaliser : Il y a déjà une lettre dans l'une des cases ciblées.";
                     return response;
                 }
-
                 lettersUsedOnBoard.push({ letter, coord: { y, x } });
             } else if (!this.rackService.isLetterOnRack(letter)) {
                 this.success = false;
@@ -72,12 +71,14 @@ export class VerifyService {
             const computedCoord = this.computeCoordByDirection(direction, coord, i);
             const x = computedCoord.x;
             const y = computedCoord.y;
+            if (!this.areCoordValid({ x, y })) {
+                return lettersUsedOnBoard;
+            }
             const charInBox = tiles[y][x].letter;
             const letter = word.charAt(i) === word.charAt(i).toUpperCase() ? '*' : word.charAt(i);
             if (this.isCaseEmpty(charInBox)) {
                 continue;
             }
-
             if (this.isLetterOnBoardTheSame(charInBox.toLowerCase(), word.charAt(i).toLowerCase())) {
                 lettersUsedOnBoard.push({ letter, coord: { y, x } });
             }
@@ -111,7 +112,6 @@ export class VerifyService {
         let wordFound = '';
         let i = 0;
         const wordsFound: string[] = [];
-
         while (i < word.length && coord.y + i < SQUARE_NUMBER) {
             const newCords = { x: coord.x, y: coord.y + i };
             const isLetterNewlyPlaced =

@@ -25,6 +25,7 @@ export class SelectionManagerService {
     timerDone: Subscription;
 
     onLeftClickSelectionTypeMapping: Map<SelectionType, (event?: MouseEvent) => void>;
+    onKeyBoardClickSelectionTypeMapping: Map<SelectionType, (event?: KeyboardEvent) => void>;
 
     constructor(
         private exchangeSelectionService: ExchangeSelectionService,
@@ -42,6 +43,10 @@ export class SelectionManagerService {
             [SelectionType.Grid, (event?: MouseEvent) => this.handleGridSelectionOnLeftClick(event as MouseEvent)],
             [SelectionType.Rack, (event?: MouseEvent) => this.handleRackSelectionOnLeftClick(event as MouseEvent)],
             [SelectionType.None, () => this.handleNoneSelectionOnLeftClick()],
+        ]);
+        this.onKeyBoardClickSelectionTypeMapping = new Map([
+            [SelectionType.Grid, (event?: KeyboardEvent) => this.handleGridSelectionOnKeyBoardClick(event as KeyboardEvent)],
+            [SelectionType.Rack, (event?: KeyboardEvent) => this.handleRackSelectionOnKeyBoardClick(event as KeyboardEvent)],
         ]);
         this.timerDone = this.timerService.timerDone.subscribe(() => {
             this.placeSelectionService.cancelPlacement();
@@ -104,11 +109,16 @@ export class SelectionManagerService {
     }
 
     onKeyBoardClick(event: KeyboardEvent) {
-        if (this.selectionType === SelectionType.Grid) {
-            this.handleGridSelectionOnKeyBoardClick(event);
-        } else if (this.selectionType === SelectionType.Rack) {
-            this.handleRackSelectionOnKeyBoardClick(event);
+        // if (this.selectionType === SelectionType.Grid) {
+        //     this.handleGridSelectionOnKeyBoardClick(event);
+        // } else if (this.selectionType === SelectionType.Rack) {
+        //     this.handleRackSelectionOnKeyBoardClick(event);
+        // }
+        const selectionHandler = this.onKeyBoardClickSelectionTypeMapping.get(this.selectionType) as (event?: KeyboardEvent) => void;
+        if (!selectionHandler) {
+            return;
         }
+        selectionHandler(event);
     }
 
     handleGridSelectionOnKeyBoardClick(event: KeyboardEvent) {

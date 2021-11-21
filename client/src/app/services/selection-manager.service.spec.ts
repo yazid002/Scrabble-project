@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { PLAYER } from '@app/classes/player';
 import { SQUARE_WIDTH } from '@app/constants/board-constants';
@@ -225,5 +226,222 @@ describe('SelectionManagerService', () => {
 
         expect(placeSelectionServiceSpy.cancelPlacement).toHaveBeenCalled();
         expect(rackLettersManipulationServiceSpy.cancelManipulation).toHaveBeenCalled();
+    });
+    it(' handleNoneSelectionOnLeftClick should update selectionType and not call cancelExchange', () => {
+        exchangeSelectionServiceSpy.hideOperation.and.returnValue(true);
+        exchangeSelectionServiceSpy.cancelExchange.and.returnValue(void '');
+        service.selectionType = SelectionType.Grid;
+        service.handleNoneSelectionOnLeftClick();
+
+        expect(service.selectionType).toEqual(2);
+        expect(exchangeSelectionServiceSpy.cancelExchange).not.toHaveBeenCalled();
+    });
+    it(' handleNoneSelectionOnLeftClick should not update selectionType and should call cancelExchange', () => {
+        exchangeSelectionServiceSpy.hideOperation.and.returnValue(false);
+        exchangeSelectionServiceSpy.cancelExchange.and.returnValue(void '');
+        service.selectionType = SelectionType.Grid;
+        service.handleNoneSelectionOnLeftClick();
+
+        expect(service.selectionType).toEqual(SelectionType.Grid);
+        expect(exchangeSelectionServiceSpy.cancelExchange).toHaveBeenCalled();
+    });
+
+    it('onRightClick should not call cancelExchange', () => {
+        const coord = { x: 7, y: 7 };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+            preventDefault: () => void '',
+        } as MouseEvent;
+
+        exchangeSelectionServiceSpy.onMouseRightClick.and.returnValue(void '');
+        exchangeSelectionServiceSpy.cancelExchange.and.returnValue(void '');
+        rackLettersManipulationServiceSpy.cancelManipulation.and.returnValue(NOT_FOUND);
+
+        service.selectionType = SelectionType.Rack;
+        service.onRightClick(event);
+
+        expect(exchangeSelectionServiceSpy.cancelExchange).not.toHaveBeenCalled();
+        expect(exchangeSelectionServiceSpy.onMouseRightClick).toHaveBeenCalled();
+        expect(rackLettersManipulationServiceSpy.cancelManipulation).toHaveBeenCalled();
+    });
+
+    it('onRightClick should call cancelExchange', () => {
+        const coord = { x: 7, y: 7 };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+            preventDefault: () => void '',
+        } as MouseEvent;
+
+        exchangeSelectionServiceSpy.onMouseRightClick.and.returnValue(void '');
+        exchangeSelectionServiceSpy.cancelExchange.and.returnValue(void '');
+        rackLettersManipulationServiceSpy.cancelManipulation.and.returnValue(NOT_FOUND);
+
+        service.selectionType = SelectionType.Grid;
+        service.onRightClick(event);
+
+        expect(exchangeSelectionServiceSpy.cancelExchange).toHaveBeenCalled();
+        expect(exchangeSelectionServiceSpy.onMouseRightClick).not.toHaveBeenCalled();
+        expect(rackLettersManipulationServiceSpy.cancelManipulation).not.toHaveBeenCalled();
+    });
+    describe('onLeftClick', () => {
+        let handleGridSelectionOnLeftClickSpy: jasmine.Spy<() => void>;
+        let handleRackSelectionOnLeftClickSpy: jasmine.Spy<() => void>;
+        let handleNoneSelectionOnLeftClickSpy: jasmine.Spy<() => void>;
+        let flagToCheck: string;
+
+        beforeEach(() => {
+            service = TestBed.inject(SelectionManagerService);
+            flagToCheck = 'NOT_FOUND';
+            // Car handleGridSelectionOnLeftClick privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            handleGridSelectionOnLeftClickSpy = spyOn<any>(service, 'handleGridSelectionOnLeftClick').and.callFake(() => {
+                flagToCheck = 'handleGridSelectionOnLeftClick';
+            });
+            // Car handleRackSelectionOnLeftClick privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            handleRackSelectionOnLeftClickSpy = spyOn<any>(service, 'handleRackSelectionOnLeftClick').and.callFake(() => {
+                flagToCheck = 'handleRackSelectionOnLeftClick';
+            });
+
+            // Car handleNoneSelectionOnLeftClick privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            handleNoneSelectionOnLeftClickSpy = spyOn<any>(service, 'handleNoneSelectionOnLeftClick').and.callFake(() => {
+                flagToCheck = 'handleNoneSelectionOnLeftClick';
+            });
+        });
+
+        it('onLeftClick should handleGridSelectionOnLeftClick', () => {
+            flagToCheck = 'NOT_FOUND';
+            const coord = { x: 7, y: 7 };
+            const event = {
+                button: MouseButton.Right,
+                offsetX: coord.x * SQUARE_WIDTH,
+                offsetY: coord.y * SQUARE_WIDTH,
+            } as MouseEvent;
+            service.selectionType = SelectionType.Grid;
+            service.onLeftClick(event);
+
+            expect(flagToCheck).toEqual('handleGridSelectionOnLeftClick');
+            expect(handleGridSelectionOnLeftClickSpy).toHaveBeenCalled();
+            expect(handleRackSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleNoneSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+        });
+
+        it('onLeftClick should handleRackSelectionOnLeftClick', () => {
+            flagToCheck = 'NOT_FOUND';
+            const coord = { x: 7, y: 7 };
+            const event = {
+                button: MouseButton.Right,
+                offsetX: coord.x * SQUARE_WIDTH,
+                offsetY: coord.y * SQUARE_WIDTH,
+            } as MouseEvent;
+            service.selectionType = SelectionType.Rack;
+            service.onLeftClick(event);
+
+            expect(flagToCheck).toEqual('handleRackSelectionOnLeftClick');
+            expect(handleGridSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleRackSelectionOnLeftClickSpy).toHaveBeenCalled();
+            expect(handleNoneSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+        });
+
+        it('onLeftClick should handleNoneSelectionOnLeftClick', () => {
+            flagToCheck = 'NOT_FOUND';
+            const coord = { x: 7, y: 7 };
+            const event = {
+                button: MouseButton.Right,
+                offsetX: coord.x * SQUARE_WIDTH,
+                offsetY: coord.y * SQUARE_WIDTH,
+            } as MouseEvent;
+            service.selectionType = SelectionType.None;
+            service.onLeftClick(event);
+
+            expect(flagToCheck).toEqual('handleNoneSelectionOnLeftClick');
+            expect(handleGridSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleRackSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleNoneSelectionOnLeftClickSpy).toHaveBeenCalled();
+        });
+
+        it('onLeftClick should not get a function', () => {
+            flagToCheck = 'NOT_FOUND';
+            const coord = { x: 7, y: 7 };
+            const event = {
+                button: MouseButton.Right,
+                offsetX: coord.x * SQUARE_WIDTH,
+                offsetY: coord.y * SQUARE_WIDTH,
+            } as MouseEvent;
+            service.selectionType = SelectionType.Chat;
+            service.onLeftClick(event);
+
+            expect(flagToCheck).toEqual('NOT_FOUND');
+            expect(handleGridSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleRackSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleNoneSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+        });
+    });
+    describe('onKeyBoardClick', () => {
+        let handleGridSelectionOnKeyBoardClickSpy: jasmine.Spy<() => void>;
+        let handleRackSelectionOnKeyBoardClickSpy: jasmine.Spy<() => void>;
+        let flagToCheck: string;
+
+        beforeEach(() => {
+            service = TestBed.inject(SelectionManagerService);
+            flagToCheck = 'NOT_FOUND';
+            // Car handleGridSelectionOnKeyBoardClick privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            handleGridSelectionOnKeyBoardClickSpy = spyOn<any>(service, 'handleGridSelectionOnKeyBoardClick').and.callFake(() => {
+                flagToCheck = 'handleGridSelectionOnKeyBoardClick';
+            });
+            // Car handleRackSelectionOnKeyBoardClick privée
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            handleRackSelectionOnKeyBoardClickSpy = spyOn<any>(service, 'handleRackSelectionOnKeyBoardClick').and.callFake(() => {
+                flagToCheck = 'handleRackSelectionOnKeyBoardClick';
+            });
+        });
+
+        it('onKeyBoardClick should handleGridSelectionOnKeyBoardClick', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: 'b',
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+            service.selectionType = SelectionType.Grid;
+            service.onKeyBoardClick(keyEvent);
+
+            expect(flagToCheck).toEqual('handleGridSelectionOnKeyBoardClick');
+            expect(handleGridSelectionOnKeyBoardClickSpy).toHaveBeenCalled();
+            expect(handleRackSelectionOnKeyBoardClickSpy).not.toHaveBeenCalled();
+        });
+
+        it('onKeyBoardClick should handleRackSelectionOnKeyBoardClick', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: 'b',
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+            service.selectionType = SelectionType.Rack;
+            service.onKeyBoardClick(keyEvent);
+
+            expect(flagToCheck).toEqual('handleRackSelectionOnKeyBoardClick');
+            expect(handleGridSelectionOnKeyBoardClickSpy).not.toHaveBeenCalled();
+            expect(handleRackSelectionOnKeyBoardClickSpy).toHaveBeenCalled();
+        });
+
+        it('onKeyBoardClick should not get a function', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: 'b',
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+            service.selectionType = SelectionType.Chat;
+            service.onKeyBoardClick(keyEvent);
+
+            expect(flagToCheck).toEqual('NOT_FOUND');
+            expect(handleGridSelectionOnKeyBoardClickSpy).not.toHaveBeenCalled();
+            expect(handleRackSelectionOnKeyBoardClickSpy).not.toHaveBeenCalled();
+        });
     });
 });
