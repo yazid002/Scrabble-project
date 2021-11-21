@@ -26,6 +26,7 @@ export class SelectionManagerService {
 
     onLeftClickSelectionTypeMapping: Map<SelectionType, (event?: MouseEvent) => void>;
     onKeyBoardClickSelectionTypeMapping: Map<SelectionType, (event?: KeyboardEvent) => void>;
+    hideOperationTypeMapping: Map<OperationType, () => boolean>;
 
     constructor(
         private exchangeSelectionService: ExchangeSelectionService,
@@ -47,6 +48,10 @@ export class SelectionManagerService {
         this.onKeyBoardClickSelectionTypeMapping = new Map([
             [SelectionType.Grid, (event?: KeyboardEvent) => this.handleGridSelectionOnKeyBoardClick(event as KeyboardEvent)],
             [SelectionType.Rack, (event?: KeyboardEvent) => this.handleRackSelectionOnKeyBoardClick(event as KeyboardEvent)],
+        ]);
+        this.hideOperationTypeMapping = new Map([
+            [OperationType.Place, () => this.placeSelectionService.hideOperation()],
+            [OperationType.Exchange, () => this.exchangeSelectionService.hideOperation()],
         ]);
         this.timerDone = this.timerService.timerDone.subscribe(() => {
             this.placeSelectionService.cancelPlacement();
@@ -72,12 +77,14 @@ export class SelectionManagerService {
         if (this.selectionType !== SelectionType.Rack) {
             this.exchangeSelectionService.cancelExchange();
         } else {
+            this.placeSelectionService.cancelPlacement();
             this.rackLettersManipulationService.cancelManipulation();
             this.exchangeSelectionService.onMouseRightClick(event, this.gameService.players[PLAYER.realPlayer].rack);
         }
     }
 
     onKeyBoardClick(event: KeyboardEvent) {
+        event.preventDefault();
         const selectionHandler = this.onKeyBoardClickSelectionTypeMapping.get(this.selectionType) as (event?: KeyboardEvent) => void;
         if (!selectionHandler) {
             return;
@@ -89,12 +96,11 @@ export class SelectionManagerService {
         if (this.selectionType !== SelectionType.Rack) {
             return;
         }
-        const keyEvent: KeyboardEvent =
-            event.deltaY > 0
-                ? ({ key: KeyboardKeys.ArrowRight, preventDefault: () => void '' } as KeyboardEvent)
-                : ({ key: KeyboardKeys.ArrowLeft, preventDefault: () => void '' } as KeyboardEvent);
-
-        this.onKeyBoardClick(keyEvent);
+        const keyEvent = { key: KeyboardKeys.ArrowLeft, preventDefault: () => void '' };
+        if (event.deltaY > 0) {
+            keyEvent.key = KeyboardKeys.ArrowRight;
+        }
+        this.onKeyBoardClick(keyEvent as KeyboardEvent);
     }
 
     onCancelManipulation(selectionType: SelectionType) {
@@ -138,12 +144,11 @@ export class SelectionManagerService {
     }
 
     hideOperation(operationType: OperationType): boolean {
-        if (operationType === OperationType.Place) {
-            return this.placeSelectionService.hideOperation();
-        } else if (operationType === OperationType.Exchange) {
-            return this.exchangeSelectionService.hideOperation();
+        const operation = this.hideOperationTypeMapping.get(operationType) as (operationType: OperationType) => boolean;
+        if (!operation) {
+            return true;
         }
-        return true;
+        return operation(operationType);
     }
 
     onCancelPlacement(selectionType: SelectionType) {
@@ -157,6 +162,9 @@ export class SelectionManagerService {
 
     private activePlacement() {
         this.command = this.placeSelectionService.command;
+        if (this.command === '') {
+            return;
+        }
         this.chatboxComponent.inputBox = this.command;
         this.chatboxComponent.fromSelection = true;
         this.chatboxComponent.onSubmit();
@@ -211,7 +219,8 @@ export class SelectionManagerService {
     }
 
     private handleRackSelectionOnKeyBoardClick(event: KeyboardEvent) {
-        const isRackSelectedForManipulation = event.key === KeyboardKeys.ArrowRight || event.key === KeyboardKeys.ArrowLeft || event.key === 'Shift';
+        const isRackSelectedForManipulation =
+            event.key === KeyboardKeys.ArrowRight || event.key === KeyboardKeys.ArrowLeft || event.key === KeyboardKeys.Shift;
 
         if (isRackSelectedForManipulation) {
             this.rackLettersManipulationService.onKeyBoardClick(event, this.gameService.players[PLAYER.realPlayer].rack);
