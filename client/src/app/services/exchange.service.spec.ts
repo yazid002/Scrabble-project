@@ -200,6 +200,20 @@ describe('ExchangeService', () => {
         expect(result).toEqual(expectedResult);
     });
 
+    it('exchangeLetters should return error if exchange is not feasible', () => {
+        const lettersToChange = ['B', 'D'];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'validateExchangeFeasibility').and.returnValue({
+            error: true,
+            message: { from: SENDER.computer, body: 'une erreur' },
+        });
+
+        const result = service.exchangeLetters(lettersToChange, true);
+
+        expect(result.error).toEqual(true);
+        expect(result.message.body).toEqual('une erreur');
+    });
+
     it('exchangeLetters should call replaceLetter of rackServiceSpy on each letter to change', () => {
         const lettersToChange = ['B', 'D'];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -376,10 +390,7 @@ describe('ExchangeService', () => {
         // eslint-disable-next-line dot-notation
         service['exchangeLettersViaClick'](lettersToChange);
 
-        //  for (let i = 0; i < lettersToChange.length; i++) {
-        //  this.rackService.replaceLetter(lettersToChange[i], false, this.exchangeSelectionService.selectedIndexes[i]);
         expect(rackServiceSpy.replaceLetter).toHaveBeenCalledWith('B', false, 1);
         expect(rackServiceSpy.replaceLetter).toHaveBeenCalledWith('D', false, 2);
-        // }
     });
 });
