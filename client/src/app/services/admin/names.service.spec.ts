@@ -1,16 +1,20 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-
 import { NamesService } from './names.service';
 
 describe('NamesService', () => {
-  let service: NamesService;
+    let service: NamesService;
+    let httpTestingController: HttpTestingController;
+    beforeEach(() => {
+        TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+        service = TestBed.inject(NamesService);
+        httpTestingController = TestBed.inject(HttpTestingController);
+    });
+    afterEach(() => {
+        httpTestingController.verify();
+    });
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(NamesService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 });
