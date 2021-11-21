@@ -20,12 +20,13 @@ export class VirtualPlayerNamesService {
             console.log(this.names);
         }
     }
-    // removeName(name: string) {
-    //     const itemToRemove = this.names.get(name);
-    //     if (itemToRemove && !itemToRemove?.default) {
-    //         this.names.delete(name);
-    //     }
-    // }
+    delete(name: NameProperties) {
+        const index = this.names.findIndex((item) => item.name === name.name && !item.default);
+        if (index !== -1) {
+            console.log('deleting name ', this.names[index]);
+            this.names.splice(index, 1);
+        }
+    }
     reset(): void {
         this.names = [
             { name: 'Ordi Illetré', default: true, isAdvanced: false },

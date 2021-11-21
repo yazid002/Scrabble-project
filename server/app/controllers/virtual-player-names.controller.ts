@@ -19,6 +19,12 @@ export class VirtualPlayerNamesController {
             const names = this.virtualPlayerNamesService.addName(req.body);
             res.json(names);
         });
+        this.router.post('/delete', async (req: Request, res: Response) => {
+            console.log('delete name controller', req.body);
+
+            const names = this.virtualPlayerNamesService.delete(req.body);
+            res.json(names);
+        });
         this.router.get('/reset', async (req: Request, res: Response) => {
             console.log('reset controler ', req.body);
 

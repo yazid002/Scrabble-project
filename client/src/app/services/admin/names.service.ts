@@ -36,6 +36,10 @@ export class NamesService {
         const response = this.http.get<void>(this.urlString + 'reset');
         response.subscribe(async () => this.fetchNames());
     }
+    async delete(name: NameProperties) {
+        const response = this.http.post<NameProperties>(this.urlString + 'delete', name);
+        response.subscribe(async () => this.fetchNames());
+    }
     validateFormat(name: string): boolean {
         if (name === 'allo') return true;
         return false;
