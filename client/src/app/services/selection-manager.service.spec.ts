@@ -287,7 +287,7 @@ describe('SelectionManagerService', () => {
         exchangeSelectionServiceSpy.hideOperation.and.returnValue(false);
         exchangeSelectionServiceSpy.cancelExchange.and.returnValue(void '');
         service.selectionType = SelectionType.Grid;
-        // Car handleNoneSelectionOnLeftClick est privée
+        // handleNoneSelectionOnLeftClick is private
         // eslint-disable-next-line dot-notation
         service['handleNoneSelectionOnLeftClick']();
 
@@ -304,10 +304,10 @@ describe('SelectionManagerService', () => {
                 preventDefault: () => void '',
             } as KeyboardEvent;
 
-            // Car isLetterKeyAlreadySelectedForExchange est privée
+            // isLetterKeyAlreadySelectedForExchange is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'isLetterKeyAlreadySelectedForExchange').and.returnValue(true);
-            // Car handleRackSelectionOnKeyBoardClick est privée
+            // handleRackSelectionOnKeyBoardClick is private
             // eslint-disable-next-line dot-notation
             service['handleRackSelectionOnKeyBoardClick'](keyEvent);
 
@@ -326,10 +326,10 @@ describe('SelectionManagerService', () => {
                 preventDefault: () => void '',
             } as KeyboardEvent;
 
-            // Car isLetterKeyAlreadySelectedForExchange est privée
+            // isLetterKeyAlreadySelectedForExchange is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const isLetterKeyAlreadySelectedForExchangeSpy = spyOn<any>(service, 'isLetterKeyAlreadySelectedForExchange').and.callThrough();
-            // Car handleRackSelectionOnKeyBoardClick est privée
+            // handleRackSelectionOnKeyBoardClick is private
             // eslint-disable-next-line dot-notation
             service['handleRackSelectionOnKeyBoardClick'](keyEvent);
 
@@ -349,10 +349,10 @@ describe('SelectionManagerService', () => {
                 preventDefault: () => void '',
             } as KeyboardEvent;
 
-            // Car isLetterKeyAlreadySelectedForExchange est privée
+            // isLetterKeyAlreadySelectedForExchange is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const isLetterKeyAlreadySelectedForExchangeSpy = spyOn<any>(service, 'isLetterKeyAlreadySelectedForExchange').and.callThrough();
-            // Car handleRackSelectionOnKeyBoardClick est privée
+            // handleRackSelectionOnKeyBoardClick is private
             // eslint-disable-next-line dot-notation
             service['handleRackSelectionOnKeyBoardClick'](keyEvent);
 
@@ -372,10 +372,10 @@ describe('SelectionManagerService', () => {
                 preventDefault: () => void '',
             } as KeyboardEvent;
 
-            // Car isLetterKeyAlreadySelectedForExchange est privée
+            // isLetterKeyAlreadySelectedForExchange is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const isLetterKeyAlreadySelectedForExchangeSpy = spyOn<any>(service, 'isLetterKeyAlreadySelectedForExchange').and.callThrough();
-            // Car handleRackSelectionOnKeyBoardClick est privée
+            // handleRackSelectionOnKeyBoardClick is private
             // eslint-disable-next-line dot-notation
             service['handleRackSelectionOnKeyBoardClick'](keyEvent);
 
@@ -395,10 +395,10 @@ describe('SelectionManagerService', () => {
                 preventDefault: () => void '',
             } as KeyboardEvent;
 
-            // Car isLetterKeyAlreadySelectedForExchange est privée
+            // isLetterKeyAlreadySelectedForExchange is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const isLetterKeyAlreadySelectedForExchangeSpy = spyOn<any>(service, 'isLetterKeyAlreadySelectedForExchange').and.returnValue(false);
-            // Car handleRackSelectionOnKeyBoardClick est privée
+            // handleRackSelectionOnKeyBoardClick is private
             // eslint-disable-next-line dot-notation
             service['handleRackSelectionOnKeyBoardClick'](keyEvent);
 
@@ -461,18 +461,18 @@ describe('SelectionManagerService', () => {
         beforeEach(() => {
             service = TestBed.inject(SelectionManagerService);
             flagToCheck = 'NOT_FOUND';
-            // Car handleGridSelectionOnLeftClick privée
+            // handleGridSelectionOnLeftClick privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             handleGridSelectionOnLeftClickSpy = spyOn<any>(service, 'handleGridSelectionOnLeftClick').and.callFake(() => {
                 flagToCheck = 'handleGridSelectionOnLeftClick';
             });
-            // Car handleRackSelectionOnLeftClick privée
+            // handleRackSelectionOnLeftClick privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             handleRackSelectionOnLeftClickSpy = spyOn<any>(service, 'handleRackSelectionOnLeftClick').and.callFake(() => {
                 flagToCheck = 'handleRackSelectionOnLeftClick';
             });
 
-            // Car handleNoneSelectionOnLeftClick privée
+            // handleNoneSelectionOnLeftClick privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             handleNoneSelectionOnLeftClickSpy = spyOn<any>(service, 'handleNoneSelectionOnLeftClick').and.callFake(() => {
                 flagToCheck = 'handleNoneSelectionOnLeftClick';
@@ -555,12 +555,12 @@ describe('SelectionManagerService', () => {
         beforeEach(() => {
             service = TestBed.inject(SelectionManagerService);
             flagToCheck = 'NOT_FOUND';
-            // Car handleGridSelectionOnKeyBoardClick privée
+            // handleGridSelectionOnKeyBoardClick privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             handleGridSelectionOnKeyBoardClickSpy = spyOn<any>(service, 'handleGridSelectionOnKeyBoardClick').and.callFake(() => {
                 flagToCheck = 'handleGridSelectionOnKeyBoardClick';
             });
-            // Car handleRackSelectionOnKeyBoardClick privée
+            // handleRackSelectionOnKeyBoardClick privée
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             handleRackSelectionOnKeyBoardClickSpy = spyOn<any>(service, 'handleRackSelectionOnKeyBoardClick').and.callFake(() => {
                 flagToCheck = 'handleRackSelectionOnKeyBoardClick';
@@ -857,7 +857,7 @@ describe('SelectionManagerService', () => {
         it('should send command through chat', () => {
             const submitSpy = spyOn(service.chatboxComponent, 'onSubmit').and.returnValue(Promise.resolve(void ''));
             placeSelectionServiceSpy.command = '!placer';
-            // Car activePlacement est privée
+            // activePlacement is private
             // eslint-disable-next-line dot-notation
             service['activePlacement']();
 
@@ -870,7 +870,7 @@ describe('SelectionManagerService', () => {
         it('should not send command through chat if it is empty', () => {
             const submitSpy = spyOn(service.chatboxComponent, 'onSubmit').and.returnValue(Promise.resolve(void ''));
             placeSelectionServiceSpy.command = '';
-            // Car activePlacement est privée
+            // activePlacement is private
             // eslint-disable-next-line dot-notation
             service['activePlacement']();
 
@@ -942,7 +942,7 @@ describe('SelectionManagerService', () => {
             } as MouseEvent;
             selectionUtilsServiceSpy.getMouseClickIndex.and.returnValue(NOT_FOUND);
 
-            // Car isLetterClickAlreadySelectedForExchange est privée
+            // isLetterClickAlreadySelectedForExchange is private
             // eslint-disable-next-line dot-notation
             const result = service['isLetterClickAlreadySelectedForExchange'](event);
 
@@ -960,7 +960,7 @@ describe('SelectionManagerService', () => {
             selectionUtilsServiceSpy.getMouseClickIndex.and.returnValue(coord.x);
             exchangeSelectionServiceSpy.isLetterAlreadySelected.and.returnValue(true);
 
-            // Car isLetterClickAlreadySelectedForExchange est privée
+            // isLetterClickAlreadySelectedForExchange is private
             // eslint-disable-next-line dot-notation
             const result = service['isLetterClickAlreadySelectedForExchange'](event);
 
@@ -977,7 +977,7 @@ describe('SelectionManagerService', () => {
             } as KeyboardEvent;
             rackLettersManipulationServiceSpy.getIndexFromKey.and.returnValue(NOT_FOUND);
 
-            // Car isLetterClickAlreadySelectedForExchange est privée
+            // isLetterClickAlreadySelectedForExchange is private
             // eslint-disable-next-line dot-notation
             const result = service['isLetterKeyAlreadySelectedForExchange'](keyEvent);
 
@@ -993,7 +993,7 @@ describe('SelectionManagerService', () => {
             rackLettersManipulationServiceSpy.getIndexFromKey.and.returnValue(1);
             exchangeSelectionServiceSpy.isLetterAlreadySelected.and.returnValue(true);
 
-            // Car isLetterClickAlreadySelectedForExchange est privée
+            // isLetterClickAlreadySelectedForExchange is private
             // eslint-disable-next-line dot-notation
             const result = service['isLetterKeyAlreadySelectedForExchange'](keyEvent);
 

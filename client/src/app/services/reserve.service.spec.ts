@@ -29,7 +29,7 @@ describe('ReserveService', () => {
             const NOT_FOUND = -1;
             const LETTER_TO_CHECK = 'Z';
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line dot-notation
             const result = service['findLetterPosition'](LETTER_TO_CHECK, service.alphabets);
 
@@ -40,7 +40,7 @@ describe('ReserveService', () => {
             const POSITION = 0;
             const LETTER_TO_CHECK = 'A';
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line dot-notation
             const result = service['findLetterPosition'](LETTER_TO_CHECK, service.alphabets);
 
@@ -52,7 +52,7 @@ describe('ReserveService', () => {
         it(' should call findLetterPosition', () => {
             const LETTER_TO_CHECK = 'b';
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const findLetterPositionSpy = spyOn<any>(service, 'findLetterPosition').and.callThrough();
 
@@ -112,7 +112,7 @@ describe('ReserveService', () => {
             ];
             service.alphabets = INITIAL_RESERVE;
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'findLetterPosition').and.returnValue(NOT_FOUND);
 
@@ -125,7 +125,7 @@ describe('ReserveService', () => {
             const POSITION = 0;
             const LETTER_TO_ADD = 'A';
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'findLetterPosition').and.returnValue(POSITION);
 
@@ -228,7 +228,7 @@ describe('ReserveService', () => {
 
             spyOn(service, 'getQuantityOfAvailableLetters').and.returnValue(AVAILABLE_QUANTITY);
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const findLetterPositionSpy = spyOn<any>(service, 'findLetterPosition').and.callThrough();
 

@@ -51,7 +51,7 @@ describe('VerifyService', () => {
     it(' validateInvalidSymbols should return an error false if the word does not contains invalid symbols', () => {
         const wordToCheck = 'grandfrere';
 
-        // Car checkInvalidSymbols est privée
+        // checkInvalidSymbols is private
         // eslint-disable-next-line dot-notation
         const result = service['validateInvalidSymbols'](wordToCheck);
         expect(result.error).toEqual(false);
@@ -60,7 +60,7 @@ describe('VerifyService', () => {
     it(' validateInvalidSymbols should an error true if the word contains invalid symbols', () => {
         const wordToCheck = 'pa-pa';
 
-        // Car checkInvalidSymbols est privée
+        // checkInvalidSymbols is private
         // eslint-disable-next-line dot-notation
         const result = service['validateInvalidSymbols'](wordToCheck);
         expect(result.error).toEqual(true);
@@ -70,7 +70,7 @@ describe('VerifyService', () => {
         const h8Coord: Vec2 = { x: 7, y: 7 };
         tiles[h8Coord.x][h8Coord.y].letter = '';
 
-        // Car isFirstMove est privée
+        // isFirstMove is private
         // eslint-disable-next-line dot-notation
         const result = service['isFirstMove']();
         expect(result).toBeTrue();
@@ -80,7 +80,7 @@ describe('VerifyService', () => {
         const h8Coord: Vec2 = { x: 7, y: 7 };
         tiles[h8Coord.x][h8Coord.y].letter = 'A';
 
-        // Car isFirstMove est privée
+        // isFirstMove is private
         // eslint-disable-next-line dot-notation
         const result = service['isFirstMove']();
         expect(result).toBeFalse();
@@ -91,7 +91,7 @@ describe('VerifyService', () => {
         const coord = { x: 7, y: 6 };
         const direction = 'v';
 
-        // Car validateFirstMove est privée
+        // validateFirstMove is private
         // eslint-disable-next-line dot-notation
         const result = service['validateFirstMove'](word, direction, coord);
         expect(result.error).toEqual(false);
@@ -102,7 +102,7 @@ describe('VerifyService', () => {
         const coord = { x: 2, y: 4 };
         const direction = 'v';
 
-        // Car validateFirstMove est privée
+        // validateFirstMove is private
         // eslint-disable-next-line dot-notation
         const result = service['validateFirstMove'](word, direction, coord);
         expect(result.error).toEqual(true);
@@ -117,7 +117,7 @@ describe('VerifyService', () => {
 
             rackServiceSpy.findJokersNumberOnRack.and.returnValue(1);
 
-            // Car validateJokersOccurrencesMatch est privée
+            // validateJokersOccurrencesMatch is private
             // eslint-disable-next-line dot-notation
             const result = service['validateJokersOccurrencesMatch'](word, lettersUsedOnBoard);
             expect(result.error).toEqual(true);
@@ -133,7 +133,7 @@ describe('VerifyService', () => {
 
             rackServiceSpy.findJokersNumberOnRack.and.returnValue(1);
 
-            // Car validateJokersOccurrencesMatch est privée
+            // validateJokersOccurrencesMatch is private
             // eslint-disable-next-line dot-notation
             const result = service['validateJokersOccurrencesMatch'](word, lettersUsedOnBoard);
             expect(result.error).toEqual(false);
@@ -149,7 +149,7 @@ describe('VerifyService', () => {
 
             rackServiceSpy.findJokersNumberOnRack.and.returnValue(2);
 
-            // Car validateJokersOccurrencesMatch est privée
+            // validateJokersOccurrencesMatch is private
             // eslint-disable-next-line dot-notation
             const result = service['validateJokersOccurrencesMatch'](word, lettersUsedOnBoard);
             expect(result.error).toEqual(false);
@@ -160,7 +160,7 @@ describe('VerifyService', () => {
         const letterOnBoard = 'A';
         const letterToPlace = 'A';
 
-        // Car isFirstMove est privée
+        // isFirstMove is private
         // eslint-disable-next-line dot-notation
         const result = service['isLetterOnBoardTheSame'](letterOnBoard, letterToPlace);
         expect(result).toBeTrue();
@@ -170,7 +170,7 @@ describe('VerifyService', () => {
         const letterOnBoard = 'A';
         const letterToPlace = 'B';
 
-        // Car isLetterOnBoardTheSame est privée
+        // isLetterOnBoardTheSame is private
         // eslint-disable-next-line dot-notation
         const result = service['isLetterOnBoardTheSame'](letterOnBoard, letterToPlace);
         expect(result).toBeFalse();
@@ -179,7 +179,7 @@ describe('VerifyService', () => {
     it(' isCaseEmpty should return false', () => {
         const letterOnBoard = 'A';
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line dot-notation
         const result = service['isCaseEmpty'](letterOnBoard);
         expect(result).toBeFalse();
@@ -188,7 +188,7 @@ describe('VerifyService', () => {
     it(' isCaseEmpty should return true', () => {
         const letterOnBoard = '';
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line dot-notation
         const result = service['isCaseEmpty'](letterOnBoard);
         expect(result).toBeTrue();
@@ -198,7 +198,7 @@ describe('VerifyService', () => {
         const coord = { x: 1, y: 4 };
         tiles[coord.y - 1][coord.x].letter = 'a';
 
-        // Car findAdjacentUp est privée
+        // findAdjacentUp is private
         // eslint-disable-next-line dot-notation
         const result = service['findAdjacentUp'](coord);
         expect(result).toBeTrue();
@@ -207,7 +207,7 @@ describe('VerifyService', () => {
     it(' findAdjacentUp should return false if the letter is place at the extreme top of the board', () => {
         const coord = { y: 0, x: 4 };
 
-        // Car findAdjacentUp est privée
+        // findAdjacentUp is private
         // eslint-disable-next-line dot-notation
         const result = service['findAdjacentUp'](coord);
         expect(result).toBeFalse();
@@ -217,7 +217,7 @@ describe('VerifyService', () => {
         const coord = { x: 1, y: 4 };
         tiles[coord.y - 1][coord.x].letter = '';
 
-        // Car findAdjacentUp est privée
+        // findAdjacentUp is private
         // eslint-disable-next-line dot-notation
         const result = service['findAdjacentUp'](coord);
         expect(result).toBeFalse();
@@ -227,7 +227,7 @@ describe('VerifyService', () => {
         const coord = { x: 13, y: 4 };
         tiles[coord.y + 1][coord.x].letter = 'a';
 
-        // Car findAdjacentDown est privée
+        // findAdjacentDown is private
         // eslint-disable-next-line dot-notation
         const result = service['findAdjacentDown'](coord);
         expect(result).toBeTrue();
@@ -236,7 +236,7 @@ describe('VerifyService', () => {
     it(' findAdjacentDown should return false if the letter is place at the extreme bottom of the board', () => {
         const coord = { y: 14, x: 4 };
 
-        // Car findAdjacentDown est privée
+        // findAdjacentDown is private
         // eslint-disable-next-line dot-notation
         const result = service['findAdjacentDown'](coord);
         expect(result).toBeFalse();
@@ -249,7 +249,7 @@ describe('VerifyService', () => {
             const coord = { y: 13, x: 4 };
             tiles[coord.y + 1][coord.x].letter = '';
 
-            // Car findAdjacentUp est privée
+            // findAdjacentUp is private
             // eslint-disable-next-line dot-notation
             const result = service['findAdjacentDown'](coord);
             expect(result).toBeFalse();
@@ -260,7 +260,7 @@ describe('VerifyService', () => {
         const coord = { x: 1, y: 13 };
         tiles[coord.y][coord.x + 1].letter = 'a';
 
-        // Car findAdjacentRight est privée
+        // findAdjacentRight is private
         // eslint-disable-next-line dot-notation
         const result = service['findAdjacentRight'](coord);
         expect(result).toBeTrue();
@@ -269,7 +269,7 @@ describe('VerifyService', () => {
     it(' findAdjacentRight should return false if the letter is place on the extreme right of the board', () => {
         const coord = { y: 0, x: 14 };
 
-        // Car findAdjacentRight est privée
+        // findAdjacentRight is private
         // eslint-disable-next-line dot-notation
         const result = service['findAdjacentRight'](coord);
         expect(result).toBeFalse();
@@ -282,7 +282,7 @@ describe('VerifyService', () => {
             const coord = { y: 1, x: 13 };
             tiles[coord.y][coord.x + 1].letter = '';
 
-            // Car findAdjacentRight est privée
+            // findAdjacentRight is private
             // eslint-disable-next-line dot-notation
             const result = service['findAdjacentRight'](coord);
             expect(result).toBeFalse();
@@ -293,7 +293,7 @@ describe('VerifyService', () => {
         const coord = { x: 1, y: 1 };
         tiles[coord.y][coord.x - 1].letter = 'a';
 
-        // Car findAdjacentLeft est privée
+        // findAdjacentLeft is private
         // eslint-disable-next-line dot-notation
         const result = service['findAdjacentLeft'](coord);
         expect(result).toBeTrue();
@@ -302,7 +302,7 @@ describe('VerifyService', () => {
     it(' findAdjacentLeft should return false if the letter is place on the extreme left of the board', () => {
         const coord = { x: 0, y: 0 };
 
-        // Car findAdjacentRight est privée
+        // findAdjacentRight is private
         // eslint-disable-next-line dot-notation
         const result = service['findAdjacentLeft'](coord);
         expect(result).toBeFalse();
@@ -313,11 +313,11 @@ describe('VerifyService', () => {
         const word = 'moto';
         const direction = 'v';
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.returnValue(false);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line dot-notation
         const result = service['hasAdjacent'](word, coord, direction);
         expect(result).toBeTrue();
@@ -328,11 +328,11 @@ describe('VerifyService', () => {
         const word = 'moto';
         const direction = 'v';
 
-        // Car findAdjacentUp est privée
+        // findAdjacentUp is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'findAdjacentUp').and.returnValue(true);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line dot-notation
         const result = service['hasAdjacent'](word, coord, direction);
         expect(result).toBeTrue();
@@ -343,11 +343,11 @@ describe('VerifyService', () => {
         const word = 'moto';
         const direction = 'v';
 
-        // Car findAdjacentUp est privée
+        // findAdjacentUp is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'findAdjacentLeft').and.returnValue(true);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line dot-notation
         const result = service['hasAdjacent'](word, coord, direction);
         expect(result).toBeTrue();
@@ -358,11 +358,11 @@ describe('VerifyService', () => {
         const word = 'moto';
         const direction = 'v';
 
-        // Car findAdjacentRight est privée
+        // findAdjacentRight is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'findAdjacentRight').and.returnValue(true);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line dot-notation
         const result = service['hasAdjacent'](word, coord, direction);
         expect(result).toBeTrue();
@@ -373,11 +373,11 @@ describe('VerifyService', () => {
         const word = 'moto';
         const direction = 'v';
 
-        // Car findAdjacentRight est privée
+        // findAdjacentRight is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'findAdjacentDown').and.returnValue(true);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line dot-notation
         const result = service['hasAdjacent'](word, coord, direction);
         expect(result).toBeTrue();
@@ -388,27 +388,27 @@ describe('VerifyService', () => {
         const word = 'moto';
         const direction = 'v';
 
-        // Car findAdjacentRight est privée
+        // findAdjacentRight is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'findAdjacentDown').and.returnValue(false);
 
-        // Car findAdjacentRight est privée
+        // findAdjacentRight is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'findAdjacentRight').and.returnValue(false);
 
-        // Car findAdjacentRight est privée
+        // findAdjacentRight is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'findAdjacentLeft').and.returnValue(false);
 
-        // Car findAdjacentUp est privée
+        // findAdjacentUp is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'findAdjacentUp').and.returnValue(false);
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.returnValue(true);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line dot-notation
         const result = service['hasAdjacent'](word, coord, direction);
         expect(result).toBeFalse();
@@ -430,15 +430,15 @@ describe('VerifyService', () => {
             spyOn(service, 'isFitting').and.returnValue(response);
             spyOn(service, 'isFirstMove').and.returnValue(false);
 
-            // Car validateInvalidSymbols est privée
+            // validateInvalidSymbols is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const validateInvalidSymbolsSpy = spyOn<any>(service, 'validateInvalidSymbols').and.returnValue(response);
 
-            // Car validateJokersOccurrencesMatch est privée
+            // validateJokersOccurrencesMatch is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const validateJokersOccurrencesMatchSpy = spyOn<any>(service, 'validateJokersOccurrencesMatch').and.returnValue(response);
 
-            // Car hasAdjacent est privée
+            // hasAdjacent is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
 
@@ -460,7 +460,7 @@ describe('VerifyService', () => {
         spyOn(service, 'isFitting').and.returnValue(response);
         spyOn(service, 'isFirstMove').and.returnValue(true);
 
-        // Car validateFirstMove est privée
+        // validateFirstMove is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const validateFirstMoveSpy = spyOn<any>(service, 'validateFirstMove').and.returnValue(response);
 
@@ -481,11 +481,11 @@ describe('VerifyService', () => {
         spyOn(service, 'isFitting').and.returnValue(response);
         spyOn(service, 'isFirstMove').and.returnValue(false);
 
-        // Car validateFirstMove est privée
+        // validateFirstMove is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const validateFirstMoveSpy = spyOn<any>(service, 'validateFirstMove').and.returnValue(response);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const hasAdjacentSpy = spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
 
@@ -506,7 +506,7 @@ describe('VerifyService', () => {
         spyOn(service, 'isFitting').and.returnValue(response);
         spyOn(service, 'isFirstMove').and.returnValue(false);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'hasAdjacent').and.returnValue(false);
 
@@ -525,7 +525,7 @@ describe('VerifyService', () => {
         const isFittingSpy = spyOn(service, 'isFitting').and.callThrough();
         const isFirstMoveSpy = spyOn(service, 'isFirstMove').and.callThrough();
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const hasAdjacentSpy = spyOn<any>(service, 'hasAdjacent').and.callThrough();
 
@@ -551,7 +551,7 @@ describe('VerifyService', () => {
         // const isFittingSpy = spyOn(service, 'isFitting').and.returnValue(response);
         const isFirstMoveSpy = spyOn(service, 'isFirstMove').and.callThrough();
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const hasAdjacentSpy = spyOn<any>(service, 'hasAdjacent').and.returnValue(false);
 
@@ -578,7 +578,7 @@ describe('VerifyService', () => {
         spyOn(service, 'areCoordValid').and.returnValue(true);
         spyOn(service, 'isFitting').and.returnValue(response);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const hasAdjacentSpy = spyOn<any>(service, 'hasAdjacent').and.callThrough();
 
@@ -610,11 +610,11 @@ describe('VerifyService', () => {
 
         service.lettersUsedOnBoard = [];
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
 
-        // Car validateInvalidSymbols est privée
+        // validateInvalidSymbols is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const validateInvalidSymbolsSpy = spyOn<any>(service, 'validateInvalidSymbols').and.callThrough();
 
@@ -643,11 +643,11 @@ describe('VerifyService', () => {
 
         service.lettersUsedOnBoard = [];
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
 
-        // Car validateJokersOccurrencesMatch est privée
+        // validateJokersOccurrencesMatch is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'validateJokersOccurrencesMatch').and.returnValue(response);
 
@@ -671,15 +671,15 @@ describe('VerifyService', () => {
         spyOn(service, 'isFitting').and.returnValue(response);
         spyOn(service, 'isFirstMove').and.returnValue(false);
 
-        // Car hasAdjacent est privée
+        // hasAdjacent is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
 
-        // Car validateInvalidSymbols est privée
+        // validateInvalidSymbols is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'validateInvalidSymbols').and.returnValue(response);
 
-        // Car validateJokersOccurrencesMatch est privée
+        // validateJokersOccurrencesMatch is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'validateJokersOccurrencesMatch').and.returnValue(response);
 
@@ -705,7 +705,7 @@ describe('VerifyService', () => {
         tiles[coord.y][coord.x + 1].text = 'u';
         tiles[coord.y][coord.x + 2].text = 'dl';
 
-        // Car findHorizontalAdjacentWord est privée
+        // findHorizontalAdjacentWord is private
         // eslint-disable-next-line dot-notation
         const result = service['findHorizontalAdjacentWord'](coord);
 
@@ -722,7 +722,7 @@ describe('VerifyService', () => {
         tiles[coord.y][coord.x + 1].text = 'u';
         tiles[coord.y][coord.x + 2].text = '';
 
-        // Car findHorizontalAdjacentWord est privée
+        // findHorizontalAdjacentWord is private
         // eslint-disable-next-line dot-notation
         const result = service['findHorizontalAdjacentWord'](coord);
 
@@ -739,7 +739,7 @@ describe('VerifyService', () => {
         tiles[coord.y][coord.x].text = 's';
         tiles[coord.y][coord.x + 1].text = '';
 
-        // Car findHorizontalAdjacentWord est privée
+        // findHorizontalAdjacentWord is private
         // eslint-disable-next-line dot-notation
         const result = service['findHorizontalAdjacentWord'](coord);
 
@@ -752,7 +752,7 @@ describe('VerifyService', () => {
         const coord = { x: 1, y: 1 };
         tiles[coord.y][coord.x].text = 'dl';
 
-        // Car findVerticalAdjacentWord est privée
+        // findVerticalAdjacentWord is private
         // eslint-disable-next-line dot-notation
         const result = service['findVerticalAdjacentWord'](coord);
 
@@ -768,7 +768,7 @@ describe('VerifyService', () => {
         tiles[coord.y + 1][coord.x].text = 'u';
         tiles[coord.y + 2][coord.x].text = 'dl';
 
-        // Car findVerticalAdjacentWord est privée
+        // findVerticalAdjacentWord is private
         // eslint-disable-next-line dot-notation
         const result = service['findVerticalAdjacentWord'](coord);
 
@@ -785,7 +785,7 @@ describe('VerifyService', () => {
         tiles[coord.y + 1][coord.x].text = 'u';
         tiles[coord.y + 2][coord.x].text = '';
 
-        // Car findVerticalAdjacentWord est privée
+        // findVerticalAdjacentWord is private
         // eslint-disable-next-line dot-notation
         const result = service['findVerticalAdjacentWord'](coord);
 
@@ -802,7 +802,7 @@ describe('VerifyService', () => {
         tiles[coord.y][coord.x].text = 's';
         tiles[coord.y + 1][coord.x].text = '';
 
-        // Car findVerticalAdjacentWord est privée
+        // findVerticalAdjacentWord is private
         // eslint-disable-next-line dot-notation
         const result = service['findVerticalAdjacentWord'](coord);
 
@@ -839,7 +839,7 @@ describe('VerifyService', () => {
         const coord = { x: 1, y: 1 };
         const word = 'm';
 
-        // Car isFirstMove est privée
+        // isFirstMove is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isFirstMove').and.returnValue(true);
 
@@ -848,7 +848,7 @@ describe('VerifyService', () => {
             errorMessage: `il vous faut former des mots d'une longueur minimale de 2, mais le mot ${word} a une longueur de 1.`,
         };
 
-        // Car validateWords est privée
+        // validateWords is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const spy = spyOn<any>(service, 'validateWords');
         spy.and.returnValue(Promise.resolve(expectedResult));
@@ -862,7 +862,7 @@ describe('VerifyService', () => {
         const word = 'papa';
         const horizontalWord = 'mmm';
 
-        // Car isFirstMove est privée
+        // isFirstMove is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isFirstMove').and.returnValue(false);
 
@@ -874,7 +874,7 @@ describe('VerifyService', () => {
             next: () => void '',
             toPromise: async () => Promise.resolve(expectedResult),
         } as unknown as Observable<{ wordExists: boolean; errorMessage: string }>;
-        // Car validateWords est privée
+        // validateWords is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'validateWords').and.callFake(() => anObservable);
 
@@ -907,7 +907,7 @@ describe('VerifyService', () => {
         const word = 'papa';
         const direction = 'v';
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.returnValue(true);
 
@@ -927,11 +927,11 @@ describe('VerifyService', () => {
             const word = 'papa';
             const direction = 'v';
 
-            // Car isCaseEmpty est privée
+            // isCaseEmpty is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'isCaseEmpty').and.returnValue(false);
 
-            // Car isLetterOnBoardTheSame est privée
+            // isLetterOnBoardTheSame is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'isLetterOnBoardTheSame').and.returnValue(false);
 
@@ -946,11 +946,11 @@ describe('VerifyService', () => {
         const word = 'papa';
         const direction = 'v';
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.returnValue(false);
 
-        // Car isLetterOnBoardTheSame est privée
+        // isLetterOnBoardTheSame is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isLetterOnBoardTheSame').and.returnValue(true);
 
@@ -970,13 +970,13 @@ describe('VerifyService', () => {
         const word = 'papa';
         const direction = 'v';
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.returnValue(true);
 
         spyOn(service, 'areCoordValid').and.returnValue(true);
 
-        // Car isLetterOnBoardTheSame est privée
+        // isLetterOnBoardTheSame is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.returnValue(false);
 
@@ -994,13 +994,13 @@ describe('VerifyService', () => {
         tiles[coord.y + 2][coord.x].letter = 'n';
         tiles[coord.y + 3][coord.x].letter = 'q';
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.callThrough();
 
         spyOn(service, 'areCoordValid').and.returnValue(true);
 
-        // Car isLetterOnBoardTheSame est privée
+        // isLetterOnBoardTheSame is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.callThrough();
 
@@ -1023,13 +1023,13 @@ describe('VerifyService', () => {
             { letter: 'a', coord: { y: 12, x: 1 } },
         ];
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.callThrough();
 
         spyOn(service, 'areCoordValid').and.returnValue(true);
 
-        // Car isLetterOnBoardTheSame est privée
+        // isLetterOnBoardTheSame is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.callThrough();
 
@@ -1043,13 +1043,13 @@ describe('VerifyService', () => {
         const word = 'papa';
         const direction = 'v';
 
-        // Car isCaseEmpty est privée
+        // isCaseEmpty is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'isCaseEmpty').and.callThrough();
 
         spyOn(service, 'areCoordValid').and.returnValue(false);
 
-        // Car isLetterOnBoardTheSame est privée
+        // isLetterOnBoardTheSame is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const isLetterOnBoardTheSameSpy = spyOn<any>(service, 'isLetterOnBoardTheSame').and.callThrough();
 

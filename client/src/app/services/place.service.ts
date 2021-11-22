@@ -27,7 +27,7 @@ export class PlaceService {
         private gameService: GameService,
         private placeSelectionService: PlaceSelectionService,
         private selectionManagerService: SelectionManagerService,
-        private goalManagerService: GoalsManagerService, // private goalService: GoalService,
+        private goalManagerService: GoalsManagerService,
     ) {}
     async placeWordInstant(word: string, coord: Vec2, direction: string): Promise<boolean> {
         word = this.verifyService.normalizeWord(word);
@@ -77,8 +77,6 @@ export class PlaceService {
                         response.message.body = 'Commande impossible à réaliser : ' + wordValidationParameters.errorMessage;
                         reject(response);
                     } else {
-                        // this.goalManagerService.incrementTurnWithoutSkipAndExchangeCounter(this.gameService.players[this.gameService.currentTurn]);
-
                         this.restoreAfterPlacement(word, direction, coord, false);
                         resolve(response);
                         this.timerService.resetTimer();
@@ -108,7 +106,6 @@ export class PlaceService {
     }
 
     private restoreAfterPlacement(word: string, direction: string, coord: Vec2, instant: boolean): void {
-        // this.gameService.players[this.gameService.currentTurn].words.push(...this.verifyService.formedWords);
         this.goalManagerService.setWordsFormedNumber(this.gameService.players[this.gameService.currentTurn], [...this.verifyService.formedWords]);
 
         if (!instant) {
@@ -118,7 +115,6 @@ export class PlaceService {
                 direction,
                 this.lettersUsedOnBoard,
             );
-            //  this.goalManagerService.incrementPlayerCounters(this.gameService.players[this.gameService.currentTurn]);
             this.goalManagerService.applyAllGoalsBonus(this.verifyService.formedWords, this.gameService.players[this.gameService.currentTurn]);
             this.gridService.border.squareBorderColor = 'black';
             this.writeWord(word, coord, direction);

@@ -18,14 +18,14 @@ export class GoalsManagerService {
         this.isEnabled = false;
         this.updateGoalProgress = new BehaviorSubject<boolean>(false);
         this.resetTurnCounter = this.timerService.resetTurnCounter.subscribe((shouldResetTurnCounter: boolean | Player) => {
-            console.log('shou ', shouldResetTurnCounter);
+            //  console.log('shou ', shouldResetTurnCounter);
             if (shouldResetTurnCounter) {
                 if (typeof shouldResetTurnCounter === 'boolean') {
-                    console.log('should reset ', this.gameService.players[this.gameService.currentTurn]);
+                    // console.log('should reset ', this.gameService.players[this.gameService.currentTurn]);
                     this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter = 0;
                     this.gameService.players[this.gameService.currentTurn].placeInTenSecondsGoalCounter = 0;
                 } else {
-                    console.log('should reset as player ', this.gameService.players[this.gameService.currentTurn], shouldResetTurnCounter);
+                    //  console.log('should reset as player ', this.gameService.players[this.gameService.currentTurn], shouldResetTurnCounter);
                     (shouldResetTurnCounter as Player).turnWithoutSkipAndExchangeCounter = 0;
                     (shouldResetTurnCounter as Player).placeInTenSecondsGoalCounter = 0;
                 }
@@ -49,14 +49,11 @@ export class GoalsManagerService {
                 player.wordsMapping?.set(w.toLowerCase(), 1);
             }
         }
-        console.log(player.wordsMapping);
+        //  console.log(player.wordsMapping);
         // return false;
     }
 
     applyAllGoalsBonus(wordsFormed: string[], player: Player): void {
-        if (player) {
-            console.log('all', player);
-        }
         this.goalService.incrementPlayerCounters(player);
         if (!this.isEnabled) {
             return;
@@ -67,21 +64,21 @@ export class GoalsManagerService {
 
     private applyPrivateGoalsBonus(wordsFormed: string[], player: Player): void {
         if (player) {
-            console.log('priv', player);
+            //  console.log('priv', player);
         }
         const index = player.id;
         const goal = this.goalService.privateGoals[index];
         const check = this.checkFormedWordRespectGoals(wordsFormed, goal, player);
-        console.log(goal.description, check);
+        // console.log(goal.description, check);
         if (check) {
             this.gameService.players[index].points += goal.bonus;
         }
     }
 
     private applyPublicGoalsBonus(wordsFormed: string[], player: Player): void {
-        if (player) {
-            console.log('pub', player);
-        }
+        // if (player) {
+        //     console.log('pub', player);
+        // }
         const index = player.id;
         for (const goal of this.goalService.publicGoals) {
             const check = this.checkFormedWordRespectGoals(wordsFormed, goal, player);

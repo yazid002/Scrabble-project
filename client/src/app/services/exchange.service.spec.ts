@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { SENDER } from '@app/classes/chat';
-import { PLAYER } from '@app/classes/player';
+import { Player, PLAYER } from '@app/classes/player';
+import { BehaviorSubject } from 'rxjs';
 import { ExchangeSelectionService } from './exchange-selection.service';
 import { ExchangeService } from './exchange.service';
 import { GameService } from './game.service';
@@ -37,6 +38,7 @@ describe('ExchangeService', () => {
             },
         ];
         timerServiceSpy = jasmine.createSpyObj('TimerService', ['resetTimer']);
+        timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean | Player>(false);
         rackServiceSpy = jasmine.createSpyObj('RackService', [
             'replaceLetter',
             'findLetterPosition',
@@ -280,7 +282,9 @@ describe('ExchangeService', () => {
 
         service.exchangeLetters(lettersToChange, false);
 
-        expect(gameServiceSpy.players[PLAYER.realPlayer].turnWithoutSkipAndExchangeCounter).toEqual(0);
+        timerServiceSpy.resetTurnCounter.subscribe((value) => {
+            expect(value).toEqual(true);
+        });
     });
 
     it('exchangeLetters should call resetTimer', () => {

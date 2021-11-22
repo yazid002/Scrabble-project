@@ -27,7 +27,7 @@ describe('GoalService', () => {
             description: 'description de test',
             words: ['aa', 'finir', 'manger', 'rouler', 'kilos', 'jartera'],
         } as Dictionary;
-        // dictionary est privée
+        // dictionary is private
         // eslint-disable-next-line dot-notation
         service['dictionary'] = dictionary;
 
@@ -55,11 +55,11 @@ describe('GoalService', () => {
     it('generateRandomWord should return a word with a length between 5 and 7 from the dictionary', () => {
         const max = 7;
         const min = 5;
-        // Car generateRandomWord est privée
+        // generateRandomWord is private
         // eslint-disable-next-line dot-notation
         const result = service['generateRandomWord']();
 
-        // Car dictionary est privée
+        // dictionary is private
         // eslint-disable-next-line dot-notation
         expect(service['dictionary'].words).toContain(result);
         expect(result.length).toBeGreaterThanOrEqual(min);
@@ -67,11 +67,11 @@ describe('GoalService', () => {
     });
 
     it('generateRandomWord should call generateNumber', () => {
-        // Car generateNumber est privée
+        // generateNumber is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const generateNumberSpy = spyOn<any>(service, 'generateNumber').and.callThrough();
 
-        // Car generateRandomWord est privée
+        // generateRandomWord is private
         // eslint-disable-next-line dot-notation
         service['generateRandomWord']();
 
@@ -79,7 +79,7 @@ describe('GoalService', () => {
     });
 
     it('playTheRandomWord should return true', () => {
-        // Car randomWord est privée
+        // randomWord is private
         // eslint-disable-next-line dot-notation
         service['randomWord'] = 'finir';
 
@@ -88,7 +88,7 @@ describe('GoalService', () => {
             ['finir', 1],
         ]);
 
-        // Car playTheRandomWord est privée
+        // playTheRandomWord is private
         // eslint-disable-next-line dot-notation
         const result = service.goalsFunctions[GoalType.PlayTheRandomWord](player);
 
@@ -96,7 +96,7 @@ describe('GoalService', () => {
     });
 
     it('playTheRandomWord should return false', () => {
-        // Car randomWord est privée
+        // randomWord is private
         // eslint-disable-next-line dot-notation
         service['randomWord'] = 'finir';
 
@@ -183,15 +183,15 @@ describe('GoalService', () => {
         const min = 0;
         const max = 5;
 
-        // car usedIndex est privée
+        // car usedIndex is private
         // eslint-disable-next-line dot-notation
         service['usedIndex'] = [];
 
-        // Car generateNumber est privée
+        // generateNumber is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const generateNumberSpy = spyOn<any>(service, 'generateNumber').and.callThrough();
 
-        // Car generateRandomWord est privée
+        // generateRandomWord is private
         // eslint-disable-next-line dot-notation
         service['generateUniqueIndex'](min, max);
 
@@ -202,15 +202,15 @@ describe('GoalService', () => {
         const min = 0;
         const max = 5;
 
-        // car usedIndex est privée
+        // car usedIndex is private
         // eslint-disable-next-line dot-notation
         service['usedIndex'] = [min, min + 1, min + 2, max - 2, max];
 
-        // Car generateNumber est privée
+        // generateNumber is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'generateNumber').and.callThrough();
 
-        // Car generateRandomWord est privée
+        // generateRandomWord is private
         // eslint-disable-next-line dot-notation
         const result = service['generateUniqueIndex'](min, max);
 
@@ -306,7 +306,7 @@ describe('GoalService', () => {
     });
 
     it('getAUniqueGoal should return a goal which index is not in the usedIndex from goalHandler ', () => {
-        // car usedIndex est privée
+        // car usedIndex is private
         // eslint-disable-next-line dot-notation
         service['usedIndex'] = [
             GoalType.WritePalindromeWord,

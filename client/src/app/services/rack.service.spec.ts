@@ -66,19 +66,19 @@ describe('RackService', () => {
     describe('isLetterOnRack', () => {
         it('isLetterOnRack should call findLetterPosition', () => {
             const letterToCheck = 'B';
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const findLetterPositionSpy = spyOn<any>(service, 'findLetterPosition').and.callThrough();
 
             service.isLetterOnRack(letterToCheck);
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line dot-notation
             expect(findLetterPositionSpy).toHaveBeenCalled();
         });
 
         it('should return true', () => {
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'findLetterPosition').and.returnValue(2);
             const letterToCheck = 'B';
@@ -90,7 +90,7 @@ describe('RackService', () => {
 
         it('should return false', () => {
             const notFound = -1;
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'findLetterPosition').and.returnValue(notFound);
             const letterToCheck = 'Z';
@@ -104,7 +104,7 @@ describe('RackService', () => {
     describe('findLetterPosition', () => {
         it('should return notFound', () => {
             const letterToCheck = 'Z';
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line dot-notation
             const result = service['findLetterPosition'](letterToCheck);
 
@@ -115,7 +115,7 @@ describe('RackService', () => {
             const position = 0;
             const letterToCheck = 'A';
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line dot-notation
             const result = service['findLetterPosition'](letterToCheck);
 
@@ -131,7 +131,7 @@ describe('RackService', () => {
             ];
             let letterToCheck = 'A';
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line dot-notation
             let result = service['findLetterPosition'](letterToCheck, rack);
 
@@ -141,7 +141,7 @@ describe('RackService', () => {
 
             letterToCheck = 'S';
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line dot-notation
             result = service['findLetterPosition'](letterToCheck, rack);
 
@@ -258,7 +258,7 @@ describe('RackService', () => {
     describe('replaceWord', () => {
         it('should call replaceLetter', () => {
             const wordToReplace = 'abc';
-            // Car replaceLetter est privée
+            // replaceLetter is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const replaceLetterSpy = spyOn<any>(service, 'replaceLetter').and.callFake(() => {
                 return void '';
@@ -279,7 +279,7 @@ describe('RackService', () => {
                 { name: 'E', quantity: 15, points: 1, display: 'E' },
             ];
 
-            // Car replaceLetter est privée
+            // replaceLetter is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'replaceLetter').and.callFake(() => {
                 service.gameService.players[PLAYER.realPlayer].rack[1] = { name: 'D', quantity: 3, points: 2, display: 'D' };
@@ -297,17 +297,17 @@ describe('RackService', () => {
             const letterToReplace = 'O';
             const replacementLetter = { name: 'X', quantity: 1, points: 10, display: 'X' };
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const findLetterPositionSpy = spyOn<any>(service, 'findLetterPosition').and.returnValue(NOT_FOUND);
 
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();
 
-            // Car replaceLetterOnRackOnly est privée
+            // replaceLetterOnRackOnly is private
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true, index);
 
@@ -321,7 +321,7 @@ describe('RackService', () => {
             const replacementLetter = { name: 'X', quantity: 1, points: 10, display: 'X' };
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
-            // Car replaceLetterOnRackOnly est privée
+            // replaceLetterOnRackOnly is private
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
@@ -333,12 +333,12 @@ describe('RackService', () => {
             const indexOfLetterToReplaceOnRack = 0;
             const replacementLetter = { name: 'D', quantity: 3, points: 2, display: 'D' };
 
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
-            // Car replaceLetter est privée
+            // replaceLetter is private
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
@@ -350,7 +350,7 @@ describe('RackService', () => {
             const replacementLetter = { name: 'V', quantity: 2, points: 4, display: 'V' };
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
-            // Car replaceLetterOnRackOnly est privée
+            // replaceLetterOnRackOnly is private
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, false);
 
@@ -362,7 +362,7 @@ describe('RackService', () => {
             const replacementLetter = { name: 'V', quantity: 2, points: 4, display: 'V' };
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
-            // Car replaceLetterOnRackOnly est privée
+            // replaceLetterOnRackOnly is private
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
@@ -375,7 +375,7 @@ describe('RackService', () => {
             const indexOfLetterToReplaceOnRack = 0;
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
-            // Car replaceLetterOnRackOnly est privée
+            // replaceLetterOnRackOnly is private
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
@@ -387,11 +387,11 @@ describe('RackService', () => {
             const replacementLetter = { name: 'X', quantity: 1, points: 10, display: 'X' };
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
 
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const findLetterPositionSpy = spyOn<any>(service, 'findLetterPosition').and.callThrough();
 
-            // Car replaceLetterOnRackOnly est privée
+            // replaceLetterOnRackOnly is private
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
@@ -402,15 +402,15 @@ describe('RackService', () => {
             const notFound = -1;
             const letterToReplace = 'Z';
             const replacementLetter = { name: 'X', quantity: 1, points: 10, display: 'X' };
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const fillRackPortionSpy = spyOn<any>(service, 'fillRackPortion').and.callThrough();
             reserveServiceSpy.getLettersFromReserve.and.returnValue([replacementLetter]);
-            // Car findLetterPosition est privée
+            // findLetterPosition is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'findLetterPosition').and.returnValue(notFound);
 
-            // Car replaceLetterOnRackOnly est privée
+            // replaceLetterOnRackOnly is private
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, true);
 
@@ -421,7 +421,7 @@ describe('RackService', () => {
             const letterToReplace = 'A';
             reserveServiceSpy.getLettersFromReserve.and.returnValue([]);
 
-            // Car replaceLetterOnRackOnly est privée
+            // replaceLetterOnRackOnly is private
             // eslint-disable-next-line dot-notation
             service['replaceLetter'](letterToReplace, false);
 
@@ -435,7 +435,7 @@ describe('RackService', () => {
             const color = 'NavajoWhite';
             const fillTextSpy = spyOn(service.rackContext, 'fillText').and.callThrough();
 
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line dot-notation
             service['fillRackPortion'](index, color);
             expect(fillTextSpy).toHaveBeenCalledTimes(2);
@@ -446,7 +446,7 @@ describe('RackService', () => {
             const color = 'NavajoWhite';
             const fillTextSpy = spyOn(service.rackContext, 'fillText').and.callThrough();
 
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line dot-notation
             service['fillRackPortion'](index, color);
             expect(fillTextSpy).not.toHaveBeenCalled();
@@ -457,7 +457,7 @@ describe('RackService', () => {
             const color = 'NavajoWhite';
             const clearRectSpy = spyOn(service.rackContext, 'clearRect').and.callThrough();
 
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line dot-notation
             service['fillRackPortion'](index, color);
             expect(clearRectSpy).toHaveBeenCalledTimes(1);
@@ -468,7 +468,7 @@ describe('RackService', () => {
             const color = 'NavajoWhite';
             const rectSpy = spyOn(service.rackContext, 'rect').and.callThrough();
 
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line dot-notation
             service['fillRackPortion'](index, color);
             expect(rectSpy).toHaveBeenCalledTimes(1);
@@ -479,7 +479,7 @@ describe('RackService', () => {
             const color = 'NavajoWhite';
             const strokeSpy = spyOn(service.rackContext, 'stroke').and.callThrough();
 
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line dot-notation
             service['fillRackPortion'](index, color);
             expect(strokeSpy).toHaveBeenCalledTimes(1);
@@ -490,7 +490,7 @@ describe('RackService', () => {
             const color = 'NavajoWhite';
             const fillRectSpy = spyOn(service.rackContext, 'fillRect').and.callThrough();
 
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line dot-notation
             service['fillRackPortion'](index, color);
             expect(fillRectSpy).toHaveBeenCalledTimes(1);
@@ -502,7 +502,7 @@ describe('RackService', () => {
             let imageData = service.rackContext.getImageData(0, 0, DEFAULT_WIDTH / RACK_SIZE, DEFAULT_HEIGHT).data;
             const beforeSize = imageData.filter((x) => x !== 0).length;
 
-            // Car fillRackPortion est privée
+            // fillRackPortion is private
             // eslint-disable-next-line dot-notation
             service['fillRackPortion'](index, color);
 
