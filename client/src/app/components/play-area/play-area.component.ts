@@ -30,6 +30,7 @@ export class PlayAreaComponent implements AfterViewInit {
         public gameService: GameService,
         private passExecutionService: PassExecutionService,
     ) {
+        this.gameService.initPlayers();
         this.player = PLAYER;
         this.canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     }

@@ -29,6 +29,7 @@ export class GameService {
         private timerService: TimerService,
         private chatService: ChatService,
     ) {
+        this.initPlayers();
         this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {
             this.changeTurn(skipped);
         });
