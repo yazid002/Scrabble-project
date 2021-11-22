@@ -17,6 +17,8 @@ import { SelectionManagerService } from '@app/services/selection-manager.service
 export class PlayAreaComponent implements AfterViewInit {
     @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
     @ViewChild('rackCanvas', { static: false }) private rackCanvas!: ElementRef<HTMLCanvasElement>;
+    // @ViewChild('logoCanvas', { static: false }) private logoCanvas!: ElementRef<HTMLCanvasElement>;
+
     player = PLAYER;
     private canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 

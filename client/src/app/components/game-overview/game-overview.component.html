@@ -21,7 +21,12 @@
         [id]="i === playerIndex.realPlayer ? 'me' : 'otherPlayer'"
         [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"
     >
-        <mat-card-title>{{ player.name }}</mat-card-title>
+        <mat-card-title
+            >{{ player.name }}
+            <p>
+                <mat-icon class="player" [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"> person_pin</mat-icon>
+            </p>
+        </mat-card-title>
 
         <div *ngIf="mode === 'LOG2990'">
             <div *ngIf="i === playerIndex.realPlayer || privateGoals[i].complete">

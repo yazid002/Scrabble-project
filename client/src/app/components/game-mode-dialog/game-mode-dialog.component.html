@@ -7,7 +7,7 @@
         <div class="setting" *ngFor="let setting of userSettingsService.settings | keyvalue">
             <!-- {{ setting | json }} -->
             <mat-card-title>{{ setting.value.setting.settingName }}</mat-card-title>
-            <mat-radio-group [name]="setting.key" [(ngModel)]="setting.value.currentChoiceKey">
+            <mat-radio-group (change)="playClickOnButtonAudio()" [name]="setting.key" [(ngModel)]="setting.value.currentChoiceKey">
                 <mat-radio-button
                     color="primary"
                     *ngFor="let choice of setting.value.setting.availableChoices"
@@ -43,7 +43,7 @@
         </div>
 
         <section id="footer">
-            <button mat-raised-button mat-dialog-close>Retour À l'accueil</button>
+            <button mat-raised-button mat-dialog-close (click)="playClickOnButtonAudio()">Retour À l'accueil</button>
             <button
                 mat-raised-button
                 color="primary"
@@ -53,9 +53,7 @@
                 routerLink="waiting"
                 mat-dialog-close
                 (click)="configureGame()"
-            >
-                Jouer
-            </button>
+            ></button>
             <button
                 mat-raised-button
                 color="primary"

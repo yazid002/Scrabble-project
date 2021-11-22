@@ -4,6 +4,7 @@ import { Goal } from '@app/classes/goal';
 import { Player } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
 import * as dictionary from 'src/assets/dictionnary.json';
+import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
 
 @Injectable({
@@ -19,7 +20,7 @@ export class GoalService {
     private usedIndex: number[];
     private randomWord: string;
 
-    constructor(private timerService: TimerService) {
+    constructor(private timerService: TimerService, private soundManagerService: SoundManagerService) {
         this.isEnabled = false;
         this.dictionary = dictionary as Dictionary;
         this.usedIndex = [];
@@ -105,10 +106,7 @@ export class GoalService {
     }
 
     completeGoalSound(): void {
-        const audio = new Audio();
-        audio.src = 'assets/sounds/bonus.wav';
-        audio.load();
-        audio.play();
+        this.soundManagerService.playGoalAchievementAudio();
     }
 
     private isWordPalindrome(word: string): boolean {

@@ -11,6 +11,7 @@ import { PlaceSelectionService } from './place-selection.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
 import { SelectionManagerService } from './selection-manager.service';
+import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
 
 @Injectable({
@@ -28,6 +29,7 @@ export class PlaceService {
         private placeSelectionService: PlaceSelectionService,
         private selectionManagerService: SelectionManagerService,
         private goalManagerService: GoalsManagerService,
+        private soundManagerService: SoundManagerService,
     ) {}
     async placeWordInstant(word: string, coord: Vec2, direction: string): Promise<boolean> {
         word = this.verifyService.normalizeWord(word);
@@ -47,6 +49,8 @@ export class PlaceService {
             this.timerService.resetTimer();
         }
 
+        // this.soundManagerService.playPlacementAudio();
+
         return wordValidationParameters.wordExists;
     }
 
@@ -61,6 +65,7 @@ export class PlaceService {
                 if (!isCalledThoughtChat) {
                     this.placeSelectionService.cancelPlacement();
                     this.selectionManagerService.updateSelectionType(SelectionType.Rack);
+                    this.soundManagerService.playNonValidPlacementAudio();
                 }
                 this.timerService.resetTimer();
                 reject(isPlacementFeasible);
@@ -79,14 +84,17 @@ export class PlaceService {
                         response.error = true;
                         response.message.body = 'Commande impossible à réaliser : ' + wordValidationParameters.errorMessage;
                         reject(response);
+                        this.soundManagerService.playNonValidPlacementAudio();
                     } else {
                         this.restoreAfterPlacement(word, direction, coord, false);
                         resolve(response);
                         this.timerService.resetTimer();
+                        this.soundManagerService.playPlacementAudio();
                     }
                 });
             }
         });
+
         return promise;
     }
 
