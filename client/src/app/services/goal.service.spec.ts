@@ -44,7 +44,7 @@ describe('GoalService', () => {
             points: 0,
             turnWithoutSkipAndExchangeCounter: 0,
             placeInTenSecondsGoalCounter: 0,
-            words: [],
+            wordsMapping: new Map<string, number>(),
         };
     });
 
@@ -83,7 +83,10 @@ describe('GoalService', () => {
         // eslint-disable-next-line dot-notation
         service['randomWord'] = 'finir';
 
-        player.words = ['manger', 'finir'];
+        player.wordsMapping = new Map<string, number>([
+            ['manger', 1],
+            ['finir', 1],
+        ]);
 
         // Car playTheRandomWord est privée
         // eslint-disable-next-line dot-notation
@@ -97,7 +100,10 @@ describe('GoalService', () => {
         // eslint-disable-next-line dot-notation
         service['randomWord'] = 'finir';
 
-        player.words = ['manger', 'kilos'];
+        player.wordsMapping = new Map<string, number>([
+            ['manger', 1],
+            ['kilos', 1],
+        ]);
 
         const result = service.goalsFunctions[GoalType.PlayTheRandomWord](player);
 
@@ -105,7 +111,11 @@ describe('GoalService', () => {
     });
 
     it('playTheSameWordThreeTimes should return true', () => {
-        player.words = ['manger', 'kilos', 'manger', 'finir', 'manger'];
+        player.wordsMapping = new Map<string, number>([
+            ['manger', 3],
+            ['kilos', 1],
+            ['finir', 1],
+        ]);
 
         const result = service.goalsFunctions[GoalType.PlayTheSameWordThreeTimes](player);
 
@@ -113,7 +123,11 @@ describe('GoalService', () => {
     });
 
     it('playTheSameWordThreeTimes should return false', () => {
-        player.words = ['manger', 'kilos', 'manger', 'finir', 'kilos'];
+        player.wordsMapping = new Map<string, number>([
+            ['manger', 2],
+            ['kilos', 1],
+            ['finir', 2],
+        ]);
 
         const result = service.goalsFunctions[GoalType.PlayTheSameWordThreeTimes](player);
 
@@ -150,24 +164,10 @@ describe('GoalService', () => {
         const result = service.goalsFunctions[GoalType.PlayInTenSeconds](player);
 
         expect(result).toEqual(false);
-        expect(player.placeInTenSecondsGoalCounter).toEqual(0);
-    });
-
-    it('placeInTenSecondsGoal should return false but increment the counter', () => {
-        const numberOfTurns = 1;
-
-        player.placeInTenSecondsGoalCounter = numberOfTurns;
-
-        timerServiceSpy.counter.totalTimer = 10;
-
-        const result = service.goalsFunctions[GoalType.PlayInTenSeconds](player);
-
-        expect(result).toEqual(false);
-        expect(player.placeInTenSecondsGoalCounter).toEqual(numberOfTurns + 1);
     });
 
     it('placeInTenSecondsGoal should return true', () => {
-        const numberOfTurns = 2;
+        const numberOfTurns = 3;
 
         player.placeInTenSecondsGoalCounter = numberOfTurns;
 

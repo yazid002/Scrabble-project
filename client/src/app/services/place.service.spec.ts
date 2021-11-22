@@ -66,7 +66,7 @@ describe('PlaceService', () => {
                 points: 0,
                 turnWithoutSkipAndExchangeCounter: 0,
                 placeInTenSecondsGoalCounter: 0,
-                words: [],
+                wordsMapping: new Map<string, number>(),
             },
         ];
 
@@ -463,14 +463,14 @@ describe('PlaceService', () => {
             });
             placeSelectionServiceSpy.selectedRackIndexesForPlacement = [];
 
-            gameServiceSpy.players[PLAYER.realPlayer].words = [];
+            gameServiceSpy.players[PLAYER.realPlayer].wordsMapping = new Map<string, number>();
             gameServiceSpy.players[PLAYER.realPlayer].turnWithoutSkipAndExchangeCounter = 0;
             // Car restoreAfterPlacement est privée
             // eslint-disable-next-line dot-notation
             service['restoreAfterPlacement'](wordToCheck, direction, coord, false);
 
             expect(gameServiceSpy.players[PLAYER.realPlayer].turnWithoutSkipAndExchangeCounter).toEqual(expectedResult);
-            expect(gameServiceSpy.players[PLAYER.realPlayer].words).toEqual([wordToCheck]);
+            expect(gameServiceSpy.players[PLAYER.realPlayer].wordsMapping.keys()).toContain([wordToCheck]);
         });
     });
 

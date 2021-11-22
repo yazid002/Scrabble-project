@@ -6,7 +6,7 @@ import { GoalService } from './goal.service';
 import { GoalsManagerService } from './goals-manager.service';
 import { TimerService } from './timer.service';
 
-describe('GoalsManagerService', () => {
+fdescribe('GoalsManagerService', () => {
     let service: GoalsManagerService;
     let goalServiceSpy: GoalService;
     let gameServiceSpy: GameService;
@@ -15,7 +15,7 @@ describe('GoalsManagerService', () => {
     beforeEach(() => {
         goalServiceSpy = jasmine.createSpyObj('GoalService', ['completeGoalSound']);
         timerServiceSpy = jasmine.createSpyObj('TimerService', ['decrementTime']);
-        timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean>(true);
+        timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean | Player>(true);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
         gameServiceSpy.currentTurn = PLAYER.realPlayer;
         gameServiceSpy.players = [
@@ -32,7 +32,7 @@ describe('GoalsManagerService', () => {
                 points: 0,
                 turnWithoutSkipAndExchangeCounter: 0,
                 placeInTenSecondsGoalCounter: 0,
-                words: [],
+                wordsMapping: new Map<string, number>(),
             },
         ];
 
@@ -65,7 +65,7 @@ describe('GoalsManagerService', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const applyPublicGoalsBonusSpy = spyOn<any>(service, 'applyPublicGoalsBonus').and.callThrough();
 
-        service.applyAllGoalsBonus(wordsFormed);
+        service.applyAllGoalsBonus(wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
         expect(applyPrivateGoalsBonusSpy).not.toHaveBeenCalled();
         expect(applyPublicGoalsBonusSpy).not.toHaveBeenCalled();
     });
@@ -91,7 +91,7 @@ describe('GoalsManagerService', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const applyPublicGoalsBonusSpy = spyOn<any>(service, 'applyPublicGoalsBonus').and.callThrough();
 
-        service.applyAllGoalsBonus(wordsFormed);
+        service.applyAllGoalsBonus(wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(applyPrivateGoalsBonusSpy).toHaveBeenCalled();
         expect(applyPublicGoalsBonusSpy).toHaveBeenCalled();
@@ -116,7 +116,7 @@ describe('GoalsManagerService', () => {
 
         // Car applyPrivateGoalsBonus est privée
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(checkFormedWordRespectGoalsSpy).toHaveBeenCalled();
     });
@@ -143,7 +143,7 @@ describe('GoalsManagerService', () => {
 
         // Car applyPublicGoalsBonus est privée
         // eslint-disable-next-line dot-notation
-        service['applyPublicGoalsBonus'](wordsFormed);
+        service['applyPublicGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(checkFormedWordRespectGoalsSpy).toHaveBeenCalledTimes(2);
     });
@@ -177,7 +177,7 @@ describe('GoalsManagerService', () => {
 
         // Car applyPublicGoalsBonus est privée
         // eslint-disable-next-line dot-notation
-        service['applyPublicGoalsBonus'](wordsFormed);
+        service['applyPublicGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });
@@ -207,7 +207,7 @@ describe('GoalsManagerService', () => {
 
         // Car applyPrivateGoalsBonus est privée
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });
@@ -237,7 +237,7 @@ describe('GoalsManagerService', () => {
 
         // Car applyPrivateGoalsBonus est privée
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });
@@ -262,7 +262,7 @@ describe('GoalsManagerService', () => {
 
         // Car applyPrivateGoalsBonus est privée
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });
@@ -287,7 +287,7 @@ describe('GoalsManagerService', () => {
 
         // Car applyPrivateGoalsBonus est privée
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });

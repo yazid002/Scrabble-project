@@ -124,23 +124,6 @@ export class GoalService {
         audio.play();
     }
 
-    incrementPlaceInTenSecondsGoalCounter(player: Player): void {
-        const tenSecondGoalLimitTime = 10;
-        //  const numberOfTurnsToWin = 3;
-
-        if (this.timerService.counter.totalTimer <= tenSecondGoalLimitTime) {
-            player.placeInTenSecondsGoalCounter += 1;
-        } else {
-            player.placeInTenSecondsGoalCounter = 0;
-        }
-        console.log('10', player);
-    }
-
-    incrementTurnWithoutSkipAndExchangeCounter(player: Player): void {
-        player.turnWithoutSkipAndExchangeCounter += 1;
-        console.log('101', player);
-    }
-
     incrementPlayerCounters(player: Player): void {
         this.incrementTurnWithoutSkipAndExchangeCounter(player);
         this.incrementPlaceInTenSecondsGoalCounter(player);
@@ -157,38 +140,6 @@ export class GoalService {
             player.goalsProgresses?.set(goal.goalType, 1);
         }
     }
-    // getGoalProgress(goal: Goal, player: Player) {
-    //     if (goal.usesWord) {
-    //         return goal.complete ? 1 : 0;
-    //     } else {
-    //         if (goal.complete) {
-    //             return 1;
-    //         }
-    //         switch (goal.goalType) {
-    //             case GoalType.PlayInTenSeconds:
-    //                 console.log(player);
-    //                 return player.placeInTenSecondsGoalCounter / 3.0;
-    //             case GoalType.PlayTheRandomWord:
-    //                 return goal.complete ? 1 : 0;
-    //             case GoalType.PlayTheSameWordThreeTimes:
-    //                 if (player.wordsMapping.size === 0) {
-    //                     return 0;
-    //                 }
-    //                 for (const value of player.wordsMapping.values()) {
-    //                     if (value === 2) {
-    //                         return 2.0 / 3.0;
-    //                     }
-    //                 }
-    //                 return 1.0 / 3.0;
-    //             case GoalType.PlayFiveTimesWithoutSkipAndExchange:
-    //                 // console.log('iiicccciii', player.turnWithoutSkipAndExchangeCounter / 5.0);
-    //                 console.log(player);
-    //                 return player.turnWithoutSkipAndExchangeCounter / 5.0;
-    //             default:
-    //                 return NOT_FOUND;
-    //         }
-    //     }
-    // }
 
     getGoalUsingWordProgress(goal: Goal, player: Player): number {
         return goal.complete && goal.completedBy?.id === player.id ? 1 : 0;
@@ -218,7 +169,22 @@ export class GoalService {
     }
 
     getPlayFiveTimesWithoutSkipAndExchange(goal: Goal, player: Player): number {
-        return goal.complete && goal.completedBy?.id === player.id ? 1 : player.turnWithoutSkipAndExchangeCounter / 5.0;
+        const maxTurnValue = 5.0;
+        return goal.complete && goal.completedBy?.id === player.id ? 1 : player.turnWithoutSkipAndExchangeCounter / maxTurnValue;
+    }
+
+    private incrementPlaceInTenSecondsGoalCounter(player: Player): void {
+        const tenSecondGoalLimitTime = 10;
+
+        if (this.timerService.counter.totalTimer <= tenSecondGoalLimitTime) {
+            player.placeInTenSecondsGoalCounter += 1;
+        } else {
+            player.placeInTenSecondsGoalCounter = 0;
+        }
+    }
+
+    private incrementTurnWithoutSkipAndExchangeCounter(player: Player): void {
+        player.turnWithoutSkipAndExchangeCounter += 1;
     }
 
     private isWordPalindrome(word: string): boolean {
@@ -286,11 +252,9 @@ export class GoalService {
     private placeInTenSecondsGoal(player: Player): boolean {
         const numberOfTurnsToWin = 3;
         if (player.placeInTenSecondsGoalCounter === numberOfTurnsToWin) {
-            console.log('102');
             player.placeInTenSecondsGoalCounter = 0;
             return true;
         }
-        console.log('101', player);
         return false;
     }
 
@@ -312,17 +276,11 @@ export class GoalService {
     }
 
     private playTheRandomWord(player: Player): boolean {
-        // for (const word of player.words) {
-        //     if (word.toLowerCase() === this.randomWord.toLowerCase()) {
-        //         return true;
-        //     }
-        // }
         for (const key of player.wordsMapping.keys()) {
-            if (key.toLowerCase() === 'se') {
+            if (key.toLowerCase() === this.randomWord.toLowerCase()) {
                 return true;
             }
         }
-        // this.randomWord.toLowerCase()
         return false;
     }
 

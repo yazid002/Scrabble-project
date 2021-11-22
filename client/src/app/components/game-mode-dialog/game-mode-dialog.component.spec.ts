@@ -89,7 +89,7 @@ describe('GameModeDialogComponent', () => {
             points: 0,
             turnWithoutSkipAndExchangeCounter: 0,
             placeInTenSecondsGoalCounter: 0,
-            words: [],
+            wordsMapping: new Map<string, number>(),
         };
         gameServiceSpy.players = [player];
 
