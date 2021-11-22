@@ -3,7 +3,6 @@ import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
 import { SocketManager } from './services/socket-manager.service';
-import { WordValidationService } from './services/word-validation.service';
 
 const BASE_DIX = 10;
 
@@ -14,7 +13,7 @@ export class Server {
     private static readonly baseDix: number = BASE_DIX;
     private server: http.Server;
     private socketManger: SocketManager;
-    constructor(private readonly application: Application, public wordValidationService: WordValidationService) {}
+    constructor(private readonly application: Application) {}
 
     private static normalizePort(val: number | string): number | string | boolean {
         const port: number = typeof val === 'string' ? parseInt(val, this.baseDix) : val;

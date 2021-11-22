@@ -32,6 +32,7 @@ describe('PlaceSelectionService', () => {
             'checkAllWordsExist',
             'validatePlaceFeasibility',
             'normalizeWord',
+            'areCoordValid',
         ]);
         const dictionary = {
             title: 'dictionnaire test',
@@ -86,7 +87,7 @@ describe('PlaceSelectionService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('getIndexOnRackFromKey should the first index of letter on rack', () => {
+    it('getIndexOnRackFromKey return should the first index of letter on rack', () => {
         const keyEvent = {
             key: 'b',
             preventDefault: () => void '',
@@ -123,6 +124,27 @@ describe('PlaceSelectionService', () => {
         service.selectedRackIndexesForPlacement = [1];
 
         const expected = 2;
+        const result = service.getIndexOnRackFromKey(keyEvent.key, rack);
+
+        expect(result).toEqual(expected);
+    });
+
+    it('getIndexOnRackFromKey should the third index of letter on rack (*)', () => {
+        const keyEvent = {
+            key: 'B',
+            preventDefault: () => void '',
+        } as KeyboardEvent;
+
+        const rack: ICharacter[] = [
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: 'B', quantity: 0, points: 3, display: 'B' },
+            { name: '*', quantity: 2, points: 0, display: '*' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+        ];
+        service.selectedRackIndexesForPlacement = [1];
+
+        const expected = 3;
         const result = service.getIndexOnRackFromKey(keyEvent.key, rack);
 
         expect(result).toEqual(expected);
@@ -168,134 +190,166 @@ describe('PlaceSelectionService', () => {
 
         expect(result).toEqual(expected);
     });
+    describe('onKeyBoardClick', () => {
+        let cancelUniqueSelectionFromRackSpy: jasmine.Spy<() => void>;
+        let cancelUniqueBoardClickSpy: jasmine.Spy<() => void>;
+        let buildPlacementCommandSpy: jasmine.Spy<() => void>;
+        let cancelPlacementSpy: jasmine.Spy<() => void>;
+        let flagToCheck: string;
 
-    it('onKeyBoardClick should get the right function from map', () => {
-        let flagToCheck = NOT_FOUND;
-        service.keyEventOperationMap = new Map([
-            [
-                KeyboardKeys.Backspace,
-                () => {
-                    flagToCheck = 0;
-                },
-            ],
-            [
-                KeyboardKeys.Enter,
-                () => {
-                    flagToCheck = 1;
-                },
-            ],
-            [
-                KeyboardKeys.Escape,
-                () => {
-                    flagToCheck = 2;
-                },
-            ],
-        ]);
-        const keyEvent = {
-            key: KeyboardKeys.Escape,
-            preventDefault: () => void '',
-        } as KeyboardEvent;
+        beforeEach(() => {
+            service = TestBed.inject(PlaceSelectionService);
+            flagToCheck = 'NOT_FOUND';
+            cancelUniqueSelectionFromRackSpy = spyOn(service, 'cancelUniqueSelectionFromRack').and.callFake(() => {
+                flagToCheck = 'cancelUniqueSelectionFromRack';
+            });
 
-        const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, display: 'E' },
-            { name: 'B', quantity: 0, points: 3, display: 'B' },
-            { name: 'B', quantity: 0, points: 3, display: 'B' },
-            { name: 'D', quantity: 3, points: 2, display: 'D' },
-            { name: 'E', quantity: 15, points: 1, display: 'E' },
-        ];
+            cancelUniqueBoardClickSpy = spyOn(service, 'cancelUniqueBoardClick').and.callFake(() => {
+                flagToCheck += 'cancelUniqueBoardClick';
+            });
 
-        verifyServiceSpy.normalizeWord.and.returnValue('escape');
+            buildPlacementCommandSpy = spyOn(service, 'buildPlacementCommand').and.callFake(() => {
+                flagToCheck = 'buildPlacementCommand';
+                return flagToCheck;
+            });
 
-        service.onKeyBoardClick(keyEvent, rack);
+            cancelPlacementSpy = spyOn(service, 'cancelPlacement').and.callFake(() => {
+                flagToCheck = 'cancelPlacement';
+            });
+        });
 
-        expect(flagToCheck).toEqual(2);
-    });
+        it('onKeyBoardClick should not get the right function from map', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.ArrowLeft,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
 
-    it('onKeyBoardClick should not get the right function from map', () => {
-        let flagToCheck = NOT_FOUND;
-        service.keyEventOperationMap = new Map([
-            [
-                KeyboardKeys.Backspace,
-                () => {
-                    flagToCheck = 0;
-                },
-            ],
-            [
-                KeyboardKeys.Enter,
-                () => {
-                    flagToCheck = 1;
-                },
-            ],
-            [
-                KeyboardKeys.Escape,
-                () => {
-                    flagToCheck = 2;
-                },
-            ],
-        ]);
-        const keyEvent = {
-            key: KeyboardKeys.ArrowLeft,
-            preventDefault: () => void '',
-        } as KeyboardEvent;
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
 
-        const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, display: 'E' },
-            { name: 'B', quantity: 0, points: 3, display: 'B' },
-            { name: 'B', quantity: 0, points: 3, display: 'B' },
-            { name: 'D', quantity: 3, points: 2, display: 'D' },
-            { name: 'E', quantity: 15, points: 1, display: 'E' },
-        ];
+            verifyServiceSpy.normalizeWord.and.returnValue('arrowLeft');
 
-        verifyServiceSpy.normalizeWord.and.returnValue('arrowLeft');
+            service.onKeyBoardClick(keyEvent, rack);
 
-        service.onKeyBoardClick(keyEvent, rack);
+            expect(flagToCheck).toEqual('NOT_FOUND');
+            expect(cancelUniqueSelectionFromRackSpy).not.toHaveBeenCalled();
+            expect(cancelUniqueBoardClickSpy).not.toHaveBeenCalled();
+            expect(buildPlacementCommandSpy).not.toHaveBeenCalled();
+            expect(cancelPlacementSpy).not.toHaveBeenCalled();
+        });
 
-        expect(flagToCheck).toEqual(NOT_FOUND);
-    });
+        it('onKeyBoardClick should cancelUniqueSelection', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.Backspace,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
 
-    it('onKeyBoardClick should call placeOnBoard', () => {
-        let flagToCheck = NOT_FOUND;
-        service.keyEventOperationMap = new Map([
-            [
-                KeyboardKeys.Backspace,
-                () => {
-                    flagToCheck = 0;
-                },
-            ],
-            [
-                KeyboardKeys.Enter,
-                () => {
-                    flagToCheck = 1;
-                },
-            ],
-            [
-                KeyboardKeys.Escape,
-                () => {
-                    flagToCheck = 2;
-                },
-            ],
-        ]);
-        const keyEvent = {
-            key: 'e',
-            preventDefault: () => void '',
-        } as KeyboardEvent;
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
 
-        const rack: ICharacter[] = [
-            { name: 'E', quantity: 15, points: 1, display: 'E' },
-            { name: 'B', quantity: 0, points: 3, display: 'B' },
-            { name: 'B', quantity: 0, points: 3, display: 'B' },
-            { name: 'D', quantity: 3, points: 2, display: 'D' },
-            { name: 'E', quantity: 15, points: 1, display: 'E' },
-        ];
+            verifyServiceSpy.normalizeWord.and.returnValue('backspace');
 
-        verifyServiceSpy.normalizeWord.and.returnValue('e');
+            service.onKeyBoardClick(keyEvent, rack);
 
-        const placeOnBoardSpy = spyOn(service, 'placeOnBoard').and.callThrough();
+            expect(flagToCheck).toEqual('cancelUniqueSelectionFromRackcancelUniqueBoardClick');
+            expect(cancelUniqueSelectionFromRackSpy).toHaveBeenCalled();
+            expect(cancelUniqueBoardClickSpy).toHaveBeenCalled();
+            expect(buildPlacementCommandSpy).not.toHaveBeenCalled();
+            expect(cancelPlacementSpy).not.toHaveBeenCalled();
+        });
 
-        service.onKeyBoardClick(keyEvent, rack);
+        it('onKeyBoardClick should buildPlacementCommand', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.Enter,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
 
-        expect(flagToCheck).toEqual(NOT_FOUND);
-        expect(placeOnBoardSpy).toHaveBeenCalled();
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
+
+            verifyServiceSpy.normalizeWord.and.returnValue('enter');
+
+            service.onKeyBoardClick(keyEvent, rack);
+
+            expect(flagToCheck).toEqual('buildPlacementCommand');
+            expect(cancelUniqueSelectionFromRackSpy).not.toHaveBeenCalled();
+            expect(cancelUniqueBoardClickSpy).not.toHaveBeenCalled();
+            expect(buildPlacementCommandSpy).toHaveBeenCalled();
+            expect(cancelPlacementSpy).not.toHaveBeenCalled();
+        });
+
+        it('onKeyBoardClick should call cancelPlacement', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.Escape,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
+
+            verifyServiceSpy.normalizeWord.and.returnValue('escape');
+
+            service.onKeyBoardClick(keyEvent, rack);
+
+            expect(flagToCheck).toEqual('cancelPlacement');
+            expect(cancelUniqueSelectionFromRackSpy).not.toHaveBeenCalled();
+            expect(cancelUniqueBoardClickSpy).not.toHaveBeenCalled();
+            expect(buildPlacementCommandSpy).not.toHaveBeenCalled();
+            expect(cancelPlacementSpy).toHaveBeenCalled();
+        });
+
+        it('onKeyBoardClick should call placeOnBoard', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: 'e',
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
+
+            verifyServiceSpy.normalizeWord.and.returnValue('e');
+
+            const placeOnBoardSpy = spyOn(service, 'placeOnBoard').and.callThrough();
+
+            service.onKeyBoardClick(keyEvent, rack);
+
+            expect(flagToCheck).toEqual('NOT_FOUND');
+            expect(placeOnBoardSpy).toHaveBeenCalled();
+            expect(cancelUniqueSelectionFromRackSpy).not.toHaveBeenCalled();
+            expect(cancelUniqueBoardClickSpy).not.toHaveBeenCalled();
+            expect(buildPlacementCommandSpy).not.toHaveBeenCalled();
+            expect(cancelPlacementSpy).not.toHaveBeenCalled();
+        });
     });
 
     it('placeOnBoard should not place on board', () => {
@@ -350,19 +404,16 @@ describe('PlaceSelectionService', () => {
     it('checkPlacementFeasibility should return false 1', () => {
         const coord = { x: 1, y: 1 };
         const index = -1;
-
-        const areCoordValidSpy = spyOn(service, 'areCoordValid').and.callThrough();
-
         const result = service.checkPlacementFeasibility(coord, index);
         expect(result).toEqual(false);
-        expect(areCoordValidSpy).not.toHaveBeenCalled();
+        expect(verifyServiceSpy.areCoordValid).not.toHaveBeenCalled();
     });
 
     it('checkPlacementFeasibility should return false 2', () => {
         const coord = { x: 1, y: 1 };
         const index = 2;
 
-        spyOn(service, 'areCoordValid').and.returnValue(false);
+        verifyServiceSpy.areCoordValid.and.returnValue(false);
         const isTileAlreadySelectedSpy = spyOn(service, 'isTileAlreadySelected').and.callThrough();
 
         const result = service.checkPlacementFeasibility(coord, index);
@@ -374,12 +425,23 @@ describe('PlaceSelectionService', () => {
         const coord = { x: 1, y: 1 };
         const index = 2;
 
-        spyOn(service, 'areCoordValid').and.returnValue(true);
+        verifyServiceSpy.areCoordValid.and.returnValue(true);
         const isTileAlreadySelectedSpy = spyOn(service, 'isTileAlreadySelected').and.returnValue(true);
 
         const result = service.checkPlacementFeasibility(coord, index);
         expect(result).toEqual(false);
         expect(isTileAlreadySelectedSpy).toHaveBeenCalled();
+    });
+
+    it('checkPlacementFeasibility should return true', () => {
+        const coord = { x: 1, y: 1 };
+        const index = 2;
+
+        verifyServiceSpy.areCoordValid.and.returnValue(true);
+        spyOn(service, 'isTileAlreadySelected').and.returnValue(false);
+
+        const result = service.checkPlacementFeasibility(coord, index);
+        expect(result).toEqual(true);
     });
 
     it('incrementNextCoord should go to the next coord empty', () => {
@@ -411,6 +473,7 @@ describe('PlaceSelectionService', () => {
         service.direction = false;
 
         const expectedY = 10;
+        tiles[expectedY][coord.x].text = '';
 
         const result = service.incrementNextCoord(coord);
         expect(result).toEqual({ x: coord.x, y: expectedY });
@@ -703,5 +766,51 @@ describe('PlaceSelectionService', () => {
         service.moveToNextEmptyTile(coord);
 
         expect(onBoardClickSpy).toHaveBeenCalled();
+    });
+
+    it('isTileAlreadySelected should return true', () => {
+        const coord = { x: 7, y: 7 };
+
+        service.selectedTilesForPlacement = [coord];
+
+        const result = service.isTileAlreadySelected(coord);
+
+        expect(result).toEqual(true);
+    });
+
+    it('isTileAlreadySelected should return true', () => {
+        const coord = { x: 7, y: 7 };
+
+        service.selectedTilesForPlacement = [];
+
+        const result = service.isTileAlreadySelected(coord);
+
+        expect(result).toEqual(false);
+    });
+
+    it('getClickCoords the right coords', () => {
+        const coord = { x: 9, y: 7 };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+        } as MouseEvent;
+
+        const result = service.getClickCoords(event);
+
+        expect(result).toEqual(coord);
+    });
+
+    it('getClickCoords not found', () => {
+        const coord = { x: 15, y: 7 };
+        const event = {
+            button: MouseButton.Right,
+            offsetX: coord.x * SQUARE_WIDTH,
+            offsetY: coord.y * SQUARE_WIDTH,
+        } as MouseEvent;
+
+        const result = service.getClickCoords(event);
+
+        expect(result).toEqual({ x: NOT_FOUND, y: NOT_FOUND });
     });
 });
