@@ -3,6 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { Case } from '@app/classes/case';
 import { ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
 import { BINGO_BONUS, BINGO_LENGTH } from '@app/constants/board-constants';
@@ -14,22 +15,26 @@ import { VerifyService } from './verify.service';
     providedIn: 'root',
 })
 export class PointsCountingService {
-    letterBonusesMapping: Map<string, (basePoints: number) => number> = new Map([
-        [
-            'dl',
-            (basePoints: number) => {
-                return basePoints * 2;
-            },
-        ],
-        [
-            'tl',
-            (basePoints: number) => {
-                return basePoints * 3;
-            },
-        ],
-    ]);
+    tiles: Case[][];
+    letterBonusesMapping: Map<string, (basePoints: number) => number>;
 
-    constructor(private verifyService: VerifyService, public reserveService: ReserveService) {}
+    constructor(private verifyService: VerifyService, public reserveService: ReserveService) {
+        this.tiles = tiles;
+        this.letterBonusesMapping = new Map([
+            [
+                'dl',
+                (basePoints: number) => {
+                    return basePoints * 2;
+                },
+            ],
+            [
+                'tl',
+                (basePoints: number) => {
+                    return basePoints * 3;
+                },
+            ],
+        ]);
+    }
 
     processWordPoints(wordToCheck: string, coord: Vec2, direction: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): number {
         let points = this.applyBoardBonuses(wordToCheck, coord, direction, lettersUsedOnBoard);
@@ -73,11 +78,11 @@ export class PointsCountingService {
             const length = lettersUsedOnBoard.filter((letter) => letter.coord.x === x && letter.coord.y === y);
             if (length.length === 0) {
                 basePoints = this.getLetterPoints(wordToCheck[i]);
-                const bonus = tiles[y][x].bonus;
+                const bonus = this.tiles[y][x].bonus;
                 const letterPoints = this.letterBonusesMapping.get(bonus) as (basePoints: number) => number;
                 point += letterPoints ? letterPoints(basePoints) : basePoints;
 
-                switch (tiles[y][x].bonus) {
+                switch (this.tiles[y][x].bonus) {
                     case 'tw':
                         numberOfTW++;
                         break;

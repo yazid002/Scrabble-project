@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { Case } from '@app/classes/case';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Vec2 } from '@app/classes/vec2';
 import { SelectionType } from '@app/enums/selection-enum';
@@ -18,6 +19,7 @@ import { TimerService } from './timer.service';
 })
 export class PlaceService {
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+    tiles: Case[][];
     constructor(
         private rackService: RackService,
         private verifyService: VerifyService,
@@ -28,7 +30,9 @@ export class PlaceService {
         private placeSelectionService: PlaceSelectionService,
         private selectionManagerService: SelectionManagerService,
         private goalManagerService: GoalsManagerService,
-    ) {}
+    ) {
+        this.tiles = tiles;
+    }
     async placeWordInstant(word: string, coord: Vec2, direction: string): Promise<boolean> {
         word = this.verifyService.normalizeWord(word);
         const isPlacementFeasible = this.verifyService.validatePlaceFeasibility(word, coord, direction);
@@ -71,7 +75,7 @@ export class PlaceService {
                 this.verifyService.checkAllWordsExist(word, coord).then((wordValidationParameters) => {
                     if (!wordValidationParameters.wordExists) {
                         this.restoreGrid(word, direction, coord, false, isCalledThoughtChat);
-                        localStorage.setItem('bonusGrid', JSON.stringify(tiles));
+                        localStorage.setItem('bonusGrid', JSON.stringify(this.tiles));
                         this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter = 0;
                         response.error = true;
                         response.message.body = 'Commande impossible à réaliser : ' + wordValidationParameters.errorMessage;
@@ -91,10 +95,10 @@ export class PlaceService {
             const computingCoord = this.verifyService.computeCoordByDirection(direction, coord, i);
             const x = computingCoord.x;
             const y = computingCoord.y;
-            if (tiles[y][x].letter === '') {
-                tiles[y][x].letter = word[i];
+            if (this.tiles[y][x].letter === '') {
+                this.tiles[y][x].letter = word[i];
             }
-            tiles[y][x].bonus = 'x';
+            this.tiles[y][x].bonus = 'x';
         }
     }
 
@@ -140,12 +144,17 @@ export class PlaceService {
             const x = computingCoord.x;
             const y = computingCoord.y;
 
-            tiles[y][x].text = tiles[y][x].oldText;
-            tiles[y][x].style.color = tiles[y][x].oldStyle.color;
-            tiles[y][x].style.font = tiles[y][x].oldStyle.font;
+            this.tiles[y][x].text = this.tiles[y][x].oldText;
+            this.tiles[y][x].style.color = this.tiles[y][x].oldStyle.color;
+            this.tiles[y][x].style.font = this.tiles[y][x].oldStyle.font;
 
             if (instant) {
-                this.gridService.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
+                this.gridService.fillGridPortion(
+                    { y, x },
+                    this.tiles[y][x].text,
+                    this.tiles[y][x].style.color as string,
+                    this.tiles[y][x].style.font as string,
+                );
             } else {
                 const placementDuration = 3000; // 3000 millisecondes soit 3s;
                 setTimeout(() => {
@@ -154,9 +163,9 @@ export class PlaceService {
                     } else {
                         this.gridService.fillGridPortion(
                             { y, x },
-                            tiles[y][x].text,
-                            tiles[y][x].style.color as string,
-                            tiles[y][x].style.font as string,
+                            this.tiles[y][x].text,
+                            this.tiles[y][x].style.color as string,
+                            this.tiles[y][x].style.font as string,
                         );
                     }
                     this.selectionManagerService.updateSelectionType(SelectionType.Rack);
