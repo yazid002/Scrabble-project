@@ -35,7 +35,7 @@
                 <mat-error *ngIf="userSettingsService.dictionaryControl.hasError('required')">Please choose a dictionary</mat-error>
                 <mat-hint>Description : {{ userSettingsService.dictionaryControl.value?.description }}</mat-hint>
             </mat-form-field>
-            <h3>your selected dictionary is : {{ userSettingsService.selectedDictionary }}</h3>
+            <!-- <h3>your selected dictionary is : {{ userSettingsService.selectedDictionary }}</h3> -->
         </div>
         <div>
             <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
