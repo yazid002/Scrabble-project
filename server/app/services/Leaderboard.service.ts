@@ -1,5 +1,5 @@
 import { Leaderboard } from '@app/classes/Leaderboard';
-import { Collection } from 'mongodb';
+import { Collection, FindAndModifyWriteOpResultObject } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
 import { DatabaseService } from './database.service';
@@ -43,6 +43,11 @@ export class ClassicLeaderBoardService {
     //         return course;
     //     });
     // }
+    async getPlayer(player: string): Promise<Leaderboard> {
+        return this.collection2.findOne({ name: player }).then((playerInfo: Leaderboard) => {
+            return playerInfo;
+        });
+    }
 
     async getPlayersScore(player: string): Promise<string> {
         return this.collection2.findOne({ name: player }).then((score: Leaderboard) => {
@@ -54,6 +59,18 @@ export class ClassicLeaderBoardService {
         await this.collection2.insertOne(player);
     }
 
+    async deletePlayer(player: string): Promise<void> {
+        return this.collection2
+            .findOneAndDelete({ name: player })
+            .then((res: FindAndModifyWriteOpResultObject<Leaderboard>) => {
+                if (!res.value) {
+                    throw new Error('Could not find course');
+                }
+            })
+            .catch(() => {
+                throw new Error('Failed to delete course');
+            });
+    }
     // private validatePlayer(player: Leaderboard): boolean {}
 
     // async addCourse(course: Leaderboard): Promise<void> {

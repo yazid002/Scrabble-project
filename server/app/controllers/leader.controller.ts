@@ -1,3 +1,4 @@
+import { Leaderboard } from '@app/classes/Leaderboard';
 import { ClassicLeaderBoardService } from '@app/services/Leaderboard.service';
 // import Types from '@app/types';
 import { Request, Response, Router } from 'express';
@@ -36,6 +37,17 @@ export class LeaderBoardController {
         });
 
         this.router.get('/:name', async (req: Request, res: Response) => {
+            this.classicLeaderboardService
+                .getPlayer(req.params.name)
+                .then((leaderboard: Leaderboard) => {
+                    res.json(leaderboard);
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
+
+        this.router.get('/:name/score', async (req: Request, res: Response) => {
             this.classicLeaderboardService
                 .getPlayersScore(req.params.name)
                 .then((leaderboard: string) => {
@@ -91,6 +103,16 @@ export class LeaderBoardController {
         //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
         //         });
         // });
+        this.router.delete('/:name', async (req: Request, res: Response) => {
+            this.classicLeaderboardService
+                .deletePlayer(req.params.name)
+                .then(() => {
+                    res.status(Httpstatus.StatusCodes.NO_CONTENT).send();
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
 
         // this.router.get('/teachers/code/:subjectCode', async (req: Request, res: Response) => {
         //     this.coursesService

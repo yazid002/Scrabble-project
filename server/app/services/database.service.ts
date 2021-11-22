@@ -94,6 +94,15 @@ export class DatabaseService {
         }
     }
 
+    // async populateVirtualDB(): Promise<void> {
+    //     const virtualPlayerName: string[] = ['Name1', 'Name2', 'Name3'];
+
+    //     console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
+    //     for (const player of virtualPlayerName) {
+    //         await this.db.collection(DATABASE_COLLECTION_CLASSIC).insertOne(player);
+    //     }
+    // }
+
     get database(): Db {
         return this.db;
     }
