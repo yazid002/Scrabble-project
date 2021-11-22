@@ -110,7 +110,6 @@ export class PlaceService {
         this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter += 1;
         this.goalManagerService.applyAllGoalsBonus(this.verifyService.formedWords);
 
-        this.updateTilesLetters(word, coord, direction);
         if (!instant) {
             this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
                 word,
@@ -131,7 +130,7 @@ export class PlaceService {
 
             this.selectionManagerService.updateSelectionType(SelectionType.Rack);
         }
-
+        this.updateTilesLetters(word, coord, direction);
         this.rackService.replaceWord(word);
     }
 

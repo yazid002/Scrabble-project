@@ -8,17 +8,22 @@ import { GridService } from './grid.service';
     providedIn: 'root',
 })
 export class RandomModeService {
-    bonusOnGrid: Bonus[] = [
-        { text: 'tw', color: 'IndianRed', quantity: 8 },
-        { text: 'tl', color: 'RoyalBlue', quantity: 12 },
-        { text: 'dw', color: 'LightPink', quantity: 17 },
-        { text: 'dl', color: 'LightSkyBlue', quantity: 24 },
-    ];
+    bonusOnGrid: Bonus[];
 
-    randomBonusIndex: number = 0;
-    isChecked: boolean = false;
+    randomBonusIndex: number;
+    isChecked: boolean;
 
-    constructor(private gridService: GridService) {}
+    constructor(private gridService: GridService) {
+        this.bonusOnGrid = [
+            { text: 'tw', color: 'IndianRed', quantity: 8 },
+            { text: 'tl', color: 'RoyalBlue', quantity: 12 },
+            { text: 'dw', color: 'LightPink', quantity: 17 },
+            { text: 'dl', color: 'LightSkyBlue', quantity: 24 },
+        ];
+
+        this.randomBonusIndex = 0;
+        this.isChecked = false;
+    }
 
     // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 
@@ -31,8 +36,8 @@ export class RandomModeService {
     randomizeIndex(minNumber: number, maxNumber: number): number {
         do {
             this.randomBonusIndex = this.getRandomIntInclusive(minNumber, maxNumber);
-        } while (this.bonusOnGrid[this.randomBonusIndex].quantity === 0);
-
+        } while (this.bonusOnGrid[this.randomBonusIndex].quantity === 0 && !this.allBonusesAreDistributed());
+        //
         return this.randomBonusIndex;
     }
 
@@ -59,5 +64,12 @@ export class RandomModeService {
         }
 
         localStorage.setItem('bonusGrid', JSON.stringify(tiles));
+    }
+
+    allBonusesAreDistributed(): boolean {
+        const bonusesWhichQuantityIsNull = this.bonusOnGrid.filter((bonus: Bonus) => {
+            return bonus.quantity === 0;
+        });
+        return bonusesWhichQuantityIsNull.length === 0;
     }
 }
