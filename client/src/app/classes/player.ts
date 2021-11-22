@@ -1,3 +1,4 @@
+import { GoalType } from '@app/enums/goals-enum';
 import { ICharacter } from './letter';
 
 export interface Player {
@@ -8,7 +9,9 @@ export interface Player {
     won?: string;
     placeInTenSecondsGoalCounter: number;
     turnWithoutSkipAndExchangeCounter: number;
-    words: string[];
+    // words: string[];
+    wordsMapping: Map<string, number>;
+    goalsProgresses?: Map<GoalType, number>;
 }
 export const PLAYER = {
     realPlayer: 0,
