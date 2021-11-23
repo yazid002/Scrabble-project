@@ -11,6 +11,10 @@ mat-card mat-card {
     color: red;
 }
 
+.activePlayer.player {
+    color: green;
+}
+
 .goalsTitle {
     justify-content: space-between;
     font-size: 20px;

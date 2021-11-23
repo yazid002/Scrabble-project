@@ -11,6 +11,7 @@ import { PLAYER } from '@app/classes/player';
 import { GameService } from '@app/services/game.service';
 import { GoalsManagerService } from '@app/services/goals-manager.service';
 import { RandomModeService } from '@app/services/random-mode.service';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
 import { GameModeDialogComponent } from './game-mode-dialog.component';
@@ -64,8 +65,10 @@ describe('GameModeDialogComponent', () => {
     let gameServiceSpy: jasmine.SpyObj<GameService>;
     let goalsManagerServiceSpy: jasmine.SpyObj<GoalsManagerService>;
     let randomModeServiceSpy: jasmine.SpyObj<RandomModeService>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(async () => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName']);
         userSettingsServiceSpy.settings = {
             mode: { setting: MODE, currentChoiceKey: 'classic' },
@@ -108,6 +111,7 @@ describe('GameModeDialogComponent', () => {
                 { provide: RandomModeService, useValue: randomModeServiceSpy },
                 { provide: GameService, useValue: gameServiceSpy },
                 { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
             imports: [BrowserAnimationsModule, MatRadioModule, MatCardModule, FormsModule, MatInputModule, MatDialogModule],
         }).compileComponents();

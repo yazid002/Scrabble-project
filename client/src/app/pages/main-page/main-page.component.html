@@ -12,11 +12,14 @@
         <div class="play-button">
             <button (click)="openDialog()" class="start-btn">JOUER</button>
         </div>
-        <button [routerLink]="['/leaderboard']" class="start-btn">Meilleurs scores</button>
+        <button (click)="playClickSound()" [routerLink]="['/leaderboard']" class="start-btn">Meilleurs scores</button>
     </section>
 
     <div class="footer-item">
         <h4 class="team-name">Équipe 201</h4>
+        <!-- <p>
+            <button mat-raised-button (click)="playMainPageSound()">Activer Musique</button>
+        </p> -->
         <p>
             <span>Maxime Laroche</span>, <span>Rakieta Melaine-Elsa Oued</span>, <span>Ahmed Ben Othman</span>, <span>Alex Hua</span>,
             <span>Najme EA</span>, <span>Yazid Ben Saïd</span>

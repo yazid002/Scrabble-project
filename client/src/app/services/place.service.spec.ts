@@ -18,6 +18,7 @@ import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
 import { SelectionManagerService } from './selection-manager.service';
+import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
 
 const CANVAS_WIDTH = 500;
@@ -38,8 +39,10 @@ describe('PlaceService', () => {
     let placeSelectionServiceSpy: jasmine.SpyObj<PlaceSelectionService>;
     let selectionManagerServiceSpy: jasmine.SpyObj<SelectionManagerService>;
     let timerServiceSpy: jasmine.SpyObj<TimerService>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(() => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playNonValidPlacementAudio', 'playPlacementAudio']);
         verifyServiceSpy = jasmine.createSpyObj('VerifyService', [
             'computeCoordByDirection',
             'checkAllWordsExist',
@@ -109,6 +112,7 @@ describe('PlaceService', () => {
                 { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
                 { provide: PlaceSelectionService, useValue: placeSelectionServiceSpy },
                 { provide: SelectionManagerService, useValue: selectionManagerServiceSpy },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
             imports: [HttpClientModule],
         });

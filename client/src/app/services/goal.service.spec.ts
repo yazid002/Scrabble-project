@@ -5,14 +5,17 @@ import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
 import { GoalService } from './goal.service';
+import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
 
 describe('GoalService', () => {
     let service: GoalService;
     let timerServiceSpy: TimerService;
     let player: Player;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(() => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playGoalAchievementAudio']);
         timerServiceSpy = jasmine.createSpyObj('TimerService', ['decrementTime']);
         timerServiceSpy.counter = {
             min: 0,
@@ -21,7 +24,12 @@ describe('GoalService', () => {
             totalTimer: 0,
         };
 
-        TestBed.configureTestingModule({ providers: [{ provide: TimerService, useValue: timerServiceSpy }] });
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: TimerService, useValue: timerServiceSpy },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+            ],
+        });
         service = TestBed.inject(GoalService);
         const dictionary = {
             title: 'dictionnaire test',
@@ -326,23 +334,9 @@ describe('GoalService', () => {
         expect(result).toEqual(expectedResult);
     });
     it('completeGoalSound should play an audio', () => {
-        const anAudio: HTMLAudioElement = {
-            src: 'une source',
-            load: () => void '',
-            play: async () => Promise.resolve(void ''),
-            addEventListener: () => void '',
-        } as unknown as HTMLAudioElement;
-
-        const audioSpy = spyOn(global, 'Audio').and.returnValue(anAudio);
-
-        const loadSpy = spyOn(anAudio, 'load').and.returnValue(void '');
-
-        const playSpy = spyOn(anAudio, 'play').and.returnValue(Promise.resolve(void ''));
-
+        soundManagerServiceSpy.playGoalAchievementAudio.and.returnValue(void '');
         service.completeGoalSound();
-        expect(audioSpy).toHaveBeenCalled();
-        expect(loadSpy).toHaveBeenCalled();
-        expect(playSpy).toHaveBeenCalled();
+        expect(soundManagerServiceSpy.playGoalAchievementAudio).toHaveBeenCalled();
     });
 
     describe('getProgress', () => {
