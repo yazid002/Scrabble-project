@@ -34,8 +34,6 @@ export class ExchangeService {
             from: SENDER.computer,
             body: 'Échange de lettres réussi !',
         };
-        // this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter = 0;
-        // this.gameService.players[this.gameService.currentTurn].placeInTenSecondsGoalCounter = 0;
         this.timerService.resetTurnCounter.next(true);
         this.timerService.resetTimer();
         return { error: false, message: result };

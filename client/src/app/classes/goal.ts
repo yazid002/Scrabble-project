@@ -8,5 +8,4 @@ export interface Goal {
     completedBy?: Player;
     goalType: GoalType;
     usesWord: boolean;
-    progress?: number;
 }
