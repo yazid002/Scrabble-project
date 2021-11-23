@@ -34,7 +34,7 @@ export class VirtualPlayerNamesController {
         this.router.get('/', async (req: Request, res: Response) => {
             console.log('get name controller ', req.body);
 
-            const names = this.virtualPlayerNamesService.names;
+            const names = this.virtualPlayerNamesService.name;
             res.json(names);
         });
     }
