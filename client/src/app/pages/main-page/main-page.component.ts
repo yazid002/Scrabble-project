@@ -32,7 +32,7 @@ export class MainPageComponent implements OnInit {
         localStorage.clear();
     }
 
-    private openDialog() {
+    openDialog() {
         this.matDialog.open(GameModeDialogComponent);
     }
 }

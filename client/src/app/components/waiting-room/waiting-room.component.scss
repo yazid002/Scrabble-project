@@ -1,86 +1,106 @@
 @import url('http://fonts.cdnfonts.com/css/common-pixel');
+@import url('https://fonts.googleapis.com/css?family=Carter+One');
+@import url('http://fonts.cdnfonts.com/css/sunari');
 
+body {
+    min-height: 100%;
+    height: auto;
+    background-image: url('/assets/background.jpg');
+    height: 105%;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 .title {
     font-family: 'Common Pixel', sans-serif;
     font-size: 100px;
-    margin-top: 40px;
+    padding-top: 40px;
     text-align: center;
     color: red;
-    margin-bottom: 200px;
+    margin-bottom: 170px;
+    text-transform: uppercase;
+    font-weight: 700;
+    text-shadow: 1px 1px 1px #919191, 1px 2px 1px #919191, 1px 3px 1px #919191, 1px 4px 1px #919191, 1px 5px 1px #919191, 1px 6px 1px #919191,
+        1px 7px 1px #919191, 1px 8px 1px #919191, 1px 9px 1px #919191, 1px 10px 1px #919191, 1px 18px 6px rgba(16, 16, 16, 0.4),
+        1px 22px 10px rgba(16, 16, 16, 0.2), 1px 25px 35px rgba(16, 16, 16, 0.2), 1px 30px 60px rgba(16, 16, 16, 0.4);
 }
-
 .loading {
-    //margin: auto
     text-align: center;
-
     margin-top: 50px;
 }
 .loading h1 {
     margin-bottom: 50px;
-    color: green;
-    font-family: Gill Sans, sans-serif;
+    //color: green;
+    color: #fff !important;
+    font-family: 'Carter One', sans-serif;
+    text-decoration: none !important;
+    outline: none !important;
+    line-height: 1.5em;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px 1px #348628, -2px 2px 1px #348628, 2px -2px 1px #348628, -2px -2px 1px #348628, 0px 2px 1px #348628, 0px -2px 1px #348628,
+        0px 4px 1px #1d4c16, 2px 4px 1px #1d4c16, -2px 4px 1px #1d4c16;
 }
-
 #parametres {
     text-align: center;
+    font-family: 'Sunari', sans-serif;
+    font-size: 30px;
 }
-
 .me {
     text-align: center;
     margin: auto;
     margin-top: 10px;
 }
-
-mat-spinner {
+#name {
+    font-family: 'Sunari', sans-serif;
+    font-size: 40px;
+}
+.spinner {
     margin: auto;
+    // stroke: green !important;
+    color: green;
 }
 
+:host ::ng-deep .spinner circle {
+    stroke: #0cc20c;
+}
 mat-card {
     width: 250px;
     margin-top: 20px;
 }
-
 #summary {
     margin-bottom: 20px;
     display: block;
     margin-left: auto;
     margin-right: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
-// #name {
-//     margin-top: 10px;
-// }
 mat-card-title-group {
     margin-top: 20px;
 }
-
 mat-card mat-card {
     margin-top: 1em;
     justify-content: space-between;
     width: 200px;
 }
 
+.mat-card-subtitle {
+    color: yellow;
+    font-family: 'Sunari', sans-serif;
+    font-size: 25px;
+}
 .container {
     margin: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    background-color: rgba(0, 0, 0, 0.1);
 }
-
 .footer {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 10px;
-    //height: 100%;
 }
-#solo_button {
-    margin-right: 5px;
-}
-#join {
-    margin-right: 5px;
-}
-
-#random {
-    margin-left: 5px;
-}
-
 .hidden {
     display: none;
 }
+// @import url('https://fonts.googleapis.com/css?family=Carter+One');
