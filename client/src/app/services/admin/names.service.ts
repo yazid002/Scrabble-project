@@ -10,8 +10,8 @@ interface NameProperties {
     providedIn: 'root',
 })
 export class NamesService {
-    beginnerNames: NameProperties[];
-    advancedNames: NameProperties[];
+    beginnerNames: NameProperties[] = [];
+    advancedNames: NameProperties[] = [];
     urlString: string;
 
     constructor(private http: HttpClient) {
@@ -19,8 +19,6 @@ export class NamesService {
     }
 
     async fetchNames() {
-        this.beginnerNames = [];
-        this.advancedNames = [];
         const response = this.http.get<NameProperties[]>(this.urlString);
         response.subscribe((nameProperties) => {
             this.beginnerNames = nameProperties.filter((nameProperty) => !nameProperty.isAdvanced);
@@ -40,5 +38,5 @@ export class NamesService {
         const response = this.http.post<NameProperties>(this.urlString + 'delete', name);
         response.subscribe(async () => this.fetchNames());
     }
-    
+
 }
