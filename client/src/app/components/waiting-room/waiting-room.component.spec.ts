@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -28,6 +29,7 @@ describe('WaitingRoomComponent', () => {
                 MatProgressSpinnerModule,
                 MatCardModule,
                 MatDialogModule,
+                HttpClientModule,
                 RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }]),
             ],
             providers: [

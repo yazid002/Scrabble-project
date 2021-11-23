@@ -1,7 +1,5 @@
 import { Case } from '@app/classes/case';
 
-// const BISQUE = 'rgba(200, 0, 0, 0.75)';
-
 export const tiles: Case[][] = [
     [
         { letter: '', bonus: 'tw', text: 'tw', style: { color: 'IndianRed', font: '15px serif' }, oldStyle: { color: '', font: '' }, oldText: '' },

@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,12 +9,13 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { KeyboardKeys } from '@app/enums/keyboard-enum';
-import { SelectionType } from '@app/enums/selection-enum';
+import { OperationType, SelectionType } from '@app/enums/selection-enum';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { GridService } from '@app/services/grid.service';
 import { RandomModeService } from '@app/services/random-mode.service';
@@ -81,6 +83,7 @@ describe('GamePageComponent', () => {
                 MatButtonModule,
                 AppRoutingModule,
                 RouterModule,
+                HttpClientModule,
             ],
             providers: [
                 { provide: GridService, useValue: gridServiceSpy },
@@ -216,5 +219,28 @@ describe('GamePageComponent', () => {
 
         component.onSubmitExchange(selectionTypeTest);
         expect(selectionManagerSpy.onSubmitExchange).toHaveBeenCalled();
+    });
+
+    describe('ahowAbandonDialog', () => {
+        it('should open a dialog if the received signal is the ABANDON SIGNAL', () => {
+            // eslint-disable-next-line dot-notation
+            const matDialogSpy = spyOn(component['matDialog'], 'open');
+            const aRandomSignal = 'some signal';
+            // eslint-disable-next-line dot-notation
+            component['showAbandonDIalog'](aRandomSignal);
+            expect(matDialogSpy).not.toHaveBeenCalled();
+
+            // eslint-disable-next-line dot-notation
+            component['showAbandonDIalog'](ABANDON_SIGNAL);
+            expect(matDialogSpy).toHaveBeenCalled();
+        });
+    });
+
+    it('should return SelectionType', () => {
+        expect(component.selectionType).toEqual(SelectionType);
+    });
+
+    it('should return OperationType', () => {
+        expect(component.operationType).toEqual(OperationType);
     });
 });

@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { Vec2 } from '@app/classes/vec2';
@@ -8,7 +10,7 @@ describe('PointsCountingService', () => {
     let service: PointsCountingService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({ imports: [HttpClientModule] });
         service = TestBed.inject(PointsCountingService);
     });
 
@@ -41,23 +43,28 @@ describe('PointsCountingService', () => {
     it(' applyBingo should return the word points with a bonus', () => {
         const wordToCheck = 'abcabca';
         const wordBasePoints = 15;
+        const coord = { x: 3, y: 4 };
+        const direction = 'horizontal';
         const expectedResult = wordBasePoints + BINGO_BONUS;
 
         // applyBingo est privée
         // eslint-disable-next-line dot-notation
-        const result = service['applyBingo'](wordToCheck, wordBasePoints);
+        const result = service['applyBingo'](wordToCheck, coord, direction, wordBasePoints, []);
 
         expect(result).toEqual(expectedResult);
     });
 
-    it(' applyBingo should return the word base points', () => {
+    it(" applyBingo should return the word base points if the word's length is 7 but there are letters used on board", () => {
         const wordToCheck = 'abcabc';
         const wordBasePoints = 14;
+        const coord = { x: 3, y: 4 };
+        const direction = 'h';
+        const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [{ letter: 'b', coord: { x: 4, y: 4 } }];
         const expectedResult = wordBasePoints;
 
         // applyBingo est privée
         // eslint-disable-next-line dot-notation
-        const result = service['applyBingo'](wordToCheck, wordBasePoints);
+        const result = service['applyBingo'](wordToCheck, coord, direction, wordBasePoints, lettersUsedOnBoard);
 
         expect(result).toEqual(expectedResult);
     });
@@ -65,11 +72,13 @@ describe('PointsCountingService', () => {
     it(' applyBoardBonuses should return the word base points', () => {
         const wordToCheck = 'abcabc';
         const wordBasePoints = 14;
+        const coord = { x: 3, y: 4 };
+        const direction = 'h';
         const expectedResult = wordBasePoints;
 
         // applyBingo est privée
         // eslint-disable-next-line dot-notation
-        const result = service['applyBingo'](wordToCheck, wordBasePoints);
+        const result = service['applyBingo'](wordToCheck, coord, direction, wordBasePoints, []);
 
         expect(result).toEqual(expectedResult);
     });
@@ -153,6 +162,7 @@ describe('PointsCountingService', () => {
         tiles[coord.y][coord.x].bonus = 'tl';
         tiles[coord.y + 1][coord.x].bonus = 'xx';
         tiles[coord.y + 2][coord.x].bonus = 'xx';
+
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
@@ -327,6 +337,20 @@ describe('PointsCountingService', () => {
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(' applyBoardBonuses should return the bad word', () => {
+        const wordToCheck = 'abc';
+        const expectedResult = -100;
+
+        const coord: Vec2 = { y: -1, x: -1 };
+        const direction = 'v';
+
+        // applyBoardBonuses est privée
+        // eslint-disable-next-line dot-notation
+        const result = service['applyBoardBonuses'](wordToCheck, coord, direction, []);
 
         expect(result).toEqual(expectedResult);
     });

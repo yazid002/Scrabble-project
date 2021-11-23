@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,7 +22,7 @@ describe('SidebarComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule, MatCardModule],
+            imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule, MatCardModule, HttpClientModule],
             declarations: [SidebarComponent, GameOverviewComponent],
             providers: [
                 {
