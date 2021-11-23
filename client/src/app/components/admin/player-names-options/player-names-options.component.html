@@ -2,7 +2,7 @@
     <mat-card-title>Ajouter un nom de joueur virtuel</mat-card-title>
     <form (keyup)="validateName()" aria-details="w">
         <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'" ngDefaultControl>
-            <mat-label innerHTML="Tapez un message">{{ error ? errorMessage :"Entrer le nom du joueur à ajouter"}}</mat-label>
+            <mat-label innerHTML="Tapez un message">{{ error ? errorMessage : 'Entrer le nom du joueur à ajouter' }}</mat-label>
             <input matInput autocomplete="off" [(ngModel)]="name" name="first" [ngModelOptions]="{ standalone: true }" />
         </mat-form-field>
         <!-- <mat-form-field appearance="outline" color="primary" ngDefaultControl> -->
@@ -21,8 +21,9 @@
                 <mat-card-title class="big-title">Joueurs Débutants</mat-card-title>
                 <mat-list-item *ngFor="let name of nameService.beginnerNames">
                     <div *ngIf="name">
-                        <p matLine class="small-title">{{ name.name }}</p>
-                        <button mat-raised-button color="basic" (click)="nameService.delete(name)">Retirer</button>
+                        <h2 matLine class="small-title">{{ name.name }}</h2>
+                        <button *ngIf="!name.default" mat-raised-button color="basic" (click)="nameService.delete(name)">Retirer</button>
+                        <h5 class="default" *ngIf="name.default">Nom par défault</h5>
                     </div>
                     <mat-divider></mat-divider>
                 </mat-list-item>
@@ -35,8 +36,9 @@
                 <mat-card-title class="big-title">Joueurs Avancés</mat-card-title>
                 <mat-list-item *ngFor="let name of nameService.advancedNames">
                     <div *ngIf="name">
-                        <p matLine class="small-title">{{ name.name }}</p>
-                        <button mat-raised-button color="basic" (click)="nameService.delete(name)">Retirer</button>
+                        <h2 matLine class="small-title">{{ name.name }}</h2>
+                        <button *ngIf="!name.default" mat-raised-button color="basic" (click)="nameService.delete(name)">Retirer</button>
+                        <h5 class="default" *ngIf="name.default">Nom par défault</h5>
                     </div>
                     <mat-divider></mat-divider>
                 </mat-list-item>
