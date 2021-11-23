@@ -7,33 +7,37 @@ import { Vec2 } from '@app/classes/vec2';
 import { BONUSES, SQUARE_NUMBER } from '@app/constants/board-constants';
 import { SERVER_URL } from '@app/constants/url';
 import { RackService } from '@app/services/rack.service';
+import { Observable } from 'rxjs';
 import * as dictionary from 'src/assets/dictionnary.json';
 
 @Injectable({
     providedIn: 'root',
 })
 export class VerifyService {
-    urlString = SERVER_URL + '/api/validate';
-    dictionary: Dictionary = dictionary as Dictionary;
-    invalidSymbols: string[] = ['-', "'"];
-    success: boolean = true;
-    lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
-    formedWords: string[] = [];
-
-    constructor(private rackService: RackService, private http: HttpClient) {}
-
+    urlString: string;
+    dictionary: Dictionary;
+    invalidSymbols: string[];
+    success: boolean;
+    lettersUsedOnBoard: { letter: string; coord: Vec2 }[];
+    formedWords: string[];
+    constructor(private rackService: RackService, private http: HttpClient) {
+        this.urlString = SERVER_URL + '/api/validate';
+        this.dictionary = dictionary as Dictionary;
+        this.invalidSymbols = ['-', "'"];
+        this.success = true;
+        this.lettersUsedOnBoard = [];
+        this.formedWords = [];
+    }
     isFitting(coord: Vec2, direction: string, word: string): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
         const response = { error: false, message: result };
         const remainingCases = direction === 'h' || direction === 'horizontal' ? tiles.length - coord.x : tiles.length - coord.y;
-
         if (word.length > remainingCases) {
             this.success = false;
             response.error = true;
             response.message.body = "Commande impossible à réaliser : Il n'y a pas assez de place pour écrire ce mot.";
             return response;
         }
-
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
         for (let i = 0; i < word.length; i++) {
             const computedCoord = this.computeCoordByDirection(direction, coord, i);
@@ -48,7 +52,6 @@ export class VerifyService {
                     response.message.body = "Commande impossible à réaliser : Il y a déjà une lettre dans l'une des cases ciblées.";
                     return response;
                 }
-
                 lettersUsedOnBoard.push({ letter, coord: { y, x } });
             } else if (!this.rackService.isLetterOnRack(letter)) {
                 this.success = false;
@@ -58,7 +61,6 @@ export class VerifyService {
                 return response;
             }
         }
-
         this.lettersUsedOnBoard = lettersUsedOnBoard;
         return response;
     }
@@ -69,12 +71,16 @@ export class VerifyService {
             const computedCoord = this.computeCoordByDirection(direction, coord, i);
             const x = computedCoord.x;
             const y = computedCoord.y;
+            if (!this.areCoordValid({ x, y })) {
+                return lettersUsedOnBoard;
+            }
             const charInBox = tiles[y][x].letter;
             const letter = word.charAt(i) === word.charAt(i).toUpperCase() ? '*' : word.charAt(i);
-            if (!this.isCaseEmpty(charInBox)) {
-                if (this.isLetterOnBoardTheSame(charInBox.toLowerCase(), word.charAt(i).toLowerCase())) {
-                    lettersUsedOnBoard.push({ letter, coord: { y, x } });
-                }
+            if (this.isCaseEmpty(charInBox)) {
+                continue;
+            }
+            if (this.isLetterOnBoardTheSame(charInBox.toLowerCase(), word.charAt(i).toLowerCase())) {
+                lettersUsedOnBoard.push({ letter, coord: { y, x } });
             }
         }
         return lettersUsedOnBoard;
@@ -93,19 +99,25 @@ export class VerifyService {
             }
         }
         this.formedWords = this.getAllFormedWords(word, coord);
-        return await this.validateWords(this.formedWords);
+        const promise = new Promise<{ wordExists: boolean; errorMessage: string }>((resolve) => {
+            this.validateWords(this.formedWords)
+                .toPromise()
+                .then((res) => {
+                    resolve(res);
+                });
+        });
+        return promise;
     }
     getAllFormedWords(word: string, coord: Vec2): string[] {
         let wordFound = '';
         let i = 0;
         const wordsFound: string[] = [];
-
         while (i < word.length && coord.y + i < SQUARE_NUMBER) {
             const newCords = { x: coord.x, y: coord.y + i };
-            if (
+            const isLetterNewlyPlaced =
                 word[i].toLowerCase() === tiles[newCords.y][newCords.x].text.toLowerCase() &&
-                tiles[newCords.y][newCords.x].letter.toLowerCase() === ''
-            ) {
+                tiles[newCords.y][newCords.x].letter.toLowerCase() === '';
+            if (isLetterNewlyPlaced) {
                 wordFound = this.findHorizontalAdjacentWord({ x: coord.x, y: coord.y + i });
                 if (wordFound.length >= 2) {
                     wordsFound.push(wordFound);
@@ -116,10 +128,10 @@ export class VerifyService {
         i = 0;
         while (i < word.length && coord.x + i < SQUARE_NUMBER) {
             const newCords = { x: coord.x + i, y: coord.y };
-            if (
+            const isLetterNewlyPlaced =
                 word[i].toLowerCase() === tiles[newCords.y][newCords.x].text.toLowerCase() &&
-                tiles[newCords.y][newCords.x].letter.toLowerCase() === ''
-            ) {
+                tiles[newCords.y][newCords.x].letter.toLowerCase() === '';
+            if (isLetterNewlyPlaced) {
                 wordFound = this.findVerticalAdjacentWord({ x: coord.x + i, y: coord.y });
                 if (wordFound.length >= 2) {
                     wordsFound.push(wordFound);
@@ -331,14 +343,7 @@ export class VerifyService {
         }
         return response;
     }
-    private async validateWords(words: string[]): Promise<{ wordExists: boolean; errorMessage: string }> {
-        let response = { wordExists: true, errorMessage: '' };
-        await this.http
-            .post<{ wordExists: boolean; errorMessage: string }>(this.urlString, words)
-            .toPromise()
-            .then((res) => {
-                response = res;
-            });
-        return response;
+    private validateWords(words: string[]): Observable<{ wordExists: boolean; errorMessage: string }> {
+        return this.http.post<{ wordExists: boolean; errorMessage: string }>(this.urlString, words);
     }
 }

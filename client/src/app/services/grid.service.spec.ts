@@ -21,6 +21,7 @@ describe('GridService', () => {
         service = TestBed.inject(GridService);
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         service.gridContext = ctxStub;
+        service.tiles = JSON.parse(JSON.stringify(tiles));
     });
 
     it('should be created', () => {
@@ -116,8 +117,8 @@ describe('GridService', () => {
         const y = 4;
         const letterStep = 1;
         const pointStep = 1;
-        tiles[y][x].text = 'a';
-        tiles[y][x].bonus = 'x';
+        service.tiles[y][x].text = 'a';
+        service.tiles[y][x].bonus = 'x';
 
         const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
         service.changeTileSize(letterStep, pointStep);

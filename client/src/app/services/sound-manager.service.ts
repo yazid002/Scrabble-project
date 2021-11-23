@@ -32,6 +32,7 @@ export class SoundManagerService {
 
     playClickOnButtonAudio(): void {
         this.clickOnButtonAudio.load();
+        this.clickOnButtonAudio.autoplay = true;
         this.clickOnButtonAudio.play();
     }
 

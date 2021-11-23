@@ -18,13 +18,13 @@ export class ExchangeService {
         private exchangeSelectionService: ExchangeSelectionService,
     ) {}
 
-    exchangeLetters(lettersToChange: string[], viaCommand: boolean): { error: boolean; message: IChat } {
+    exchangeLetters(lettersToChange: string[], isCalledThroughChat: boolean): { error: boolean; message: IChat } {
         const isExchangeValid = this.validateExchangeFeasibility(lettersToChange);
         if (isExchangeValid.error) {
             return isExchangeValid;
         }
 
-        if (viaCommand) {
+        if (isCalledThroughChat) {
             this.exchangeLettersViaCommand(lettersToChange);
         } else {
             this.exchangeLettersViaClick(lettersToChange);
@@ -43,7 +43,6 @@ export class ExchangeService {
         for (const letter of lettersToChange) {
             this.rackService.replaceLetter(letter, false);
         }
-        //   this.timerService.resetTimer();
     }
 
     exchangeLettersViaClick(lettersToChange: string[]): void {

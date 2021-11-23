@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { Case } from '@app/classes/case';
 import { ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
 import { SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
@@ -20,8 +21,10 @@ export class PlaceSelectionService {
     wordToVerify: string[];
     command: string;
     keyEventOperationMap: Map<string, () => void>;
+    tiles: Case[][];
 
     constructor(private gridService: GridService, private verifyService: VerifyService, private rackService: RackService) {
+        this.tiles = tiles;
         this.selectedCoord = { x: NOT_FOUND, y: NOT_FOUND };
         this.direction = true;
         this.selectedTilesForPlacement = [];
@@ -91,12 +94,12 @@ export class PlaceSelectionService {
         if (this.direction) {
             const y = this.selectedTilesForPlacement[0].y;
             for (let x = this.selectedTilesForPlacement[0].x; x <= this.selectedTilesForPlacement[this.selectedTilesForPlacement.length - 1].x; x++) {
-                wordToVerify.push(tiles[y][x].text);
+                wordToVerify.push(this.tiles[y][x].text);
             }
         } else {
             const x = this.selectedTilesForPlacement[0].x;
             for (let y = this.selectedTilesForPlacement[0].y; y <= this.selectedTilesForPlacement[this.selectedTilesForPlacement.length - 1].y; y++) {
-                wordToVerify.push(tiles[y][x].text);
+                wordToVerify.push(this.tiles[y][x].text);
             }
         }
 
@@ -140,7 +143,7 @@ export class PlaceSelectionService {
         if (index === NOT_FOUND) {
             return false;
         }
-        if (!this.areCoordValid(coord)) {
+        if (!this.verifyService.areCoordValid(coord)) {
             return false;
         }
         if (this.isTileAlreadySelected(coord)) {
@@ -153,13 +156,9 @@ export class PlaceSelectionService {
         return this.selectedTilesForPlacement.includes(coord);
     }
 
-    areCoordValid(coord: Vec2): boolean {
-        return coord.y < SQUARE_NUMBER && coord.x < SQUARE_NUMBER && coord.x >= 0 && coord.y >= 0;
-    }
-
     incrementNextCoord(coord: Vec2): Vec2 {
         let nextCoord = { x: coord.x, y: coord.y };
-        while (!(tiles[nextCoord.y][nextCoord.x].text === '' || tiles[nextCoord.y][nextCoord.x].text.length === 2)) {
+        while (!(this.tiles[nextCoord.y][nextCoord.x].text === '' || this.tiles[nextCoord.y][nextCoord.x].text.length === 2)) {
             const isHorizontalPlacementNotFeasible = this.direction && nextCoord.x === SQUARE_NUMBER - 1;
             const isVerticalPlacementNotFeasible = !this.direction && nextCoord.y === SQUARE_NUMBER - 1;
 
@@ -242,7 +241,7 @@ export class PlaceSelectionService {
         if (!(coord.x !== notFound.x && coord.y !== notFound.y)) {
             return false;
         }
-        if (tiles[coord.y][coord.x].letter !== '') {
+        if (this.tiles[coord.y][coord.x].letter !== '') {
             return false;
         }
         return true;
@@ -257,13 +256,13 @@ export class PlaceSelectionService {
         if (coord) {
             this.gridService.border.squareBorderColor = 'black';
             this.gridService.removeArrow(this.selectedCoord);
-            tiles[coord.y][coord.x].text = tiles[coord.y][coord.x].oldText;
-            tiles[coord.y][coord.x].style.color = tiles[coord.y][coord.x].oldStyle.color;
+            this.tiles[coord.y][coord.x].text = this.tiles[coord.y][coord.x].oldText;
+            this.tiles[coord.y][coord.x].style.color = this.tiles[coord.y][coord.x].oldStyle.color;
             this.gridService.fillGridPortion(
                 coord,
-                tiles[coord.y][coord.x].text,
-                tiles[coord.y][coord.x].style.color as string,
-                tiles[coord.y][coord.x].style.font as string,
+                this.tiles[coord.y][coord.x].text,
+                this.tiles[coord.y][coord.x].style.color as string,
+                this.tiles[coord.y][coord.x].style.font as string,
             );
 
             this.selectedCoord.x = coord.x;

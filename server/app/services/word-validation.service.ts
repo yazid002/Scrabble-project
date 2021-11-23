@@ -1,18 +1,19 @@
 import { Dictionary } from '@app/classes/dictionary';
-import * as fs from 'fs';
+import { DictionaryValidationResponse } from '@app/classes/dictionary-validation-response';
+import { ReadFileService } from '@app/services/read-file.service';
 import { Service } from 'typedi';
 @Service()
 export class WordValidationService {
-    // rawDictionary = fs.readFileSync('../../../client/src/assets/dictionnary.json');
     dictionary: Dictionary;
-    constructor() {
+    constructor(private readFileService: ReadFileService) {
         this.initialize('../client/src/assets/dictionnary.json');
     }
+
     initialize(dictPath: string) {
         this.importDict(dictPath);
     }
 
-    validateWord(words: string[]): { wordExists: boolean; errorMessage: string } {
+    validateWord(words: string[]): DictionaryValidationResponse {
         for (const word of words) {
             if (word.length >= 2 && !this.isWordInDictionary(word)) {
                 return { wordExists: false, errorMessage: `le mot ${word} n'existe pas dans le dictionnaire` };
@@ -21,13 +22,18 @@ export class WordValidationService {
         return { wordExists: true, errorMessage: '' };
     }
 
-    isWordInDictionary(wordToCheck: string): boolean {
+    private isWordInDictionary(wordToCheck: string): boolean {
         return this.dictionary.words.includes(wordToCheck.toLowerCase());
     }
-    private importDict(dictPath: string) {
-        fs.readFile(dictPath, (err, data) => {
-            if (err) throw err;
-            this.dictionary = JSON.parse(data.toString());
-        });
+
+    private importDict(dictPath: string): void {
+        this.readFileService
+            .readDictionary(dictPath)
+            .then((data) => {
+                this.dictionary = JSON.parse(data);
+            })
+            .catch((err) => {
+                throw err;
+            });
     }
 }
