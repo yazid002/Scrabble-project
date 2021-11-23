@@ -1,1 +1,76 @@
 <p>leaderboard-page works!</p>
+<p>Hello {{ leaderboardService.leaderboardClassic[0].name }}</p>
+
+<div class="title">Meilleurs Scores</div>
+
+<div class="split Classic">
+    <div class="subtitle">Mode Classic</div>
+    <table style="width: 50%">
+        <tr>
+            <th>Position</th>
+            <th>Nom</th>
+            <th>Score</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>{{ leaderboardService.leaderboardClassic[0].name }}</td>
+            <td>{{ leaderboardService.leaderboardClassic[0].score }}</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>{{ leaderboardService.leaderboardClassic[1].name }}</td>
+            <td>{{ leaderboardService.leaderboardClassic[1].score }}</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>{{ leaderboardService.leaderboardClassic[2].name }}</td>
+            <td>{{ leaderboardService.leaderboardClassic[2].score }}</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>{{ leaderboardService.leaderboardClassic[3].name }}</td>
+            <td>{{ leaderboardService.leaderboardClassic[3].score }}</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>{{ leaderboardService.leaderboardClassic[4].name }}</td>
+            <td>{{ leaderboardService.leaderboardClassic[4].score }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="split LOG2990">
+    <div class="subtitle">Mode LOG2990</div>
+    <table style="width: 50%">
+        <tr>
+            <th>Position</th>
+            <th>Name</th>
+            <th>Score</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>{{ leaderboardService.leaderboardMode2990[0].name }}</td>
+            <td>{{ leaderboardService.leaderboardMode2990[0].score }}</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>{{ leaderboardService.leaderboardMode2990[1].name }}</td>
+            <td>{{ leaderboardService.leaderboardMode2990[1].score }}</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>{{ leaderboardService.leaderboardMode2990[2].name }}</td>
+            <td>{{ leaderboardService.leaderboardMode2990[2].score }}</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>{{ leaderboardService.leaderboardMode2990[3].name }}</td>
+            <td>{{ leaderboardService.leaderboardMode2990[3].score }}</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>{{ leaderboardService.leaderboardMode2990[4].name }}</td>
+            <td>{{ leaderboardService.leaderboardMode2990[4].score }}</td>
+        </tr>
+    </table>
+</div>

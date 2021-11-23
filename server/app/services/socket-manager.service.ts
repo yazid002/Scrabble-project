@@ -95,4 +95,9 @@ export class SocketManager {
         }
         this.sio.emit('rooms', this.rooms);
     }
+
+    // private sendPlayer() {
+
+    //     this.sio.sockets.emit('player', this.player);
+    // }
 }
