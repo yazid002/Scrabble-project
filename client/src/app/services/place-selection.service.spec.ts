@@ -81,6 +81,7 @@ describe('PlaceSelectionService', () => {
             ],
         });
         service = TestBed.inject(PlaceSelectionService);
+        service.tiles = JSON.parse(JSON.stringify(tiles));
     });
 
     it('should be created', () => {
@@ -161,11 +162,11 @@ describe('PlaceSelectionService', () => {
 
     it('buildPlacementCommand should return the right horizontal', () => {
         const coord = { x: 7, y: 7 };
-        tiles[coord.y][coord.x].text = 'a';
-        tiles[coord.y + 1][coord.x].text = 'b';
-        tiles[coord.y + 2][coord.x].text = 'f';
-        tiles[coord.y][coord.x + 1].text = 'c';
-        tiles[coord.y][coord.x + 2].text = 'd';
+        service.tiles[coord.y][coord.x].text = 'a';
+        service.tiles[coord.y + 1][coord.x].text = 'b';
+        service.tiles[coord.y + 2][coord.x].text = 'f';
+        service.tiles[coord.y][coord.x + 1].text = 'c';
+        service.tiles[coord.y][coord.x + 2].text = 'd';
         service.selectedTilesForPlacement = [coord, { x: coord.x + 2, y: coord.y }];
 
         service.direction = true;
@@ -177,11 +178,11 @@ describe('PlaceSelectionService', () => {
 
     it('buildPlacementCommand should return the right vertical', () => {
         const coord = { x: 7, y: 7 };
-        tiles[coord.y][coord.x].text = 'a';
-        tiles[coord.y + 1][coord.x].text = 'b';
-        tiles[coord.y + 2][coord.x].text = 'f';
-        tiles[coord.y][coord.x + 1].text = 'c';
-        tiles[coord.y][coord.x + 2].text = 'd';
+        service.tiles[coord.y][coord.x].text = 'a';
+        service.tiles[coord.y + 1][coord.x].text = 'b';
+        service.tiles[coord.y + 2][coord.x].text = 'f';
+        service.tiles[coord.y][coord.x + 1].text = 'c';
+        service.tiles[coord.y][coord.x + 2].text = 'd';
         service.selectedTilesForPlacement = [coord, { x: coord.x, y: coord.y + 2 }];
 
         service.direction = false;
@@ -446,13 +447,13 @@ describe('PlaceSelectionService', () => {
 
     it('incrementNextCoord should go to the next coord empty', () => {
         const coord = { x: 7, y: 7 };
-        tiles[coord.y][coord.x].text = 'a';
-        tiles[coord.y + 1][coord.x].text = 'b';
-        tiles[coord.y + 2][coord.x].text = 'f';
-        tiles[coord.y + 3][coord.x].text = '';
-        tiles[coord.y][coord.x + 1].text = 'c';
-        tiles[coord.y][coord.x + 2].text = 'd';
-        tiles[coord.y][coord.x + 3].text = '';
+        service.tiles[coord.y][coord.x].text = 'a';
+        service.tiles[coord.y + 1][coord.x].text = 'b';
+        service.tiles[coord.y + 2][coord.x].text = 'f';
+        service.tiles[coord.y + 3][coord.x].text = '';
+        service.tiles[coord.y][coord.x + 1].text = 'c';
+        service.tiles[coord.y][coord.x + 2].text = 'd';
+        service.tiles[coord.y][coord.x + 3].text = '';
         service.direction = true;
 
         const expectedX = 10;
@@ -463,17 +464,17 @@ describe('PlaceSelectionService', () => {
 
     it('incrementNextCoord should go to the next coord empty vertical', () => {
         const coord = { x: 7, y: 7 };
-        tiles[coord.y][coord.x].text = 'a';
-        tiles[coord.y + 1][coord.x].text = 'b';
-        tiles[coord.y + 2][coord.x].text = 'f';
-        tiles[coord.y + 3][coord.x].text = '';
-        tiles[coord.y][coord.x + 1].text = 'c';
-        tiles[coord.y][coord.x + 2].text = 'd';
-        tiles[coord.y][coord.x + 3].text = '';
+        service.tiles[coord.y][coord.x].text = 'a';
+        service.tiles[coord.y + 1][coord.x].text = 'b';
+        service.tiles[coord.y + 2][coord.x].text = 'f';
+        service.tiles[coord.y + 3][coord.x].text = '';
+        service.tiles[coord.y][coord.x + 1].text = 'c';
+        service.tiles[coord.y][coord.x + 2].text = 'd';
+        service.tiles[coord.y][coord.x + 3].text = '';
         service.direction = false;
 
         const expectedY = 10;
-        tiles[expectedY][coord.x].text = '';
+        service.tiles[expectedY][coord.x].text = '';
 
         const result = service.incrementNextCoord(coord);
         expect(result).toEqual({ x: coord.x, y: expectedY });
@@ -481,8 +482,8 @@ describe('PlaceSelectionService', () => {
 
     it('incrementNextCoord should go to the next coord empty if we are at the bottom but write horizontally', () => {
         const coord = { x: 7, y: 14 };
-        tiles[coord.y][coord.x].text = 'a';
-        tiles[coord.y][coord.x + 1].text = 'a=';
+        service.tiles[coord.y][coord.x].text = 'a';
+        service.tiles[coord.y][coord.x + 1].text = 'a=';
         service.direction = true;
 
         const expectedX = 8;
@@ -509,11 +510,11 @@ describe('PlaceSelectionService', () => {
 
     it('cancelUniqueBoardClick should cancel only one selection', () => {
         const coord = { x: 7, y: 7 };
-        tiles[coord.y][coord.x].text = 'a';
-        tiles[coord.y + 1][coord.x].text = 'b';
-        tiles[coord.y + 2][coord.x].text = 'f';
-        tiles[coord.y][coord.x + 1].text = 'c';
-        tiles[coord.y][coord.x + 2].text = 'd';
+        service.tiles[coord.y][coord.x].text = 'a';
+        service.tiles[coord.y + 1][coord.x].text = 'b';
+        service.tiles[coord.y + 2][coord.x].text = 'f';
+        service.tiles[coord.y][coord.x + 1].text = 'c';
+        service.tiles[coord.y][coord.x + 2].text = 'd';
         service.direction = false;
         service.selectedTilesForPlacement = [coord, { x: coord.x, y: coord.y + 1 }];
 
@@ -523,11 +524,11 @@ describe('PlaceSelectionService', () => {
 
     it('cancelUniqueBoardClick should call fillGridPortion, remove and draw arrow one time each', () => {
         const coord = { x: 7, y: 7 };
-        tiles[coord.y][coord.x].text = 'a';
-        tiles[coord.y + 1][coord.x].text = 'b';
-        tiles[coord.y + 2][coord.x].text = 'f';
-        tiles[coord.y][coord.x + 1].text = 'c';
-        tiles[coord.y][coord.x + 2].text = 'd';
+        service.tiles[coord.y][coord.x].text = 'a';
+        service.tiles[coord.y + 1][coord.x].text = 'b';
+        service.tiles[coord.y + 2][coord.x].text = 'f';
+        service.tiles[coord.y][coord.x + 1].text = 'c';
+        service.tiles[coord.y][coord.x + 2].text = 'd';
         service.direction = false;
         service.selectedTilesForPlacement = [coord, { x: coord.x, y: coord.y + 1 }];
 
@@ -556,7 +557,7 @@ describe('PlaceSelectionService', () => {
 
     it('checkBoardClickFeasibility should return false if the tile is not empty', () => {
         const coord = { x: 7, y: 7 };
-        tiles[coord.y][coord.x].letter = 'a';
+        service.tiles[coord.y][coord.x].letter = 'a';
 
         service.direction = false;
         service.selectedTilesForPlacement = [];
@@ -601,7 +602,7 @@ describe('PlaceSelectionService', () => {
 
     it('checkBoardClickFeasibility should return true', () => {
         const coord = { x: 7, y: 7 };
-        tiles[coord.y][coord.x].letter = '';
+        service.tiles[coord.y][coord.x].letter = '';
 
         service.direction = false;
         service.selectedTilesForPlacement = [];

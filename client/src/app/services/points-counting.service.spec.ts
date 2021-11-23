@@ -12,6 +12,7 @@ describe('PointsCountingService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({ imports: [HttpClientModule] });
         service = TestBed.inject(PointsCountingService);
+        service.tiles = JSON.parse(JSON.stringify(tiles));
     });
 
     it('should be created', () => {
@@ -121,9 +122,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'xx';
-        tiles[coord.y + 1][coord.x].bonus = 'xx';
-        tiles[coord.y + 2][coord.x].bonus = 'xx';
+        service.tiles[coord.y][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 1][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -140,9 +141,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'dl';
-        tiles[coord.y + 1][coord.x].bonus = 'xx';
-        tiles[coord.y + 2][coord.x].bonus = 'xx';
+        service.tiles[coord.y][coord.x].bonus = 'dl';
+        service.tiles[coord.y + 1][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -159,9 +160,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'tl';
-        tiles[coord.y + 1][coord.x].bonus = 'xx';
-        tiles[coord.y + 2][coord.x].bonus = 'xx';
+        service.tiles[coord.y][coord.x].bonus = 'tl';
+        service.tiles[coord.y + 1][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -178,9 +179,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'xx';
-        tiles[coord.y + 1][coord.x].bonus = 'tw';
-        tiles[coord.y + 2][coord.x].bonus = 'xx';
+        service.tiles[coord.y][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 1][coord.x].bonus = 'tw';
+        service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -197,9 +198,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'xx';
-        tiles[coord.y + 1][coord.x].bonus = 'dw';
-        tiles[coord.y + 2][coord.x].bonus = 'xx';
+        service.tiles[coord.y][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 1][coord.x].bonus = 'dw';
+        service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -216,9 +217,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'xx';
-        tiles[coord.y + 1][coord.x].bonus = 'dw';
-        tiles[coord.y + 2][coord.x].bonus = 'tw';
+        service.tiles[coord.y][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 1][coord.x].bonus = 'dw';
+        service.tiles[coord.y + 2][coord.x].bonus = 'tw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -235,9 +236,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'dl';
-        tiles[coord.y + 1][coord.x].bonus = 'xx';
-        tiles[coord.y + 2][coord.x].bonus = 'tw';
+        service.tiles[coord.y][coord.x].bonus = 'dl';
+        service.tiles[coord.y + 1][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 2][coord.x].bonus = 'tw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -254,9 +255,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'tl';
-        tiles[coord.y + 1][coord.x].bonus = 'xx';
-        tiles[coord.y + 2][coord.x].bonus = 'tw';
+        service.tiles[coord.y][coord.x].bonus = 'tl';
+        service.tiles[coord.y + 1][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 2][coord.x].bonus = 'tw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -273,9 +274,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'tl';
-        tiles[coord.y + 1][coord.x].bonus = 'xx';
-        tiles[coord.y + 2][coord.x].bonus = 'dw';
+        service.tiles[coord.y][coord.x].bonus = 'tl';
+        service.tiles[coord.y + 1][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 2][coord.x].bonus = 'dw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -292,9 +293,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        tiles[coord.y][coord.x].bonus = 'dl';
-        tiles[coord.y + 1][coord.x].bonus = 'xx';
-        tiles[coord.y + 2][coord.x].bonus = 'dw';
+        service.tiles[coord.y][coord.x].bonus = 'dl';
+        service.tiles[coord.y + 1][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 2][coord.x].bonus = 'dw';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -311,9 +312,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [{ letter: 'a', coord }];
 
-        tiles[coord.y][coord.x].bonus = 'xx';
-        tiles[coord.y + 1][coord.x].bonus = 'xx';
-        tiles[coord.y + 2][coord.x].bonus = 'xx';
+        service.tiles[coord.y][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 1][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
@@ -330,9 +331,9 @@ describe('PointsCountingService', () => {
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [{ letter: 'a', coord }];
 
-        tiles[coord.y][coord.x].bonus = 'dw';
-        tiles[coord.y + 1][coord.x].bonus = 'xx';
-        tiles[coord.y + 2][coord.x].bonus = 'xx';
+        service.tiles[coord.y][coord.x].bonus = 'dw';
+        service.tiles[coord.y + 1][coord.x].bonus = 'xx';
+        service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
         // applyBoardBonuses est privée
         // eslint-disable-next-line dot-notation
