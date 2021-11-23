@@ -9,7 +9,7 @@ import { SwitchDialogComponent } from './../switch-dialog/switch-dialog.componen
 @Component({
     selector: 'app-waiting-room',
     templateUrl: './waiting-room.component.html',
-    styleUrls: ['./waiting-room.component.scss'],
+    styleUrls: ['./waiting-room.component.scss', './waiting-room.component-buttons.scss'],
 })
 export class WaitingRoomComponent implements OnInit {
     name: string;
