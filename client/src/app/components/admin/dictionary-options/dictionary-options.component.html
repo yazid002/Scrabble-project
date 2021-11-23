@@ -1,1 +1,4 @@
-<p>dictionary-options works!</p>
+<!-- <div *ngIf="listDicttionaries?.length === 0" ; else elseBlock>wait ....</div> -->
+<!-- <ng-template #elseBlock> -->
+<div *ngFor="let dictionary of listDictionaries">{{ dictionary.title }} --- {{ dictionary.description }}</div>
+<!-- </ng-template> -->

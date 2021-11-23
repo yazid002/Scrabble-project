@@ -1,4 +1,6 @@
-import { Dictionary } from '@app/classes/dictionary';
+/* eslint-disable no-console */
+/* eslint-disable import/no-deprecated */
+import { Dictionary } from '@app/classes/dictionary.model';
 import * as fs from 'fs';
 import { Service } from 'typedi';
 @Service()

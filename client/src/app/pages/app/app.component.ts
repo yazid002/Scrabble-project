@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @angular-eslint/no-empty-lifecycle-method */
+/* eslint-disable no-restricted-imports */
+/* eslint-disable no-console */
+import { Component, OnInit } from '@angular/core';
 import { GameSyncService } from '@app/services/game-sync.service';
 
 @Component({
@@ -6,18 +10,7 @@ import { GameSyncService } from '@app/services/game-sync.service';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     constructor(public gameSyncService: GameSyncService) {}
-    // TODO: NE PAS OUBLIER D'ENLEVER CES COMMENTAIRES
-    // ngOnInit(): void {
-    //
-    //     // const gameState = this.gameSyncService.getGameState();
-    //     // localStorage.clear();
-    //     this.gameSyncService.recieveFromLocalStorege();
-    // }
-
-    // // TODO: NE PAS OUBLIER D'ENLEVER CES COMMENTAIRES
-    // // ngOnDestroy(): void {
-    // //     // this.gameSyncService.sendToLocalStorage();
-    // // }
+    ngOnInit(): void {}
 }

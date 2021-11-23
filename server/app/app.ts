@@ -1,3 +1,4 @@
+import { DictionaryController } from './controllers/dictionary.controller';
 import { HttpException } from '@app/classes/http.exception';
 import { DateController } from '@app/controllers/date.controller';
 import { ExampleController } from '@app/controllers/example.controller';
@@ -23,6 +24,7 @@ export class Application {
         private readonly dateController: DateController,
         private readonly wordValidationController: WordValidationController,
         private readonly virtualPlayerNamesController: VirtualPlayerNamesController,
+        private readonly dictionaryController: DictionaryController,
     ) {
         this.app = express();
 
@@ -47,6 +49,7 @@ export class Application {
         this.app.use('/api/example', this.exampleController.router);
         this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/validate', this.wordValidationController.router);
+        this.app.use('/api/admin/dictionary', this.dictionaryController.router);
         this.app.use('/api/virtual/', this.virtualPlayerNamesController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');

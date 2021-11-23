@@ -3,34 +3,28 @@
     <button mat-button color="warn">Réinnitialiser les réglages</button>
 </section>
 <section>
-
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                Dictionaire
+                <h3 class="title">Dictionnaire</h3>
             </mat-panel-title>
             <mat-panel-description>
-                Options pour ajouter et retirer les dictionnaires disponibles
+                <div class="example-button-row">
+                    <button mat-raised-button color="primary" (click)="childComponent.getAllDictionaries()">Afficher la liste</button>
+                    <button mat-raised-button color="primary" (click)="childComponent.addNewDictionary()">Ajouter dictionnaire</button>
+                </div>
             </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <app-dictionary-options></app-dictionary-options>
-
+        <app-dictionary-options #childComponent></app-dictionary-options>
     </mat-expansion-panel>
-
 
     <mat-expansion-panel>
         <mat-expansion-panel-header>
-            <mat-panel-title>
-                Nom des joueurs virtuels
-            </mat-panel-title>
-            <mat-panel-description>
-                Options pour modifier les nom possible que peuvent prendre les joeurs virtuels
-            </mat-panel-description>
+            <mat-panel-title> Nom des joueurs virtuels </mat-panel-title>
+            <mat-panel-description> Options pour modifier les nom possible que peuvent prendre les joeurs virtuels </mat-panel-description>
         </mat-expansion-panel-header>
 
         <app-player-names-options></app-player-names-options>
-
     </mat-expansion-panel>
-
 </section>

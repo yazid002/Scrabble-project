@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { WordValidationService } from '@app/services/word-validation.service';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';

@@ -1,6 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
@@ -22,8 +24,8 @@ import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.
 import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
+import { FormDictionaryComponent } from './pages/admin-page/form-dictionary/form-dictionary.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -50,8 +52,21 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         AdminPageComponent,
         DictionaryOptionsComponent,
         PlayerNamesOptionsComponent,
+        FormDictionaryComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
+    // eslint-disable-next-line prettier/prettier
+    imports: [
+        AppMaterialModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        MatButtonModule,
+        MatDialogModule,
+    ],
+    // entryComponents[DictionaryOptionsComponent],
     providers: [],
     bootstrap: [AppComponent],
 })

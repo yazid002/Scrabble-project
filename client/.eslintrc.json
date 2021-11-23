@@ -26,6 +26,12 @@
                         "style": "kebab-case"
                     }
                 ],
+                "prettier/prettier": [
+                    "error",
+                    {
+                        "endOfLine": "auto"
+                    }
+                ],
                 "@angular-eslint/use-lifecycle-interface": "error" // Warn in @angular-eslint/recommended
             }
         },
