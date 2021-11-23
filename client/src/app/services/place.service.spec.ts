@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { HttpClientModule } from '@angular/common/http';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Dictionary } from '@app/classes/dictionary';
@@ -105,6 +106,7 @@ describe('PlaceService', () => {
             imports: [HttpClientModule],
         });
         service = TestBed.inject(PlaceService);
+        service.tiles = JSON.parse(JSON.stringify(tiles));
         wordToCheck = 'taper';
         coord = { x: 2, y: 4 };
         direction = 'h';
