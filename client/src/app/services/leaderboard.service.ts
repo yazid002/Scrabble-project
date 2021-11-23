@@ -19,9 +19,9 @@ export class LeaderboardService {
 
     constructor(private http: HttpClient) {
         this.urlString = 'http://localhost:3000/leaderboard';
-        this.sort();
         this.getAllPlayer();
         this.getAllClassicPlayer();
+        // this.sort();
     }
 
     // fillLeaderboardClassic(): void {
@@ -48,10 +48,21 @@ export class LeaderboardService {
         // return subject.asObservable();
     }
 
-    sort(): void {
-        this.leaderboardClassic.sort();
-        this.leaderboardMode2990.sort();
-    }
+    // sort(): void {
+    //     // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    //     for (let i = 0; i < this.leaderboardClassic.length; i++) {
+    //         for (let j = 1; i < i - 1; j++) {
+    //             if (this.leaderboardClassic[i].score > this.leaderboardClassic[j].score) {
+    //                 const tmp = this.leaderboardClassic[i];
+    //                 console.log('1', tmp);
+    //                 this.leaderboardClassic[i] = this.leaderboardClassic[j];
+    //                 this.leaderboardClassic[j] = tmp;
+    //                 console.log('2', this.leaderboardClassic[i]);
+    //                 console.log('3', this.leaderboardClassic[i]);
+    //             }
+    //         }
+    //     }
+    // }
 
     getAllClassicPlayer(): void {
         const url = this.urlString + '/ClassicLeaderboard';

@@ -11,7 +11,7 @@ export class LeaderboardPageComponent {
     leaderboardMode2990: Leaderboard[];
 
     constructor(public leaderboardService: LeaderboardService) {
-        this.leaderboardClassic = this.leaderboardService.leaderboardClassic;
+        // this.leaderboardClassic = this.leaderboardService.leaderboardClassic;
     }
 
     // getAllPlayers(): void {
