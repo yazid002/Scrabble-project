@@ -1,4 +1,6 @@
 @import url('http://fonts.cdnfonts.com/css/common-pixel');
+@import url('https://fonts.googleapis.com/css?family=Carter+One');
+@import url('http://fonts.cdnfonts.com/css/sunari');
 
 body {
     min-height: 100%;
@@ -29,19 +31,38 @@ body {
 }
 .loading h1 {
     margin-bottom: 50px;
-    color: green;
-    font-family: Gill Sans, sans-serif;
+    //color: green;
+    color: #fff !important;
+    font-family: 'Carter One', sans-serif;
+    text-decoration: none !important;
+    outline: none !important;
+    line-height: 1.5em;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px 1px #348628, -2px 2px 1px #348628, 2px -2px 1px #348628, -2px -2px 1px #348628, 0px 2px 1px #348628, 0px -2px 1px #348628,
+        0px 4px 1px #1d4c16, 2px 4px 1px #1d4c16, -2px 4px 1px #1d4c16;
 }
 #parametres {
     text-align: center;
+    font-family: 'Sunari', sans-serif;
+    font-size: 30px;
 }
 .me {
     text-align: center;
     margin: auto;
     margin-top: 10px;
 }
-mat-spinner {
+#name {
+    font-family: 'Sunari', sans-serif;
+    font-size: 40px;
+}
+.spinner {
     margin: auto;
+    // stroke: green !important;
+    color: green;
+}
+
+:host ::ng-deep .spinner circle {
+    stroke: #0cc20c;
 }
 mat-card {
     width: 250px;
@@ -52,6 +73,7 @@ mat-card {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 mat-card-title-group {
     margin-top: 20px;
@@ -61,9 +83,16 @@ mat-card mat-card {
     justify-content: space-between;
     width: 200px;
 }
+
+.mat-card-subtitle {
+    color: yellow;
+    font-family: 'Sunari', sans-serif;
+    font-size: 25px;
+}
 .container {
     margin: auto;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    background-color: rgba(0, 0, 0, 0.1);
 }
 .footer {
     display: flex;

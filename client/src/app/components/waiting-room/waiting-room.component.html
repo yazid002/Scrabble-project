@@ -2,7 +2,7 @@
     <div class="title">Waiting Room</div>
     <mat-card class="container">
         <div class="me">
-            <mat-card-title id="name">Name : {{ userSettingsService.nameOption.userChoice }}</mat-card-title>
+            <mat-card-title id="name">Nom : {{ userSettingsService.nameOption.userChoice }}</mat-card-title>
         </div>
 
         <div>
@@ -19,7 +19,7 @@
 
         <div class="loading">
             <h1>En attente d'un autre joueur</h1>
-            <mat-spinner [diameter]="150"></mat-spinner>
+            <mat-spinner [diameter]="150" class="spinner"></mat-spinner>
         </div>
     </mat-card>
     <div class="footer">
