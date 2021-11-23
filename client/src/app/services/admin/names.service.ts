@@ -20,10 +20,11 @@ export class NamesService {
 
     async fetchNames() {
         const response = this.http.get<NameProperties[]>(this.urlString);
-        response.subscribe((nameProperties) => {
-            this.beginnerNames = nameProperties.filter((nameProperty) => !nameProperty.isAdvanced);
-            this.advancedNames = nameProperties.filter((nameProperty) => nameProperty.isAdvanced);
-        });
+        response.subscribe((nameProperties) => this.assignNames(nameProperties));
+    }
+    assignNames(nameProperties: NameProperties[]) {
+        this.beginnerNames = nameProperties.filter((nameProperty) => !nameProperty.isAdvanced);
+        this.advancedNames = nameProperties.filter((nameProperty) => nameProperty.isAdvanced);
     }
     async addName(name: string, isAdvanced: boolean) {
         const nameObj: NameProperties = { name, default: false, isAdvanced };
