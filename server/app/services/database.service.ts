@@ -45,10 +45,15 @@ export class DatabaseService {
     async closeConnection(): Promise<void> {
         return this.client.close();
     }
+    async addName(name: NameProperties) {
+        await this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
+    }
     async populateNames(names: NameProperties[]): Promise<void> {
-        for (const name of names) {
-            await this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
-        }
+        await this.db.collection(DATABASE_VIRTUAL_NAMES).deleteMany({ default: { $eq: false } });
+        // for (const name of names) {
+        //     this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
+        // }
+        console.log(names);
     }
     async populateLeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
@@ -119,7 +124,6 @@ export class DatabaseService {
             await this.db.collection(DATABASE_COLLECTION_CLASSIC).insertOne(player);
         }
     }
-
 
     get database(): Db {
         return this.db;

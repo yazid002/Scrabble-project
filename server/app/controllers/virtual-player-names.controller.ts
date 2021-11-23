@@ -16,7 +16,7 @@ export class VirtualPlayerNamesController {
         this.router.post('/add', async (req: Request, res: Response) => {
             console.log('add name controller', req.body);
 
-            const names = this.virtualPlayerNamesService.addName(req.body);
+            const names = await this.virtualPlayerNamesService.addName(req.body);
             res.json(names);
         });
         this.router.post('/delete', async (req: Request, res: Response) => {

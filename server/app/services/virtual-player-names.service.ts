@@ -20,13 +20,13 @@ export class VirtualPlayerNamesService {
     get names(): Collection<NameProperties> {
         return this.databaseService.database.collection(DATABASE_VIRTUAL_NAMES);
     }
-    addName(name: NameProperties): void {
+    async addName(name: NameProperties) {
         console.log('adding name ', name);
-        const names = this.names;
+        const names = await this.getNames();
         const item = names.find((n: NameProperties) => n.name === name.name);
         if (!item) {
             name.default = false; // Make sure the client did not try to add a default value
-            this.databaseService.populateNames([name]);
+            this.databaseService.addName(name);
         }
     }
     async isPlayerDefault(playerName: string): Promise<boolean> {
@@ -49,6 +49,7 @@ export class VirtualPlayerNamesService {
         }
     }
     async reset() {
+
         const names = [
             { name: 'Ordi Illetré', default: true, isAdvanced: false },
             { name: 'Étudiant de la maternelle', default: true, isAdvanced: false },
