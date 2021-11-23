@@ -1,11 +1,12 @@
 <div class="container">
     <app-sidebar></app-sidebar>
-    
+
     <section class="play-area-container">
         <app-play-area #playArea class="play-area" tabindex="0"></app-play-area>
         <button id="increaseSize" (click)="increaseSize()">+</button>
         <button id="decreaseSize" (click)="decreaseSize()">-</button>
-        <div *ngIf="!hideOperation(operationType.Exchange)">
+        <!-- *ngIf="!hideOperation(operationType.Exchange)" -->
+        <div>
             <button
                 id="exchange"
                 mat-raised-button

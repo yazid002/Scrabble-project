@@ -11,6 +11,8 @@
 }
 app-chatbox {
     max-width: 500px;
+    position: absolute;
+    right: 4%;
 }
 #temporary {
     margin-left: 100px;
@@ -18,4 +20,9 @@ app-chatbox {
     border: 1px solid black;
 }
 
-
+#exchange {
+    // position: absolute;
+    bottom: 15%;
+    right: 50%;
+    // right: -24%;
+}
