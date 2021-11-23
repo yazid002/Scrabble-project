@@ -54,6 +54,7 @@ export class UserSettingsService {
         computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
+
     nameOption = NAME_OPTION;
     computerName: string;
 

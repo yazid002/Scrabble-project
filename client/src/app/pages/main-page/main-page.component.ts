@@ -32,7 +32,7 @@ export class MainPageComponent implements OnInit {
     //     this.soundManagerService.playMainPageAudio();
     // }
 
-    private openDialog() {
+    openDialog() {
         this.matDialog.open(GameModeDialogComponent);
         this.playClickSound();
     }
