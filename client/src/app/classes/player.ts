@@ -9,6 +9,7 @@ export interface Player {
     placeInTenSecondsGoalCounter: number;
     turnWithoutSkipAndExchangeCounter: number;
     words: string[];
+    wordsMapping: Map<string, number>;
 }
 export const PLAYER = {
     realPlayer: 0,

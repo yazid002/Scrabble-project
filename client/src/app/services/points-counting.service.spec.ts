@@ -23,7 +23,7 @@ describe('PointsCountingService', () => {
         const letterToCheck = 'b';
         const expectedResult = 3;
 
-        // getLetterPoints est privée
+        // getLetterPoints is private
         // eslint-disable-next-line dot-notation
         const result = service['getLetterPoints'](letterToCheck);
 
@@ -34,7 +34,7 @@ describe('PointsCountingService', () => {
         const letterToCheck = 'ë';
         const expectedResult = -1;
 
-        // getLetterPoints est privée
+        // getLetterPoints is private
         // eslint-disable-next-line dot-notation
         const result = service['getLetterPoints'](letterToCheck);
 
@@ -48,7 +48,7 @@ describe('PointsCountingService', () => {
         const direction = 'horizontal';
         const expectedResult = wordBasePoints + BINGO_BONUS;
 
-        // applyBingo est privée
+        // applyBingo is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBingo'](wordToCheck, coord, direction, wordBasePoints, []);
 
@@ -63,7 +63,7 @@ describe('PointsCountingService', () => {
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [{ letter: 'b', coord: { x: 4, y: 4 } }];
         const expectedResult = wordBasePoints;
 
-        // applyBingo est privée
+        // applyBingo is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBingo'](wordToCheck, coord, direction, wordBasePoints, lettersUsedOnBoard);
 
@@ -77,7 +77,7 @@ describe('PointsCountingService', () => {
         const direction = 'h';
         const expectedResult = wordBasePoints;
 
-        // applyBingo est privée
+        // applyBingo is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBingo'](wordToCheck, coord, direction, wordBasePoints, []);
 
@@ -90,7 +90,7 @@ describe('PointsCountingService', () => {
         const direction = 'h';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const applyBoardBonusesSpy = spyOn<any>(service, 'applyBoardBonuses').and.callThrough();
 
@@ -105,7 +105,7 @@ describe('PointsCountingService', () => {
         const direction = 'h';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
 
-        // applyBingo est privée
+        // applyBingo is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const applyBingoSpy = spyOn<any>(service, 'applyBingo').and.callThrough();
 
@@ -126,7 +126,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -145,7 +145,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -164,7 +164,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -183,7 +183,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'tw';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -202,7 +202,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'dw';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -221,7 +221,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'dw';
         service.tiles[coord.y + 2][coord.x].bonus = 'tw';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -240,7 +240,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'tw';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -259,7 +259,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'tw';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -278,7 +278,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'dw';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -297,7 +297,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'dw';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -316,7 +316,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -335,7 +335,7 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
 
@@ -349,7 +349,7 @@ describe('PointsCountingService', () => {
         const coord: Vec2 = { y: -1, x: -1 };
         const direction = 'v';
 
-        // applyBoardBonuses est privée
+        // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, []);
 

@@ -14,11 +14,13 @@ export class GoalService {
     goalHandler: Goal[];
     publicGoals: Goal[];
     privateGoals: Goal[];
+    // goalsProgressByPlayer: {type: GoalType, value:number, maxValue: number}[]
     goalsFunctions: ((wordOrPlayer: string | Player) => boolean)[];
+    goalsProgresses: ((goal: Goal, player: Player) => number)[];
     private dictionary: Dictionary;
     private usedIndex: number[];
     private randomWord: string;
-
+    // private timerService: TimerService
     constructor(private timerService: TimerService) {
         this.isEnabled = false;
         this.dictionary = dictionary as Dictionary;
@@ -97,6 +99,17 @@ export class GoalService {
 
         this.publicGoals = [this.getAUniqueGoal(), this.getAUniqueGoal()];
         this.privateGoals = [this.getAUniqueGoal(), this.getAUniqueGoal()];
+
+        this.goalsProgresses = [
+            (goal: Goal, player: Player): number => this.getGoalUsingWordProgress(goal, player),
+            (goal: Goal, player: Player): number => this.getGoalUsingWordProgress(goal, player),
+            (goal: Goal, player: Player): number => this.getGoalUsingWordProgress(goal, player),
+            (goal: Goal, player: Player): number => this.getGoalUsingWordProgress(goal, player),
+            (goal: Goal, player: Player): number => this.getPlayInTenSecondsGoalProgress(goal, player),
+            (goal: Goal, player: Player): number => this.getPlayFiveTimesWithoutSkipAndExchange(goal, player),
+            (goal: Goal, player: Player): number => this.getPlayTheSameWordThreeTimesProgress(goal, player),
+            (goal: Goal, player: Player): number => this.getGoalUsingWordProgress(goal, player),
+        ];
     }
 
     getAUniqueGoal(): Goal {
@@ -109,6 +122,77 @@ export class GoalService {
         audio.src = 'assets/sounds/bonus.wav';
         audio.load();
         audio.play();
+    }
+
+    incrementPlayerCounters(player: Player): void {
+        this.incrementTurnWithoutSkipAndExchangeCounter(player);
+        this.setPlaceInTenSecondsGoalCounter(player);
+    }
+    getProgress(goal: Goal, player: Player): number {
+        return this.goalsProgresses[goal.goalType](goal, player);
+    }
+
+    processWordsArrayInMap(words: string[]): Map<string, number> {
+        const wordsMapping = new Map<string, number>();
+        for (const word of words) {
+            if (wordsMapping.has(word.toLowerCase())) {
+                const numberOfWord = wordsMapping.get(word.toLowerCase()) as number;
+                wordsMapping.set(word.toLowerCase(), numberOfWord + 1);
+            } else {
+                wordsMapping.set(word.toLowerCase(), 1);
+            }
+        }
+        return wordsMapping;
+    }
+    private getPlayTheSameWordThreeTimesProgress(goal: Goal, player: Player): number {
+        const maxPlaceTimes = 3.0;
+        const twoPlaceTimes = 2;
+        const onePlaceTimes = 1.0;
+
+        if (goal.completedBy?.id === player.id) {
+            return 1;
+        }
+        if (!(player.wordsMapping instanceof Map)) {
+            player.wordsMapping = this.processWordsArrayInMap(player.words);
+        }
+        if (player.wordsMapping.size === 0) {
+            return 0;
+        }
+
+        for (const wordValue of player.wordsMapping.values()) {
+            if (wordValue === twoPlaceTimes) {
+                return twoPlaceTimes / maxPlaceTimes;
+            }
+        }
+        return onePlaceTimes / maxPlaceTimes;
+    }
+
+    private getPlayFiveTimesWithoutSkipAndExchange(goal: Goal, player: Player): number {
+        const maxTurnValue = 5.0;
+        return goal.completedBy?.id === player.id ? 1 : player.turnWithoutSkipAndExchangeCounter / maxTurnValue;
+    }
+
+    private getGoalUsingWordProgress(goal: Goal, player: Player): number {
+        return goal.completedBy?.id === player.id ? 1 : 0;
+    }
+
+    private getPlayInTenSecondsGoalProgress(goal: Goal, player: Player): number {
+        const maxPlaceTimes = 3.0;
+        return goal.completedBy?.id === player.id ? 1 : player.placeInTenSecondsGoalCounter / maxPlaceTimes;
+    }
+
+    private setPlaceInTenSecondsGoalCounter(player: Player): void {
+        const tenSecondGoalLimitTime = 10;
+
+        if (this.timerService.counter.totalTimer <= tenSecondGoalLimitTime) {
+            player.placeInTenSecondsGoalCounter += 1;
+        } else {
+            player.placeInTenSecondsGoalCounter = 0;
+        }
+    }
+
+    private incrementTurnWithoutSkipAndExchangeCounter(player: Player): void {
+        player.turnWithoutSkipAndExchangeCounter += 1;
     }
 
     private isWordPalindrome(word: string): boolean {
@@ -174,15 +258,7 @@ export class GoalService {
     }
 
     private placeInTenSecondsGoal(player: Player): boolean {
-        const tenSecondGoalLimitTime = 10;
         const numberOfTurnsToWin = 3;
-
-        if (this.timerService.counter.totalTimer <= tenSecondGoalLimitTime) {
-            player.placeInTenSecondsGoalCounter += 1;
-        } else {
-            player.placeInTenSecondsGoalCounter = 0;
-        }
-
         if (player.placeInTenSecondsGoalCounter === numberOfTurnsToWin) {
             player.placeInTenSecondsGoalCounter = 0;
             return true;
@@ -196,24 +272,17 @@ export class GoalService {
     }
 
     private playTheSameWordThreeTimes(player: Player): boolean {
-        const wordsFormedMapping = new Map<string, number>();
-        for (const w of player.words) {
-            if (wordsFormedMapping.has(w.toLowerCase())) {
-                const numberOfW = wordsFormedMapping.get(w.toLowerCase()) as number;
-                wordsFormedMapping.set(w.toLowerCase(), numberOfW + 1);
-                if (numberOfW + 1 === 3) {
-                    return true;
-                }
-            } else {
-                wordsFormedMapping.set(w.toLowerCase(), 1);
+        for (const value of player.wordsMapping.values()) {
+            if (value === 3) {
+                return true;
             }
         }
         return false;
     }
 
     private playTheRandomWord(player: Player): boolean {
-        for (const word of player.words) {
-            if (word.toLowerCase() === this.randomWord.toLowerCase()) {
+        for (const key of player.wordsMapping.keys()) {
+            if (key.toLowerCase() === this.randomWord.toLowerCase()) {
                 return true;
             }
         }

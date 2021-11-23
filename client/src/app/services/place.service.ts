@@ -43,7 +43,6 @@ export class PlaceService {
         const wordValidationParameters = await this.verifyService.checkAllWordsExist(word, coord);
         if (!wordValidationParameters.wordExists) {
             this.restoreGrid(word, direction, coord, true, true);
-            this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter = 0;
         } else {
             this.restoreAfterPlacement(word, direction, coord, true);
             this.timerService.resetTimer();
@@ -63,6 +62,7 @@ export class PlaceService {
                     this.placeSelectionService.cancelPlacement();
                     this.selectionManagerService.updateSelectionType(SelectionType.Rack);
                 }
+                this.timerService.resetTurnCounter.next(true);
                 this.timerService.resetTimer();
                 reject(isPlacementFeasible);
             } else {
@@ -75,8 +75,8 @@ export class PlaceService {
                 this.verifyService.checkAllWordsExist(word, coord).then((wordValidationParameters) => {
                     if (!wordValidationParameters.wordExists) {
                         this.restoreGrid(word, direction, coord, false, isCalledThoughtChat);
-                        localStorage.setItem('bonusGrid', JSON.stringify(this.tiles));
-                        this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter = 0;
+                        localStorage.setItem('bonusGrid', JSON.stringify(tiles));
+                        this.timerService.resetTurnCounter.next(true);
                         response.error = true;
                         response.message.body = 'Commande impossible à réaliser : ' + wordValidationParameters.errorMessage;
                         reject(response);
@@ -110,9 +110,7 @@ export class PlaceService {
     }
 
     private restoreAfterPlacement(word: string, direction: string, coord: Vec2, instant: boolean): void {
-        this.gameService.players[this.gameService.currentTurn].words.push(...this.verifyService.formedWords);
-        this.gameService.players[this.gameService.currentTurn].turnWithoutSkipAndExchangeCounter += 1;
-        this.goalManagerService.applyAllGoalsBonus(this.verifyService.formedWords);
+        this.goalManagerService.setWordsFormedNumber(this.gameService.players[this.gameService.currentTurn], [...this.verifyService.formedWords]);
 
         if (!instant) {
             this.gameService.players[this.gameService.currentTurn].points += this.pointsCountingService.processWordPoints(
@@ -121,6 +119,7 @@ export class PlaceService {
                 direction,
                 this.lettersUsedOnBoard,
             );
+            this.goalManagerService.applyAllGoalsBonus(this.verifyService.formedWords, this.gameService.players[this.gameService.currentTurn]);
             this.gridService.border.squareBorderColor = 'black';
             this.writeWord(word, coord, direction);
             this.gridService.removeArrow(this.placeSelectionService.selectedCoord);

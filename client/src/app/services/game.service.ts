@@ -128,6 +128,7 @@ export class GameService {
             points: 0,
             placeInTenSecondsGoalCounter: 0,
             turnWithoutSkipAndExchangeCounter: 0,
+            wordsMapping: new Map<string, number>(),
             words: [],
         };
         this.players.push(realPlayer);
@@ -140,6 +141,7 @@ export class GameService {
             points: 0,
             placeInTenSecondsGoalCounter: 0,
             turnWithoutSkipAndExchangeCounter: 0,
+            wordsMapping: new Map<string, number>(),
             words: [],
         };
         this.players.push(computer);
