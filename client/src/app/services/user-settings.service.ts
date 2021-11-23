@@ -1,7 +1,5 @@
-import { Dictionary } from './../classes/dictionary';
 import { Injectable } from '@angular/core';
 import { IOptionList, IUserSetting, NAME_OPTION } from '@app/classes/game-options';
-import { FormControl, Validators } from '@angular/forms';
 
 const MODE: IOptionList = {
     settingName: 'Mode de jeux',
@@ -57,15 +55,6 @@ export class UserSettingsService {
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
 
-    dictionaryControl = new FormControl('', Validators.required);
-    dictionnaires: Dictionary[] = [
-        { title: 'Espagnol', description: 'Langue espagnole', words: [], isAvailable: true },
-        { title: 'Anglais', description: 'Langue anglaise', words: [], isAvailable: true },
-        { title: 'Italien', description: 'Langue italienne', words: [], isAvailable: false },
-        { title: 'Russe', description: 'Langue Russe', words: [], isAvailable: true },
-    ];
-    selectedDictionary: Dictionary;
-
     nameOption = NAME_OPTION;
     computerName: string;
 
@@ -94,10 +83,4 @@ export class UserSettingsService {
         const timer = this.settings.timer.currentChoiceKey;
         return { mode, timer };
     }
-
-    // disableChoice(dictionnaire: Dictionary) {
-    //     if (dictionnaire.title === 'Espagnol') {
-    //         return false;
-    //     }
-    // }
 }

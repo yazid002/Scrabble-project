@@ -17,13 +17,6 @@ export class GameModeDialogComponent {
     isChecked: boolean = false;
     message: string = '';
 
-    // selectedDictionary: Dictionary;
-    // dictionaryControl = new FormControl('', Validators.required);
-    // dictionnaires: Dictionary[] = [
-    //     { title: 'Espagnol', description: 'Langue Espagnol', words: [] },
-    //     { title: 'Anglais', description: 'Langue Anglaise', words: [] },
-    // ];
-
     constructor(
         public userSettingsService: UserSettingsService,
         public gameService: GameService,
@@ -60,8 +53,4 @@ export class GameModeDialogComponent {
             return false;
         }
     }
-
-    // get selectedDictionary(): Dictionary {
-    //     return;
-    // }
 }

@@ -13,7 +13,6 @@
                 <mat-card-title-group>
                     <mat-card-subtitle>Mode : {{ mode }}</mat-card-subtitle>
                     <mat-card-subtitle>Temps par tours : {{ timer }}</mat-card-subtitle>
-                    <mat-card-subtitle>Dictionnaire : {{ selected }}</mat-card-subtitle>
                 </mat-card-title-group>
             </mat-card>
         </div>
@@ -28,9 +27,9 @@
             Switch to Solo
         </button>
         <button color="primary" [routerLink]="['/lobby']" (click)="roomService.quitRoom()" class="game-button green">Joindre un Room</button>
+        <button mat-raised-button color="primary" (click)="openQuitMultiplayerDialog()" class="game-button red">Quitter</button>
         <!-- <button mat-raised-button color="primary" mat-dialog-close (click)="openSwitchToSoloDialog()" id="solo_button">Switch to Solo</button> -->
         <!-- <button mat-raised-button color="primary" [routerLink]="['/lobby']" id="join" (click)="roomService.quitRoom()">Joindre un Room</button> -->
-        <button mat-raised-button color="primary" (click)="openQuitMultiplayerDialog()" class="game-button red">Quitter</button>
 
         <button
             mat-raised-button
@@ -42,9 +41,5 @@
         >
             Placement aléatoire
         </button>
-
-        <!-- <button mat-raised-button color="primary" *ngIf="roomService.rooms.length < 1" [disabled]="roomService.rooms.length === 1" id="random">
-        Placement aléatoire
-    </button> -->
     </div>
 </body>
