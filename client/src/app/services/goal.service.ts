@@ -126,54 +126,62 @@ export class GoalService {
 
     incrementPlayerCounters(player: Player): void {
         this.incrementTurnWithoutSkipAndExchangeCounter(player);
-        this.incrementPlaceInTenSecondsGoalCounter(player);
+        this.setPlaceInTenSecondsGoalCounter(player);
     }
-
-    updatePlayerGoalsProgresses(goal: Goal, player: Player): void {
-        if (!player.goalsProgresses) {
-            player.goalsProgresses = new Map<GoalType, number>();
-        }
-        if (player.goalsProgresses?.has(goal.goalType)) {
-            const actualProgress = player.goalsProgresses?.get(goal.goalType) as number;
-            player.goalsProgresses?.set(goal.goalType, actualProgress + 1);
-        } else {
-            player.goalsProgresses?.set(goal.goalType, 1);
-        }
-    }
-
-    getGoalUsingWordProgress(goal: Goal, player: Player): number {
-        return goal.complete && goal.completedBy?.id === player.id ? 1 : 0;
-    }
-
-    getPlayInTenSecondsGoalProgress(goal: Goal, player: Player): number {
-        return goal.complete && goal.completedBy?.id === player.id ? 1 : player.placeInTenSecondsGoalCounter / 3.0;
-    }
-
     getProgress(goal: Goal, player: Player): number {
         return this.goalsProgresses[goal.goalType](goal, player);
     }
 
-    getPlayTheSameWordThreeTimesProgress(goal: Goal, player: Player): number {
-        if (goal.complete && goal.completedBy?.id === player.id) {
+    processWordsArrayInMap(words: string[]): Map<string, number> {
+        const wordsMapping = new Map<string, number>();
+        for (const word of words) {
+            if (wordsMapping.has(word.toLowerCase())) {
+                const numberOfWord = wordsMapping.get(word.toLowerCase()) as number;
+                wordsMapping.set(word.toLowerCase(), numberOfWord + 1);
+            } else {
+                wordsMapping.set(word.toLowerCase(), 1);
+            }
+        }
+        return wordsMapping;
+    }
+    private getPlayTheSameWordThreeTimesProgress(goal: Goal, player: Player): number {
+        const maxPlaceTimes = 3.0;
+        const twoPlaceTimes = 2;
+        const onePlaceTimes = 1.0;
+
+        if (goal.completedBy?.id === player.id) {
             return 1;
+        }
+        if (!(player.wordsMapping instanceof Map)) {
+            player.wordsMapping = this.processWordsArrayInMap(player.words);
         }
         if (player.wordsMapping.size === 0) {
             return 0;
         }
-        for (const value of player.wordsMapping.values()) {
-            if (value === 2) {
-                return 2.0 / 3.0;
+
+        for (const wordValue of player.wordsMapping.values()) {
+            if (wordValue === twoPlaceTimes) {
+                return twoPlaceTimes / maxPlaceTimes;
             }
         }
-        return 1.0 / 3.0;
+        return onePlaceTimes / maxPlaceTimes;
     }
 
-    getPlayFiveTimesWithoutSkipAndExchange(goal: Goal, player: Player): number {
+    private getPlayFiveTimesWithoutSkipAndExchange(goal: Goal, player: Player): number {
         const maxTurnValue = 5.0;
-        return goal.complete && goal.completedBy?.id === player.id ? 1 : player.turnWithoutSkipAndExchangeCounter / maxTurnValue;
+        return goal.completedBy?.id === player.id ? 1 : player.turnWithoutSkipAndExchangeCounter / maxTurnValue;
     }
 
-    private incrementPlaceInTenSecondsGoalCounter(player: Player): void {
+    private getGoalUsingWordProgress(goal: Goal, player: Player): number {
+        return goal.completedBy?.id === player.id ? 1 : 0;
+    }
+
+    private getPlayInTenSecondsGoalProgress(goal: Goal, player: Player): number {
+        const maxPlaceTimes = 3.0;
+        return goal.completedBy?.id === player.id ? 1 : player.placeInTenSecondsGoalCounter / maxPlaceTimes;
+    }
+
+    private setPlaceInTenSecondsGoalCounter(player: Player): void {
         const tenSecondGoalLimitTime = 10;
 
         if (this.timerService.counter.totalTimer <= tenSecondGoalLimitTime) {
@@ -264,13 +272,10 @@ export class GoalService {
     }
 
     private playTheSameWordThreeTimes(player: Player): boolean {
-        if (player.wordsMapping) {
-            for (const value of player.wordsMapping.values()) {
-                if (value === 3) {
-                    return true;
-                }
+        for (const value of player.wordsMapping.values()) {
+            if (value === 3) {
+                return true;
             }
-            return false;
         }
         return false;
     }

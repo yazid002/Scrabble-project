@@ -97,6 +97,7 @@ describe('SelectionManagerService', () => {
                 turnWithoutSkipAndExchangeCounter: 0,
                 placeInTenSecondsGoalCounter: 0,
                 wordsMapping: new Map<string, number>(),
+                words: [],
             },
         ];
         commandExecutionServiceSpy = jasmine.createSpyObj('CommandExecutionService', ['interpretCommand', 'executeCommand', 'addLetterInReserve']);

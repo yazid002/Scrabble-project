@@ -35,6 +35,7 @@ describe('ExchangeService', () => {
                 turnWithoutSkipAndExchangeCounter: 0,
                 placeInTenSecondsGoalCounter: 0,
                 wordsMapping: new Map<string, number>(),
+                words: [],
             },
         ];
         timerServiceSpy = jasmine.createSpyObj('TimerService', ['resetTimer']);

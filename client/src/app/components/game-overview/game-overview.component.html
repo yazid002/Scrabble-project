@@ -10,18 +10,7 @@
     <mat-card class="goals" *ngIf="mode === 'LOG2990'">
         <mat-card-title class="goalsTitle">Objectifs publiques: </mat-card-title>
         <mat-card-content [ngClass]="goal.complete ? 'completedGoal' : 'uncompletedGoal'" class="goalsContent" *ngFor="let goal of publicGoals">
-            {{ goal.description }}
-            <div class="goalsPoints">Pointage: {{ goal.bonus }}</div>
-            <div>
-                {{ gameService.players[playerIndex.realPlayer].name }}
-                <app-goal-progress-bar [goal]="goal" [player]="gameService.players[playerIndex.realPlayer]"></app-goal-progress-bar>
-            </div>
-            <div>
-                {{ gameService.players[playerIndex.otherPlayer].name }}
-                <app-goal-progress-bar [goal]="goal" [player]="gameService.players[playerIndex.otherPlayer]"></app-goal-progress-bar>
-            </div>
-
-            <div *ngIf="goal.complete">Completé par {{ goal.completedBy?.name }}!</div>
+            <app-goal [isPublic]="true" [goal]="goal"></app-goal>
         </mat-card-content>
     </mat-card>
 
@@ -31,19 +20,13 @@
         [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"
     >
         <mat-card-title>{{ player.name }}</mat-card-title>
-        <!-- *ngIf="i === playerIndex.realPlayer || privateGoals[i].complete" -->
         <div *ngIf="mode === 'LOG2990'">
-            <div>
+            <div *ngIf="i === playerIndex.realPlayer || privateGoals[i].complete">
                 <mat-card-title class="goalsTitle">
                     <div>Objectif privé:</div>
                 </mat-card-title>
                 <mat-card-content [ngClass]="privateGoals[i].complete ? 'completedGoal' : 'uncompletedGoal'" class="goalsContent">
-                    <div>
-                        {{ privateGoals[i].description }}
-                        <div class="goalsPoints">Pointage: {{ privateGoals[i].bonus }}</div>
-                        <app-goal-progress-bar [goal]="privateGoals[i]" [player]="player"></app-goal-progress-bar>
-                    </div>
-                    <div *ngIf="privateGoals[i].complete">Completé !</div>
+                    <app-goal [isPublic]="false" [goal]="privateGoals[i]" [player]="player"></app-goal>
                 </mat-card-content>
             </div>
         </div>

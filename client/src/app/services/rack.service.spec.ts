@@ -36,6 +36,7 @@ describe('RackService', () => {
                 turnWithoutSkipAndExchangeCounter: 0,
                 placeInTenSecondsGoalCounter: 0,
                 wordsMapping: new Map<string, number>(),
+                words: [],
             },
         ];
         TestBed.configureTestingModule({

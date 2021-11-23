@@ -9,7 +9,7 @@ export interface Player {
     won?: string;
     placeInTenSecondsGoalCounter: number;
     turnWithoutSkipAndExchangeCounter: number;
-    // words: string[];
+    words: string[];
     wordsMapping: Map<string, number>;
     goalsProgresses?: Map<GoalType, number>;
 }

@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { Dictionary } from '@app/classes/dictionary';
+import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
 import { GoalService } from './goal.service';
@@ -45,6 +46,7 @@ describe('GoalService', () => {
             turnWithoutSkipAndExchangeCounter: 0,
             placeInTenSecondsGoalCounter: 0,
             wordsMapping: new Map<string, number>(),
+            words: [],
         };
     });
 
@@ -341,5 +343,420 @@ describe('GoalService', () => {
         expect(audioSpy).toHaveBeenCalled();
         expect(loadSpy).toHaveBeenCalled();
         expect(playSpy).toHaveBeenCalled();
+    });
+
+    describe('getProgress', () => {
+        it('should call getGoalUsingWordProgress', () => {
+            const goal: Goal = { description: 'first goal', goalType: GoalType.WritePalindromeWord, bonus: 10, usesWord: true, complete: false };
+            // getGoalUsingWordProgress is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const getGoalUsingWordProgressSpy = spyOn<any>(service, 'getGoalUsingWordProgress').and.returnValue(true);
+
+            service.getProgress(goal, player);
+            expect(getGoalUsingWordProgressSpy).toHaveBeenCalled();
+
+            goal.goalType = GoalType.WriteWordContainingConsecutiveConsonants;
+            service.getProgress(goal, player);
+            expect(getGoalUsingWordProgressSpy).toHaveBeenCalled();
+
+            goal.goalType = GoalType.WriteWordContainingQwithoutU;
+            service.getProgress(goal, player);
+            expect(getGoalUsingWordProgressSpy).toHaveBeenCalled();
+
+            goal.goalType = GoalType.WriteWordLengthEqualToFifteen;
+            service.getProgress(goal, player);
+            expect(getGoalUsingWordProgressSpy).toHaveBeenCalled();
+
+            goal.goalType = GoalType.PlayTheRandomWord;
+            service.getProgress(goal, player);
+            expect(getGoalUsingWordProgressSpy).toHaveBeenCalled();
+        });
+
+        it('should call getPlayInTenSecondsGoalProgress', () => {
+            const goal: Goal = { description: 'first goal', goalType: GoalType.PlayInTenSeconds, bonus: 10, usesWord: true, complete: false };
+            // getPlayInTenSecondsGoalProgress is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const getPlayInTenSecondsGoalProgressSpy = spyOn<any>(service, 'getPlayInTenSecondsGoalProgress').and.returnValue(true);
+
+            service.getProgress(goal, player);
+            expect(getPlayInTenSecondsGoalProgressSpy).toHaveBeenCalled();
+        });
+
+        it('should call getPlayFiveTimesWithoutSkipAndExchange', () => {
+            const goal: Goal = {
+                description: 'first goal',
+                goalType: GoalType.PlayFiveTimesWithoutSkipAndExchange,
+                bonus: 10,
+                usesWord: true,
+                complete: false,
+            };
+            // getPlayInTenSecondsGoalProgress is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const getPlayFiveTimesWithoutSkipAndExchangeSpy = spyOn<any>(service, 'getPlayFiveTimesWithoutSkipAndExchange').and.returnValue(true);
+
+            service.getProgress(goal, player);
+            expect(getPlayFiveTimesWithoutSkipAndExchangeSpy).toHaveBeenCalled();
+        });
+
+        it('should call getPlayTheSameWordThreeTimesProgress', () => {
+            const goal: Goal = {
+                description: 'first goal',
+                goalType: GoalType.PlayTheSameWordThreeTimes,
+                bonus: 10,
+                usesWord: true,
+                complete: false,
+            };
+            // getPlayTheSameWordThreeTimesProgress is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const getPlayTheSameWordThreeTimesProgressSpy = spyOn<any>(service, 'getPlayTheSameWordThreeTimesProgress').and.returnValue(true);
+
+            service.getProgress(goal, player);
+            expect(getPlayTheSameWordThreeTimesProgressSpy).toHaveBeenCalled();
+        });
+    });
+
+    it('incrementPlayerCounters should call incrementTurnWithoutSkipAndExchangeCounter and incrementPlaceInTenSecondsGoalCounter', () => {
+        // incrementTurnWithoutSkipAndExchangeCounter is private
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const incrementTurnWithoutSkipAndExchangeCounterSpy = spyOn<any>(service, 'incrementTurnWithoutSkipAndExchangeCounter').and.returnValue(
+            void '',
+        );
+
+        // setPlaceInTenSecondsGoalCounter is private
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const setPlaceInTenSecondsGoalCounterSpy = spyOn<any>(service, 'setPlaceInTenSecondsGoalCounter').and.returnValue(void '');
+
+        service.incrementPlayerCounters(player);
+        expect(incrementTurnWithoutSkipAndExchangeCounterSpy).toHaveBeenCalled();
+        expect(setPlaceInTenSecondsGoalCounterSpy).toHaveBeenCalled();
+    });
+
+    it('incrementTurnWithoutSkipAndExchangeCounter should call increment with a step of 1 the player TurnWithoutSkipAndExchangeCounter', () => {
+        player.turnWithoutSkipAndExchangeCounter = 0;
+        // incrementTurnWithoutSkipAndExchangeCounter is private
+        // eslint-disable-next-line dot-notation
+        service['incrementTurnWithoutSkipAndExchangeCounter'](player);
+        expect(player.turnWithoutSkipAndExchangeCounter).toEqual(1);
+    });
+
+    it('incrementTurnWithoutSkipAndExchangeCounter should call increment with a step of 1 the player TurnWithoutSkipAndExchangeCounter', () => {
+        player.turnWithoutSkipAndExchangeCounter = 0;
+        // incrementTurnWithoutSkipAndExchangeCounter is private
+        // eslint-disable-next-line dot-notation
+        service['incrementTurnWithoutSkipAndExchangeCounter'](player);
+        expect(player.turnWithoutSkipAndExchangeCounter).toEqual(1);
+    });
+
+    it('setPlaceInTenSecondsGoalCounter should increment the player placeInTenSecondsGoalCounter if the time is less than or equal to 10', () => {
+        player.placeInTenSecondsGoalCounter = 0;
+        timerServiceSpy.counter.totalTimer = 3;
+        // setPlaceInTenSecondsGoalCounter is private
+        // eslint-disable-next-line dot-notation
+        service['setPlaceInTenSecondsGoalCounter'](player);
+        expect(player.placeInTenSecondsGoalCounter).toEqual(1);
+    });
+
+    it('setPlaceInTenSecondsGoalCounter should reset the player placeInTenSecondsGoalCounter if the time is greater than 10', () => {
+        const timePassed = 11;
+        player.placeInTenSecondsGoalCounter = 2;
+        timerServiceSpy.counter.totalTimer = timePassed;
+        // setPlaceInTenSecondsGoalCounter is private
+        // eslint-disable-next-line dot-notation
+        service['setPlaceInTenSecondsGoalCounter'](player);
+        expect(player.placeInTenSecondsGoalCounter).toEqual(0);
+    });
+
+    it('getPlayInTenSecondsGoalProgress should calculate the progress with the player counter if the goal is not completed', () => {
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: false,
+        };
+        const counter = 1;
+        const expectedResult = counter / 3.0;
+        player.placeInTenSecondsGoalCounter = counter;
+        // getPlayInTenSecondsGoalProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayInTenSecondsGoalProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPlayInTenSecondsGoalProgress should calculate the progress with the player counter if the goal is completed by not by the player', () => {
+        const playerThatCompletedGoal = {
+            id: PLAYER.otherPlayer,
+            name: 'playerThatCompletedGoal name',
+            rack: [],
+            points: 0,
+            turnWithoutSkipAndExchangeCounter: 0,
+            placeInTenSecondsGoalCounter: 3,
+            wordsMapping: new Map<string, number>(),
+            words: [],
+        };
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: true,
+            completedBy: playerThatCompletedGoal,
+        };
+        const counter = 2;
+        const expectedResult = counter / 3.0;
+        player.placeInTenSecondsGoalCounter = counter;
+        // getPlayInTenSecondsGoalProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayInTenSecondsGoalProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPlayInTenSecondsGoalProgress should return 1 if the player is the one who completed the goal', () => {
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: true,
+            completedBy: player,
+        };
+        const counter = 2;
+        const expectedResult = 1;
+        player.placeInTenSecondsGoalCounter = counter;
+        // getPlayInTenSecondsGoalProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayInTenSecondsGoalProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPlayFiveTimesWithoutSkipAndExchange should return 1 if the player is the one who completed the goal', () => {
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: true,
+            completedBy: player,
+        };
+        const counter = 2;
+        const expectedResult = 1;
+        player.turnWithoutSkipAndExchangeCounter = counter;
+        // getPlayFiveTimesWithoutSkipAndExchange is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayFiveTimesWithoutSkipAndExchange'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPlayFiveTimesWithoutSkipAndExchange should calculate the progress with the player counter if the goal is not completed', () => {
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: false,
+        };
+        const counter = 2;
+        const maxValue = 5.0;
+        const expectedResult = counter / maxValue;
+        player.turnWithoutSkipAndExchangeCounter = counter;
+        // getPlayFiveTimesWithoutSkipAndExchange is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayFiveTimesWithoutSkipAndExchange'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it(
+        'getPlayFiveTimesWithoutSkipAndExchange should calculate the progress with the player ' +
+            'counter if the goal is completed by not by the player',
+        () => {
+            const playerThatCompletedGoal = {
+                id: PLAYER.otherPlayer,
+                name: 'playerThatCompletedGoal name',
+                rack: [],
+                points: 0,
+                turnWithoutSkipAndExchangeCounter: 0,
+                placeInTenSecondsGoalCounter: 3,
+                wordsMapping: new Map<string, number>(),
+                words: [],
+            };
+            const goal: Goal = {
+                description: 'first goal',
+                goalType: GoalType.PlayInTenSeconds,
+                bonus: 10,
+                usesWord: false,
+                complete: true,
+                completedBy: playerThatCompletedGoal,
+            };
+            const counter = 2;
+            const maxValue = 5.0;
+            const expectedResult = counter / maxValue;
+            player.turnWithoutSkipAndExchangeCounter = counter;
+            // getPlayFiveTimesWithoutSkipAndExchange is private
+            // eslint-disable-next-line dot-notation
+            const result = service['getPlayFiveTimesWithoutSkipAndExchange'](goal, player);
+            expect(result).toEqual(expectedResult);
+        },
+    );
+
+    it('getGoalUsingWordProgress should return 1 if the player is the one who completed the goal', () => {
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: true,
+            completedBy: player,
+        };
+        const expectedResult = 1;
+        // getGoalUsingWordProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getGoalUsingWordProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getGoalUsingWordProgress should return 0 if the player is the goal is not completed', () => {
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: false,
+        };
+        const expectedResult = 0;
+        // getGoalUsingWordProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getGoalUsingWordProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getGoalUsingWordProgress should return 0 if the goal is completed by not by the player', () => {
+        const playerThatCompletedGoal = {
+            id: PLAYER.otherPlayer,
+            name: 'playerThatCompletedGoal name',
+            rack: [],
+            points: 0,
+            turnWithoutSkipAndExchangeCounter: 0,
+            placeInTenSecondsGoalCounter: 3,
+            wordsMapping: new Map<string, number>(),
+            words: [],
+        };
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: true,
+            completedBy: playerThatCompletedGoal,
+        };
+        const expectedResult = 0;
+        // getGoalUsingWordProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getGoalUsingWordProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPlayTheSameWordThreeTimesProgress should return 0 if the player did not place any word', () => {
+        player.wordsMapping = new Map<string, number>();
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: false,
+        };
+        const expectedResult = 0;
+        // getPlayTheSameWordThreeTimesProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayTheSameWordThreeTimesProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPlayTheSameWordThreeTimesProgress should return 0 if the player wordsMapping is undefined', () => {
+        player.wordsMapping = undefined as unknown as Map<string, number>;
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: false,
+        };
+        const expectedResult = 0;
+        // getPlayTheSameWordThreeTimesProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayTheSameWordThreeTimesProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPlayTheSameWordThreeTimesProgress should return 1 if the player completed the goal', () => {
+        player.wordsMapping = new Map<string, number>([
+            ['manger', 1],
+            ['finir', 2],
+        ]);
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: true,
+            completedBy: player,
+        };
+        const expectedResult = 1;
+        // getPlayTheSameWordThreeTimesProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayTheSameWordThreeTimesProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPlayTheSameWordThreeTimesProgress should return 1/max value if the player placed each word only one time', () => {
+        player.wordsMapping = new Map<string, number>([
+            ['manger', 1],
+            ['finir', 1],
+        ]);
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: false,
+        };
+        const maxValue = 3.0;
+        const expectedResult = 1 / maxValue;
+        // getPlayTheSameWordThreeTimesProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayTheSameWordThreeTimesProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPlayTheSameWordThreeTimesProgress should return 2/max value if the player placed at least one word two times', () => {
+        player.wordsMapping = new Map<string, number>([
+            ['manger', 1],
+            ['finir', 2],
+        ]);
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: GoalType.PlayInTenSeconds,
+            bonus: 10,
+            usesWord: false,
+            complete: false,
+        };
+        const maxValue = 3.0;
+        const expectedResult = 2 / maxValue;
+        // getPlayTheSameWordThreeTimesProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['getPlayTheSameWordThreeTimesProgress'](goal, player);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('processWordsArrayInMap should return a map containing all the words in the array', () => {
+        const arrayTest = ['manger', 'lier', 'lier'];
+        const expectedResult = new Map<string, number>([
+            ['manger', 1],
+            ['lier', 2],
+        ]);
+
+        // getPlayTheSameWordThreeTimesProgress is private
+        // eslint-disable-next-line dot-notation
+        const result = service['processWordsArrayInMap'](arrayTest);
+        expect(JSON.stringify(result)).toEqual(JSON.stringify(expectedResult));
     });
 });
