@@ -36,6 +36,17 @@ export class LeaderBoardController {
             }
         });
 
+        this.router.get('/ClassicLeaderboard', async (req: Request, res: Response) => {
+            this.classicLeaderboardService
+                .getAllClassicPlayers()
+                .then((leaderboard: Leaderboard[]) => {
+                    res.json(leaderboard);
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
+
         this.router.get('/:name', async (req: Request, res: Response) => {
             this.classicLeaderboardService
                 .getPlayer(req.params.name)

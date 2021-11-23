@@ -59,7 +59,17 @@ export class DatabaseService {
             {
                 id: '34567',
                 name: 'Player 3',
-                score: 60,
+                score: 70,
+            },
+            {
+                id: '45678',
+                name: 'Player 4',
+                score: 80,
+            },
+            {
+                id: '56789',
+                name: 'Player 5',
+                score: 90,
             },
         ];
 
@@ -84,7 +94,17 @@ export class DatabaseService {
             {
                 id: '34567',
                 name: 'Player 8',
-                score: 60,
+                score: 70,
+            },
+            {
+                id: '45678',
+                name: 'Player 9',
+                score: 80,
+            },
+            {
+                id: '56789',
+                name: 'Player 10',
+                score: 90,
             },
         ];
 

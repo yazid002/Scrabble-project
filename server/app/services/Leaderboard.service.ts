@@ -12,11 +12,11 @@ const DATABASE_COLLECTION_2990 = 'Mode 2990';
 export class ClassicLeaderBoardService {
     constructor(private databaseService: DatabaseService) {}
 
-    get collectionC(): Collection<Leaderboard> {
+    get collectionClassic(): Collection<Leaderboard> {
         return this.databaseService.database.collection(DATABASE_COLLECTION_CLASSIC);
     }
 
-    get collection2(): Collection<Leaderboard> {
+    get collection2990(): Collection<Leaderboard> {
         return this.databaseService.database.collection(DATABASE_COLLECTION_2990);
     }
 
@@ -29,7 +29,16 @@ export class ClassicLeaderBoardService {
     //         });
     // }
     async getAllPlayers(): Promise<Leaderboard[]> {
-        return this.collection2
+        return this.collection2990
+            .find({})
+            .toArray()
+            .then((leaderboards: Leaderboard[]) => {
+                return leaderboards;
+            });
+    }
+
+    async getAllClassicPlayers(): Promise<Leaderboard[]> {
+        return this.collectionClassic
             .find({})
             .toArray()
             .then((leaderboards: Leaderboard[]) => {
@@ -44,23 +53,23 @@ export class ClassicLeaderBoardService {
     //     });
     // }
     async getPlayer(player: string): Promise<Leaderboard> {
-        return this.collection2.findOne({ name: player }).then((playerInfo: Leaderboard) => {
+        return this.collection2990.findOne({ name: player }).then((playerInfo: Leaderboard) => {
             return playerInfo;
         });
     }
 
     async getPlayersScore(player: string): Promise<string> {
-        return this.collection2.findOne({ name: player }).then((score: Leaderboard) => {
+        return this.collection2990.findOne({ name: player }).then((score: Leaderboard) => {
             return score.id;
         });
     }
 
     async addPlayer(player: Leaderboard): Promise<void> {
-        await this.collection2.insertOne(player);
+        await this.collection2990.insertOne(player);
     }
 
     async deletePlayer(player: string): Promise<void> {
-        return this.collection2
+        return this.collection2990
             .findOneAndDelete({ name: player })
             .then((res: FindAndModifyWriteOpResultObject<Leaderboard>) => {
                 if (!res.value) {
