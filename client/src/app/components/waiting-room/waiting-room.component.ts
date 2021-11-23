@@ -17,7 +17,7 @@ export class WaitingRoomComponent implements OnInit {
     name: string;
     mode: string;
     timer: string;
-    dictionnaire: Dictionary;
+    dict: Dictionary;
     constructor(
         public userSettingsService: UserSettingsService,
         public matDialog: MatDialog,
@@ -31,9 +31,9 @@ export class WaitingRoomComponent implements OnInit {
         const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
         );
-        const dictionnaire = this.userSettingsService.selectedDictionary;
+        const dict = this.userSettingsService.selectedDictionary;
         // const dictionnaire = this.gameModeDialogComponent.selectedDictionary;
-        this.assignValues(name, mode, timer, dictionnaire);
+        this.assignValues(name, mode, timer, dict);
         this.roomService.createRoom();
     }
     openSwitchToSoloDialog() {
@@ -43,18 +43,12 @@ export class WaitingRoomComponent implements OnInit {
         this.matDialog.open(QuitMultiplayerDialogComponent);
     }
 
-    // joinRandomRoom() {
-    //     const random = Math.floor(Math.random() * this.roomService.rooms.length);
-    //     if (this.roomService.rooms[random].settings.mode === this.mode) {
-    //         this.roomService.joinRoom(this.roomService.rooms[random].id);
-    //     }
-    // }
-    private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined, dictionnaire: Dictionary) {
-        if (name && mode && timer && dictionnaire) {
+    private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined, dict: Dictionary | undefined) {
+        if (name && mode && timer && dict) {
             this.name = name;
             this.mode = mode.value;
             this.timer = timer.value;
-            this.dictionnaire = dictionnaire;
+            this.dict = dict;
         }
     }
     get numbers(): number {
@@ -62,8 +56,9 @@ export class WaitingRoomComponent implements OnInit {
         return this.roomService.rooms.length;
     }
 
-    // get selected(): Dictionary {
-    //     console.log('selected dictionnary = ' + this.userSettingsService.selectedDictionary);
-    //     return this.dictionnaire;
-    // }
+    get selected(): Dictionary {
+        console.log('selected dictionnary = ' + this.userSettingsService.selectedDictionary);
+        console.log('selected dictionnary = ' + this.dict);
+        return this.dict;
+    }
 }
