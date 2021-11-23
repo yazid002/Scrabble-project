@@ -87,6 +87,7 @@ export class PlaceSelectionService {
         if (this.selectedTilesForPlacement.length === 0) {
             return '';
         }
+
         if (this.direction) {
             const y = this.selectedTilesForPlacement[0].y;
             for (let x = this.selectedTilesForPlacement[0].x; x <= this.selectedTilesForPlacement[this.selectedTilesForPlacement.length - 1].x; x++) {
@@ -139,7 +140,7 @@ export class PlaceSelectionService {
         if (index === NOT_FOUND) {
             return false;
         }
-        if (!this.areCoordValid(coord)) {
+        if (!this.verifyService.areCoordValid(coord)) {
             return false;
         }
         if (this.isTileAlreadySelected(coord)) {
@@ -152,13 +153,13 @@ export class PlaceSelectionService {
         return this.selectedTilesForPlacement.includes(coord);
     }
 
-    areCoordValid(coord: Vec2): boolean {
-        return coord.y < SQUARE_NUMBER && coord.x < SQUARE_NUMBER && coord.x >= 0 && coord.y >= 0;
-    }
     incrementNextCoord(coord: Vec2): Vec2 {
         let nextCoord = { x: coord.x, y: coord.y };
         while (!(tiles[nextCoord.y][nextCoord.x].text === '' || tiles[nextCoord.y][nextCoord.x].text.length === 2)) {
-            if (nextCoord.y === SQUARE_NUMBER - 1 || nextCoord.x === SQUARE_NUMBER - 1) {
+            const isHorizontalPlacementNotFeasible = this.direction && nextCoord.x === SQUARE_NUMBER - 1;
+            const isVerticalPlacementNotFeasible = !this.direction && nextCoord.y === SQUARE_NUMBER - 1;
+
+            if (isVerticalPlacementNotFeasible || isHorizontalPlacementNotFeasible) {
                 break;
             }
             nextCoord = this.direction ? (nextCoord = { x: nextCoord.x + 1, y: nextCoord.y }) : (nextCoord = { x: nextCoord.x, y: nextCoord.y + 1 });
@@ -191,18 +192,18 @@ export class PlaceSelectionService {
         this.rackService.fillRackPortion(toRemove as number, normalColor);
     }
 
-    cancelPlacement() {
+    cancelPlacement(): void {
         while (this.selectedCoord.x !== NOT_FOUND) {
             this.cancelUniqueSelectionFromRack();
             this.cancelUniqueBoardClick();
         }
     }
 
-    hideOperation() {
+    hideOperation(): boolean {
         return this.selectedRackIndexesForPlacement.length === 0;
     }
 
-    onBoardClick(event: MouseEvent, shouldChangeDirection: boolean) {
+    onBoardClick(event: MouseEvent, shouldChangeDirection: boolean): void {
         const notFound = { x: NOT_FOUND, y: NOT_FOUND };
         const coord = this.getClickCoords(event);
 
@@ -231,7 +232,7 @@ export class PlaceSelectionService {
 
     checkBoardClickFeasibility(coord: Vec2, shouldChangeDirection: boolean): boolean {
         const notFound = { x: NOT_FOUND, y: NOT_FOUND };
-        if (!(this.selectedRackIndexesForPlacement.length === 0 || !shouldChangeDirection === true)) {
+        if (!(this.selectedRackIndexesForPlacement.length === 0 || !shouldChangeDirection)) {
             return false;
         }
         if (!(coord.x !== notFound.x && coord.y !== notFound.y)) {
@@ -243,7 +244,7 @@ export class PlaceSelectionService {
         return true;
     }
 
-    cancelUniqueBoardClick() {
+    cancelUniqueBoardClick(): void {
         const coord = this.selectedTilesForPlacement.pop();
         if (this.selectedTilesForPlacement.length === 0 && this.selectedCoord.x !== NOT_FOUND) {
             this.gridService.removeArrow(this.selectedCoord);

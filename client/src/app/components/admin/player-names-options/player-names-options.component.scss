@@ -1,0 +1,25 @@
+section {
+    display: flex;
+    flex-direction: row;
+}
+.container {
+    flex-grow: 1;
+}
+
+.matCard {
+    height: 100%
+}
+
+mat-list-item div{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between
+}
+mat-list-item div p{
+    // display: inline-block;
+    flex-grow: 1;
+}
+mat-list-item div button{
+    // display: inline-block;
+    flex-grow: 1;
+}

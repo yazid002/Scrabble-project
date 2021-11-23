@@ -1,13 +1,13 @@
 import { Injectable, Output } from '@angular/core';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Player, PLAYER } from '@app/classes/player';
+import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
-
 const MAX_SKIPS = 6;
 @Injectable({
     providedIn: 'root',
@@ -15,6 +15,7 @@ const MAX_SKIPS = 6;
 export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
     @Output() abandonSignal = new BehaviorSubject<string>('');
+    @Output() convertToSoloSignal = new BehaviorSubject<string>('');
 
     players: Player[] = [];
     currentTurn: number;
@@ -29,15 +30,14 @@ export class GameService {
         private chatService: ChatService,
     ) {
         this.initPlayers();
-        this.randomTurn();
         this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {
             this.changeTurn(skipped);
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
     }
-
     convertGameToSolo() {
         this.numPlayers = 'solo';
+        this.convertToSoloSignal.next(ABANDON_SIGNAL);
         if (this.currentTurn === PLAYER.otherPlayer) {
             this.otherPlayerSignal.next(this.numPlayers);
         }
@@ -92,7 +92,32 @@ export class GameService {
 
         return hasEnded;
     }
+    initPlayers() {
+        if (this.players.length !== 0) return;
+        const realPlayer: Player = {
+            id: PLAYER.realPlayer,
+            name: this.userSettingsService.nameOption.userChoice,
+            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
+            points: 0,
+            placeInTenSecondsGoalCounter: 0,
+            turnWithoutSkipAndExchangeCounter: 0,
+            words: [],
+        };
+        this.players.push(realPlayer);
 
+        // make computer just two have two players
+        const computer: Player = {
+            id: PLAYER.otherPlayer,
+            name: this.userSettingsService.getComputerName(),
+            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
+            points: 0,
+            placeInTenSecondsGoalCounter: 0,
+            turnWithoutSkipAndExchangeCounter: 0,
+            words: [],
+        };
+        this.players.push(computer);
+        this.randomTurn();
+    }
     private subtractPoint(player: Player): number {
         let pointToSub = 0;
         for (const letter of player.rack) {
@@ -117,31 +142,6 @@ export class GameService {
     }
     private nextPlayer() {
         this.otherPlayerSignal.next(this.numPlayers);
-    }
-    private initPlayers() {
-        const realPlayer: Player = {
-            id: PLAYER.realPlayer,
-            name: this.userSettingsService.nameOption.userChoice,
-            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
-            points: 0,
-            placementParameters: {
-                selectedCoord: { x: -1, y: -1 },
-                direction: true,
-                selectedTilesForPlacement: [],
-                selectedRackIndexesForPlacement: [],
-                wordToVerify: [],
-            },
-        };
-        this.players.push(realPlayer);
-
-        // make computer just two have two players
-        const computer: Player = {
-            id: PLAYER.otherPlayer,
-            name: this.userSettingsService.getComputerName(),
-            rack: this.reserveService.getLettersFromReserve(RACK_SIZE),
-            points: 0,
-        };
-        this.players.push(computer);
     }
 
     private randomTurn() {

@@ -3,6 +3,7 @@ import { IChat, SENDER } from '@app/classes/chat';
 import { CommandFormat } from '@app/classes/command-format';
 import { PLAYER } from '@app/classes/player';
 import { GameService } from '@app/services/game.service';
+import { AideExecutionService } from './aide-execution.service';
 import { DebugExecutionService } from './debug-execution.service';
 import { ExchangeExecutionService } from './exchange-execution.service';
 import { PassExecutionService } from './pass-execution.service';
@@ -16,6 +17,7 @@ export class CommandExecutionService {
         private reserveExecutionService: ReserveExecutionService,
         private placeExecutionService: PlaceExecutionService,
         public debugExecutionService: DebugExecutionService,
+        public aideExecutionService: AideExecutionService,
 
         private passExecutionService: PassExecutionService,
         private exchangeExecutionService: ExchangeExecutionService,
@@ -103,6 +105,18 @@ export class CommandExecutionService {
                     notAllowedMessage: '<strong>debug</strong> doit être activé',
                     command: () => {
                         return this.reserveExecutionService.execute();
+                    },
+                },
+            ],
+            [
+                'aide',
+                {
+                    format: '^aide$',
+                    description: '"!aide" sans majuscule ni espace à la fin',
+                    allowed: true,
+                    notAllowedMessage: '',
+                    command: () => {
+                        return this.aideExecutionService.execute();
                     },
                 },
             ],

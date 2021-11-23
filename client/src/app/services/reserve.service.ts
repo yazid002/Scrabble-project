@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ICharacter } from '@app/classes/letter';
+import { NOT_FOUND } from '@app/constants/common-constants';
 
 @Injectable({
     providedIn: 'root',
@@ -70,9 +71,8 @@ export class ReserveService {
     }
 
     addLetterInReserve(letterToReplace: string): void {
-        const notFound = -1;
         const indexInReserve = this.findLetterPosition(letterToReplace, this.alphabets);
-        if (indexInReserve !== notFound) {
+        if (indexInReserve !== NOT_FOUND) {
             this.alphabets[indexInReserve].quantity++;
         }
     }
@@ -82,12 +82,7 @@ export class ReserveService {
             letterToCheck = '*';
         }
         const index = this.findLetterPosition(letterToCheck, this.alphabets);
-        const notFound = -1;
-        if (index !== notFound) {
-            return this.alphabets[index];
-        }
-
-        return notFound;
+        return index !== NOT_FOUND ? this.alphabets[index] : NOT_FOUND;
     }
 
     // TODO: ENLEVER SI ON UTILISE PAS

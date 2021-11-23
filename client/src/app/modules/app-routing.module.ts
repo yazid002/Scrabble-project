@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LobbyComponent } from '@app/lobby/lobby.component';
+import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { LeaderboardPageComponent } from '@app/pages/leaderboard-page/leaderboard-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
@@ -16,6 +17,7 @@ const routes: Routes = [
     { path: 'leaderboard', component: LeaderboardPageComponent },
     { path: 'lobby', component: LobbyComponent },
     { path: 'switch', component: SwitchDialogComponent },
+    { path: 'admin', component: AdminPageComponent },
     { path: '**', redirectTo: '/home' },
 ];
 

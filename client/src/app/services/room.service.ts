@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { IChat, SENDER } from '@app/classes/chat';
+import { SERVER_URL } from '@app/constants/url';
 import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { ChatService } from './chat.service';
@@ -32,7 +33,7 @@ export class RoomService {
         private userSettingsService: UserSettingsService,
         private router: Router,
     ) {
-        this.urlString = 'ec2-99-79-57-8.ca-central-1.compute.amazonaws.com:3000';
+        this.urlString = SERVER_URL;
         this.socket = io(this.urlString);
         this.configureRoomCommunication();
         this.chatServiceSubscription = this.chatService.messageSent.subscribe((message: string) => {
@@ -60,8 +61,7 @@ export class RoomService {
         });
         this.socket.on('abandon', (id: string) => {
             if (id === this.socket.id) return;
-            this.gameService.endGame(true);
-            // this.gameService.convertGameToSolo(); Uncomment for sprint 3
+            this.gameService.convertGameToSolo(); // Uncomment for sprint 3
         });
         this.socket.on('askMasterSync', () => {
             this.router.navigateByUrl('/game');
@@ -83,6 +83,15 @@ export class RoomService {
         this.socket.emit('joinRoom', roomId);
         this.roomId = roomId;
         this.gameSyncService.isMasterClient = false;
+    }
+
+    joinRandomRoom() {
+        const settings = this.userSettingsService.getSettings();
+        let random: number;
+        do {
+            random = Math.floor(Math.random() * this.rooms.length);
+        } while (this.rooms[random].settings.mode !== settings.mode);
+        this.joinRoom(this.rooms[random].id);
     }
     createRoom() {
         const settings = this.userSettingsService.getSettings();
