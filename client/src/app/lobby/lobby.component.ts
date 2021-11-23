@@ -6,7 +6,7 @@ import { QuitMultiplayerDialogComponent } from './../components/quit-multiplayer
 @Component({
     selector: 'app-lobby',
     templateUrl: './lobby.component.html',
-    styleUrls: ['./lobby.component.scss'],
+    styleUrls: ['./lobby.component.scss', './lobby.component-button.scss'],
 })
 export class LobbyComponent {
     constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, public roomService: RoomService) {}
