@@ -1,4 +1,6 @@
+/* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
+import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
 import { BehaviorSubject } from 'rxjs';
 import { GameService } from './game.service';
@@ -8,14 +10,19 @@ import { TimerService } from './timer.service';
 
 describe('GoalsManagerService', () => {
     let service: GoalsManagerService;
-    let goalServiceSpy: GoalService;
-    let gameServiceSpy: GameService;
-    let timerServiceSpy: TimerService;
+    let goalServiceSpy: jasmine.SpyObj<GoalService>;
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
+    let timerServiceSpy: jasmine.SpyObj<TimerService>;
 
     beforeEach(() => {
-        goalServiceSpy = jasmine.createSpyObj('GoalService', ['completeGoalSound']);
+        goalServiceSpy = jasmine.createSpyObj('GoalService', [
+            'getProgress',
+            'completeGoalSound',
+            'incrementPlayerCounters',
+            'processWordsArrayInMap',
+        ]);
         timerServiceSpy = jasmine.createSpyObj('TimerService', ['decrementTime']);
-        timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean>(true);
+        timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean | Player>(true);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
         gameServiceSpy.currentTurn = PLAYER.realPlayer;
         gameServiceSpy.players = [
@@ -32,6 +39,7 @@ describe('GoalsManagerService', () => {
                 points: 0,
                 turnWithoutSkipAndExchangeCounter: 0,
                 placeInTenSecondsGoalCounter: 0,
+                wordsMapping: new Map<string, number>(),
                 words: [],
             },
         ];
@@ -57,15 +65,15 @@ describe('GoalsManagerService', () => {
         goalServiceSpy.goalsFunctions = [];
         const wordsFormed = ['aa'];
 
-        // Car applyPrivateGoalsBonus est privée
+        // applyPrivateGoalsBonus is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const applyPrivateGoalsBonusSpy = spyOn<any>(service, 'applyPrivateGoalsBonus').and.callThrough();
 
-        // Car applyPublicGoalsBonus est privée
+        // applyPublicGoalsBonus is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const applyPublicGoalsBonusSpy = spyOn<any>(service, 'applyPublicGoalsBonus').and.callThrough();
 
-        service.applyAllGoalsBonus(wordsFormed);
+        service.applyAllGoalsBonus(wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
         expect(applyPrivateGoalsBonusSpy).not.toHaveBeenCalled();
         expect(applyPublicGoalsBonusSpy).not.toHaveBeenCalled();
     });
@@ -83,15 +91,15 @@ describe('GoalsManagerService', () => {
         ];
         const wordsFormed = ['aa'];
         service.isEnabled = true;
-        // Car applyPrivateGoalsBonus est privée
+        // applyPrivateGoalsBonus is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const applyPrivateGoalsBonusSpy = spyOn<any>(service, 'applyPrivateGoalsBonus').and.callThrough();
 
-        // Car applyPublicGoalsBonus est privée
+        // applyPublicGoalsBonus is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const applyPublicGoalsBonusSpy = spyOn<any>(service, 'applyPublicGoalsBonus').and.callThrough();
 
-        service.applyAllGoalsBonus(wordsFormed);
+        service.applyAllGoalsBonus(wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(applyPrivateGoalsBonusSpy).toHaveBeenCalled();
         expect(applyPublicGoalsBonusSpy).toHaveBeenCalled();
@@ -110,13 +118,13 @@ describe('GoalsManagerService', () => {
         ];
         const wordsFormed = ['aa'];
 
-        // Car checkFormedWordRespectGoals est privée
+        // checkFormedWordRespectGoals is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const checkFormedWordRespectGoalsSpy = spyOn<any>(service, 'checkFormedWordRespectGoals').and.callThrough();
 
-        // Car applyPrivateGoalsBonus est privée
+        // applyPrivateGoalsBonus is private
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(checkFormedWordRespectGoalsSpy).toHaveBeenCalled();
     });
@@ -137,13 +145,13 @@ describe('GoalsManagerService', () => {
         ];
         const wordsFormed = ['aa'];
 
-        // Car checkFormedWordRespectGoals est privée
+        // checkFormedWordRespectGoals is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const checkFormedWordRespectGoalsSpy = spyOn<any>(service, 'checkFormedWordRespectGoals').and.callThrough();
 
-        // Car applyPublicGoalsBonus est privée
+        // applyPublicGoalsBonus is private
         // eslint-disable-next-line dot-notation
-        service['applyPublicGoalsBonus'](wordsFormed);
+        service['applyPublicGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(checkFormedWordRespectGoalsSpy).toHaveBeenCalledTimes(2);
     });
@@ -171,13 +179,13 @@ describe('GoalsManagerService', () => {
         const expectedPoints = 53;
         gameServiceSpy.players[gameServiceSpy.currentTurn].points = initialPoints;
 
-        // Car checkFormedWordRespectGoals est privée
+        // checkFormedWordRespectGoals is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'checkFormedWordRespectGoals').and.callThrough();
 
-        // Car applyPublicGoalsBonus est privée
+        // applyPublicGoalsBonus is private
         // eslint-disable-next-line dot-notation
-        service['applyPublicGoalsBonus'](wordsFormed);
+        service['applyPublicGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });
@@ -201,13 +209,13 @@ describe('GoalsManagerService', () => {
         const expectedPoints = 13;
         gameServiceSpy.players[gameServiceSpy.currentTurn].points = initialPoints;
 
-        // Car checkFormedWordRespectGoals est privée
+        // checkFormedWordRespectGoals is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'checkFormedWordRespectGoals').and.callThrough();
 
-        // Car applyPrivateGoalsBonus est privée
+        // applyPrivateGoalsBonus is private
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });
@@ -231,13 +239,13 @@ describe('GoalsManagerService', () => {
         const expectedPoints = 3;
         gameServiceSpy.players[gameServiceSpy.currentTurn].points = initialPoints;
 
-        // Car checkFormedWordRespectGoals est privée
+        // checkFormedWordRespectGoals is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'checkFormedWordRespectGoals').and.callThrough();
 
-        // Car applyPrivateGoalsBonus est privée
+        // applyPrivateGoalsBonus is private
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });
@@ -256,13 +264,13 @@ describe('GoalsManagerService', () => {
         gameServiceSpy.players[gameServiceSpy.currentTurn].points = initialPoints;
         gameServiceSpy.players[gameServiceSpy.currentTurn].placeInTenSecondsGoalCounter = 1;
 
-        // Car checkFormedWordRespectGoals est privée
+        // checkFormedWordRespectGoals is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'checkFormedWordRespectGoals').and.callThrough();
 
-        // Car applyPrivateGoalsBonus est privée
+        // applyPrivateGoalsBonus is private
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });
@@ -281,13 +289,13 @@ describe('GoalsManagerService', () => {
         gameServiceSpy.players[gameServiceSpy.currentTurn].points = initialPoints;
         gameServiceSpy.players[gameServiceSpy.currentTurn].placeInTenSecondsGoalCounter = 1;
 
-        // Car checkFormedWordRespectGoals est privée
+        // checkFormedWordRespectGoals is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         spyOn<any>(service, 'checkFormedWordRespectGoals').and.callThrough();
 
-        // Car applyPrivateGoalsBonus est privée
+        // applyPrivateGoalsBonus is private
         // eslint-disable-next-line dot-notation
-        service['applyPrivateGoalsBonus'](wordsFormed);
+        service['applyPrivateGoalsBonus'](wordsFormed, gameServiceSpy.players[gameServiceSpy.currentTurn]);
 
         expect(gameServiceSpy.players[gameServiceSpy.currentTurn].points).toEqual(expectedPoints);
     });
@@ -313,4 +321,109 @@ describe('GoalsManagerService', () => {
             expect(gameServiceSpy.players[gameServiceSpy.currentTurn].placeInTenSecondsGoalCounter).toEqual(1);
         },
     );
+    it("setWordsFormedNumber should add the words if there are not in the player's wordsMapping", () => {
+        gameServiceSpy.players[gameServiceSpy.currentTurn].wordsMapping = new Map<string, number>([
+            ['manger', 1],
+            ['finir', 2],
+        ]);
+        const wordsFormed = ['dame', 'pain'];
+        service.setWordsFormedNumber(gameServiceSpy.players[gameServiceSpy.currentTurn], wordsFormed);
+
+        expect(gameServiceSpy.players[gameServiceSpy.currentTurn].wordsMapping.has('dame')).toEqual(true);
+        expect(gameServiceSpy.players[gameServiceSpy.currentTurn].wordsMapping.has('pain')).toEqual(true);
+    });
+
+    it('setWordsFormedNumber should restore the map and add the wordsMapping if it is not a Map instance', () => {
+        // Necessary to test the case where the wordsMapping is not a Map instance
+        // This case happens sometimes when sending and receiving from the server
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        gameServiceSpy.players[gameServiceSpy.currentTurn].wordsMapping = {} as unknown as any;
+        const wordsFormed = ['dame', 'pain'];
+        goalServiceSpy.processWordsArrayInMap.and.returnValue(new Map<string, number>());
+        service.setWordsFormedNumber(gameServiceSpy.players[gameServiceSpy.currentTurn], wordsFormed);
+
+        expect(goalServiceSpy.processWordsArrayInMap).toHaveBeenCalled();
+    });
+
+    it("setWordsFormedNumber should add increment the words corresponding value if there are already in the player's wordsMapping", () => {
+        gameServiceSpy.players[gameServiceSpy.currentTurn].wordsMapping = new Map<string, number>([
+            ['manger', 1],
+            ['finir', 2],
+        ]);
+        const wordsFormed = ['manger', 'finir'];
+        service.setWordsFormedNumber(gameServiceSpy.players[gameServiceSpy.currentTurn], wordsFormed);
+        const firstExpectedResult = 2;
+        const secondExpectedResult = 3;
+
+        expect(gameServiceSpy.players[gameServiceSpy.currentTurn].wordsMapping.get('manger')).toEqual(firstExpectedResult);
+        expect(gameServiceSpy.players[gameServiceSpy.currentTurn].wordsMapping.get('finir')).toEqual(secondExpectedResult);
+    });
+
+    it('getUpdatedProgress should return the min value if the goal is undefined', () => {
+        const result = service.getUpdatedProgress(undefined as unknown as Goal, gameServiceSpy.players[gameServiceSpy.currentTurn]);
+        const expectedResult = 0;
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getUpdatedProgress should calculate the progression if the goal is not completed', () => {
+        const goal = { description: 'first goal', goalType: 0, bonus: 10, usesWord: false, complete: false };
+        service.getUpdatedProgress(goal, gameServiceSpy.players[gameServiceSpy.currentTurn]);
+        expect(goalServiceSpy.getProgress).toHaveBeenCalledTimes(1);
+    });
+
+    it('getUpdatedProgress should  return the max value if the goal is completed by us', () => {
+        const expectedResult = 100;
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: 0,
+            bonus: 10,
+            usesWord: true,
+            complete: true,
+            completedBy: gameServiceSpy.players[gameServiceSpy.currentTurn],
+        };
+        const result = service.getUpdatedProgress(goal, gameServiceSpy.players[gameServiceSpy.currentTurn]);
+        expect(goalServiceSpy.getProgress).not.toHaveBeenCalled();
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getUpdatedProgress should reinitialize value if the goal is completed by another player', () => {
+        const playerThatCompletedGoal = {
+            id: PLAYER.otherPlayer,
+            name: 'playerThatCompletedGoal name',
+            rack: [],
+            points: 0,
+            turnWithoutSkipAndExchangeCounter: 0,
+            placeInTenSecondsGoalCounter: 3,
+            wordsMapping: new Map<string, number>(),
+            words: [],
+        };
+        const expectedResult = 0;
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: 0,
+            bonus: 10,
+            usesWord: false,
+            complete: true,
+            completedBy: playerThatCompletedGoal,
+        };
+        const result = service.getUpdatedProgress(goal, gameServiceSpy.players[gameServiceSpy.currentTurn]);
+        expect(goalServiceSpy.getProgress).not.toHaveBeenCalled();
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getUpdatedProgress should return 0 if the goal is completed by unknown', () => {
+        const expectedResult = 0;
+        const goal: Goal = {
+            description: 'first goal',
+            goalType: 0,
+            bonus: 10,
+            usesWord: false,
+            complete: true,
+            completedBy: undefined,
+        };
+        const result = service.getUpdatedProgress(goal, gameServiceSpy.players[gameServiceSpy.currentTurn]);
+        expect(goalServiceSpy.getProgress).not.toHaveBeenCalled();
+        expect(result).toEqual(expectedResult);
+    });
 });

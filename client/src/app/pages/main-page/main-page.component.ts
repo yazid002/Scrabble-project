@@ -24,16 +24,16 @@ export class MainPageComponent implements OnInit {
         localStorage.clear();
     }
 
-    playClickSound() {
-        this.soundManagerService.playClickOnButtonAudio();
-    }
+    // playClickSound() {
+    //     this.soundManagerService.playClickOnButtonAudio();
+    // }
 
-    playMainPageSound() {
-        this.soundManagerService.playMainPageAudio();
-    }
+    // playMainPageSound() {
+    //     this.soundManagerService.playMainPageAudio();
+    // }
 
     private openDialog() {
         this.matDialog.open(GameModeDialogComponent);
-        this.playClickSound();
+        //  this.playClickSound();
     }
 }

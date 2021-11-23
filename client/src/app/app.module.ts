@@ -21,6 +21,8 @@ import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.
 import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
+import { GoalProgressBarComponent } from './components/goal-progress-bar/goal-progress-bar.component';
+import { GoalComponent } from './components/goal/goal.component';
 
 /**
  * Main module that is used in main.ts.
@@ -46,6 +48,8 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         QuitMultiplayerDialogComponent,
         WaitingRoomComponent,
         OpponentQuitDialogComponent,
+        GoalProgressBarComponent,
+        GoalComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],

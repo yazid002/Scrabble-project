@@ -12,6 +12,6 @@ export class QuitConfirmationDialogComponent {
 
     quitGame() {
         this.gameService.quitGame();
-        this.soundManagerService.playQuitGameAudio();
+        //  this.soundManagerService.playQuitGameAudio();
     }
 }

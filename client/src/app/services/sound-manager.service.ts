@@ -4,60 +4,68 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class SoundManagerService {
-    mainPageAudio = new Audio('assets/sounds/mainpage.mp3');
-    validPlacementAudio = new Audio('assets/sounds/place.wav');
-    clickOnButtonAudio = new Audio('assets/sounds/click.wav');
-    goalAchievementAudio = new Audio('assets/sounds/bonus.wav');
-    quitGameAudio = new Audio('assets/sounds/quit.wav');
-    nonValidPlacementAudio = new Audio('assets/sounds/warning.wav');
+    // mainPageAudio = new Audio('assets/sounds/mainpage.mp3');
 
-    playMainPageAudio(): void {
-        if (this.mainPageAudio.paused) {
-            this.mainPageAudio.load();
+    // playMainPageAudio(): void {
+    //     if (this.mainPageAudio.paused) {
+    //         this.mainPageAudio.load();
+    //         this.mainPageAudio.autoplay = true;
+    //         this.mainPageAudio.play();
+    //     } else {
+    //         this.mainPageAudio.pause();
+    //     }
+    // }
 
-            this.mainPageAudio.play();
-        } else {
-            this.mainPageAudio.pause();
-        }
-    }
-
-    stopMainPageAudio(): void {
-        this.mainPageAudio.pause();
-    }
+    // stopMainPageAudio(): void {
+    //     this.mainPageAudio.pause();
+    // }
 
     playPlacementAudio(): void {
-        this.validPlacementAudio.load();
-        this.validPlacementAudio.play();
+        const validPlacementAudio = new Audio();
+        validPlacementAudio.src = 'assets/sounds/place.wav';
+        validPlacementAudio.load();
+        validPlacementAudio.autoplay = true;
+        validPlacementAudio.play();
     }
 
     playClickOnButtonAudio(): void {
-        this.clickOnButtonAudio.load();
-        this.clickOnButtonAudio.autoplay = true;
-        this.clickOnButtonAudio.play();
+        const clickOnButtonAudio = new Audio();
+        clickOnButtonAudio.src = 'assets/sounds/click.wav';
+        clickOnButtonAudio.load();
+        clickOnButtonAudio.autoplay = true;
+        clickOnButtonAudio.play();
     }
 
     playGoalAchievementAudio(): void {
-        this.goalAchievementAudio.load();
-        this.goalAchievementAudio.play();
+        const goalAchievementAudio = new Audio();
+        goalAchievementAudio.src = 'assets/sounds/bonus.wav';
+        goalAchievementAudio.load();
+        goalAchievementAudio.autoplay = true;
+        goalAchievementAudio.play();
     }
 
-    playQuitGameAudio(): void {
-        this.quitGameAudio.load();
-        this.quitGameAudio.play();
-    }
+    // playQuitGameAudio(): void {
+    //     const quitGameAudio = new Audio();
+    //     quitGameAudio.src = 'assets/sounds/quit.wav';
+    //     quitGameAudio.load();
+    //     quitGameAudio.autoplay = true;
+    //     quitGameAudio.play();
+    // }
 
     playNonValidPlacementAudio(): void {
-        this.nonValidPlacementAudio.load();
-        this.nonValidPlacementAudio.play();
+        const nonValidPlacementAudio = new Audio();
+        nonValidPlacementAudio.src = 'assets/sounds/warning.wav';
+        nonValidPlacementAudio.load();
+        nonValidPlacementAudio.autoplay = true;
+        nonValidPlacementAudio.play();
     }
-
-    muteAllSound(isMuted: boolean): void {
-        this.mainPageAudio.muted = isMuted;
-        this.quitGameAudio.muted = isMuted;
-        this.nonValidPlacementAudio.muted = isMuted;
-        this.goalAchievementAudio.muted = isMuted;
-        this.clickOnButtonAudio.muted = isMuted;
-        this.validPlacementAudio.muted = isMuted;
-        this.mainPageAudio.muted = isMuted;
-    }
+    // muteAllSound(isMuted: boolean): void {
+    //     // this.mainPageAudio.muted = isMuted;
+    //     this.quitGameAudio.muted = isMuted;
+    //     this.nonValidPlacementAudio.muted = isMuted;
+    //     this.goalAchievementAudio.muted = isMuted;
+    //     this.clickOnButtonAudio.muted = isMuted;
+    //     this.validPlacementAudio.muted = isMuted;
+    //     // this.mainPageAudio.muted = isMuted;
+    // }
 }

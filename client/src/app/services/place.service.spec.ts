@@ -5,11 +5,12 @@ import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { IChat, SENDER } from '@app/classes/chat';
 import { Dictionary } from '@app/classes/dictionary';
-import { PLAYER } from '@app/classes/player';
+import { Player, PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { SelectionType } from '@app/enums/selection-enum';
 import { GridService } from '@app/services/grid.service';
 import { VerifyService } from '@app/services/verify.service';
+import { BehaviorSubject } from 'rxjs';
 import { GameService } from './game.service';
 import { GoalsManagerService } from './goals-manager.service';
 import { PlaceSelectionService } from './place-selection.service';
@@ -17,6 +18,8 @@ import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { RackService } from './rack.service';
 import { SelectionManagerService } from './selection-manager.service';
+import { SoundManagerService } from './sound-manager.service';
+import { TimerService } from './timer.service';
 
 const CANVAS_WIDTH = 500;
 const CANVAS_HEIGHT = 500;
@@ -35,8 +38,11 @@ describe('PlaceService', () => {
     let goalsManagerServiceSpy: jasmine.SpyObj<GoalsManagerService>;
     let placeSelectionServiceSpy: jasmine.SpyObj<PlaceSelectionService>;
     let selectionManagerServiceSpy: jasmine.SpyObj<SelectionManagerService>;
+    let timerServiceSpy: jasmine.SpyObj<TimerService>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(() => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playNonValidPlacementAudio', 'playPlacementAudio']);
         verifyServiceSpy = jasmine.createSpyObj('VerifyService', [
             'computeCoordByDirection',
             'checkAllWordsExist',
@@ -50,6 +56,9 @@ describe('PlaceService', () => {
         } as Dictionary;
         verifyServiceSpy.dictionary = dictionary;
         verifyServiceSpy.formedWords = [];
+
+        timerServiceSpy = jasmine.createSpyObj('TimerService', ['decrementTime']);
+        timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean | Player>(true);
 
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
         gameServiceSpy.currentTurn = PLAYER.realPlayer;
@@ -67,6 +76,7 @@ describe('PlaceService', () => {
                 points: 0,
                 turnWithoutSkipAndExchangeCounter: 0,
                 placeInTenSecondsGoalCounter: 0,
+                wordsMapping: new Map<string, number>(),
                 words: [],
             },
         ];
@@ -89,7 +99,7 @@ describe('PlaceService', () => {
         gridServiceSpy.pointStyle = { color: 'NavajoWhite', font: '10px serif' };
         gridServiceSpy.border = { squareBorderColor: 'black' };
         pointsCountingServiceSpy = jasmine.createSpyObj('PointsCountingService', ['processWordPoints']);
-        goalsManagerServiceSpy = jasmine.createSpyObj('GoalsManagerService', ['applyAllGoalsBonus']);
+        goalsManagerServiceSpy = jasmine.createSpyObj('GoalsManagerService', ['applyAllGoalsBonus', 'setWordsFormedNumber']);
         placeSelectionServiceSpy = jasmine.createSpyObj('PlaceSelectionService', ['cancelUniqueSelectionFromRack', 'cancelPlacement']);
         selectionManagerServiceSpy = jasmine.createSpyObj('SelectionManagerService', ['updateSelectionType']);
         TestBed.configureTestingModule({
@@ -102,6 +112,7 @@ describe('PlaceService', () => {
                 { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
                 { provide: PlaceSelectionService, useValue: placeSelectionServiceSpy },
                 { provide: SelectionManagerService, useValue: selectionManagerServiceSpy },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
             imports: [HttpClientModule],
         });
@@ -141,7 +152,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
 
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
@@ -195,7 +206,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
@@ -212,7 +223,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
@@ -229,18 +240,28 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
-            gameServiceSpy.players[PLAYER.realPlayer].turnWithoutSkipAndExchangeCounter = 1;
+            timerServiceSpy.resetTurnCounter.next(false);
 
-            const placeResponse = await service.placeWord(wordToCheck, coord, direction, true).catch((error: { error: boolean; message: IChat }) => {
-                return error;
+            timerServiceSpy.resetTurnCounter.subscribe((value) => {
+                expect(value).toEqual(false);
             });
+            const placeResponse = await service
+                .placeWord(wordToCheck, coord, direction, true)
+                .then((message: { error: boolean; message: IChat }) => {
+                    timerServiceSpy.resetTurnCounter.subscribe((value) => {
+                        expect(value).toEqual(true);
+                    });
+                    return message;
+                })
+                .catch((error: { error: boolean; message: IChat }) => {
+                    return error;
+                });
 
             expect(placeResponse.message.body).toEqual("Commande impossible à réaliser : Le mot n'est pas valide.");
-            expect(gameServiceSpy.players[PLAYER.realPlayer].turnWithoutSkipAndExchangeCounter).toEqual(0);
         });
 
         it(' should return ImpossibleCommand', async () => {
@@ -267,7 +288,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const restoreAfterPlacementSpy = spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
@@ -283,11 +304,11 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
-            // Car writeWord est privée
+            // writeWord is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const writeWordSpy = spyOn<any>(service, 'writeWord').and.returnValue(void '');
 
@@ -304,11 +325,11 @@ describe('PlaceService', () => {
             verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
-            // Car writeWord est privée
+            // writeWord is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const writeWordSpy = spyOn<any>(service, 'writeWord').and.returnValue(void '');
 
@@ -353,11 +374,11 @@ describe('PlaceService', () => {
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
 
-            // Car restoreGrid est privée
+            // restoreGrid is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const restoreGridSpy = spyOn<any>(service, 'restoreGrid').and.returnValue(void '');
 
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const restoreAfterPlacementSpy = spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
@@ -376,11 +397,11 @@ describe('PlaceService', () => {
             verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
             verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
 
-            // Car restoreGrid est privée
+            // restoreGrid is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const restoreGridSpy = spyOn<any>(service, 'restoreGrid').and.returnValue(void '');
 
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const restoreAfterPlacementSpy = spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
@@ -392,15 +413,15 @@ describe('PlaceService', () => {
     });
 
     describe('restoreAfterPlacement', () => {
-        it('should call updateTilesLetters, applyAllGoalsBonus, replaceWord if it is instant placement ', () => {
+        it('should call updateTilesLetters, replaceWord if it is instant placement ', () => {
             goalsManagerServiceSpy.applyAllGoalsBonus.and.returnValue(void '');
             const updateTilesLettersSpy = spyOn(service, 'updateTilesLetters').and.returnValue(void '');
 
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line dot-notation
             service['restoreAfterPlacement'](wordToCheck, direction, coord, true);
 
-            expect(goalsManagerServiceSpy.applyAllGoalsBonus).toHaveBeenCalled();
+            expect(goalsManagerServiceSpy.applyAllGoalsBonus).not.toHaveBeenCalled();
             expect(updateTilesLettersSpy).toHaveBeenCalled();
             expect(rackServiceSpy.replaceWord).toHaveBeenCalled();
         });
@@ -409,7 +430,7 @@ describe('PlaceService', () => {
             goalsManagerServiceSpy.applyAllGoalsBonus.and.returnValue(void '');
             spyOn(service, 'updateTilesLetters').and.returnValue(void '');
 
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line dot-notation
             service['restoreAfterPlacement'](wordToCheck, direction, coord, true);
 
@@ -426,7 +447,7 @@ describe('PlaceService', () => {
             });
             placeSelectionServiceSpy.selectedRackIndexesForPlacement = [1];
 
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line dot-notation
             service['restoreAfterPlacement'](wordToCheck, direction, coord, false);
 
@@ -447,14 +468,14 @@ describe('PlaceService', () => {
 
             gameServiceSpy.players[PLAYER.realPlayer].points = 0;
 
-            // Car restoreAfterPlacement est privée
+            // restoreAfterPlacement is private
             // eslint-disable-next-line dot-notation
             service['restoreAfterPlacement'](wordToCheck, direction, coord, false);
 
             expect(gameServiceSpy.players[PLAYER.realPlayer].points).toEqual(expectedResult);
         });
 
-        it('should update the player words and turnWithoutSkipAndExchangeCounter ', () => {
+        it('should update the player words', () => {
             const expectedResult = 1;
             goalsManagerServiceSpy.applyAllGoalsBonus.and.returnValue(void '');
             spyOn(service, 'updateTilesLetters').and.returnValue(void '');
@@ -465,14 +486,14 @@ describe('PlaceService', () => {
             });
             placeSelectionServiceSpy.selectedRackIndexesForPlacement = [];
 
-            gameServiceSpy.players[PLAYER.realPlayer].words = [];
-            gameServiceSpy.players[PLAYER.realPlayer].turnWithoutSkipAndExchangeCounter = 0;
-            // Car restoreAfterPlacement est privée
+            gameServiceSpy.players[PLAYER.realPlayer].wordsMapping = new Map<string, number>();
+            // restoreAfterPlacement is private
             // eslint-disable-next-line dot-notation
             service['restoreAfterPlacement'](wordToCheck, direction, coord, false);
-
-            expect(gameServiceSpy.players[PLAYER.realPlayer].turnWithoutSkipAndExchangeCounter).toEqual(expectedResult);
-            expect(gameServiceSpy.players[PLAYER.realPlayer].words).toEqual([wordToCheck]);
+            expect(goalsManagerServiceSpy.setWordsFormedNumber).toHaveBeenCalledWith(
+                gameServiceSpy.players[PLAYER.realPlayer],
+                verifyServiceSpy.formedWords,
+            );
         });
     });
 
@@ -484,7 +505,7 @@ describe('PlaceService', () => {
 
             const word = 'maman';
 
-            // Car restoreGrid est privée
+            // restoreGrid is private
             // eslint-disable-next-line dot-notation
             service['restoreGrid'](wordToCheck, direction, coord, true, true);
 
@@ -497,7 +518,7 @@ describe('PlaceService', () => {
 
             const word = 'maman';
 
-            // Car restoreGrid est privée
+            // restoreGrid is private
             // eslint-disable-next-line dot-notation
             service['restoreGrid'](wordToCheck, direction, coord, true, true);
 
@@ -511,7 +532,7 @@ describe('PlaceService', () => {
 
             const word = 'maman';
 
-            // Car restoreGrid est privée
+            // restoreGrid is private
             // eslint-disable-next-line dot-notation
             service['restoreGrid'](wordToCheck, direction, coord, true, true);
 
@@ -524,7 +545,7 @@ describe('PlaceService', () => {
 
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             gridServiceSpy.fillGridPortion.and.returnValue(void '');
-            // Car restoreGrid est privée
+            // restoreGrid is private
             // eslint-disable-next-line dot-notation
             service['restoreGrid'](wordToCheck, direction, coord, false, true);
             tick(placementDuration);
@@ -539,7 +560,7 @@ describe('PlaceService', () => {
             verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
             gridServiceSpy.fillGridPortion.and.returnValue(void '');
             placeSelectionServiceSpy.cancelPlacement.and.returnValue(void '');
-            // Car restoreGrid est privée
+            // restoreGrid is private
             // eslint-disable-next-line dot-notation
             service['restoreGrid'](wordToCheck, direction, coord, false, false);
             tick(placementDuration);
