@@ -8,10 +8,10 @@ import { SoundManagerService } from '@app/services/sound-manager.service';
     styleUrls: ['./quit-confirmation-dialog.component.scss'],
 })
 export class QuitConfirmationDialogComponent {
-    constructor(private gameService: GameService, public soundManagerService: SoundManagerService) {}
+    constructor(private gameService: GameService, private soundManagerService: SoundManagerService) {}
 
     quitGame() {
         this.gameService.quitGame();
-        //  this.soundManagerService.playQuitGameAudio();
+        this.soundManagerService.playQuitGameAudio();
     }
 }

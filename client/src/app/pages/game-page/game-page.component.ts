@@ -70,8 +70,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     }
 
     ngOnInit(): void {
-        //  this.soundManagerService.stopMainPageAudio();
-        console.log();
+        this.soundManagerService.stopMainPageAudio();
     }
 
     ngAfterViewInit(): void {
@@ -86,14 +85,14 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         const step = 1;
         const maxValue = 22;
         this.gridService.increaseTileSize(step, step, maxValue);
-        // this.soundManagerService.playClickOnButtonAudio();
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     decreaseSize() {
         const step = -1;
         const maxValue = 13;
         this.gridService.decreaseTileSize(step, step, maxValue);
-        // this.soundManagerService.playClickOnButtonAudio();
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     onSubmitPlacement(selectionType: SelectionType) {
@@ -106,17 +105,17 @@ export class GamePageComponent implements AfterViewInit, OnInit {
 
     onCancelPlacement(selectionType: SelectionType) {
         this.selectionManager.onCancelPlacement(selectionType);
-        // this.soundManagerService.playClickOnButtonAudio();
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     onSubmitExchange(selectionType: SelectionType) {
         this.selectionManager.onSubmitExchange(selectionType);
-        // this.soundManagerService.playClickOnButtonAudio();
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     onCancelManipulation(selectionType: SelectionType) {
         this.selectionManager.onCancelManipulation(selectionType);
-        // // this.soundManagerService.playClickOnButtonAudio();
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     disableManipulation() {
@@ -131,7 +130,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
 
     onCancelExchange(selectionType: SelectionType) {
         this.selectionManager.onCancelExchange(selectionType);
-        //  // this.soundManagerService.playClickOnButtonAudio();
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     get selectionType(): typeof SelectionType {

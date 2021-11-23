@@ -334,23 +334,9 @@ describe('GoalService', () => {
         expect(result).toEqual(expectedResult);
     });
     it('completeGoalSound should play an audio', () => {
-        const anAudio: HTMLAudioElement = {
-            src: 'une source',
-            load: () => void '',
-            play: async () => Promise.resolve(void ''),
-            addEventListener: () => void '',
-        } as unknown as HTMLAudioElement;
-
-        const audioSpy = spyOn(global, 'Audio').and.returnValue(anAudio);
-
-        const loadSpy = spyOn(anAudio, 'load').and.returnValue(void '');
-
-        const playSpy = spyOn(anAudio, 'play').and.returnValue(Promise.resolve(void ''));
-
+        soundManagerServiceSpy.playGoalAchievementAudio.and.returnValue(void '');
         service.completeGoalSound();
-        expect(audioSpy).toHaveBeenCalled();
-        expect(loadSpy).toHaveBeenCalled();
-        expect(playSpy).toHaveBeenCalled();
+        expect(soundManagerServiceSpy.playGoalAchievementAudio).toHaveBeenCalled();
     });
 
     describe('getProgress', () => {

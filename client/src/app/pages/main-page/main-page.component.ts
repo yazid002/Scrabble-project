@@ -14,7 +14,7 @@ export class MainPageComponent implements OnInit {
     readonly title: string = 'LOG2990';
 
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
-    constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, public soundManagerService: SoundManagerService) {}
+    constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, private soundManagerService: SoundManagerService) {}
     chooseMode(modeKey: string) {
         this.userSettingsService.settings.mode.currentChoiceKey = modeKey;
         this.openDialog();
@@ -24,9 +24,9 @@ export class MainPageComponent implements OnInit {
         localStorage.clear();
     }
 
-    // playClickSound() {
-    //     this.soundManagerService.playClickOnButtonAudio();
-    // }
+    playClickSound() {
+        this.soundManagerService.playClickOnButtonAudio();
+    }
 
     // playMainPageSound() {
     //     this.soundManagerService.playMainPageAudio();
@@ -34,6 +34,6 @@ export class MainPageComponent implements OnInit {
 
     private openDialog() {
         this.matDialog.open(GameModeDialogComponent);
-        //  this.playClickSound();
+        this.playClickSound();
     }
 }

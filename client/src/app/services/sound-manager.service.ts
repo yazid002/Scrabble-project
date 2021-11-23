@@ -4,21 +4,21 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class SoundManagerService {
-    // mainPageAudio = new Audio('assets/sounds/mainpage.mp3');
+    mainPageAudio = new Audio('assets/sounds/mainpage.mp3');
 
-    // playMainPageAudio(): void {
-    //     if (this.mainPageAudio.paused) {
-    //         this.mainPageAudio.load();
-    //         this.mainPageAudio.autoplay = true;
-    //         this.mainPageAudio.play();
-    //     } else {
-    //         this.mainPageAudio.pause();
-    //     }
-    // }
+    playMainPageAudio(): void {
+        if (this.mainPageAudio.paused) {
+            this.mainPageAudio.load();
+            this.mainPageAudio.autoplay = true;
+            this.mainPageAudio.play();
+        } else {
+            this.mainPageAudio.pause();
+        }
+    }
 
-    // stopMainPageAudio(): void {
-    //     this.mainPageAudio.pause();
-    // }
+    stopMainPageAudio(): void {
+        this.mainPageAudio.pause();
+    }
 
     playPlacementAudio(): void {
         const validPlacementAudio = new Audio();
@@ -44,13 +44,13 @@ export class SoundManagerService {
         goalAchievementAudio.play();
     }
 
-    // playQuitGameAudio(): void {
-    //     const quitGameAudio = new Audio();
-    //     quitGameAudio.src = 'assets/sounds/quit.wav';
-    //     quitGameAudio.load();
-    //     quitGameAudio.autoplay = true;
-    //     quitGameAudio.play();
-    // }
+    playQuitGameAudio(): void {
+        const quitGameAudio = new Audio();
+        quitGameAudio.src = 'assets/sounds/quit.wav';
+        quitGameAudio.load();
+        quitGameAudio.autoplay = true;
+        quitGameAudio.play();
+    }
 
     playNonValidPlacementAudio(): void {
         const nonValidPlacementAudio = new Audio();

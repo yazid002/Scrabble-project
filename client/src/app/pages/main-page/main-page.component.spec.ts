@@ -4,6 +4,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { of } from 'rxjs';
 
 class MatDialogMock {
@@ -16,8 +17,10 @@ class MatDialogMock {
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(async () => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
         await TestBed.configureTestingModule({
             imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule],
             declarations: [MainPageComponent],
@@ -26,6 +29,7 @@ describe('MainPageComponent', () => {
                     provide: MatDialog,
                     useClass: MatDialogMock,
                 },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
         }).compileComponents();
     });
