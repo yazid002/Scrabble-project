@@ -118,6 +118,7 @@ export class GameService {
             words: [],
         };
         this.players.push(computer);
+        this.randomTurn();
     }
     private subtractPoint(player: Player): number {
         let pointToSub = 0;
