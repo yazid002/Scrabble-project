@@ -23,6 +23,8 @@ import { WaitingRoomComponent } from './components/waiting-room/waiting-room.com
 import { LobbyComponent } from './lobby/lobby.component';
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
+import { GoalProgressBarComponent } from './components/goal-progress-bar/goal-progress-bar.component';
+import { GoalComponent } from './components/goal/goal.component';
 
 /**
  * Main module that is used in main.ts.
@@ -50,6 +52,8 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         AdminPageComponent,
         DictionaryOptionsComponent,
         PlayerNamesOptionsComponent,
+        GoalProgressBarComponent,
+        GoalComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],

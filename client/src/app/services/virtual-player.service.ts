@@ -3,32 +3,21 @@ import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
 import { generateAnagrams } from '@app/classes/chunk-node';
 import { PLAYER } from '@app/classes/player';
-import { Vec2 } from '@app/classes/vec2';
+import { MAX_RACK_SIZE, NumberFct, SortFct, VoidFct, WordNCoord } from '@app/classes/virtual-player';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
 import { DebugExecutionService } from './command-execution/debug-execution.service';
 import { ExchangeService } from './exchange.service';
 import { GameService } from './game.service';
+import { GoalsManagerService } from './goals-manager.service';
 import { PlaceService } from './place.service';
 import { PointsCountingService } from './points-counting.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
 import { VerifyService } from './verify.service';
 
-type Direction = 'h' | 'v';
-interface WordNCoord {
-    word: string;
-    coord: Vec2;
-    direction: Direction;
-    points: number;
-}
-type SortFct = (possibilities: WordNCoord[]) => WordNCoord[];
-type VoidFct = (service: VirtualPlayerService) => void;
-type NumberFct = () => number;
-const MAX_RACK_SIZE = 7;
 const DELAY_TO_START = 1000;
-
 @Injectable({
     providedIn: 'root',
 })
@@ -46,6 +35,7 @@ export class VirtualPlayerService {
         private debugExecutionService: DebugExecutionService,
         private chatService: ChatService,
         private userSettingsService: UserSettingsService,
+        private goalManagerService: GoalsManagerService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();
@@ -103,12 +93,10 @@ export class VirtualPlayerService {
         const numbersPicked: number[] = [];
         const numbs: number[] = [];
         let numb = 0;
-
         numberOfLetters = Math.min(this.gameService.players[PLAYER.otherPlayer].rack.length, MAX_RACK_SIZE);
         for (let i = 0; i < this.gameService.players[PLAYER.otherPlayer].rack.length; i++) {
             numbs.push(i);
         }
-
         for (let i = 0; i < numberOfLetters; i++) {
             numb = Math.floor(Math.random() * numbs.length);
             numbersPicked.push(numbs[numb]);
@@ -117,7 +105,6 @@ export class VirtualPlayerService {
         for (let i = 0; i < numberOfLetters; i++) {
             lettersToChange.push(this.gameService.players[PLAYER.otherPlayer].rack[numbersPicked[i]].name);
         }
-
         return lettersToChange;
     }
     private exchange(): IChat {
@@ -125,7 +112,6 @@ export class VirtualPlayerService {
             (accumulator, currentValue) => (accumulator += currentValue.display),
             '',
         );
-
         const amoutOfLettersFcts: Map<string, NumberFct> = new Map([
             ['beginner', () => Math.floor(Math.random() * RACK_SIZE + 1)],
             ['advanced', () => MAX_RACK_SIZE],
@@ -139,7 +125,6 @@ export class VirtualPlayerService {
             (accumulator, currentValue) => (accumulator += currentValue.display),
             '',
         );
-
         const message: IChat = {
             from: SENDER.computer,
             body: "L'ordi échange. Son rack était de " + rackInit + ' et est maintenant de ' + rackEnd + 'Il a changé ' + amountToChange + 'Lettres',
@@ -147,6 +132,7 @@ export class VirtualPlayerService {
         return message;
     }
     private displayExchangeMessage(letters: string[]) {
+        this.timerService.resetTurnCounter.next(this.gameService.players[PLAYER.otherPlayer]);
         const message: IChat = {
             from: SENDER.otherPlayer,
             body: '!echanger ' + letters.join(''),
@@ -169,16 +155,26 @@ export class VirtualPlayerService {
                     this.sendPlacementMessage(possibility);
                     rightPoints.push(possibility);
                 }
-            } else if (rightPoints.length >= 3) break;
-            else rightPoints.push(possibility);
+            } else if (rightPoints.length >= 3) {
+                break;
+            } else {
+                rightPoints.push(possibility);
+            }
+        }
+        if (rightPoints.length === 0) {
+            this.timerService.resetTurnCounter.next(this.gameService.players[PLAYER.otherPlayer]);
+            this.goalManagerService.updateGoalProgress.next(true);
         }
         return this.placeDebugOutput(rightPoints);
     }
     private sendSkipMessage() {
+        this.timerService.resetTurnCounter.next(this.gameService.players[PLAYER.otherPlayer]);
         const message: IChat = { from: SENDER.otherPlayer, body: '!passer' };
         this.displayMessage(message);
     }
     private sendPlacementMessage(combination: WordNCoord) {
+        this.goalManagerService.applyAllGoalsBonus(this.verifyService.formedWords, this.gameService.players[PLAYER.otherPlayer]);
+        this.goalManagerService.updateGoalProgress.next(true);
         const message: IChat = { from: SENDER.otherPlayer, body: '!placer ' };
         const ASCII_A = 96;
         const line = String.fromCharCode(combination.coord.x + ASCII_A + 1);
