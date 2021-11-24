@@ -27,6 +27,7 @@ type SortFct = (possibilities: WordNCoord[]) => WordNCoord[];
 type VoidFct = (service: VirtualPlayerService) => void;
 type NumberFct = () => number;
 const MAX_RACK_SIZE = 7;
+const DELAY_TO_START = 1000;
 
 @Injectable({
     providedIn: 'root',
@@ -54,6 +55,11 @@ export class VirtualPlayerService {
         this.alreadyInitialized = true;
         this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => this.reactToSignal(numPlayers));
         this.computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
+        if (this.gameService.currentTurn === PLAYER.otherPlayer) {
+            setTimeout(() => {
+                this.play();
+            }, DELAY_TO_START);
+        }
     }
     private reactToSignal(numPlayers: string) {
         if (numPlayers !== 'solo') return;
