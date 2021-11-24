@@ -1,20 +1,18 @@
-import { Component } from '@angular/core';
-import { Leaderboard, LeaderboardService } from '@app/services/leaderboard.service';
+import { Component, OnInit } from '@angular/core';
+import { LeaderboardService } from '@app/services/leaderboard.service';
 
 @Component({
     selector: 'app-leaderboard-page',
     templateUrl: './leaderboard-page.component.html',
     styleUrls: ['./leaderboard-page.component.scss'],
 })
-export class LeaderboardPageComponent {
-    leaderboardClassic: Leaderboard[];
-    leaderboardMode2990: Leaderboard[];
+export class LeaderboardPageComponent implements OnInit {
 
-    constructor(public leaderboardService: LeaderboardService) {
-        this.leaderboardClassic = this.leaderboardService.leaderboardClassic;
+    constructor(public leaderboardService: LeaderboardService) {}
+
+    async ngOnInit() {
+        this.leaderboardService.sort();
+        await this.leaderboardService.getAllPlayer();
+        await this.leaderboardService.getAllClassicPlayer();
     }
-
-    // getAllPlayers(): void {
-    //     this.leaderboardClassic = this.leaderboardService.leaderboardClassic;
-    // }
 }

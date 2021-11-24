@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
+import { SERVER_URL } from '@app/constants/url';
 export interface Leaderboard {
     id: string;
     name: string;
@@ -18,10 +18,7 @@ export class LeaderboardService {
     // leaderboardClassic: any[] = [{}];
 
     constructor(private http: HttpClient) {
-        this.urlString = 'http://localhost:3000/leaderboard';
-        this.sort();
-        this.getAllPlayer();
-        this.getAllClassicPlayer();
+        this.urlString = SERVER_URL + '/leaderboard';
     }
 
     // fillLeaderboardClassic(): void {
@@ -53,7 +50,7 @@ export class LeaderboardService {
         this.leaderboardMode2990.sort();
     }
 
-    getAllClassicPlayer(): void {
+    async getAllClassicPlayer() {
         const url = this.urlString + '/ClassicLeaderboard';
         this.http.get<Leaderboard[]>(url).subscribe({
             next: (data) => {
@@ -64,11 +61,11 @@ export class LeaderboardService {
         });
     }
 
-    addPlayer(player: Leaderboard) {
+    async addPlayer(player: Leaderboard) {
         return this.http.post(this.urlString, player);
     }
 
-    deletePlayer(name: string) {
+    async deletePlayer(name: string) {
         const url = `${this.urlString}/${name}`;
         return this.http.delete(url);
     }
