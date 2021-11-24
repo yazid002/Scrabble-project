@@ -11,7 +11,6 @@ export class LeaderboardPageComponent implements OnInit {
     constructor(public leaderboardService: LeaderboardService) {}
 
     async ngOnInit() {
-        this.leaderboardService.sort();
         await this.leaderboardService.getAllPlayer();
         await this.leaderboardService.getAllClassicPlayer();
     }

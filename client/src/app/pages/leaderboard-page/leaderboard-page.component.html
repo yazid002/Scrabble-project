@@ -1,18 +1,15 @@
-<p>leaderboard-page works!</p>
-<p>Hello {{ leaderboardService.leaderboardClassic[0].name }}</p>
-
 <div class="title">Meilleurs Scores</div>
 
 <div class="split Classic">
-    <div *ngIf="leaderboardService.leaderboardClassic.length>0" class="subtitle">Mode Classic</div>
+    <div *ngIf="leaderboardService.leaderboardClassic" class="subtitle">Mode Classic</div>
     <table style="width: 50%">
         <tr>
             <th>Position</th>
             <th>Nom</th>
             <th>Score</th>
         </tr>
-        <tr *ngFor="let player of leaderboardService.leaderboardClassic">
-            <td>1</td>
+        <tr *ngFor="let player of leaderboardService.leaderboardClassic; let i = index">
+            <td>{{i+1}}</td>
             <td>{{ player.name }}</td>
             <td>{{ player.score }}</td>
         </tr>
@@ -20,15 +17,15 @@
 </div>
 
 <div class="split LOG2990">
-    <div *ngIf="leaderboardService.leaderboardMode2990.length>0" class="subtitle">Mode LOG2990</div>
+    <div *ngIf="leaderboardService.leaderboardMode2990" class="subtitle">Mode LOG2990</div>
     <table style="width: 50%">
         <tr>
             <th>Position</th>
             <th>Name</th>
             <th>Score</th>
         </tr>
-        <tr *ngFor="let player of leaderboardService.leaderboardMode2990">
-            <td>1</td>
+        <tr *ngFor="let player of leaderboardService.leaderboardMode2990; let i = index">
+            <td>{{i+1}}</td>
             <td>{{ player.name }}</td>
             <td>{{ player.score }}</td>
         </tr>

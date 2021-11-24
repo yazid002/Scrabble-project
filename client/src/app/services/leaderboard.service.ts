@@ -12,8 +12,8 @@ export interface Leaderboard {
 })
 export class LeaderboardService {
     urlString: string;
-    leaderboardClassic: Leaderboard[] = [];
-    leaderboardMode2990: Leaderboard[] = [];
+    leaderboardClassic: Leaderboard[];
+    leaderboardMode2990: Leaderboard[];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     // leaderboardClassic: any[] = [{}];
 
@@ -29,35 +29,20 @@ export class LeaderboardService {
     getAllPlayer(): void {
         // Observable<any> {
         // const subject = new Subject<Leaderboard[]>();
-        this.http.get<Leaderboard[]>(this.urlString).subscribe({
-            next: (data) => {
-                for (let i = 0; i < data.length; i++) {
-                    // this.leaderboardClassic[i].id = data[i].id;
-                    // this.leaderboardClassic[i].name = data[i].name;
-                    // this.leaderboardClassic[i].score = data[i].score;
-                    this.leaderboardClassic[i] = data[i];
-                    // subject.next(data);
-                }
-            },
+        this.http.get<Leaderboard[]>(this.urlString).subscribe((data) => {
+            this.leaderboardClassic = data.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
         });
         console.log('leaderboardClassic', this.leaderboardClassic);
         // return this.http.get(this.urlString);
         // return subject.asObservable();
     }
 
-    sort(): void {
-        this.leaderboardClassic.sort();
-        this.leaderboardMode2990.sort();
-    }
+
 
     async getAllClassicPlayer() {
         const url = this.urlString + '/ClassicLeaderboard';
-        this.http.get<Leaderboard[]>(url).subscribe({
-            next: (data) => {
-                for (let i = 0; i < data.length; i++) {
-                    this.leaderboardMode2990[i] = data[i];
-                }
-            },
+        this.http.get<Leaderboard[]>(url).subscribe((data) => {
+            this.leaderboardMode2990 = data.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
         });
     }
 
