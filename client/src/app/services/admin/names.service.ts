@@ -10,8 +10,8 @@ interface NameProperties {
     providedIn: 'root',
 })
 export class NamesService {
-    beginnerNames: NameProperties[] = [];
-    advancedNames: NameProperties[] = [];
+    beginnerNames: NameProperties[] = [{ name: 'patate', isAdvanced: false, default: true }];
+    advancedNames: NameProperties[] = [{ name: 'tomate', isAdvanced: true, default: true }];
     urlString: string;
 
     constructor(private http: HttpClient) {
@@ -39,5 +39,13 @@ export class NamesService {
         const response = this.http.post<NameProperties>(this.urlString + 'delete', name);
         response.subscribe(async () => this.fetchNames());
     }
-
+    getRandomName(mode: string): string {
+        const arrayMap: Map<string, NameProperties[]> = new Map([
+            ['beginner', this.beginnerNames],
+            ['advanced', this.advancedNames],
+        ]);
+        const rightArray = arrayMap.get(mode) as NameProperties[];
+        console.log('mode', mode, 'rightArray', rightArray);
+        return rightArray[Math.floor(rightArray.length * Math.random())].name;
+    }
 }

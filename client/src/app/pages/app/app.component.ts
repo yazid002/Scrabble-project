@@ -1,23 +1,16 @@
-import { Component } from '@angular/core';
-import { GameSyncService } from '@app/services/game-sync.service';
+import { Component, OnInit } from '@angular/core';
+import { NamesService } from '@app/services/admin/names.service';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-    constructor(public gameSyncService: GameSyncService) {}
-    // TODO: NE PAS OUBLIER D'ENLEVER CES COMMENTAIRES
-    // ngOnInit(): void {
-    //
-    //     // const gameState = this.gameSyncService.getGameState();
-    //     // localStorage.clear();
-    //     this.gameSyncService.recieveFromLocalStorege();
-    // }
+export class AppComponent implements OnInit {
+    constructor(private namesService: NamesService) {}
+    async ngOnInit() {
+        this.namesService.fetchNames();
+        
+    }
 
-    // // TODO: NE PAS OUBLIER D'ENLEVER CES COMMENTAIRES
-    // // ngOnDestroy(): void {
-    // //     // this.gameSyncService.sendToLocalStorage();
-    // // }
 }

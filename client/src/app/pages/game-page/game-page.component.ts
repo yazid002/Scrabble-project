@@ -1,10 +1,12 @@
 import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { PLAYER } from '@app/classes/player';
 import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { OpponentQuitDialogComponent } from '@app/components/opponent-quit-dialog/opponent-quit-dialog.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
+import { NamesService } from '@app/services/admin/names.service';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
@@ -12,6 +14,7 @@ import { RandomModeService } from '@app/services/random-mode.service';
 import { Room, RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { TimerService } from '@app/services/timer.service';
+import { UserSettingsService } from '@app/services/user-settings.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -39,6 +42,9 @@ export class GamePageComponent implements AfterViewInit {
         private timerService: TimerService,
         private matDialog: MatDialog,
         private gameService: GameService,
+        private gamesService: GameService,
+        private namesService: NamesService,
+        private userSettingsService: UserSettingsService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
@@ -46,6 +52,9 @@ export class GamePageComponent implements AfterViewInit {
         this.gameService.convertToSoloSignal.subscribe((signal: string) => {
             this.showAbandonDIalog(signal);
         });
+        const computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
+        const computerName = this.namesService.getRandomName(computerLevel);
+        this.gamesService.players[PLAYER.otherPlayer].name = computerName;
     }
 
     @HostListener('keyup', ['$event'])

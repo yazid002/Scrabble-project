@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { NamesService } from './names.service';
 const RESPONSE_DELAY = 1000;
-fdescribe('NamesService', () => {
+describe('NamesService', () => {
     let service: NamesService;
     let httpTestingController: HttpTestingController;
     beforeEach(() => {
