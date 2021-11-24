@@ -26,20 +26,6 @@
         <button mat-raised-button color="primary" mat-dialog-close (click)="openSwitchToSoloDialog()" class="game-button orange">
             Switch to Solo
         </button>
-        <button color="primary" [routerLink]="['/lobby']" (click)="roomService.quitRoom()" class="game-button green">Joindre un Room</button>
         <button mat-raised-button color="primary" (click)="openQuitMultiplayerDialog()" class="game-button red">Quitter</button>
-        <!-- <button mat-raised-button color="primary" mat-dialog-close (click)="openSwitchToSoloDialog()" id="solo_button">Switch to Solo</button> -->
-        <!-- <button mat-raised-button color="primary" [routerLink]="['/lobby']" id="join" (click)="roomService.quitRoom()">Joindre un Room</button> -->
-
-        <button
-            mat-raised-button
-            color="primary"
-            [class.hidden]="numbers === 1"
-            [disabled]="numbers === 2"
-            class="game-button"
-            (click)="roomService.joinRandomRoom()"
-        >
-            Placement aléatoire
-        </button>
     </div>
 </body>

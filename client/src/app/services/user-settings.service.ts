@@ -54,6 +54,11 @@ export class UserSettingsService {
         computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
+    joinSettings: {
+        mode: IUserSetting;
+    } = {
+        mode: { setting: MODE, currentChoiceKey: 'classic' },
+    };
 
     nameOption = NAME_OPTION;
     computerName: string;
