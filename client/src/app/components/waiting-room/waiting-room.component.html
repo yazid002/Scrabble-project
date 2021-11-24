@@ -23,9 +23,17 @@
         </div>
     </mat-card>
     <div class="footer">
-        <button mat-raised-button color="primary" mat-dialog-close (click)="openSwitchToSoloDialog()" class="game-button orange">
+        <button
+            mat-raised-button
+            color="primary"
+            mat-dialog-close
+            (click)="openSwitchToSoloDialog(); playClickOnButtonAudio()"
+            class="game-button orange"
+        >
             Switch to Solo
         </button>
-        <button mat-raised-button color="primary" (click)="openQuitMultiplayerDialog()" class="game-button red">Quitter</button>
+        <button mat-raised-button color="primary" (click)="openQuitMultiplayerDialog(); playClickOnButtonAudio()" class="game-button red">
+            Quitter
+        </button>
     </div>
 </body>

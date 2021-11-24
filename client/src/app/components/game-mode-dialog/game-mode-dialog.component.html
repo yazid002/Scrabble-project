@@ -1,11 +1,8 @@
 <h2 mat-dialog-title>Veuillez Choisir le nombre de joueurs</h2>
 
-<!-- {{ userSettingsService.settings|json}} -->
-
 <form (keyup)="validateName()" mat-dialog-content aria-details="w">
     <mat-card class="dialog">
         <div class="setting" *ngFor="let setting of userSettingsService.settings | keyvalue">
-            <!-- {{ setting | json }} -->
             <mat-card-title>{{ setting.value.setting.settingName }}</mat-card-title>
             <mat-radio-group (change)="playClickOnButtonAudio()" [name]="setting.key" [(ngModel)]="setting.value.currentChoiceKey">
                 <mat-radio-button

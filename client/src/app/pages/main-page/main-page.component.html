@@ -8,10 +8,8 @@
         class="logo-Scrabble"
     />
 
-    <section class="m">
-        <div class="play-button">
-            <button (click)="openCreateRoomDialog()" class="start-btn">JOUER</button>
-        </div>
+    <section class="buttons">
+        <button (click)="openCreateRoomDialog()" class="start-btn">JOUER</button>
         <button (click)="openJoinRoomDialog()" class="start-btn">JOINDRE UN ROOM</button>
         <button (click)="playClickSound()" [routerLink]="['/leaderboard']" class="start-btn">MEILLEURES SCORES</button>
     </section>
