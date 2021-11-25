@@ -40,9 +40,6 @@ export class LeaderboardService {
         // return this.http.get(this.urlString);
         // return subject.asObservable();
     }
-
-
-
     async getAllClassicPlayer() {
         const url = this.urlString + '/ClassicLeaderboard';
         this.http.get<Leaderboard[]>(url).subscribe((data) => {

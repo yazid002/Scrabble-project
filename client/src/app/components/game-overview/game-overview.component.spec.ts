@@ -19,7 +19,7 @@ describe('GameOverviewComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [GameOverviewComponent],
             imports: [MatCardModule, HttpClientModule],
-            providers: [UserSettingsService, ReserveService, TimerService],
+            providers: [UserSettingsService, ReserveService, TimerService, { provide: GoalService, useValue: goalServiceSpy }],
         }).compileComponents();
     });
 
