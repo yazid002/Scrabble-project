@@ -52,7 +52,7 @@ export class LobbyComponent implements OnInit {
     }
 
     get numbers(): number {
-        console.log('length = ' + this.roomService.rooms.length);
+        // console.log('length = ' + this.roomService.rooms.length);
         return this.roomService.rooms.length;
     }
 }
