@@ -1,0 +1,33 @@
+.mat-dialog-container {
+    height: fit-content;
+    margin-bottom: 20px;
+}
+form {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+button {
+    margin: 5px;
+    width: fit-content;
+}
+mat-card {
+    overflow: auto;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+mat-radio-button {
+    margin: auto 1rem;
+}
+.setting {
+    margin: 1rem;
+}
+
+form:invalid {
+    button[type='submit'] {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}

@@ -5,6 +5,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { RoomService } from '@app/services/room.service';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { of } from 'rxjs';
 import { QuitMultiplayerDialogComponent } from './quit-multiplayer-dialog.component';
 
@@ -19,8 +20,10 @@ class MatDialogMock {
 describe('QuitMultiplayerDialogComponent', () => {
     let component: QuitMultiplayerDialogComponent;
     let fixture: ComponentFixture<QuitMultiplayerDialogComponent>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(async () => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
         await TestBed.configureTestingModule({
             imports: [
                 MatButtonModule,
@@ -29,7 +32,11 @@ describe('QuitMultiplayerDialogComponent', () => {
                 RouterTestingModule.withRoutes([{ path: 'home', component: MainPageComponent }]),
             ],
             declarations: [QuitMultiplayerDialogComponent],
-            providers: [{ provide: MatDialog, useClass: MatDialogMock }, { provide: RoomService }],
+            providers: [
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+                { provide: MatDialog, useClass: MatDialogMock },
+                { provide: RoomService },
+            ],
         }).compileComponents();
         // RoomService -> GameSyncService -> PlaceSelectionService -> VerifyService -> HttpClient -> HttpClient
     });
