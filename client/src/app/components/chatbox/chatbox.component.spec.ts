@@ -20,7 +20,6 @@ describe('ChatboxComponent', () => {
     let gameServiceSpy: jasmine.SpyObj<GameService>;
 
     beforeEach(async () => {
-        // Utilisation de spy au lieu d'appeler les services directement
         commandExecutionServiceSpy = jasmine.createSpyObj('CommandExecutionService', ['interpretCommand', 'executeCommand', 'addLetterInReserve']);
         chatServiceSpy = jasmine.createSpyObj('ChatService', ['addMessage', 'getMessages']);
         chatServiceSpy.messages = [];
@@ -61,7 +60,7 @@ describe('ChatboxComponent', () => {
 
         expect(commandExecutionServiceSpy.interpretCommand).toHaveBeenCalledTimes(executedTimes);
     });
-    // On teste le contraire du if
+
     it('validateFormat should not call commandExecutionServiceSpy.interpretCommand if the body does not start with !', async () => {
         const result: IChat = { from: SENDER.computer, body: '' };
         const response = { error: false, function: () => result };
@@ -127,7 +126,7 @@ describe('ChatboxComponent', () => {
 
         const scrollToSpy = spyOn(container, 'scrollTo').and.callThrough();
 
-        // Car scrollDown est privée
+        // scrollDown is private
         // eslint-disable-next-line dot-notation
         component['scrollDown']();
 
@@ -144,14 +143,14 @@ describe('ChatboxComponent', () => {
 
         const scrollToSpy = spyOn(container, 'scrollTo').and.callThrough();
 
-        // Car scrollDown est privée
+        // scrollDown is private
         // eslint-disable-next-line dot-notation
         component['scrollDown']();
 
         expect(scrollToSpy).not.toHaveBeenCalledTimes(1);
     });
     it('should return an errorMessage if the message length is not valid', () => {
-        component.inputBox = ''; // longueur de '' est 0 et la taille minimale est 1
+        component.inputBox = '';
         component.validateFormat();
         expect(component.error).toEqual(true);
     });

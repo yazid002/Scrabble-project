@@ -10,9 +10,7 @@
     <mat-card class="goals" *ngIf="mode === 'LOG2990'">
         <mat-card-title class="goalsTitle">Objectifs publiques: </mat-card-title>
         <mat-card-content [ngClass]="goal.complete ? 'completedGoal' : 'uncompletedGoal'" class="goalsContent" *ngFor="let goal of publicGoals">
-            {{ goal.description }}
-            <div class="goalsPoints">Pointage: {{ goal.bonus }}</div>
-            <div *ngIf="goal.complete">Completé par {{ goal.completedBy?.name }}!</div>
+            <app-goal [isPublic]="true" [goal]="goal"></app-goal>
         </mat-card-content>
     </mat-card>
 
@@ -21,7 +19,12 @@
         [id]="i === playerIndex.realPlayer ? 'me' : 'otherPlayer'"
         [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"
     >
-        <mat-card-title>{{ player.name }}</mat-card-title>
+        <mat-card-title
+            >{{ player.name }}
+            <p>
+                <mat-icon class="player" [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"> person_pin</mat-icon>
+            </p>
+        </mat-card-title>
 
         <div *ngIf="mode === 'LOG2990'">
             <div *ngIf="i === playerIndex.realPlayer || privateGoals[i].complete">
@@ -29,11 +32,7 @@
                     <div>Objectif privé:</div>
                 </mat-card-title>
                 <mat-card-content [ngClass]="privateGoals[i].complete ? 'completedGoal' : 'uncompletedGoal'" class="goalsContent">
-                    <div>
-                        {{ privateGoals[i].description }}
-                        <div class="goalsPoints">Pointage: {{ privateGoals[i].bonus }}</div>
-                    </div>
-                    <div *ngIf="privateGoals[i].complete">Completé !</div>
+                    <app-goal [isPublic]="false" [goal]="privateGoals[i]" [player]="player"></app-goal>
                 </mat-card-content>
             </div>
         </div>

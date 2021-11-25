@@ -10,15 +10,10 @@ import { SelectionManagerService } from '@app/services/selection-manager.service
 describe('PlayAreaComponent', () => {
     let component: PlayAreaComponent;
     let fixture: ComponentFixture<PlayAreaComponent>;
-    // let ctxStub: CanvasRenderingContext2D;
     let selectionManagerServiceSpy: SelectionManagerService;
-
-    // const CANVAS_WIDTH = 500;
-    // const CANVAS_HEIGHT = 500;
 
     beforeEach(async () => {
         selectionManagerServiceSpy = jasmine.createSpyObj('SelectionManagerService', ['updateSelectionType']);
-        //   ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
 
         await TestBed.configureTestingModule({
             declarations: [PlayAreaComponent],

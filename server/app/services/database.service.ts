@@ -48,12 +48,11 @@ export class DatabaseService {
     async addName(name: NameProperties) {
         await this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
     }
-    async populateNames(names: NameProperties[]): Promise<void> {
+    async reset(): Promise<void> {
         await this.db.collection(DATABASE_VIRTUAL_NAMES).deleteMany({ default: { $eq: false } });
         // for (const name of names) {
         //     this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
         // }
-        console.log(names);
     }
     async populateLeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [

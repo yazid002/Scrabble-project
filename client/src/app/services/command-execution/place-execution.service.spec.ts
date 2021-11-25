@@ -21,7 +21,7 @@ describe('PlaceExecuteService', () => {
     describe('extractParameters', () => {
         it(' should return the right parameters', () => {
             const POSITION = 'g15v';
-            // Car extractParameters est privée
+            // extractParameters is private
             // eslint-disable-next-line dot-notation
             const result = service['extractParameters'](POSITION);
 
@@ -37,7 +37,7 @@ describe('PlaceExecuteService', () => {
     describe('execute', () => {
         it(' should call extractParameters', () => {
             const PARAMETERS = ['placer', 'g15v', 'dos'];
-            // Car extractParameters est privée
+            // extractParameters is private
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const extractParametersSpy = spyOn<any>(service, 'extractParameters').and.callThrough();
             placeServiceSpy.placeWord.and.returnValue(Promise.resolve({ error: false, message: { from: SENDER.computer, body: '' } }));

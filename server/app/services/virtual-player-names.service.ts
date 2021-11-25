@@ -35,29 +35,18 @@ export class VirtualPlayerNamesService {
         });
     }
     async delete(playerName: NameProperties): Promise<void> {
-        if (!this.isPlayerDefault(playerName.name)) {
-            return this.names
-                .findOneAndDelete({ name: playerName.name })
-                .then((res: FindAndModifyWriteOpResultObject<NameProperties>) => {
-                    if (!res.value) {
-                        throw new Error('Could not find course');
-                    }
-                })
-                .catch(() => {
-                    throw new Error('Failed to delete course');
-                });
-        }
+        return this.names
+            .findOneAndDelete({ name: playerName.name, default: false })
+            .then((res: FindAndModifyWriteOpResultObject<NameProperties>) => {
+                if (!res.value) {
+                    throw new Error('Could not find course');
+                }
+            })
+            .catch(() => {
+                throw new Error('Failed to delete course');
+            });
     }
     async reset() {
-
-        const names = [
-            { name: 'Ordi Illetré', default: true, isAdvanced: false },
-            { name: 'Étudiant de la maternelle', default: true, isAdvanced: false },
-            { name: 'Analphabète', default: true, isAdvanced: false },
-            { name: 'Dictionnaire en Personne', default: true, isAdvanced: true },
-            { name: 'Word Master', default: true, isAdvanced: true },
-            { name: 'Étudiant en littérature', default: true, isAdvanced: true },
-        ];
-        this.databaseService.populateNames(names);
+        this.databaseService.reset();
     }
 }

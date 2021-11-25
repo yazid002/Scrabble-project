@@ -68,6 +68,7 @@ describe('PlaceSelectionService', () => {
                 points: 0,
                 turnWithoutSkipAndExchangeCounter: 0,
                 placeInTenSecondsGoalCounter: 0,
+                wordsMapping: new Map<string, number>(),
                 words: [],
             },
         ];

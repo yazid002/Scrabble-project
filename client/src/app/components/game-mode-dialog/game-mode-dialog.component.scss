@@ -1,5 +1,5 @@
 .mat-dialog-container {
-    height:fit-content;
+    height: fit-content;
     margin-bottom: 20px;
 }
 form {
@@ -7,23 +7,27 @@ form {
     justify-content: space-around;
     flex-direction: column;
 }
-button{
+button {
     margin: 5px;
     width: fit-content;
 }
-mat-card{
+mat-card {
     overflow: auto;
 }
-mat-radio-button{
+mat-radio-button {
     margin: auto 1rem;
 }
-.setting{
+.setting {
     margin: 1rem;
 }
 
-form:invalid{
-    button[type=submit]{
+form:invalid {
+    button[type='submit'] {
         opacity: 0.5;
         pointer-events: none;
     }
 }
+
+// .dictionnaire mat-form-field {
+//     margin-bottom: 50px;
+// }

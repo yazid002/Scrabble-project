@@ -1,15 +1,35 @@
 @import url('http://fonts.cdnfonts.com/css/common-pixel');
-
+@import url('http://fonts.cdnfonts.com/css/sunari');
+body {
+    min-height: 100%;
+    height: auto;
+    background-image: url('/assets/background.jpg');
+    height: 170%;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 .title {
     font-family: 'Common Pixel', sans-serif;
-    font-size: 100px;
-    margin-top: 40px;
+    font-size: 130px;
+    padding-top: 40px;
     text-align: center;
-    margin-bottom: 150px;
+    color: yellow;
+    margin-bottom: 170px;
+    text-transform: uppercase;
+    font-weight: 700;
+    text-shadow: 1px 1px 1px #919191, 1px 2px 1px #919191, 1px 3px 1px #919191, 1px 4px 1px #919191, 1px 5px 1px #919191, 1px 6px 1px #919191,
+        1px 7px 1px #919191, 1px 8px 1px #919191, 1px 9px 1px #919191, 1px 10px 1px #919191, 1px 18px 6px rgba(16, 16, 16, 0.4),
+        1px 22px 10px rgba(16, 16, 16, 0.2), 1px 25px 35px rgba(16, 16, 16, 0.2), 1px 30px 60px rgba(16, 16, 16, 0.4);
 }
 
 .rooms mat-card-title {
     text-align: center;
+    color: white;
+    font-family: 'Carter One', sans-serif;
+    font-size: 40px;
+    padding-bottom: 20px;
 }
 
 .rooms {
@@ -20,6 +40,14 @@
     height: 25%;
 }
 
+:host::ng-deep .rooms {
+    border: 55px !important;
+    border-radius: 30px !important;
+    background-color: rgba(0, 0, 0, 0.5);
+    // border: 55px solid #000;
+    // border-color: red;
+}
+
 .content {
     height: calc(100vh - 64px);
     overflow: auto;
@@ -27,6 +55,20 @@
 
 .room > h3 {
     float: left;
+}
+.room h3 {
+    color: white;
+    font-size: 25px;
+}
+
+.room p {
+    color: white;
+}
+.mode {
+    font-size: 30px;
+}
+.room-divider {
+    border-top-color: white;
 }
 
 button {
@@ -46,19 +88,27 @@ button {
     margin-right: auto;
     width: 20%;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .summary mat-card-title {
     text-align: center;
+    font-family: 'Sunari', sans-serif;
+    font-size: 35px;
+    color: yellowgreen;
 }
 
 #me {
     margin-left: auto;
     margin-right: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 #name {
     margin-top: 5px;
     text-align: center;
+    font-family: 'Sunari', sans-serif;
+    font-size: 25px;
+    color: yellowgreen;
 }
 mat-card-title-group {
     margin-top: 20px;
@@ -70,10 +120,17 @@ mat-card mat-card {
     width: 200px;
 }
 mat-card-footer mat-card-subtitle {
-    color: green;
-    font-family: Gill Sans, sans-serif;
-    font-size: 18px;
-    margin-bottom: 5px;
+    //color: green;
+    color: #fff !important;
+    font-family: 'Carter One', sans-serif;
+    font-size: 20px;
+    text-decoration: none !important;
+    outline: none !important;
+    line-height: 1.5em;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px 1px #348628, -2px 2px 1px #348628, 2px -2px 1px #348628, -2px -2px 1px #348628, 0px 2px 1px #348628, 0px -2px 1px #348628,
+        0px 4px 1px #1d4c16, 2px 4px 1px #1d4c16, -2px 4px 1px #1d4c16;
+    padding-bottom: 5px;
     text-align: center;
 }
 
