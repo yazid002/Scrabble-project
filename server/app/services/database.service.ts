@@ -1,4 +1,5 @@
 import { Leaderboard } from '@app/classes/Leaderboard';
+import { NameProperties } from '@app/classes/name-properties';
 import { Db, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
@@ -11,6 +12,7 @@ const DATABASE_URL =
 const DATABASE_NAME = 'Leaderboard';
 const DATABASE_COLLECTION = 'Mode 2990';
 const DATABASE_COLLECTION_CLASSIC = 'Classic';
+export const DATABASE_VIRTUAL_NAMES = 'VirtualPlayerNames';
 
 @Service()
 export class DatabaseService {
@@ -31,10 +33,10 @@ export class DatabaseService {
             throw new Error('Database connection error');
         }
         if ((await this.db.collection(DATABASE_COLLECTION).countDocuments()) === 0) {
-            await this.populateDB();
+            await this.populateLeaderBoard();
         }
         if ((await this.db.collection(DATABASE_COLLECTION_CLASSIC).countDocuments()) === 0) {
-            await this.populateClassicDB();
+            await this.populateClassicLeaderBoard();
         }
 
         return this.client;
@@ -43,8 +45,16 @@ export class DatabaseService {
     async closeConnection(): Promise<void> {
         return this.client.close();
     }
-
-    async populateDB(): Promise<void> {
+    async addName(name: NameProperties) {
+        await this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
+    }
+    async reset(): Promise<void> {
+        await this.db.collection(DATABASE_VIRTUAL_NAMES).deleteMany({ default: { $eq: false } });
+        // for (const name of names) {
+        //     this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
+        // }
+    }
+    async populateLeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
             {
                 id: '12345',
@@ -79,7 +89,7 @@ export class DatabaseService {
         }
     }
 
-    async populateClassicDB(): Promise<void> {
+    async populateClassicLeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
             {
                 id: '12345',
@@ -113,15 +123,6 @@ export class DatabaseService {
             await this.db.collection(DATABASE_COLLECTION_CLASSIC).insertOne(player);
         }
     }
-
-    // async populateVirtualDB(): Promise<void> {
-    //     const virtualPlayerName: string[] = ['Name1', 'Name2', 'Name3'];
-
-    //     console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
-    //     for (const player of virtualPlayerName) {
-    //         await this.db.collection(DATABASE_COLLECTION_CLASSIC).insertOne(player);
-    //     }
-    // }
 
     get database(): Db {
         return this.db;

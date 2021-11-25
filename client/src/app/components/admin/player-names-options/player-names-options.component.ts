@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NamesService } from '@app/services/admin/names.service';
+import { UserSettingsService } from '@app/services/user-settings.service';
 @Component({
     selector: 'app-player-names-options',
     templateUrl: './player-names-options.component.html',
@@ -9,7 +10,8 @@ export class PlayerNamesOptionsComponent implements OnInit {
     name: string = '';
     isAdvanced: boolean = false;
     error: boolean = false;
-    constructor(public nameService: NamesService) {}
+    errorMessage: string = '';
+    constructor(public nameService: NamesService, private userSettingsService: UserSettingsService) {}
 
     ngOnInit() {
         this.nameService.fetchNames();
@@ -19,7 +21,9 @@ export class PlayerNamesOptionsComponent implements OnInit {
     }
     validateName(): boolean {
         console.log('form ', this.name, 'isAdvanced: ', this.isAdvanced, 'Error: ', this.error);
-        this.error = this.nameService.validateFormat(this.name);
+        const result = this.userSettingsService.validateName(this.name);
+        this.error = result.error;
+        this.errorMessage = result.errorMessage;
         return this.error;
     }
 }

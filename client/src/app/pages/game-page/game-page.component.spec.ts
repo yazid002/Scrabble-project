@@ -21,6 +21,7 @@ import { GridService } from '@app/services/grid.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { of } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
 
@@ -40,11 +41,13 @@ describe('GamePageComponent', () => {
     let selectionManagerSpy: jasmine.SpyObj<SelectionManagerService>;
     let roomServiceSpy: jasmine.SpyObj<RoomService>;
     let randomModeServiceSpy: jasmine.SpyObj<RandomModeService>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     const CANVAS_WIDTH = 500;
     const CANVAS_HEIGHT = 500;
 
     beforeEach(async () => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio', 'stopMainPageAudio']);
         gridServiceSpy = jasmine.createSpyObj('GridService', ['increaseTileSize', 'decreaseTileSize', 'drawGrid']);
         selectionManagerSpy = jasmine.createSpyObj('SelectionManagerService', [
             'onSubmitExchange',
@@ -95,6 +98,7 @@ describe('GamePageComponent', () => {
                     provide: MatDialog,
                     useClass: MatDialogMock,
                 },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
         }).compileComponents();
     });

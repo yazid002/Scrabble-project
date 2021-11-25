@@ -10,8 +10,8 @@ interface NameProperties {
     providedIn: 'root',
 })
 export class NamesService {
-    beginnerNames: NameProperties[];
-    advancedNames: NameProperties[];
+    beginnerNames: NameProperties[] = [{ name: 'patate', isAdvanced: false, default: true }];
+    advancedNames: NameProperties[] = [{ name: 'tomate', isAdvanced: true, default: true }];
     urlString: string;
 
     constructor(private http: HttpClient) {
@@ -19,13 +19,12 @@ export class NamesService {
     }
 
     async fetchNames() {
-        this.beginnerNames = [];
-        this.advancedNames = [];
         const response = this.http.get<NameProperties[]>(this.urlString);
-        response.subscribe((nameProperties) => {
-            this.beginnerNames = nameProperties.filter((nameProperty) => !nameProperty.isAdvanced);
-            this.advancedNames = nameProperties.filter((nameProperty) => nameProperty.isAdvanced);
-        });
+        response.subscribe((nameProperties) => this.assignNames(nameProperties));
+    }
+    assignNames(nameProperties: NameProperties[]) {
+        this.beginnerNames = nameProperties.filter((nameProperty) => !nameProperty.isAdvanced);
+        this.advancedNames = nameProperties.filter((nameProperty) => nameProperty.isAdvanced);
     }
     async addName(name: string, isAdvanced: boolean) {
         const nameObj: NameProperties = { name, default: false, isAdvanced };
@@ -40,8 +39,13 @@ export class NamesService {
         const response = this.http.post<NameProperties>(this.urlString + 'delete', name);
         response.subscribe(async () => this.fetchNames());
     }
-    validateFormat(name: string): boolean {
-        if (name === 'allo') return true;
-        return false;
+    getRandomName(mode: string): string {
+        const arrayMap: Map<string, NameProperties[]> = new Map([
+            ['beginner', this.beginnerNames],
+            ['advanced', this.advancedNames],
+        ]);
+        const rightArray = arrayMap.get(mode) as NameProperties[];
+        console.log('mode', mode, 'rightArray', rightArray);
+        return rightArray[Math.floor(rightArray.length * Math.random())].name;
     }
 }

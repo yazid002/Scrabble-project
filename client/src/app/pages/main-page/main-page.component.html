@@ -1,18 +1,25 @@
 <div class="container justified">
-    <h1 class="header-item">Bienvenue au cours {{ title }}</h1>
-    <img src="https://bit.ly/3m206ss" width="400" height="80" alt="Logo Scrabble" />
+    <!-- <h1 class="header-item">Bienvenue au cours {{ title }}</h1> -->
+    <img
+        src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Scrabble_United_Kingdom.png"
+        width="700"
+        height="140"
+        alt="Logo Scrabble"
+        class="logo-Scrabble"
+    />
 
-    <section class="justified">
-        <div>
-            <div *ngFor="let mode of userSettingsService.settings.mode.setting.availableChoices">
-                <button mat-raised-button (click)="chooseMode(mode.key)" [disabled]="mode.disabled">{{ mode.value }}</button>
-            </div>
-            <button mat-raised-button  [routerLink]="['/leaderboard']">Meilleurs scores</button>
+    <section class="m">
+        <div class="play-button">
+            <button (click)="openDialog()" class="start-btn">JOUER</button>
         </div>
+        <button (click)="playClickSound()" [routerLink]="['/leaderboard']" class="start-btn">Meilleurs scores</button>
     </section>
 
     <div class="footer-item">
         <h4 class="team-name">Équipe 201</h4>
+        <!-- <p>
+            <button mat-raised-button (click)="playMainPageSound()">Activer Musique</button>
+        </p> -->
         <p>
             <span>Maxime Laroche</span>, <span>Rakieta Melaine-Elsa Oued</span>, <span>Ahmed Ben Othman</span>, <span>Alex Hua</span>,
             <span>Najme EA</span>, <span>Yazid Ben Saïd</span>

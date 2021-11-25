@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { GridService } from './grid.service';
 import { RandomModeService } from './random-mode.service';
@@ -16,7 +17,7 @@ describe('RandomModeService', () => {
             providers: [{ provide: GridService, useValue: gridServiceSpy }],
         });
         service = TestBed.inject(RandomModeService);
-
+        service.tiles = JSON.parse(JSON.stringify(tiles));
         ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         gridServiceSpy.gridContext = ctxStub;
         gridServiceSpy.letterStyle = { color: 'NavajoWhite', font: '15px serif' };
@@ -74,24 +75,24 @@ describe('RandomModeService', () => {
     });
 
     // TODO: Revoir le comportement pour arranger les tests
-    // it(' randomizeBonus should call randomizeIndex 1 time', () => {
-    //     const expectCallTimes = 61;
-    //     const minValue = 0;
-    //     const maxValue = 3;
-    //     service.isChecked = true;
+    it(' randomizeBonus should call randomizeIndex 61 times', () => {
+        const expectCallTimes = 61;
+        const minValue = 0;
+        const maxValue = 3;
+        service.isChecked = true;
 
-    //     const randomizeIndexSpy = spyOn(service, 'randomizeIndex').and.callThrough();
-    //     service.randomizeBonus(minValue, maxValue);
-    //     expect(randomizeIndexSpy).toHaveBeenCalledTimes(expectCallTimes);
-    // });
+        const randomizeIndexSpy = spyOn(service, 'randomizeIndex').and.callThrough();
+        service.randomizeBonus(minValue, maxValue);
+        expect(randomizeIndexSpy).toHaveBeenCalledTimes(expectCallTimes);
+    });
 
-    // it(' randomizeBonus should call fillGridPortion 1 time', () => {
-    //     const expectCallTimes = 61;
-    //     const minValue = 0;
-    //     const maxValue = 3;
-    //     service.isChecked = true;
+    it(' randomizeBonus should call fillGridPortion 61 times', () => {
+        const expectCallTimes = 61;
+        const minValue = 0;
+        const maxValue = 3;
+        service.isChecked = true;
 
-    //     service.randomizeBonus(minValue, maxValue);
-    //     expect(gridServiceSpy.fillGridPortion).toHaveBeenCalledTimes(expectCallTimes);
-    // });
+        service.randomizeBonus(minValue, maxValue);
+        expect(gridServiceSpy.fillGridPortion).toHaveBeenCalledTimes(expectCallTimes);
+    });
 });

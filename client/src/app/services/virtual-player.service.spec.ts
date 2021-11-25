@@ -3,9 +3,11 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
+import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { IChat } from '@app/classes/chat';
 import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board-constants';
 import { VirtualPlayerService } from './virtual-player.service';
 type Direction = 'h' | 'v';
 interface WordNCoord {
@@ -16,11 +18,14 @@ interface WordNCoord {
 }
 describe('VirtualPlayerService', () => {
     let service: VirtualPlayerService;
+    let ctxStub: CanvasRenderingContext2D;
     beforeEach(() => {
         TestBed.configureTestingModule({ imports: [HttpClientModule] });
         service = TestBed.inject(VirtualPlayerService);
 
         const exchangeRackServiceSpy = spyOn<any>(service['exchangeService']['rackService'], 'fillRackPortion');
+        ctxStub = CanvasTestHelper.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
+        service['exchangeService']['rackService'].rackContext = ctxStub;
         exchangeRackServiceSpy.and.returnValue(undefined);
 
         const verifyServiceSpy = spyOn<any>(service['verifyService'], 'getLettersUsedOnBoardFromPlacement');
@@ -126,7 +131,18 @@ describe('VirtualPlayerService', () => {
         beforeEach(() => {
             service['computerLevel'] = 'beginner';
         });
+
         describe('play', () => {
+            it('should call place 80% of the timer, exchange 10% and skip 10% of the time', () => {
+                const beginnerPlaySpy = spyOn<any>(service, 'beginnerPlay').and.returnValue(void '');
+                const advancedPlaySpy = spyOn<any>(service, 'advancedPlay').and.returnValue(void '');
+
+                service['play']();
+                expect(beginnerPlaySpy).toHaveBeenCalledWith(service);
+                expect(advancedPlaySpy).not.toHaveBeenCalled();
+            });
+        });
+        describe('beginnerPlay', () => {
             it('should call place 80% of the timer, exchange 10% and skip 10% of the time', () => {
                 const returnResponse: IChat = { from: 'someone', body: ' aresponse' };
                 let placeCounter = 0;
@@ -152,7 +168,7 @@ describe('VirtualPlayerService', () => {
 
                 const amountOfCalls = 10000;
                 for (let i = 0; i < amountOfCalls; i++) {
-                    service['play']();
+                    service['beginnerPlay'](service);
                 }
 
                 const placeMinCalls = 0.7;

@@ -1,62 +1,34 @@
-<p>leaderboard-page works!</p>
-
 <div class="title">Meilleurs Scores</div>
 
 <div class="split Classic">
-    <div class="subtitle">Mode Classic</div>
+    <div *ngIf="leaderboardService.leaderboardClassic" class="subtitle">Mode Classic</div>
     <table style="width: 50%">
         <tr>
             <th>Position</th>
             <th>Nom</th>
             <th>Score</th>
         </tr>
-        <div *ngIf="leaderboardService.leaderboardClassic !== undefined">
-            <div *ngFor="let player of leaderboardService.leaderboardClassic; let a = index">
-                <tr>
-                    <td>{{ a + 1 }}</td>
-                    <td>{{ player.name }}</td>
-                    <td>{{ player.score }}</td>
-                </tr>
-            </div>
-        </div>
+        <tr *ngFor="let player of leaderboardService.leaderboardClassic; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.score }}</td>
+        </tr>
     </table>
 </div>
 <!--
 <div class="split LOG2990">
-    <div class="subtitle">Mode LOG2990</div>
-    <div *ngIf="leaderboardService.leaderboardMode2990 !== undefined">
-        <table style="width: 50%">
-            <tr>
-                <th>Position</th>
-                <th>Name</th>
-                <th>Score</th>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>{{ leaderboardService.leaderboardMode2990[0].name }}</td>
-                <td>{{ leaderboardService.leaderboardMode2990[0].score }}</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>{{ leaderboardService.leaderboardMode2990[1].name }}</td>
-                <td>{{ leaderboardService.leaderboardMode2990[1].score }}</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>{{ leaderboardService.leaderboardMode2990[2].name }}</td>
-                <td>{{ leaderboardService.leaderboardMode2990[2].score }}</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>{{ leaderboardService.leaderboardMode2990[3].name }}</td>
-                <td>{{ leaderboardService.leaderboardMode2990[3].score }}</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>{{ leaderboardService.leaderboardMode2990[4].name }}</td>
-                <td>{{ leaderboardService.leaderboardMode2990[4].score }}</td>
-            </tr>
-        </table>
-    </div>
+    <div *ngIf="leaderboardService.leaderboardMode2990" class="subtitle">Mode LOG2990</div>
+    <table style="width: 50%">
+        <tr>
+            <th>Position</th>
+            <th>Name</th>
+            <th>Score</th>
+        </tr>
+        <tr *ngFor="let player of leaderboardService.leaderboardMode2990; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.score }}</td>
+        </tr>
+    </table>
 </div>
 -->

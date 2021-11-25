@@ -19,7 +19,7 @@ describe('GameOverviewComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [GameOverviewComponent],
             imports: [MatCardModule, HttpClientModule],
-            providers: [UserSettingsService, ReserveService, TimerService],
+            providers: [UserSettingsService, ReserveService, TimerService, { provide: GoalService, useValue: goalServiceSpy }],
         }).compileComponents();
     });
 
@@ -38,7 +38,7 @@ describe('GameOverviewComponent', () => {
         const INITIAL_VALUE = 'Une valeur sans importance';
 
         component.computerLevel = INITIAL_VALUE;
-        // Car assignValues est privée
+        // assignValues is private
         // eslint-disable-next-line dot-notation
         component['assignValues'](undefinedOption, undefinedOption, undefinedOption, undefinedOption);
         expect(component.computerLevel).toEqual(INITIAL_VALUE);
@@ -56,7 +56,7 @@ describe('GameOverviewComponent', () => {
         component.mode = INITIAL_VALUE;
         component.numPlayers = INITIAL_VALUE;
         component.timer = INITIAL_VALUE;
-        // Car assignValues est privée
+        // assignValues is private
         // eslint-disable-next-line dot-notation
         component['assignValues'](mode, numPlayers, computerLevel, timer);
         expect(component.computerLevel).toEqual(computerLevel.value);
@@ -73,7 +73,7 @@ describe('GameOverviewComponent', () => {
 
         goalServiceSpy.privateGoals = [{ description: 'third goal', goalType: 2, bonus: 30, usesWord: true, complete: false }];
 
-        // Car scrollDown est privée
+        // scrollDown is private
         // eslint-disable-next-line dot-notation
         component['initializeGoals']();
         expect(component.publicGoals).toEqual(goalServiceSpy.publicGoals);
@@ -102,7 +102,7 @@ describe('GameOverviewComponent', () => {
             ],
         );
 
-        // Car scrollDown est privée
+        // scrollDown is private
         // eslint-disable-next-line dot-notation
         component['initializeGoals']();
         expect(component.publicGoals).toEqual(publicGoals);
