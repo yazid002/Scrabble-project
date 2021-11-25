@@ -17,7 +17,9 @@
         </div>
         <section id="footer">
             <button mat-raised-button mat-dialog-close>Annuler</button>
-            <button mat-raised-button color="primary" type="submit" routerLink="game" (click)="quitRoom()" mat-dialog-close>Jouer</button>
+            <button mat-raised-button color="primary" type="submit" routerLink="game" (click)="this.roomService.quitRoom()" mat-dialog-close>
+                Jouer
+            </button>
         </section>
     </mat-card>
 </form>
