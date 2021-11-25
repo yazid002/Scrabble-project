@@ -41,28 +41,46 @@ export class LeaderboardService {
                     this.leaderboardClassic[i] = data[i];
                     // subject.next(data);
                 }
+                console.log(this.leaderboardClassic[0]);
+                // this.leaderboardClassic[0] = this.leaderboardClassic[1];
+                // this.sort();
+                for (let i = 0; i < this.leaderboardClassic.length - 1; i++) {
+                    if (this.leaderboardClassic[i].score > this.leaderboardClassic[i + 1].score) {
+                        const tmp = this.leaderboardClassic[i];
+                        console.log('1', tmp);
+                        this.leaderboardClassic[i] = this.leaderboardClassic[i + 1];
+                        this.leaderboardClassic[i + 1] = tmp;
+                        console.log('2', this.leaderboardClassic[i]);
+                        console.log('3', this.leaderboardClassic[i]);
+                    }
+                }
             },
         });
-        console.log('leaderboardClassic', this.leaderboardClassic);
+        // console.log('leaderboardClassic', this.leaderboardClassic);
+        // this.leaderboardClassic[0].name = this.leaderboardClassic[1].name;
+        // console.log(this.leaderboardClassic[1]);
+
+        // this.leaderboardClassic[0].name = this.leaderboardClassic[1].name;
         // return this.http.get(this.urlString);
         // return subject.asObservable();
     }
 
-    // sort(): void {
-    //     // eslint-disable-next-line @typescript-eslint/prefer-for-of
-    //     for (let i = 0; i < this.leaderboardClassic.length; i++) {
-    //         for (let j = 1; i < i - 1; j++) {
-    //             if (this.leaderboardClassic[i].score > this.leaderboardClassic[j].score) {
-    //                 const tmp = this.leaderboardClassic[i];
-    //                 console.log('1', tmp);
-    //                 this.leaderboardClassic[i] = this.leaderboardClassic[j];
-    //                 this.leaderboardClassic[j] = tmp;
-    //                 console.log('2', this.leaderboardClassic[i]);
-    //                 console.log('3', this.leaderboardClassic[i]);
-    //             }
-    //         }
-    //     }
-    // }
+    sort(): void {
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        // console(this.leaderboardClassic[0]);
+        for (let i = 0; i < this.leaderboardClassic.length; i++) {
+            for (let j = 1; i < i - 1; j++) {
+                if (this.leaderboardClassic[i].score > this.leaderboardClassic[j].score) {
+                    const tmp = this.leaderboardClassic[i];
+                    console.log('1', tmp);
+                    this.leaderboardClassic[i] = this.leaderboardClassic[j];
+                    this.leaderboardClassic[j] = tmp;
+                    console.log('2', this.leaderboardClassic[i]);
+                    console.log('3', this.leaderboardClassic[i]);
+                }
+            }
+        }
+    }
 
     getAllClassicPlayer(): void {
         const url = this.urlString + '/ClassicLeaderboard';
