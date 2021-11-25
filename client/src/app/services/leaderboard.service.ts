@@ -32,7 +32,11 @@ export class LeaderboardService {
         this.http.get<Leaderboard[]>(this.urlString).subscribe((data) => {
             this.leaderboardClassic = data.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
         });
-        console.log('leaderboardClassic', this.leaderboardClassic);
+        // console.log('leaderboardClassic', this.leaderboardClassic);
+        // this.leaderboardClassic[0].name = this.leaderboardClassic[1].name;
+        // console.log(this.leaderboardClassic[1]);
+
+        // this.leaderboardClassic[0].name = this.leaderboardClassic[1].name;
         // return this.http.get(this.urlString);
         // return subject.asObservable();
     }
