@@ -14,37 +14,25 @@ export class LeaderboardService {
     urlString: string;
     leaderboardClassic: Leaderboard[];
     leaderboardMode2990: Leaderboard[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // leaderboardClassic: any[] = [{}];
 
     constructor(private http: HttpClient) {
         this.urlString = SERVER_URL + '/leaderboard';
     }
 
-    // fillLeaderboardClassic(): void {
-    //     this.leaderboardClassic.push(this.getAllPlayer());
-    // }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getAllPlayer(): void {
-        // Observable<any> {
-        // const subject = new Subject<Leaderboard[]>();
-        this.http.get<Leaderboard[]>(this.urlString).subscribe((data) => {
-            this.leaderboardClassic = data.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
+    async fetchClassic() {
+        const getClassicUrl = this.urlString;
+        await this.http.get<Leaderboard[]>(getClassicUrl).subscribe((data) => {
+            this.leaderboardClassic = this.sortLeaderBoard(data);
         });
-        // console.log('leaderboardClassic', this.leaderboardClassic);
-        // this.leaderboardClassic[0].name = this.leaderboardClassic[1].name;
-        // console.log(this.leaderboardClassic[1]);
-
-        // this.leaderboardClassic[0].name = this.leaderboardClassic[1].name;
-        // return this.http.get(this.urlString);
-        // return subject.asObservable();
     }
-    async getAllClassicPlayer() {
-        const url = this.urlString + '/ClassicLeaderboard';
-        this.http.get<Leaderboard[]>(url).subscribe((data) => {
-            this.leaderboardMode2990 = data.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
+    async fetchLog2990() {
+        const getlog2990Url = this.urlString + '/ClassicLeaderboard';
+        await this.http.get<Leaderboard[]>(getlog2990Url).subscribe((data) => {
+            this.leaderboardMode2990 = this.sortLeaderBoard(data);
         });
+    }
+    sortLeaderBoard(data: Leaderboard[]): Leaderboard[] {
+        return data.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
     }
 
     async addPlayer(player: Leaderboard) {
