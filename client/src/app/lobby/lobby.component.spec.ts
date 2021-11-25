@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { RoomService } from '@app/services/room.service';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { of } from 'rxjs';
 import { LobbyComponent } from './lobby.component';
 
@@ -22,8 +23,10 @@ class MatDialogMock {
 describe('LobbyComponent', () => {
     let component: LobbyComponent;
     let fixture: ComponentFixture<LobbyComponent>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(async () => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
         await TestBed.configureTestingModule({
             declarations: [LobbyComponent],
             imports: [
@@ -42,6 +45,7 @@ describe('LobbyComponent', () => {
                     useClass: MatDialogMock,
                 },
                 { provide: RoomService },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
         }).compileComponents();
     });
@@ -74,5 +78,20 @@ describe('LobbyComponent', () => {
             component.goInRoom('someId');
             expect(spy).toHaveBeenCalled();
         });
+    });
+    it('should only assign values to settings when they are defined', () => {
+        const initName = 'initial name';
+        component.name = initName;
+        let undefString: undefined;
+        let undefIoption: undefined;
+        // eslint-disable-next-line dot-notation
+        component['assignValues'](undefString, undefIoption);
+        expect(component.name).toEqual(initName);
+
+        const newName = 'New Name';
+        const newOption = { key: 'a key', value: 'a value' };
+        // eslint-disable-next-line dot-notation
+        component['assignValues'](newName, newOption);
+        expect(component.name).toEqual(newName);
     });
 });
