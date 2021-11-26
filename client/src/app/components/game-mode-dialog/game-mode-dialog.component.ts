@@ -18,6 +18,13 @@ export class GameModeDialogComponent {
     isChecked: boolean = false;
     message: string = '';
 
+    // selectedDictionary: Dictionary;
+    // dictionaryControl = new FormControl('', Validators.required);
+    // dictionnaires: Dictionary[] = [
+    //     { title: 'Espagnol', description: 'Langue Espagnol', words: [], isAvailable: true },
+    //     { title: 'Anglais', description: 'Langue Anglaise', words: [], isAvailable: false },
+    // ];
+
     constructor(
         public userSettingsService: UserSettingsService,
         public gameService: GameService,

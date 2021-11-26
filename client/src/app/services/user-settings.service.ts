@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { Dictionary } from '@app/classes/dictionary';
 import { IOptionList, IUserSetting, NAME_OPTION } from '@app/classes/game-options';
 
 const MODE: IOptionList = {
@@ -74,6 +76,15 @@ export class UserSettingsService {
         computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
+
+    dictionaryControl = new FormControl('', Validators.required);
+    dictionnaires: Dictionary[] = [
+        { title: 'Espagnol', description: 'Langue espagnole', words: [], isAvailable: true },
+        { title: 'Anglais', description: 'Langue anglaise', words: [], isAvailable: true },
+        { title: 'Italien', description: 'Langue italienne', words: [], isAvailable: false },
+        { title: 'Russe', description: 'Langue Russe', words: [], isAvailable: true },
+    ];
+    selectedDictionary: Dictionary;
 
     nameOption = NAME_OPTION;
     computerName: string;
