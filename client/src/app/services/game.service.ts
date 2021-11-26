@@ -5,6 +5,7 @@ import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
+import { LeaderboardService } from './leaderboard.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
@@ -28,6 +29,7 @@ export class GameService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private chatService: ChatService,
+        public leaderboardService: LeaderboardService,
     ) {
         this.initPlayers();
         this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {

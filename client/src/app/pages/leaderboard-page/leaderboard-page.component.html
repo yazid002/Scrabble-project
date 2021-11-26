@@ -9,7 +9,7 @@
             <th>Score</th>
         </tr>
         <tr *ngFor="let player of leaderboardService.leaderboardClassic; let i = index">
-            <td>{{i+1}}</td>
+            <td>{{ i + 1 }}</td>
             <td>{{ player.name }}</td>
             <td>{{ player.score }}</td>
         </tr>
@@ -25,10 +25,9 @@
             <th>Score</th>
         </tr>
         <tr *ngFor="let player of leaderboardService.leaderboardMode2990; let i = index">
-            <td>{{i+1}}</td>
+            <td>{{ i + 1 }}</td>
             <td>{{ player.name }}</td>
             <td>{{ player.score }}</td>
         </tr>
     </table>
 </div>
-
