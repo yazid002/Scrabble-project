@@ -5,7 +5,8 @@ import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
-import { LeaderboardService } from './leaderboard.service';
+import { GoalsManagerService } from './goals-manager.service';
+import { Leaderboard, LeaderboardService } from './leaderboard.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
@@ -29,6 +30,7 @@ export class GameService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private chatService: ChatService,
+        private goalManagerService: GoalsManagerService,
         public leaderboardService: LeaderboardService,
     ) {
         this.initPlayers();
@@ -72,6 +74,14 @@ export class GameService {
         if (otherPlayerAbandonned) {
             this.players[PLAYER.realPlayer].won = 'Votre adversaire a abandonné. Vous gagnez par défaut!';
             this.players[PLAYER.otherPlayer].won = undefined;
+        }
+
+        if (this.goalManagerService.isEnabled) {
+            this.leaderboardService.fetchLog2990();
+            const realPlayer: Leaderboard = { id: '1', name: this.players[PLAYER.realPlayer].name, score: this.players[PLAYER.realPlayer].points };
+            if (this.players[PLAYER.realPlayer].points > this.leaderboardService.leaderboardMode2990[4].score) {
+                this.leaderboardService.addPlayer(realPlayer);
+            }
         }
 
         const endGameMessage: IChat = {
