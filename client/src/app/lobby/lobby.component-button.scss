@@ -28,6 +28,22 @@
     box-shadow: 0 4px 0 #266b91, 0 6px 1px 1px rgba(0, 0, 0, 0.3), 0 8px 0 5px #12517d, 0 10px 0 5px #1a6b9a, 0 13px 0 5px #0c405e,
         0 13px 1px 6px rgba(0, 0, 0, 0.3);
 }
+
+.game-button:disabled {
+    cursor: pointer;
+    background: repeating-linear-gradient(45deg, grey, grey 5px, grey 5px, grey 10px);
+    border-bottom: 3px solid grey;
+    text-shadow: 2px 2px 1px grey, -2px 2px 1px grey, 2px -2px 1px grey, -2px -2px 1px grey, 0px 2px 1px grey, 0px -2px 1px grey, 0px 4px 1px grey,
+        2px 4px 1px grey, -2px 4px 1px grey;
+}
+.game-button:disabled:hover {
+    background: repeating-linear-gradient(45deg, grey, grey 5px, grey 5px, grey 10px);
+    border-bottom: 3px solid grey;
+    text-shadow: 2px 2px 1px grey, -2px 2px 1px grey, 2px -2px 1px grey, -2px -2px 1px grey, 0px 2px 1px grey, 0px -2px 1px grey, 0px 4px 1px grey,
+        2px 4px 1px grey, -2px 4px 1px grey;
+    box-shadow: 0 4px 0 grey, 0 6px 1px 1px rgba(0, 0, 0, 0.3), 0 8px 0 5px grey, 0 10px 0 5px grey, 0 13px 0 5px grey,
+        0 13px 1px 6px rgba(0, 0, 0, 0.3);
+}
 .game-button::before {
     content: '';
     height: 10%;
@@ -48,19 +64,7 @@
     top: -3%;
     border-radius: 99px;
 }
-.game-button.orange {
-    background: repeating-linear-gradient(45deg, #ffc800, #ffc800 5px, #ffc200 5px, #ffc200 10px);
-    box-shadow: 0 6px 0 #b76113, 0 8px 1px 1px rgba(0, 0, 0, 0.3), 0 10px 0 5px #75421f, 0 12px 0 5px #8a542b, 0 15px 0 5px #593116,
-        0 15px 1px 6px rgba(0, 0, 0, 0.3);
-    border-bottom: 3px solid rgba(205, 102, 0, 0.5);
-    text-shadow: 2px 2px 1px #e78700, -2px 2px 1px #e78700, 2px -2px 1px #e78700, -2px -2px 1px #e78700, 0px 2px 1px #e78700, 0px -2px 1px #e78700,
-        0px 4px 1px #c96100, 2px 4px 1px #c96100, -2px 4px 1px #c96100;
-}
-.game-button.orange:hover {
-    top: 2px;
-    box-shadow: 0 4px 0 #b76113, 0 6px 1px 1px rgba(0, 0, 0, 0.3), 0 8px 0 5px #75421f, 0 10px 0 5px #8a542b, 0 13px 0 5px #593116,
-        0 13px 1px 6px rgba(0, 0, 0, 0.3);
-}
+
 .game-button.red {
     background: repeating-linear-gradient(45deg, #ff4f4c, #ff4f4c 5px, #ff4643 5px, #ff4643 10px);
     box-shadow: 0 6px 0 #ae2725, 0 8px 1px 1px rgba(0, 0, 0, 0.3), 0 10px 0 5px #831614, 0 12px 0 5px #a33634, 0 15px 0 5px #631716,

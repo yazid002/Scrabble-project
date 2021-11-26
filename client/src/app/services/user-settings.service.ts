@@ -15,6 +15,10 @@ const NUM_PLAYERS: IOptionList = {
         { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
     ],
 };
+const NUM_PLAYERS_SWITCH: IOptionList = {
+    settingName: 'Nombre de joueurs',
+    availableChoices: [{ key: 'solo', value: 'Solo' }],
+};
 
 const COMPUTER_LEVEL: IOptionList = {
     settingName: "Niveau de l'ordinateur",
@@ -51,6 +55,22 @@ export class UserSettingsService {
     } = {
         mode: { setting: MODE, currentChoiceKey: 'classic' },
         numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
+        computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+        timer: { setting: TIMER, currentChoiceKey: '60' },
+    };
+    joinSettings: {
+        mode: IUserSetting;
+    } = {
+        mode: { setting: MODE, currentChoiceKey: 'classic' },
+    };
+    switchToSoloSettings: {
+        mode: IUserSetting;
+        numPlayers: IUserSetting;
+        computerLevel: IUserSetting;
+        timer: IUserSetting;
+    } = {
+        mode: { setting: MODE, currentChoiceKey: 'classic' },
+        numPlayers: { setting: NUM_PLAYERS_SWITCH, currentChoiceKey: 'solo' },
         computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };

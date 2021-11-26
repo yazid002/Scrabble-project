@@ -4,7 +4,8 @@
         <mat-card-title>Partie Multijoueurs </mat-card-title>
         <mat-divider></mat-divider>
         <mat-card id="me">
-            <mat-card-title id="name">Nom: {{ userSettingsService.nameOption.userChoice }}</mat-card-title>
+            <mat-card-title id="name">Nom: {{ name }}</mat-card-title>
+            <mat-card-title id="name">Mode: {{ mode }}</mat-card-title>
         </mat-card>
     </mat-card>
     <div class="container">
@@ -16,12 +17,33 @@
                     <h3 matLine>Nom de l'adversaire : {{ room.name }}</h3>
                     <p matLine class="mode">Mode : {{ room.settings.mode }}</p>
                     <p matLine class="time">Temps : {{ room.settings.timer }}</p>
-                    <button mat-raised-button color="basic" (click)="goInRoom(room.id)" routerLink="game" class="game-button green">Join</button>
+                    <button
+                        mat-raised-button
+                        color="basic"
+                        (click)="goInRoom(room.id)"
+                        routerLink="game"
+                        (click)="playClickOnButtonAudio()"
+                        class="game-button green"
+                    >
+                        Join
+                    </button>
                     <mat-divider class="room-divider"></mat-divider>
                 </mat-list-item>
             </mat-list>
             <mat-card-footer>
-                <button mat-raised-button mat-dialog-close [routerLink]="['/waiting']" class="game-button red"><span>Back</span></button>
+                <button mat-raised-button mat-dialog-close [routerLink]="['/home']" (click)="playClickOnButtonAudio()" class="game-button red">
+                    <span>Quitter</span>
+                </button>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    [class.hidden]="numbers === 0"
+                    [disabled]="numbers === 1"
+                    class="game-button"
+                    (click)="roomService.joinRandomRoom(); playClickOnButtonAudio()"
+                >
+                    Placement aléatoire
+                </button>
                 <mat-card-subtitle>En attente </mat-card-subtitle>
                 <mat-progress-bar mode="indeterminate"></mat-progress-bar>
             </mat-card-footer>
