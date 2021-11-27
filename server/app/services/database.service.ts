@@ -54,6 +54,15 @@ export class DatabaseService {
         //     this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
         // }
     }
+
+    async resetClassicLeaderboard(): Promise<void> {
+        await this.db.collection(DATABASE_COLLECTION_CLASSIC).deleteMany({});
+    }
+
+    async resetMode2990Leaderboard(): Promise<void> {
+        await this.db.collection(DATABASE_COLLECTION).deleteMany({});
+    }
+
     async populateLeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
             {

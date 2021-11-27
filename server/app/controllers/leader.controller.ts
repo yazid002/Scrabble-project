@@ -13,6 +13,14 @@ export class LeaderBoardController {
         this.configureRouter();
     }
 
+    resetClassic() {
+        this.classicLeaderboardService.resetClassic();
+    }
+
+    resetMode2990() {
+        this.classicLeaderboardService.resetMode2990();
+    }
+
     private configureRouter(): void {
         this.router = Router();
 
@@ -124,27 +132,5 @@ export class LeaderBoardController {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
         });
-
-        // this.router.get('/teachers/code/:subjectCode', async (req: Request, res: Response) => {
-        //     this.coursesService
-        //         .getCourseTeacher(req.params.subjectCode)
-        //         .then((teacher: string) => {
-        //             res.send(teacher);
-        //         })
-        //         .catch((error: Error) => {
-        //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-        //         });
-        // });
-
-        // this.router.get('/teachers/name/:name', async (req: Request, res: Response) => {
-        //     this.coursesService
-        //         .getCoursesByTeacher(req.params.name)
-        //         .then((leaderboard: Leaderboard[]) => {
-        //             res.send(leaderboard);
-        //         })
-        //         .catch((error: Error) => {
-        //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-        //         });
-        //     });
     }
 }

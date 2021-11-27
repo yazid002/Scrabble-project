@@ -5,8 +5,7 @@ import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
-import { GoalsManagerService } from './goals-manager.service';
-import { Leaderboard, LeaderboardService } from './leaderboard.service';
+import { LeaderboardService } from './leaderboard.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
@@ -30,7 +29,7 @@ export class GameService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private chatService: ChatService,
-        private goalManagerService: GoalsManagerService,
+        // private goalManagerService: GoalsManagerService,
         public leaderboardService: LeaderboardService,
     ) {
         this.initPlayers();
@@ -50,7 +49,7 @@ export class GameService {
         this.abandonSignal.next('abandon');
         this.endGame();
     }
-    endGame(otherPlayerAbandonned: boolean = false) {
+    async endGame(otherPlayerAbandonned: boolean = false): Promise<void> {
         this.timerService.isEnabled = false;
         let endGameString = `Fin de partie: ${this.reserveService.alphabets.length} lettres restantes`;
         for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
@@ -76,19 +75,22 @@ export class GameService {
             this.players[PLAYER.otherPlayer].won = undefined;
         }
 
-        if (this.goalManagerService.isEnabled) {
-            this.leaderboardService.fetchLog2990();
-            const realPlayer: Leaderboard = { id: '1', name: this.players[PLAYER.realPlayer].name, score: this.players[PLAYER.realPlayer].points };
-            if (this.players[PLAYER.realPlayer].points > this.leaderboardService.leaderboardMode2990[4].score) {
-                this.leaderboardService.addPlayer(realPlayer);
-            }
-        }
-
         const endGameMessage: IChat = {
             from: SENDER.computer,
             body: endGameString,
         };
         this.chatService.addMessage(endGameMessage);
+
+        // if (this.goalManagerService.isEnabled) {
+        // this.leaderboardService.leaderboardClassic = [];
+        // await this.leaderboardService.fetchClassic();
+        // console.log('abc', this.leaderboardService.leaderboardClassic);
+        // const realPlayer: Leaderboard = { id: '1', name: this.players[PLAYER.realPlayer].name, score: this.players[PLAYER.realPlayer].points };
+        // console.log('info', realPlayer);
+        // if (this.players[PLAYER.realPlayer].points > this.leaderboardService.leaderboardClassic[4].score) {
+        //     this.leaderboardService.addPlayer(realPlayer);
+        //     // this.leaderboardService.deletePlayer('Object Oriented Programming');
+        // }
     }
     didGameEnd(): boolean {
         let hasEnded = false;

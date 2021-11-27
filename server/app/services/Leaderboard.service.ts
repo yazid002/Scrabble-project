@@ -80,6 +80,26 @@ export class ClassicLeaderBoardService {
                 throw new Error('Failed to delete course');
             });
     }
+
+    async resetClassic() {
+        this.databaseService.resetClassicLeaderboard();
+    }
+
+    async resetMode2990() {
+        this.databaseService.resetMode2990Leaderboard();
+    }
+
+    // endGame(mode: string, name: string, score: number) {
+    //     let leaderboard: Leaderboard[] = [];
+    //     if (mode === 'Classic') {
+    //         leaderboard = this.getAllClassicPlayers();
+    //     }
+    //     else {
+    //         leaderboard = this.getAllPlayers();
+    //     }
+
+    // }
+
     // private validatePlayer(player: Leaderboard): boolean {}
 
     // async addCourse(course: Leaderboard): Promise<void> {

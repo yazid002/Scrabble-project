@@ -36,11 +36,15 @@ export class LeaderboardService {
     }
 
     async addPlayer(player: Leaderboard) {
-        return this.http.post(this.urlString, player);
+        console.log('bbb');
+        console.log(this.urlString);
+        console.log(player);
+        this.http.post<Leaderboard>(this.urlString, player).subscribe();
     }
 
     async deletePlayer(name: string) {
         const url = `${this.urlString}/${name}`;
-        return this.http.delete(url);
+        console.log(url);
+        return this.http.delete(url).subscribe();
     }
 }

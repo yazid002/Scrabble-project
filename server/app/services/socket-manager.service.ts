@@ -72,6 +72,9 @@ export class SocketManager {
                     this.leaveRoom(socket.id);
                 }, ABANDON_TIMER);
             });
+
+            // socket.on('endGame', (name: string, score: number) => {
+            // })
         });
 
         setInterval(() => {
