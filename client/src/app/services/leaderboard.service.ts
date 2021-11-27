@@ -4,6 +4,7 @@ import { SERVER_URL } from '@app/constants/url';
 export interface Leaderboard {
     name: string;
     score: number;
+    mode: string;
 }
 
 @Injectable({

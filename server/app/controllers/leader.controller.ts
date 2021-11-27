@@ -37,7 +37,7 @@ export class LeaderBoardController {
             // Can also use the async/await syntax
             console.log(this.leaderboardService);
             try {
-                const players = await this.leaderboardService.getAllPlayers();
+                const players = await this.leaderboardService.getAll2990Players();
                 res.json(players);
             } catch (error) {
                 res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
@@ -57,7 +57,7 @@ export class LeaderBoardController {
 
         this.router.get('/:name', async (req: Request, res: Response) => {
             this.leaderboardService
-                .getPlayer(req.params.name)
+                .getClassicPlayer(req.params.name)
                 .then((leaderboard: Leaderboard) => {
                     res.json(leaderboard);
                 })
@@ -80,7 +80,7 @@ export class LeaderBoardController {
 
         this.router.post('/', async (req: Request, res: Response) => {
             this.leaderboardService
-                .addPlayer(req.body)
+                .addClassicPlayer(req.body, this.leaderboardService)
                 .then(() => {
                     res.status(Httpstatus.StatusCodes.CREATED).send();
                 })
@@ -111,15 +111,15 @@ export class LeaderBoardController {
         //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
         //         });
         // });
-        this.router.delete('/:name', async (req: Request, res: Response) => {
-            this.leaderboardService
-                .deletePlayer(req.params.name)
-                .then(() => {
-                    res.status(Httpstatus.StatusCodes.NO_CONTENT).send();
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                });
-        });
+        // this.router.delete('/:name', async (req: Request, res: Response) => {
+        //     this.leaderboardService
+        //         .deleteClassicPlayer(req.params.name,)
+        //         .then(() => {
+        //             res.status(Httpstatus.StatusCodes.NO_CONTENT).send();
+        //         })
+        //         .catch((error: Error) => {
+        //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+        //         });
+        // });
     }
 }

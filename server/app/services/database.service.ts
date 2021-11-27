@@ -33,7 +33,7 @@ export class DatabaseService {
             throw new Error('Database connection error');
         }
         if ((await this.db.collection(DATABASE_COLLECTION).countDocuments()) === 0) {
-            await this.populateLeaderBoard();
+            await this.populateMode2990LeaderBoard();
         }
         if ((await this.db.collection(DATABASE_COLLECTION_CLASSIC).countDocuments()) === 0) {
             await this.populateClassicLeaderBoard();
@@ -63,27 +63,32 @@ export class DatabaseService {
         await this.db.collection(DATABASE_COLLECTION).deleteMany({});
     }
 
-    async populateLeaderBoard(): Promise<void> {
+    async populateMode2990LeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
             {
                 name: 'Player 1',
                 score: 10,
+                mode: 'log2990',
             },
             {
                 name: 'Player 2',
                 score: 20,
+                mode: 'log2990',
             },
             {
                 name: 'Player 3',
                 score: 30,
+                mode: 'log2990',
             },
             {
                 name: 'Player 4',
                 score: 40,
+                mode: 'log2990',
             },
             {
                 name: 'Player 5',
                 score: 50,
+                mode: 'log2990',
             },
         ];
 
@@ -98,22 +103,27 @@ export class DatabaseService {
             {
                 name: 'Player 6',
                 score: 10,
+                mode: 'classic',
             },
             {
                 name: 'Player 7',
                 score: 20,
+                mode: 'classic',
             },
             {
                 name: 'Player 8',
                 score: 30,
+                mode: 'classic',
             },
             {
                 name: 'Player 9',
                 score: 40,
+                mode: 'classic',
             },
             {
                 name: 'Player 10',
                 score: 50,
+                mode: 'classic',
             },
         ];
 

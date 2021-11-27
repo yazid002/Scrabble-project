@@ -28,7 +28,7 @@ export class LeaderBoardService {
     //             return leaderboards;
     //         });
     // }
-    async getAllPlayers(): Promise<Leaderboard[]> {
+    async getAll2990Players(): Promise<Leaderboard[]> {
         return this.collection2990
             .find({})
             .toArray()
@@ -46,32 +46,49 @@ export class LeaderBoardService {
             });
     }
 
-    // async getCourse(sbjCode: string): Promise<Leaderboard> {
-    //     // NB: This can return null if the course does not exist, you need to handle it
-    //     return this.collection.findOne({ subjectCode: sbjCode }).then((course: Leaderboard) => {
-    //         return course;
-    //     });
-    // }
-    async getPlayer(player: string): Promise<Leaderboard> {
+    async getClassicPlayer(player: string): Promise<Leaderboard> {
         return this.collectionClassic.findOne({ name: player }).then((playerInfo: Leaderboard) => {
             return playerInfo;
         });
     }
 
-    async addPlayer(player: Leaderboard): Promise<void> {
-        await this.collectionClassic.insertOne(player);
+    async get2990Player(player: string): Promise<Leaderboard> {
+        return this.collection2990.findOne({ name: player }).then((playerInfo: Leaderboard) => {
+            return playerInfo;
+        });
     }
 
-    async deletePlayer(player: string): Promise<void> {
-        return this.collectionClassic
+    async addClassicPlayer(player: Leaderboard, leaderboardService: LeaderBoardService): Promise<void> {
+        await leaderboardService.collectionClassic.insertOne(player);
+    }
+
+    async add2990Player(player: Leaderboard, leaderboardService: LeaderBoardService): Promise<void> {
+        await leaderboardService.collection2990.insertOne(player);
+    }
+
+    async deleteClassicPlayer(player: string, leaderboardService: LeaderBoardService): Promise<void> {
+        return await leaderboardService.collectionClassic
             .findOneAndDelete({ name: player })
             .then((res: FindAndModifyWriteOpResultObject<Leaderboard>) => {
                 if (!res.value) {
-                    throw new Error('Could not find course');
+                    throw new Error('Could not find player');
                 }
             })
             .catch(() => {
-                throw new Error('Failed to delete course');
+                throw new Error('Failed to delete player');
+            });
+    }
+
+    async delete2990Player(player: string, leaderboardService: LeaderBoardService): Promise<void> {
+        return await leaderboardService.collection2990
+            .findOneAndDelete({ name: player })
+            .then((res: FindAndModifyWriteOpResultObject<Leaderboard>) => {
+                if (!res.value) {
+                    throw new Error('Could not find player');
+                }
+            })
+            .catch(() => {
+                throw new Error('Failed to delete player');
             });
     }
 
@@ -83,17 +100,23 @@ export class LeaderBoardService {
         this.databaseService.resetMode2990Leaderboard();
     }
 
-    async endGame(mode: string, player: Leaderboard) {
+    async endGame(player: Leaderboard) {
         let leaderboard: Leaderboard[] = [];
-        if (mode === 'Classic') {
+        let deleteFunction: (name: string, leaderboardService: LeaderBoardService) => Promise<void>;
+        let addFunction: (player: Leaderboard, leaderboardService: LeaderBoardService) => Promise<void>;
+        if (player.mode === 'classic') {
             leaderboard = await this.getAllClassicPlayers();
+            deleteFunction = this.deleteClassicPlayer;
+            addFunction = this.addClassicPlayer;
         } else {
-            leaderboard = await this.getAllPlayers();
+            leaderboard = await this.getAll2990Players();
+            deleteFunction = this.delete2990Player;
+            addFunction = this.add2990Player;
         }
-        if (player.score > leaderboard[4].score) {
+        if (player.score > leaderboard[leaderboard.length - 1].score) {
             console.log('dans serveur');
-            await this.deletePlayer(leaderboard[4].name);
-            await this.addPlayer(player);
+            await deleteFunction(leaderboard[leaderboard.length - 1].name, this);
+            await addFunction(player, this);
         }
     }
 

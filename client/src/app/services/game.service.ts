@@ -17,7 +17,7 @@ export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
     @Output() abandonSignal = new BehaviorSubject<string>('');
     @Output() convertToSoloSignal = new BehaviorSubject<string>('');
-    @Output() endGameSignal = new BehaviorSubject<Leaderboard>({ name: '', score: 0 });
+    @Output() endGameSignal = new BehaviorSubject<Leaderboard>({ name: '', score: 0, mode: 'classic' });
 
     players: Player[] = [];
     currentTurn: number;
@@ -82,7 +82,11 @@ export class GameService {
         };
         this.chatService.addMessage(endGameMessage);
 
-        const realPlayer: Leaderboard = { name: this.players[PLAYER.realPlayer].name, score: this.players[PLAYER.realPlayer].points };
+        const realPlayer: Leaderboard = {
+            name: this.players[PLAYER.realPlayer].name,
+            score: this.players[PLAYER.realPlayer].points,
+            mode: this.userSettingsService.settings.mode.currentChoiceKey,
+        };
         console.log('info', realPlayer);
         this.endGameSignal.next(realPlayer);
         // if (this.goalManagerService.isEnabled) {

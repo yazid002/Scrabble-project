@@ -76,7 +76,7 @@ export class SocketManager {
             });
 
             socket.on('endGame', (player: Leaderboard) => {
-                this.leaderboardService.endGame('Classic', player);
+                this.leaderboardService.endGame(player);
             });
         });
 
