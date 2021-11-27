@@ -5,7 +5,7 @@ import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
-import { LeaderboardService } from './leaderboard.service';
+import { Leaderboard, LeaderboardService } from './leaderboard.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
@@ -17,6 +17,7 @@ export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
     @Output() abandonSignal = new BehaviorSubject<string>('');
     @Output() convertToSoloSignal = new BehaviorSubject<string>('');
+    @Output() endGameSignal = new BehaviorSubject<Leaderboard>({ name: '', score: 0 });
 
     players: Player[] = [];
     currentTurn: number;
@@ -81,12 +82,14 @@ export class GameService {
         };
         this.chatService.addMessage(endGameMessage);
 
+        const realPlayer: Leaderboard = { name: this.players[PLAYER.realPlayer].name, score: this.players[PLAYER.realPlayer].points };
+        console.log('info', realPlayer);
+        this.endGameSignal.next(realPlayer);
         // if (this.goalManagerService.isEnabled) {
         // this.leaderboardService.leaderboardClassic = [];
         // await this.leaderboardService.fetchClassic();
         // console.log('abc', this.leaderboardService.leaderboardClassic);
-        // const realPlayer: Leaderboard = { id: '1', name: this.players[PLAYER.realPlayer].name, score: this.players[PLAYER.realPlayer].points };
-        // console.log('info', realPlayer);
+
         // if (this.players[PLAYER.realPlayer].points > this.leaderboardService.leaderboardClassic[4].score) {
         //     this.leaderboardService.addPlayer(realPlayer);
         //     // this.leaderboardService.deletePlayer('Object Oriented Programming');

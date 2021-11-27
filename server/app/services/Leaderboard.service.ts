@@ -9,7 +9,7 @@ const DATABASE_COLLECTION_CLASSIC = 'Classic';
 const DATABASE_COLLECTION_2990 = 'Mode 2990';
 
 @Service()
-export class ClassicLeaderBoardService {
+export class LeaderBoardService {
     constructor(private databaseService: DatabaseService) {}
 
     get collectionClassic(): Collection<Leaderboard> {
@@ -33,7 +33,7 @@ export class ClassicLeaderBoardService {
             .find({})
             .toArray()
             .then((leaderboards: Leaderboard[]) => {
-                return leaderboards;
+                return leaderboards.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
             });
     }
 
@@ -42,7 +42,7 @@ export class ClassicLeaderBoardService {
             .find({})
             .toArray()
             .then((leaderboards: Leaderboard[]) => {
-                return leaderboards;
+                return leaderboards.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
             });
     }
 
@@ -53,23 +53,17 @@ export class ClassicLeaderBoardService {
     //     });
     // }
     async getPlayer(player: string): Promise<Leaderboard> {
-        return this.collection2990.findOne({ name: player }).then((playerInfo: Leaderboard) => {
+        return this.collectionClassic.findOne({ name: player }).then((playerInfo: Leaderboard) => {
             return playerInfo;
         });
     }
 
-    async getPlayersScore(player: string): Promise<string> {
-        return this.collection2990.findOne({ name: player }).then((score: Leaderboard) => {
-            return score.id;
-        });
-    }
-
     async addPlayer(player: Leaderboard): Promise<void> {
-        await this.collection2990.insertOne(player);
+        await this.collectionClassic.insertOne(player);
     }
 
     async deletePlayer(player: string): Promise<void> {
-        return this.collection2990
+        return this.collectionClassic
             .findOneAndDelete({ name: player })
             .then((res: FindAndModifyWriteOpResultObject<Leaderboard>) => {
                 if (!res.value) {
@@ -89,16 +83,19 @@ export class ClassicLeaderBoardService {
         this.databaseService.resetMode2990Leaderboard();
     }
 
-    // endGame(mode: string, name: string, score: number) {
-    //     let leaderboard: Leaderboard[] = [];
-    //     if (mode === 'Classic') {
-    //         leaderboard = this.getAllClassicPlayers();
-    //     }
-    //     else {
-    //         leaderboard = this.getAllPlayers();
-    //     }
-
-    // }
+    async endGame(mode: string, player: Leaderboard) {
+        let leaderboard: Leaderboard[] = [];
+        if (mode === 'Classic') {
+            leaderboard = await this.getAllClassicPlayers();
+        } else {
+            leaderboard = await this.getAllPlayers();
+        }
+        if (player.score > leaderboard[4].score) {
+            console.log('dans serveur');
+            await this.deletePlayer(leaderboard[4].name);
+            await this.addPlayer(player);
+        }
+    }
 
     // private validatePlayer(player: Leaderboard): boolean {}
 

@@ -66,27 +66,22 @@ export class DatabaseService {
     async populateLeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
             {
-                id: '12345',
                 name: 'Player 1',
                 score: 10,
             },
             {
-                id: '23456',
                 name: 'Player 2',
                 score: 20,
             },
             {
-                id: '34567',
                 name: 'Player 3',
                 score: 30,
             },
             {
-                id: '45678',
                 name: 'Player 4',
                 score: 40,
             },
             {
-                id: '56789',
                 name: 'Player 5',
                 score: 50,
             },
@@ -101,27 +96,22 @@ export class DatabaseService {
     async populateClassicLeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
             {
-                id: '12345',
                 name: 'Player 6',
                 score: 10,
             },
             {
-                id: '23456',
                 name: 'Player 7',
                 score: 20,
             },
             {
-                id: '34567',
                 name: 'Player 8',
                 score: 30,
             },
             {
-                id: '45678',
                 name: 'Player 9',
                 score: 40,
             },
             {
-                id: '56789',
                 name: 'Player 10',
                 score: 50,
             },

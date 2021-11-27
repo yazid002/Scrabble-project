@@ -7,6 +7,7 @@ import { io, Socket } from 'socket.io-client';
 import { ChatService } from './chat.service';
 import { GameState, GameSyncService } from './game-sync.service';
 import { GameService } from './game.service';
+import { Leaderboard } from './leaderboard.service';
 import { UserSettingsService } from './user-settings.service';
 export interface Room {
     id: string;
@@ -24,6 +25,7 @@ export class RoomService {
     chatServiceSubscription: Subscription;
     gameStateSubscription: Subscription;
     abandonSubscription: Subscription;
+    endGameSignal: Subscription;
     rooms: Room[];
 
     constructor(
@@ -47,6 +49,9 @@ export class RoomService {
             this.socket.emit('abandon', this.roomId, this.socket.id);
         });
         this.rooms = [];
+        this.endGameSignal = this.gameService.endGameSignal.subscribe((player: Leaderboard) => {
+            this.endGame(player);
+        });
     }
 
     configureRoomCommunication() {
@@ -104,5 +109,10 @@ export class RoomService {
     quitRoom() {
         this.socket.emit('leaveRoom');
         this.roomId = '';
+    }
+
+    endGame(player: Leaderboard) {
+        console.log('arriver dans room');
+        this.socket.emit('endGame', player);
     }
 }

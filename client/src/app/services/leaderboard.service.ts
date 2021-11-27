@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SERVER_URL } from '@app/constants/url';
 export interface Leaderboard {
-    id: string;
     name: string;
     score: number;
 }

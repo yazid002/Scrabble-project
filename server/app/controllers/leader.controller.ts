@@ -1,5 +1,5 @@
 import { Leaderboard } from '@app/classes/Leaderboard';
-import { ClassicLeaderBoardService } from '@app/services/Leaderboard.service';
+import { LeaderBoardService } from '@app/services/Leaderboard.service';
 // import Types from '@app/types';
 import { Request, Response, Router } from 'express';
 import * as Httpstatus from 'http-status-codes';
@@ -9,16 +9,16 @@ import { Service } from 'typedi';
 export class LeaderBoardController {
     router: Router;
 
-    constructor(private classicLeaderboardService: ClassicLeaderBoardService) {
+    constructor(private leaderboardService: LeaderBoardService) {
         this.configureRouter();
     }
 
     resetClassic() {
-        this.classicLeaderboardService.resetClassic();
+        this.leaderboardService.resetClassic();
     }
 
     resetMode2990() {
-        this.classicLeaderboardService.resetMode2990();
+        this.leaderboardService.resetMode2990();
     }
 
     private configureRouter(): void {
@@ -35,9 +35,9 @@ export class LeaderBoardController {
             //         //   });
 
             // Can also use the async/await syntax
-            console.log(this.classicLeaderboardService);
+            console.log(this.leaderboardService);
             try {
-                const players = await this.classicLeaderboardService.getAllPlayers();
+                const players = await this.leaderboardService.getAllPlayers();
                 res.json(players);
             } catch (error) {
                 res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
@@ -45,7 +45,7 @@ export class LeaderBoardController {
         });
 
         this.router.get('/ClassicLeaderboard', async (req: Request, res: Response) => {
-            this.classicLeaderboardService
+            this.leaderboardService
                 .getAllClassicPlayers()
                 .then((leaderboard: Leaderboard[]) => {
                     res.json(leaderboard);
@@ -56,20 +56,9 @@ export class LeaderBoardController {
         });
 
         this.router.get('/:name', async (req: Request, res: Response) => {
-            this.classicLeaderboardService
+            this.leaderboardService
                 .getPlayer(req.params.name)
                 .then((leaderboard: Leaderboard) => {
-                    res.json(leaderboard);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                });
-        });
-
-        this.router.get('/:name/score', async (req: Request, res: Response) => {
-            this.classicLeaderboardService
-                .getPlayersScore(req.params.name)
-                .then((leaderboard: string) => {
                     res.json(leaderboard);
                 })
                 .catch((error: Error) => {
@@ -90,7 +79,7 @@ export class LeaderBoardController {
         // });
 
         this.router.post('/', async (req: Request, res: Response) => {
-            this.classicLeaderboardService
+            this.leaderboardService
                 .addPlayer(req.body)
                 .then(() => {
                     res.status(Httpstatus.StatusCodes.CREATED).send();
@@ -123,7 +112,7 @@ export class LeaderBoardController {
         //         });
         // });
         this.router.delete('/:name', async (req: Request, res: Response) => {
-            this.classicLeaderboardService
+            this.leaderboardService
                 .deletePlayer(req.params.name)
                 .then(() => {
                     res.status(Httpstatus.StatusCodes.NO_CONTENT).send();
