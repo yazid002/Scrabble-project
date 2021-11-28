@@ -18,14 +18,6 @@ describe('VirtualPlayerNamesController', () => {
 
     beforeEach(async () => {
         service = createStubInstance(VirtualPlayerNamesService);
-        service.names = [
-            { name: 'Ordi Illetré', default: true, isAdvanced: false },
-            { name: 'Étudiant de la maternelle', default: true, isAdvanced: false },
-            { name: 'Analphabète', default: true, isAdvanced: false },
-            { name: 'Dictionnaire en Personne', default: true, isAdvanced: true },
-            { name: 'Word Master', default: true, isAdvanced: true },
-            { name: 'Étudiant en littérature', default: true, isAdvanced: true },
-        ];
         const app = Container.get(Application);
         // eslint-disable-next-line dot-notation
         Object.defineProperty(app['VirtualPlayerNamesController'], 'virtualPlayerNamesService', { value: service, writable: true });
