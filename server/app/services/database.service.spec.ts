@@ -5,7 +5,7 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
-// import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { DatabaseService } from './database.service';
 chai.use(chaiAsPromised); // this allows us to test for rejection
@@ -35,5 +35,27 @@ describe('Database service', () => {
         await databaseService.start(mongoUri);
         // expect(databaseService['client']).to.not.be.undefined;
         expect(databaseService['db'].databaseName).to.equal('Leaderboard');
+    });
+
+    // it('should not connect to the database when start is called with wrong URL', async () => {
+    //     // Try to reconnect to local server
+    //     try {
+    //         await databaseService.start('WRONG URL');
+    //         fail();
+    //     } catch {
+    //         expect(databaseService['client']).to.be.undefined;
+    //     }
+    // });
+
+    it('should populate the database with a helper function', async () => {
+        const mongoUri = await mongoServer.getUri();
+        const client = await MongoClient.connect(mongoUri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        databaseService['db'] = client.db('database');
+        await databaseService.populateMode2990LeaderBoard();
+        const players = await databaseService.database.collection('Mode 2990').find({}).toArray();
+        expect(players.length).to.equal(5);
     });
 });
