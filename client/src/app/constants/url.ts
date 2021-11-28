@@ -6,4 +6,4 @@ const PORT = 3000;
 
 export const SERVER_URL = URL.dev + ':' + PORT;
 
-export const RESPONSE_DELAY = 100;
+export const RESPONSE_DELAY = 1000;
