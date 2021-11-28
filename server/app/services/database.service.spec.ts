@@ -1,18 +1,22 @@
 // Disable to have access to private objects
 /* eslint-disable dot-notation */
-// import { fail } from "assert";
+// import { NameProperties } from '@app/classes/name-properties';
+// import { VirtualPlayerNamesService } from './virtual-player-names.service';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { DatabaseService } from './database.service';
+import { DatabaseService, DATABASE_MAX_VALUE } from './database.service';
+
 chai.use(chaiAsPromised); // this allows us to test for rejection
 
 describe('Database service', () => {
     let databaseService: DatabaseService;
     let mongoServer: MongoMemoryServer;
+    // let virtualPlayerNamesService: VirtualPlayerNamesService;
+    // let testPlayer: NameProperties;
 
     beforeEach(async () => {
         databaseService = new DatabaseService();
@@ -20,6 +24,15 @@ describe('Database service', () => {
         // Start a local test server
         // mongoServer = new MongoMemoryServer();
         mongoServer = await MongoMemoryServer.create();
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // virtualPlayerNamesService = new VirtualPlayerNamesService(databaseService as any);
+        // testPlayer = {
+        //     name: 'Name1',
+        //     default: false,
+        //     isAdvanced: false,
+        // };
+        // await virtualPlayerNamesService.names.insertOne(testPlayer);
     });
 
     afterEach(async () => {
@@ -46,9 +59,21 @@ describe('Database service', () => {
     //         expect(databaseService['client']).to.be.undefined;
     //     }
     // });
+    // it('should add a new name', async () => {
+    //     const name: NameProperties = {
+    //         name: 'Name2',
+    //         default: false,
+    //         isAdvanced: false,
+    //     };
 
-    it('should populate the database with a helper function', async () => {
-        const mongoUri = await mongoServer.getUri();
+    //     await databaseService.addName(name);
+    //     const names = await virtualPlayerNamesService.names.find({}).toArray();
+    //     expect(names.length).to.equal(2);
+    //     expect(names.find((x) => x.name === name.name)).to.deep.equals(name);
+    // });
+
+    it('should populate the Mode2990 collection with a helper function', async () => {
+        const mongoUri = mongoServer.getUri();
         const client = await MongoClient.connect(mongoUri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -56,6 +81,29 @@ describe('Database service', () => {
         databaseService['db'] = client.db('database');
         await databaseService.populateMode2990LeaderBoard();
         const players = await databaseService.database.collection('Mode 2990').find({}).toArray();
-        expect(players.length).to.equal(5);
+        expect(players.length).to.equal(DATABASE_MAX_VALUE);
+    });
+
+    it('should populate the Classic collection with a helper function', async () => {
+        const mongoUri = mongoServer.getUri();
+        const client = await MongoClient.connect(mongoUri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        databaseService['db'] = client.db('database');
+        await databaseService.populateClassicLeaderBoard();
+        const players = await databaseService.database.collection('Classic').find({}).toArray();
+        expect(players.length).to.equal(DATABASE_MAX_VALUE);
+    });
+
+    it('should not populate the database with start function if it is already populated', async () => {
+        const mongoUri = await mongoServer.getUri();
+        await databaseService.start(mongoUri);
+        let players = await databaseService.database.collection('Mode 2990').find({}).toArray();
+        expect(players.length).to.equal(DATABASE_MAX_VALUE);
+        await databaseService.closeConnection();
+        await databaseService.start(mongoUri);
+        players = await databaseService.database.collection('Mode 2990').find({}).toArray();
+        expect(players.length).to.equal(DATABASE_MAX_VALUE);
     });
 });

@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { QuitConfirmationDialogComponent } from './quit-confirmation-dialog.component';
@@ -12,6 +13,7 @@ describe('QuitConfirmationDialogComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [QuitConfirmationDialogComponent],
             providers: [{ provide: SoundManagerService, useValue: soundManagerServiceSpy }],
+            imports: [HttpClientTestingModule],
         }).compileComponents();
     });
 

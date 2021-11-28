@@ -2,9 +2,9 @@ import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 // import { HttpResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { RESPONSE_DELAY } from '@app/constants/url';
 import { Leaderboard, LeaderboardService } from './leaderboard.service';
 
-const RESPONSE_DELAY = 1000;
 describe('LeaderboardService', () => {
     let service: LeaderboardService;
     let httpTestingController: HttpTestingController;
@@ -26,13 +26,13 @@ describe('LeaderboardService', () => {
             const sortSpy = spyOn(service, 'sortLeaderBoard');
             service.fetchClassic();
 
-            const req = httpTestingController.expectOne(service.urlString);
+            const req = httpTestingController.expectOne(service.urlString + '/ClassicLeaderboard');
 
             expect(req.request.method).toEqual('GET');
 
             const players: Leaderboard[] = [
-                { id: '87', name: 'a name', score: 199 },
-                { id: '4', name: 'another name', score: 5 },
+                { name: 'a name', score: 199, mode: 'classic' },
+                { name: 'another name', score: 5, mode: 'classic' },
             ];
             const serverResponse = new HttpResponse({ body: players });
             req.event(serverResponse);
@@ -47,13 +47,13 @@ describe('LeaderboardService', () => {
             const sortSpy = spyOn(service, 'sortLeaderBoard');
             service.fetchLog2990();
 
-            const req = httpTestingController.expectOne(service.urlString + '/ClassicLeaderboard');
+            const req = httpTestingController.expectOne(service.urlString);
 
             expect(req.request.method).toEqual('GET');
 
             const players: Leaderboard[] = [
-                { id: '87', name: 'a name', score: 199 },
-                { id: '4', name: 'another name', score: 5 },
+                { name: 'a name', score: 199, mode: 'classic' },
+                { name: 'another name', score: 5, mode: 'classic' },
             ];
             const serverResponse = new HttpResponse({ body: players });
             req.event(serverResponse);

@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SERVER_URL } from '@app/constants/url';
+
 interface NameProperties {
     name: string;
     default: boolean;
@@ -10,17 +11,25 @@ interface NameProperties {
     providedIn: 'root',
 })
 export class NamesService {
+    connectionEstablished: boolean;
+    error: boolean;
     beginnerNames: NameProperties[] = [{ name: 'patate', isAdvanced: false, default: true }];
     advancedNames: NameProperties[] = [{ name: 'tomate', isAdvanced: true, default: true }];
     urlString: string;
 
     constructor(private http: HttpClient) {
         this.urlString = SERVER_URL + '/api/virtual/';
+        this.error = false;
     }
-
     async fetchNames() {
         const response = this.http.get<NameProperties[]>(this.urlString);
-        response.subscribe((nameProperties) => this.assignNames(nameProperties));
+        response.subscribe(
+            (nameProperties) => {
+                this.connectionEstablished = true;
+                this.assignNames(nameProperties);
+            },
+            (error) => this.handleError(error),
+        );
     }
     assignNames(nameProperties: NameProperties[]) {
         this.beginnerNames = nameProperties.filter((nameProperty) => !nameProperty.isAdvanced);
@@ -36,7 +45,7 @@ export class NamesService {
         response.subscribe(async () => this.fetchNames());
     }
     async delete(name: NameProperties) {
-        const response = this.http.post<NameProperties>(this.urlString + 'delete', name);
+        const response = this.http.post<void>(this.urlString + 'delete', name);
         response.subscribe(async () => this.fetchNames());
     }
     getRandomName(mode: string): string {
@@ -47,5 +56,8 @@ export class NamesService {
         const rightArray = arrayMap.get(mode) as NameProperties[];
         console.log('mode', mode, 'rightArray', rightArray);
         return rightArray[Math.floor(rightArray.length * Math.random())].name;
+    }
+    private handleError(errorResponse: HttpErrorResponse) {
+        this.error = true;
     }
 }

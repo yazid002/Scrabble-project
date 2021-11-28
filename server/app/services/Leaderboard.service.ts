@@ -92,13 +92,13 @@ export class LeaderBoardService {
             });
     }
 
-    async resetClassic() {
-        this.databaseService.resetClassicLeaderboard();
-    }
+    // async resetClassic() {
+    //     this.databaseService.resetClassicLeaderboard();
+    // }
 
-    async resetMode2990() {
-        this.databaseService.resetMode2990Leaderboard();
-    }
+    // async resetMode2990() {
+    //     this.databaseService.resetMode2990Leaderboard();
+    // }
 
     async endGame(player: Leaderboard) {
         let leaderboard: Leaderboard[] = [];

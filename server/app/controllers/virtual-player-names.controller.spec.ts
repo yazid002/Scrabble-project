@@ -1,52 +1,55 @@
-// import { Application } from '@app/app';
-// import { VirtualPlayerNamesService } from '@app/services/virtual-player-names.service';
+import { Application } from '@app/app';
+import { NameProperties } from '@app/classes/name-properties';
+import { VirtualPlayerNamesService } from '@app/services/virtual-player-names.service';
 // import * as chai from 'chai';
-// import { StatusCodes } from 'http-status-codes';
-// import { createStubInstance, SinonStubbedInstance } from 'sinon';
-// import * as supertest from 'supertest';
-// import { Container } from 'typedi';
+import { expect } from 'chai';
+// import * as spies from 'chai-spies';
+import { StatusCodes } from 'http-status-codes';
+import { createStubInstance, SinonStubbedInstance } from 'sinon';
+import * as supertest from 'supertest';
+import { Container } from 'typedi';
 
-// const HTTP_STATUS_OK = StatusCodes.OK;
-// interface NameProperties {
-//     name: string;
-//     default: boolean;
-//     isAdvanced: boolean;
-// }
-// describe('VirtualPlayerNamesController', () => {
-//     let service: SinonStubbedInstance<VirtualPlayerNamesService>;
-//     let expressApp: Express.Application;
+const HTTP_STATUS_OK = StatusCodes.OK;
 
-//     beforeEach(async () => {
-//         service = createStubInstance(VirtualPlayerNamesService);
-//         // service.names = [
-//         //     { name: 'Ordi Illetré', default: true, isAdvanced: false },
-//         //     { name: 'Étudiant de la maternelle', default: true, isAdvanced: false },
-//         //     { name: 'Analphabète', default: true, isAdvanced: false },
-//         //     { name: 'Dictionnaire en Personne', default: true, isAdvanced: true },
-//         //     { name: 'Word Master', default: true, isAdvanced: true },
-//         //     { name: 'Étudiant en littérature', default: true, isAdvanced: true },
-//         // ];
-//         const app = Container.get(Application);
-//         // eslint-disable-next-line dot-notation
-//         Object.defineProperty(app['VirtualPlayerNamesController'], 'virtualPlayerNamesService', { value: service, writable: true });
-//         expressApp = app.app;
-//     });
+describe('VirtualPlayerNamesController', () => {
+    let service: SinonStubbedInstance<VirtualPlayerNamesService>;
+    let expressApp: Express.Application;
 
-//     it('/ should return a list of names', async () => {
-//         const expectedMessage: NameProperties[] = [
-//             { name: 'Ordi Illetré', default: true, isAdvanced: false },
-//             { name: 'Étudiant de la maternelle', default: true, isAdvanced: false },
-//             { name: 'Analphabète', default: true, isAdvanced: false },
-//             { name: 'Dictionnaire en Personne', default: true, isAdvanced: true },
-//             { name: 'Word Master', default: true, isAdvanced: true },
-//             { name: 'Étudiant en littérature', default: true, isAdvanced: true },
-//         ];
+    const players: NameProperties[] = [
+        { name: 'nom1', isAdvanced: false, default: true },
+        { name: 'nom1', isAdvanced: false, default: true },
+        { name: 'nom1', isAdvanced: false, default: true },
+        { name: 'nom1', isAdvanced: false, default: true },
+        { name: 'nom1', isAdvanced: false, default: true },
+        { name: 'nom1', isAdvanced: false, default: true },
+    ];
+    beforeEach(async () => {
+        service = createStubInstance(VirtualPlayerNamesService);
+        service.getNames.resolves(players);
+        service.addName.resolves(undefined);
+        service.reset.resolves(undefined);
+        service.delete.resolves(undefined);
+        const app = Container.get(Application);
+        // eslint-disable-next-line dot-notation
+        Object.defineProperty(app['virtualPlayerNamesController'], 'virtualPlayerNamesService', { value: service, writable: true });
+        expressApp = app.app;
+    });
 
-//         return supertest(expressApp)
-//             .get('/api/virtual/')
-//             .expect(HTTP_STATUS_OK)
-//             .then((response) => {
-//                 chai.expect(response.body).to.deep.equal(expectedMessage);
-//             });
-//     });
-// });
+    it('/ should return a list of names', async () => {
+        return supertest(expressApp)
+            .get('/api/virtual/')
+            .expect(HTTP_STATUS_OK)
+            .then((response) => {
+                expect(response.body).to.deep.equal(players);
+            });
+    });
+    it('/add should return status OK', async () => {
+        return supertest(expressApp).post('/api/virtual/add').expect(HTTP_STATUS_OK);
+    });
+    it('/reset should return status OK', async () => {
+        return supertest(expressApp).get('/api/virtual/reset').expect(HTTP_STATUS_OK);
+    });
+    it('/delete should return status OK', async () => {
+        return supertest(expressApp).post('/api/virtual/delete').expect(HTTP_STATUS_OK);
+    });
+});

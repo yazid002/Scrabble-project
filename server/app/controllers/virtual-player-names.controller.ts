@@ -22,18 +22,16 @@ export class VirtualPlayerNamesController {
         this.router.post('/delete', async (req: Request, res: Response) => {
             console.log('delete name controller', req.body);
 
-            const names = this.virtualPlayerNamesService.delete(req.body);
+            const names = await this.virtualPlayerNamesService.delete(req.body);
             res.json(names);
         });
         this.router.get('/reset', async (req: Request, res: Response) => {
             console.log('reset controler ', req.body);
 
-            const names = this.virtualPlayerNamesService.reset();
+            const names = await this.virtualPlayerNamesService.reset();
             res.json(names);
         });
         this.router.get('/', async (req: Request, res: Response) => {
-            console.log('get name controller ', req.body);
-
             const names = await this.virtualPlayerNamesService.getNames();
             console.log(names);
             res.json(names);

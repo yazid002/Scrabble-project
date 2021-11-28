@@ -12,7 +12,7 @@ const DATABASE_URL =
 const DATABASE_NAME = 'Leaderboard';
 const DATABASE_COLLECTION = 'Mode 2990';
 const DATABASE_COLLECTION_CLASSIC = 'Classic';
-const DATABASE_MAX_VALUE = 5;
+export const DATABASE_MAX_VALUE = 5;
 export const DATABASE_VIRTUAL_NAMES = 'VirtualPlayerNames';
 
 @Service()
@@ -48,23 +48,21 @@ export class DatabaseService {
     async closeConnection(): Promise<void> {
         return this.client.close();
     }
-    async addName(name: NameProperties) {
+    async addName(name: NameProperties): Promise<void> {
         await this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
+        return undefined;
     }
-    async reset(): Promise<void> {
+    async reset() {
         await this.db.collection(DATABASE_VIRTUAL_NAMES).deleteMany({ default: { $eq: false } });
-        // for (const name of names) {
-        //     this.db.collection(DATABASE_VIRTUAL_NAMES).insertOne(name);
-        // }
     }
 
-    async resetClassicLeaderboard(): Promise<void> {
-        await this.db.collection(DATABASE_COLLECTION_CLASSIC).deleteMany({});
-    }
+    // async resetClassicLeaderboard(): Promise<void> {
+    //     await this.db.collection(DATABASE_COLLECTION_CLASSIC).deleteMany({});
+    // }
 
-    async resetMode2990Leaderboard(): Promise<void> {
-        await this.db.collection(DATABASE_COLLECTION).deleteMany({});
-    }
+    // async resetMode2990Leaderboard(): Promise<void> {
+    //     await this.db.collection(DATABASE_COLLECTION).deleteMany({});
+    // }
 
     async populateMode2990LeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
