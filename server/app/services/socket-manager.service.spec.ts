@@ -2,11 +2,14 @@ import { GameState } from '@app/classes/game-state';
 import { Server } from '@app/server';
 import { Room, SocketManager } from '@app/services/socket-manager.service';
 import { expect } from 'chai';
+import { assert } from 'console';
+import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
 // disable car on importe une constante du coté client, on doit utiliser un pattern
 // eslint-disable-next-line no-restricted-imports
 import { RESPONSE_DELAY } from '../../../client/src/app/constants/url';
+
 describe('Socket manager service', () => {
     let service: SocketManager;
     let server: Server;
@@ -159,7 +162,7 @@ describe('Socket manager service', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
+    
     it('should emit rooms when leaveRoom is emitted', (done) => {
         let callCounter = '';
         clientSocket.on('rooms', () => {
@@ -170,6 +173,15 @@ describe('Socket manager service', () => {
         setTimeout(() => {
             // eslint-disable-next-line dot-notation
             expect(callCounter).to.equal('hello');
+            done();
+        }, RESPONSE_DELAY);
+    });
+    it('should call leaderboardService.endGame on endGame', (done) => {
+        // eslint-disable-next-line dot-notation
+        const endGameSpy = sinon.spy(service['leaderboardService'], 'endGame');
+        clientSocket.emit('endGame', { name: 'a Name', score: 99, mode: 'classic' });
+        setTimeout(() => {
+            assert(endGameSpy.called);
             done();
         }, RESPONSE_DELAY);
     });
