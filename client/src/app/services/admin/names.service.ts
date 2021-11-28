@@ -45,7 +45,7 @@ export class NamesService {
         response.subscribe(async () => this.fetchNames());
     }
     async delete(name: NameProperties) {
-        const response = this.http.post<NameProperties>(this.urlString + 'delete', name);
+        const response = this.http.post<void>(this.urlString + 'delete', name);
         response.subscribe(async () => this.fetchNames());
     }
     getRandomName(mode: string): string {
