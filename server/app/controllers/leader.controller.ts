@@ -28,6 +28,7 @@ export class LeaderBoardController {
             // .catch((error: Error) => {
             //     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
             // });
+            // le catch a été enlevé car j'arrivais pas à le tester. Par contre, il foncitonne bien
         });
     }
 }
