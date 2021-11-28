@@ -5,3 +5,5 @@ const URL: { aws: string; dev: string } = {
 const PORT = 3000;
 
 export const SERVER_URL = URL.dev + ':' + PORT;
+
+export const RESPONSE_DELAY = 100;

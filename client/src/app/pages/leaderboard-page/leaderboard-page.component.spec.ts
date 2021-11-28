@@ -8,15 +8,15 @@ describe('LeaderboardPageComponent', () => {
     let fixture: ComponentFixture<LeaderboardPageComponent>;
     let learderboardServiceSpy: jasmine.SpyObj<LeaderboardService>;
     beforeEach(async () => {
-        learderboardServiceSpy = jasmine.createSpyObj('LeaderboardService', [
-            'sort',
-            'deletePlayer',
-            'addPlayer',
-            'getAllClassicPlayer',
-            'getAllPlayer',
-        ]);
-        learderboardServiceSpy.leaderboardClassic = [{ id: 'an id', name: 'a name', score: 100 }];
-        learderboardServiceSpy.leaderboardMode2990 = [{ id: 'an id', name: 'a name', score: 100 }];
+        learderboardServiceSpy = jasmine.createSpyObj('LeaderboardService', ['fetchClassic', 'fetchLog2990']);
+        learderboardServiceSpy.leaderboardClassic = [
+            { name: 'a name', score: 199, mode: 'classic' },
+            { name: 'another name', score: 5, mode: 'classic' },
+        ];
+        learderboardServiceSpy.leaderboardMode2990 = [
+            { name: 'a name', score: 199, mode: 'log2990' },
+            { name: 'another name', score: 5, mode: 'log2990' },
+        ];
         await TestBed.configureTestingModule({
             providers: [{ provide: LeaderboardService, useValue: learderboardServiceSpy }],
             declarations: [LeaderboardPageComponent],

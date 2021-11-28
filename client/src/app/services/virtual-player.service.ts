@@ -68,18 +68,18 @@ export class VirtualPlayerService {
         service.addOutputToMessages(message);
     }
     private async beginnerPlay(service: VirtualPlayerService): Promise<void> {
-        const oneOfTenProbability = 1000;
+        const oneOfTenProbability = 10;
         const randomNumber = Math.floor(oneOfTenProbability * Math.random());
         let message: IChat;
         if (randomNumber === 0) {
-            message = await service.place();
-        } else if (randomNumber === 1) {
-            message = service.exchange();
-        } else {
             message = { from: SENDER.computer, body: "L'ordi a passé son tour" };
             const skipTime = 1;
             service.sendSkipMessage();
             service.timerService.resetTimerDelay(skipTime);
+        } else if (randomNumber === 1) {
+            message = service.exchange();
+        } else {
+            message = await service.place();
         }
         service.addOutputToMessages(message);
     }

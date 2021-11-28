@@ -4,12 +4,13 @@ import { Room, SocketManager } from '@app/services/socket-manager.service';
 import { expect } from 'chai';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
-
+// disable car on importe une constante du coté client, on doit utiliser un pattern
+// eslint-disable-next-line no-restricted-imports
+import { RESPONSE_DELAY } from '../../../client/src/app/constants/url';
 describe('Socket manager service', () => {
     let service: SocketManager;
     let server: Server;
     let clientSocket: Socket;
-    const RESPONSE_DELAY = 1000;
     beforeEach(() => {
         server = Container.get(Server);
         server.init();

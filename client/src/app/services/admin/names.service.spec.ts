@@ -1,8 +1,8 @@
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { RESPONSE_DELAY } from '@app/constants/url';
 import { NamesService } from './names.service';
-const RESPONSE_DELAY = 1000;
 describe('NamesService', () => {
     let service: NamesService;
     let httpTestingController: HttpTestingController;
