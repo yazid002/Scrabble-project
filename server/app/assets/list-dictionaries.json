@@ -1,7 +1,21 @@
 [
-    {
-        "filename": "dictionary.json",
-        "title": "Mon dictionnaire",
-        "description": "Description de base"
-    }
+  {
+    "filename": "dictionary.json",
+    "title": "Mon dictionnaire",
+    "description": "Description de base"
+  },
+  {
+    "filename": "miniDictionnaire.json",
+    "title": "dictionnaire de poche",
+    "description": "Un petit dictionnaire mais util"
+  },
+  {
+    "filename": "larouse.json",
+    "title": "Dictionnaire la rouse",
+    "description": "Dictionnaire de francais"
+  },
+  {
+    "filename": "minidic.json",
+    "description": "Dictionnaire de francais"
+  }
 ]
