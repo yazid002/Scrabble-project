@@ -17,14 +17,14 @@ describe('Database service', () => {
     let mongoServer: MongoMemoryServer;
     // let virtualPlayerNamesService: VirtualPlayerNamesService;
     // let testPlayer: NameProperties;
-
+    let mongoUri: string;
     beforeEach(async () => {
         databaseService = new DatabaseService();
 
         // Start a local test server
         // mongoServer = new MongoMemoryServer();
         mongoServer = await MongoMemoryServer.create();
-
+        mongoUri = await mongoServer.getUri();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         // virtualPlayerNamesService = new VirtualPlayerNamesService(databaseService as any);
         // testPlayer = {
@@ -44,7 +44,6 @@ describe('Database service', () => {
     // NB : We dont test the case when DATABASE_URL is used in order to not connect to the real database
     it('should connect to the database when start is called', async () => {
         // Reconnect to local server
-        const mongoUri = mongoServer.getUri();
         await databaseService.start(mongoUri);
         // expect(databaseService['client']).to.not.be.undefined;
         expect(databaseService['db'].databaseName).to.equal('Leaderboard');
@@ -73,7 +72,6 @@ describe('Database service', () => {
     // });
 
     it('should populate the Mode2990 collection with a helper function', async () => {
-        const mongoUri = mongoServer.getUri();
         const client = await MongoClient.connect(mongoUri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -85,7 +83,6 @@ describe('Database service', () => {
     });
 
     it('should populate the Classic collection with a helper function', async () => {
-        const mongoUri = mongoServer.getUri();
         const client = await MongoClient.connect(mongoUri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -97,7 +94,6 @@ describe('Database service', () => {
     });
 
     it('should not populate the database with start function if it is already populated', async () => {
-        const mongoUri = await mongoServer.getUri();
         await databaseService.start(mongoUri);
         let players = await databaseService.database.collection('Mode 2990').find({}).toArray();
         expect(players.length).to.equal(DATABASE_MAX_VALUE);
