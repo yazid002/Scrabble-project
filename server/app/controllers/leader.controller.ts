@@ -1,5 +1,5 @@
 import { Leaderboard } from '@app/classes/Leaderboard';
-import { LeaderBoardService } from '@app/services/Leaderboard.service';
+import { LeaderboardService } from '@app/services/Leaderboard.service';
 // import Types from '@app/types';
 import { Request, Response, Router } from 'express';
 import { Service } from 'typedi';
@@ -8,7 +8,7 @@ import { Service } from 'typedi';
 export class LeaderBoardController {
     router: Router;
 
-    constructor(private leaderboardService: LeaderBoardService) {
+    constructor(private leaderboardService: LeaderboardService) {
         this.configureRouter();
     }
 

@@ -1,6 +1,6 @@
 import { Application } from '@app/app';
 import { Leaderboard } from '@app/classes/Leaderboard';
-import { LeaderBoardService } from '@app/services/Leaderboard.service';
+import { LeaderboardService } from '@app/services/Leaderboard.service';
 // import * as chai from 'chai';
 import { expect } from 'chai';
 // import * as spies from 'chai-spies';
@@ -12,7 +12,7 @@ import { Container } from 'typedi';
 const HTTP_STATUS_OK = StatusCodes.OK;
 
 describe('LeaderBoardController', () => {
-    let service: SinonStubbedInstance<LeaderBoardService>;
+    let service: SinonStubbedInstance<LeaderboardService>;
     let expressApp: Express.Application;
 
     const log2990Board: Leaderboard[] = [
@@ -26,7 +26,7 @@ describe('LeaderBoardController', () => {
         { name: 'nom6', score: 16, mode: 'classic' },
     ];
     beforeEach(async () => {
-        service = createStubInstance(LeaderBoardService);
+        service = createStubInstance(LeaderboardService);
         service.getAllClassicPlayers.resolves(classicBoard);
         service.getAll2990Players.resolves(log2990Board);
         const app = Container.get(Application);

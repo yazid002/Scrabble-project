@@ -3,7 +3,7 @@ import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
 import { DatabaseService } from './services/database.service';
-import { LeaderBoardService } from './services/Leaderboard.service';
+import { LeaderboardService } from './services/Leaderboard.service';
 import { SocketManager } from './services/socket-manager.service';
 
 const BASE_DIX = 10;
@@ -18,7 +18,7 @@ export class Server {
     constructor(
         private readonly application: Application,
         private databaseService: DatabaseService,
-        private leaderboardService: LeaderBoardService,
+        private leaderboardService: LeaderboardService,
     ) {}
 
     private static normalizePort(val: number | string): number | string | boolean {
