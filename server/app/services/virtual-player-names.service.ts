@@ -30,11 +30,6 @@ export class VirtualPlayerNamesService {
         }
         return undefined;
     }
-    async isPlayerDefault(playerName: string): Promise<boolean> {
-        return this.names.findOne({ name: playerName }).then((name: NameProperties) => {
-            return name.default;
-        });
-    }
     async delete(playerName: NameProperties) {
         await this.names.findOneAndDelete({ name: playerName.name, default: false });
 
