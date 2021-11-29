@@ -20,14 +20,6 @@ export class LeaderBoardService {
         return this.databaseService.database.collection(DATABASE_COLLECTION_2990);
     }
 
-    // async getAllCourses(): Promise<Leaderboard[]> {
-    //     return this.collection
-    //         .find({})
-    //         .toArray()
-    //         .then((leaderboards: Leaderboard[]) => {
-    //             return leaderboards;
-    //         });
-    // }
     async getAll2990Players(): Promise<Leaderboard[]> {
         return this.collection2990
             .find({})

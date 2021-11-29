@@ -16,19 +16,7 @@ describe('Virtual players names service', () => {
         await databaseService.start(mongoUri);
         service = new VirtualPlayerNamesService(databaseService);
     });
-    // afterEach(async () => {
-    //     service.reset();
-    // })
 
-    // it('Should only add a name if name is not already in list', async () => {
-    //     const name: NameProperties = { name: 'a name', default: false, isAdvanced: true };
-    //     service.addName(name);
-    // });
-    // it('should have only the default names after calling reset', () => {
-    //     const name: NameProperties = { name: 'a name', default: false, isAdvanced: true };
-    //     service.addName(name);
-    //     service.reset();
-    // });
     describe('getNames', () => {
         it('should return an array of NameProperties', async () => {
             const name: NameProperties = { name: 'a name', default: false, isAdvanced: true };

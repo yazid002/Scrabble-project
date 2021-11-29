@@ -3,7 +3,6 @@ import { NameProperties } from '@app/classes/name-properties';
 import { Db, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
-// import { Course } from '../classes/course';
 
 // CHANGE the URL for your database information
 const DATABASE_URL =
@@ -55,14 +54,6 @@ export class DatabaseService {
     async reset() {
         await this.db.collection(DATABASE_VIRTUAL_NAMES).deleteMany({ default: { $eq: false } });
     }
-
-    // async resetClassicLeaderboard(): Promise<void> {
-    //     await this.db.collection(DATABASE_COLLECTION_CLASSIC).deleteMany({});
-    // }
-
-    // async resetMode2990Leaderboard(): Promise<void> {
-    //     await this.db.collection(DATABASE_COLLECTION).deleteMany({});
-    // }
 
     async populateMode2990LeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
