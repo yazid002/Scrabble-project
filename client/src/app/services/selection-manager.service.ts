@@ -25,6 +25,8 @@ export class SelectionManagerService {
     timerDone: Subscription;
 
     onLeftClickSelectionTypeMapping: Map<SelectionType, (event?: MouseEvent) => void>;
+    onKeyBoardClickSelectionTypeMapping: Map<SelectionType, (event?: KeyboardEvent) => void>;
+    hideOperationTypeMapping: Map<OperationType, () => boolean>;
 
     constructor(
         private exchangeSelectionService: ExchangeSelectionService,
@@ -42,6 +44,14 @@ export class SelectionManagerService {
             [SelectionType.Grid, (event?: MouseEvent) => this.handleGridSelectionOnLeftClick(event as MouseEvent)],
             [SelectionType.Rack, (event?: MouseEvent) => this.handleRackSelectionOnLeftClick(event as MouseEvent)],
             [SelectionType.None, () => this.handleNoneSelectionOnLeftClick()],
+        ]);
+        this.onKeyBoardClickSelectionTypeMapping = new Map([
+            [SelectionType.Grid, (event?: KeyboardEvent) => this.handleGridSelectionOnKeyBoardClick(event as KeyboardEvent)],
+            [SelectionType.Rack, (event?: KeyboardEvent) => this.handleRackSelectionOnKeyBoardClick(event as KeyboardEvent)],
+        ]);
+        this.hideOperationTypeMapping = new Map([
+            [OperationType.Place, () => this.placeSelectionService.hideOperation()],
+            [OperationType.Exchange, () => this.exchangeSelectionService.hideOperation()],
         ]);
         this.timerDone = this.timerService.timerDone.subscribe(() => {
             this.placeSelectionService.cancelPlacement();
@@ -62,117 +72,35 @@ export class SelectionManagerService {
             this.exchangeSelectionService.cancelExchange();
         }
     }
-
-    handleGridSelectionOnLeftClick(event: MouseEvent) {
-        if (this.gameService.currentTurn !== PLAYER.realPlayer) {
-            this.updateSelectionType(SelectionType.Rack);
-            return;
-        }
-        this.placeSelectionService.onBoardClick(event, true);
-        this.exchangeSelectionService.cancelExchange();
-        this.rackLettersManipulationService.cancelManipulation();
-    }
-
-    handleRackSelectionOnLeftClick(event: MouseEvent) {
-        // si on est pas en train de selectionner pour echange, on peut selectionner pour manipulation
-        const letterIsAlreadySelectedForExchange = this.isLetterClickAlreadySelectedForExchange(event);
-        if (!letterIsAlreadySelectedForExchange) {
-            this.exchangeSelectionService.cancelExchange();
-            this.placeSelectionService.cancelPlacement();
-            this.rackLettersManipulationService.onMouseLeftClick(event, this.gameService.players[PLAYER.realPlayer].rack);
-        }
-    }
-
-    handleNoneSelectionOnLeftClick() {
-        this.placeSelectionService.cancelPlacement();
-        this.rackLettersManipulationService.cancelManipulation();
-        if (this.exchangeSelectionService.hideOperation()) {
-            this.selectionType = SelectionType.Rack;
-        } else {
-            this.exchangeSelectionService.cancelExchange();
-        }
-    }
-
     onRightClick(event: MouseEvent) {
         event.preventDefault();
         if (this.selectionType !== SelectionType.Rack) {
             this.exchangeSelectionService.cancelExchange();
         } else {
+            this.placeSelectionService.cancelPlacement();
             this.rackLettersManipulationService.cancelManipulation();
             this.exchangeSelectionService.onMouseRightClick(event, this.gameService.players[PLAYER.realPlayer].rack);
         }
     }
 
     onKeyBoardClick(event: KeyboardEvent) {
-        if (this.selectionType === SelectionType.Grid) {
-            this.handleGridSelectionOnKeyBoardClick(event);
-        } else if (this.selectionType === SelectionType.Rack) {
-            this.handleRackSelectionOnKeyBoardClick(event);
-        }
-    }
-
-    handleGridSelectionOnKeyBoardClick(event: KeyboardEvent) {
-        const itSMyTurn = this.gameService.currentTurn === PLAYER.realPlayer;
-        // On ne peut pas placer si ce n'est pas notre tour
-        if (!itSMyTurn) {
-            this.updateSelectionType(SelectionType.Rack);
+        event.preventDefault();
+        const selectionHandler = this.onKeyBoardClickSelectionTypeMapping.get(this.selectionType) as (event?: KeyboardEvent) => void;
+        if (!selectionHandler) {
             return;
         }
-        const isPlacementCanceled =
-            event.key === KeyboardKeys.Escape ||
-            (event.key === KeyboardKeys.Backspace && this.placeSelectionService.selectedTilesForPlacement.length <= 1);
-        if (isPlacementCanceled) {
-            this.selectionType = SelectionType.Rack;
-        }
-        this.placeSelectionService.onKeyBoardClick(event, this.gameService.players[PLAYER.realPlayer].rack);
-        if (event.key === KeyboardKeys.Enter) {
-            this.submitPlacement();
-        }
-    }
-
-    handleRackSelectionOnKeyBoardClick(event: KeyboardEvent) {
-        const isRackSelectedForManipulation = event.key === KeyboardKeys.ArrowRight || event.key === KeyboardKeys.ArrowLeft || event.key === 'Shift';
-
-        if (isRackSelectedForManipulation) {
-            this.rackLettersManipulationService.onKeyBoardClick(event, this.gameService.players[PLAYER.realPlayer].rack);
-        } else if (!this.isLetterKeyAlreadySelectedForExchange(event)) {
-            this.exchangeSelectionService.cancelExchange();
-            this.rackLettersManipulationService.onKeyBoardClick(event, this.gameService.players[PLAYER.realPlayer].rack);
-        } else {
-            this.rackLettersManipulationService.cancelManipulation();
-        }
-    }
-
-    isLetterKeyAlreadySelectedForExchange(event: KeyboardEvent): boolean {
-        const index = this.rackLettersManipulationService.getIndexFromKey(event, this.gameService.players[PLAYER.realPlayer].rack);
-        if (index === NOT_FOUND) {
-            return false;
-        }
-        return this.exchangeSelectionService.isLetterAlreadySelected(index);
-    }
-
-    isLetterClickAlreadySelectedForExchange(event: MouseEvent): boolean {
-        const index = this.selectionUtilsService.getMouseClickIndex(event, this.gameService.players[PLAYER.realPlayer].rack);
-        if (index === NOT_FOUND) {
-            return false;
-        }
-        return this.exchangeSelectionService.isLetterAlreadySelected(index);
+        selectionHandler(event);
     }
 
     onMouseWheel(event: WheelEvent) {
-        if (this.selectionType === SelectionType.Rack) {
-            let keyEvent: KeyboardEvent;
-            if (event.deltaY > 0) {
-                keyEvent = {
-                    key: KeyboardKeys.ArrowRight,
-                    preventDefault: () => void '',
-                } as KeyboardEvent;
-            } else {
-                keyEvent = { key: KeyboardKeys.ArrowLeft, preventDefault: () => void '' } as KeyboardEvent;
-            }
-
-            this.onKeyBoardClick(keyEvent);
+        if (this.selectionType !== SelectionType.Rack) {
+            return;
         }
+        const keyEvent = { key: KeyboardKeys.ArrowLeft, preventDefault: () => void '' };
+        if (event.deltaY > 0) {
+            keyEvent.key = KeyboardKeys.ArrowRight;
+        }
+        this.onKeyBoardClick(keyEvent as KeyboardEvent);
     }
 
     onCancelManipulation(selectionType: SelectionType) {
@@ -216,12 +144,11 @@ export class SelectionManagerService {
     }
 
     hideOperation(operationType: OperationType): boolean {
-        if (operationType === OperationType.Place) {
-            return this.placeSelectionService.hideOperation();
-        } else if (operationType === OperationType.Exchange) {
-            return this.exchangeSelectionService.hideOperation();
+        const operation = this.hideOperationTypeMapping.get(operationType) as (operationType: OperationType) => boolean;
+        if (!operation) {
+            return true;
         }
-        return true;
+        return operation(operationType);
     }
 
     onCancelPlacement(selectionType: SelectionType) {
@@ -233,10 +160,85 @@ export class SelectionManagerService {
         this.onKeyBoardClick(keyEvent);
     }
 
-    submitPlacement() {
+    private activePlacement() {
         this.command = this.placeSelectionService.command;
+        if (this.command === '') {
+            return;
+        }
         this.chatboxComponent.inputBox = this.command;
         this.chatboxComponent.fromSelection = true;
         this.chatboxComponent.onSubmit();
+    }
+    private handleGridSelectionOnKeyBoardClick(event: KeyboardEvent) {
+        const itSMyTurn = this.gameService.currentTurn === PLAYER.realPlayer;
+        // On ne peut pas placer si ce n'est pas notre tour
+        if (!itSMyTurn) {
+            this.updateSelectionType(SelectionType.Rack);
+            return;
+        }
+        const isPlacementCancelled =
+            event.key === KeyboardKeys.Escape ||
+            (event.key === KeyboardKeys.Backspace && this.placeSelectionService.selectedTilesForPlacement.length <= 1);
+        if (isPlacementCancelled) {
+            this.updateSelectionType(SelectionType.Rack);
+        }
+        this.placeSelectionService.onKeyBoardClick(event, this.gameService.players[PLAYER.realPlayer].rack);
+        if (event.key === KeyboardKeys.Enter) {
+            this.activePlacement();
+        }
+    }
+
+    private handleGridSelectionOnLeftClick(event: MouseEvent) {
+        if (this.gameService.currentTurn !== PLAYER.realPlayer) {
+            this.updateSelectionType(SelectionType.Rack);
+            return;
+        }
+        this.placeSelectionService.onBoardClick(event, true);
+        this.exchangeSelectionService.cancelExchange();
+        this.rackLettersManipulationService.cancelManipulation();
+    }
+
+    private handleRackSelectionOnLeftClick(event: MouseEvent) {
+        // si on est pas en train de selectionner pour echange, on peut selectionner pour manipulation
+        const letterIsAlreadySelectedForExchange = this.isLetterClickAlreadySelectedForExchange(event);
+        if (!letterIsAlreadySelectedForExchange) {
+            this.exchangeSelectionService.cancelExchange();
+            this.placeSelectionService.cancelPlacement();
+            this.rackLettersManipulationService.onMouseLeftClick(event, this.gameService.players[PLAYER.realPlayer].rack);
+        }
+    }
+
+    private handleNoneSelectionOnLeftClick() {
+        this.placeSelectionService.cancelPlacement();
+        this.rackLettersManipulationService.cancelManipulation();
+        if (this.exchangeSelectionService.hideOperation()) {
+            this.selectionType = SelectionType.Rack;
+        } else {
+            this.exchangeSelectionService.cancelExchange();
+        }
+    }
+
+    private handleRackSelectionOnKeyBoardClick(event: KeyboardEvent) {
+        const isRackSelectedForManipulation =
+            event.key === KeyboardKeys.ArrowRight || event.key === KeyboardKeys.ArrowLeft || event.key === KeyboardKeys.Shift;
+
+        if (isRackSelectedForManipulation) {
+            this.rackLettersManipulationService.onKeyBoardClick(event, this.gameService.players[PLAYER.realPlayer].rack);
+        } else if (!this.isLetterKeyAlreadySelectedForExchange(event)) {
+            this.exchangeSelectionService.cancelExchange();
+            this.rackLettersManipulationService.onKeyBoardClick(event, this.gameService.players[PLAYER.realPlayer].rack);
+        } else {
+            this.rackLettersManipulationService.cancelManipulation();
+        }
+    }
+
+    private isLetterKeyAlreadySelectedForExchange(event: KeyboardEvent): boolean {
+        const index = this.rackLettersManipulationService.getIndexFromKey(event, this.gameService.players[PLAYER.realPlayer].rack);
+        return index === NOT_FOUND ? false : this.exchangeSelectionService.isLetterAlreadySelected(index);
+    }
+
+    private isLetterClickAlreadySelectedForExchange(event: MouseEvent): boolean {
+        const index = this.selectionUtilsService.getMouseClickIndex(event, this.gameService.players[PLAYER.realPlayer].rack);
+        return index === NOT_FOUND ? false : this.exchangeSelectionService.isLetterAlreadySelected(index);
     }
 }

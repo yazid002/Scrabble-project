@@ -1,7 +1,4 @@
-/* eslint-disable no-console */
 import { HttpClient } from '@angular/common/http';
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable no-unused-vars */
 /* eslint-disable arrow-parens */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -31,7 +28,7 @@ export class DictionaryOptionsComponent implements OnInit {
     ) {}
 
     async ngOnInit(): Promise<void> {
-        this.interactionService.uploadingFileMessage$.subscribe(async (message) => {
+        this.interactionService.uploadingFileMessage$.subscribe(async (message: string) => {
             this.listDictionaries.length = 0;
             if (message === 'ok') {
                 await this.getAllDictionaries();
@@ -57,11 +54,13 @@ export class DictionaryOptionsComponent implements OnInit {
     closeDialog() {
         this.matDialogRef.close();
     }
-    updateDictionary(dictionary: TitleDescriptionOfDictionary) {}
+    updateDictionary(/* dictionary: TitleDescriptionOfDictionary*/) {
+        // TODO a implementer
+    }
 
     deleteDictionary(filename: string) {
-        this.http.delete('http://localhost:3000/api/admin/dictionary/delete/' + filename).subscribe((rep) => {
-            console.log(rep);
+        this.http.delete('http://localhost:3000/api/admin/dictionary/delete/' + filename).subscribe((/* rep: string*/) => {
+            // TODO a implementer
         });
     }
 

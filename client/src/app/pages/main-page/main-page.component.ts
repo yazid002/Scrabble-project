@@ -1,6 +1,8 @@
+import { JoinRoomDialogComponent } from './../../components/join-room-dialog/join-room-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GameModeDialogComponent } from '@app/components/game-mode-dialog/game-mode-dialog.component';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { BehaviorSubject } from 'rxjs';
 
@@ -13,17 +15,31 @@ export class MainPageComponent implements OnInit {
     readonly title: string = 'LOG2990';
 
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
-    constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService) {}
-    chooseMode(modeKey: string) {
-        this.userSettingsService.settings.mode.currentChoiceKey = modeKey;
-        this.openDialog();
-    }
+    constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, private soundManagerService: SoundManagerService) {}
+    // chooseMode(modeKey: string) {
+    //     this.userSettingsService.settings.mode.currentChoiceKey = modeKey;
+    //     this.openDialog();
+    // }
 
     ngOnInit(): void {
         localStorage.clear();
     }
 
-    private openDialog() {
+    playClickSound() {
+        this.soundManagerService.playClickOnButtonAudio();
+    }
+
+    // playMainPageSound() {
+    //     this.soundManagerService.playMainPageAudio();
+    // }
+
+    openCreateRoomDialog() {
         this.matDialog.open(GameModeDialogComponent);
+        this.playClickSound();
+    }
+
+    openJoinRoomDialog() {
+        this.matDialog.open(JoinRoomDialogComponent);
+        this.playClickSound();
     }
 }

@@ -21,9 +21,6 @@ export class DictionaryService {
         message: '',
     };
 
-    findAllDictionaries(): TitleDescriptionOfDictionary[] {
-        return dictionaries;
-    }
 
     saveTitleAndDescription(titleAndDescription: TitleDescriptionOfDictionary): FileMessages {
         try {
@@ -50,4 +47,10 @@ export class DictionaryService {
             return 'file was not removed, server side problem';
         }
     }
+
+    findAllDictionaries(): TitleDescriptionOfDictionary[]{
+        return dictionaries;
+    }
+
+
 }

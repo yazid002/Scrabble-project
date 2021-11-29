@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
+import { Case } from '@app/classes/case';
 import { CaseStyle } from '@app/classes/case-style';
 import { ICharacter as ICharacter } from '@app/classes/letter';
 import { Vec2 } from '@app/classes/vec2';
-import { bonuses, DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
+import { BONUSES, DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { NOT_FOUND } from '@app/constants/common-constants';
 import { ReserveService } from '@app/services/reserve.service';
 
@@ -11,30 +12,38 @@ import { ReserveService } from '@app/services/reserve.service';
     providedIn: 'root',
 })
 export class GridService {
-    letterStyle: CaseStyle = { color: 'NavajoWhite', font: '15px serif' };
-    pointStyle: CaseStyle = { color: 'NavajoWhite', font: '10px serif' };
-    squareColor: string = 'black';
-    border: CaseStyle = { squareBorderColor: 'black' };
-    squareLineWidth: number = 1;
+    letterStyle: CaseStyle;
+    pointStyle: CaseStyle;
+    squareColor: string;
+    border: CaseStyle;
+    squareLineWidth: number;
 
     gridContext: CanvasRenderingContext2D;
+    tiles: Case[][];
 
-    constructor(private reserveService: ReserveService) {}
+    constructor(private reserveService: ReserveService) {
+        this.tiles = tiles;
+        this.letterStyle = { color: 'NavajoWhite', font: '15px serif' };
+        this.pointStyle = { color: 'NavajoWhite', font: '10px serif' };
+        this.squareColor = 'black';
+        this.border = { squareBorderColor: 'black' };
+        this.squareLineWidth = 1;
+    }
 
     writeLetter(letter: string, coord: Vec2): void {
-        tiles[coord.y][coord.x].oldStyle.color = tiles[coord.y][coord.x].style.color;
-        tiles[coord.y][coord.x].oldStyle.font = tiles[coord.y][coord.x].style.font;
+        this.tiles[coord.y][coord.x].oldStyle.color = this.tiles[coord.y][coord.x].style.color;
+        this.tiles[coord.y][coord.x].oldStyle.font = this.tiles[coord.y][coord.x].style.font;
 
-        tiles[coord.y][coord.x].style.font = this.letterStyle.font;
-        tiles[coord.y][coord.x].style.color = this.letterStyle.color;
+        this.tiles[coord.y][coord.x].style.font = this.letterStyle.font;
+        this.tiles[coord.y][coord.x].style.color = this.letterStyle.color;
 
-        tiles[coord.y][coord.x].oldText = tiles[coord.y][coord.x].text;
-        tiles[coord.y][coord.x].text = letter;
+        this.tiles[coord.y][coord.x].oldText = this.tiles[coord.y][coord.x].text;
+        this.tiles[coord.y][coord.x].text = letter;
         this.fillGridPortion(
             { x: coord.x, y: coord.y },
-            tiles[coord.y][coord.x].text,
-            tiles[coord.y][coord.x].style.color as string,
-            tiles[coord.y][coord.x].style.font as string,
+            this.tiles[coord.y][coord.x].text,
+            this.tiles[coord.y][coord.x].style.color as string,
+            this.tiles[coord.y][coord.x].style.font as string,
         );
     }
 
@@ -60,9 +69,9 @@ export class GridService {
         }
         this.fillGridPortion(
             coord,
-            tiles[coord.y][coord.x].text,
-            tiles[coord.y][coord.x].style.color as string,
-            tiles[coord.y][coord.x].style.font as string,
+            this.tiles[coord.y][coord.x].text,
+            this.tiles[coord.y][coord.x].style.color as string,
+            this.tiles[coord.y][coord.x].style.font as string,
         );
     }
 
@@ -112,7 +121,7 @@ export class GridService {
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
                 this.squareColor = 'black';
-                this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
+                this.fillGridPortion({ y, x }, this.tiles[y][x].text, this.tiles[y][x].style.color as string, this.tiles[y][x].style.font as string);
             }
         }
         this.drawGridOutdoor();
@@ -164,7 +173,8 @@ export class GridService {
 
             this.changeGridStyle(this.pointStyle.color, this.pointStyle.font);
             const points =
-                tiles[coord.y][coord.x].letter !== '' && tiles[coord.y][coord.x].letter === tiles[coord.y][coord.x].letter.toUpperCase()
+                this.tiles[coord.y][coord.x].letter !== '' &&
+                this.tiles[coord.y][coord.x].letter === this.tiles[coord.y][coord.x].letter.toUpperCase()
                     ? 0
                     : character.points;
 
@@ -196,10 +206,15 @@ export class GridService {
         this.pointStyle.font = pointPolice.toString() + 'px serif';
         for (let x = 0; x < SQUARE_NUMBER; x++) {
             for (let y = 0; y < SQUARE_NUMBER; y++) {
-                if (!bonuses.includes(tiles[y][x].text) && tiles[y][x].text !== '') {
-                    tiles[y][x].style.font = this.letterStyle.font;
+                if (!BONUSES.includes(this.tiles[y][x].text) && this.tiles[y][x].text !== '') {
+                    this.tiles[y][x].style.font = this.letterStyle.font;
                     this.squareColor = 'black';
-                    this.fillGridPortion({ y, x }, tiles[y][x].text, tiles[y][x].style.color as string, tiles[y][x].style.font as string);
+                    this.fillGridPortion(
+                        { y, x },
+                        this.tiles[y][x].text,
+                        this.tiles[y][x].style.color as string,
+                        this.tiles[y][x].style.font as string,
+                    );
                     this.gridContext.strokeRect(x * SQUARE_WIDTH, y * SQUARE_HEIGHT, SQUARE_HEIGHT, SQUARE_WIDTH);
                 }
             }

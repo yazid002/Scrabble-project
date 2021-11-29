@@ -72,7 +72,7 @@ describe('RackLettersManipulationService', () => {
         const clickExpected = { offsetX: (firstIndexSelected + 1) * (DEFAULT_WIDTH / RACK_SIZE) + 1 } as MouseEvent;
         const onMouseLeftClickSpy = spyOn(service, 'onMouseLeftClick').and.callThrough();
 
-        // Car la fonction est privee
+        // moveToTheRight is private
         // eslint-disable-next-line dot-notation
         service['moveToTheRight'](rack);
 
@@ -95,7 +95,7 @@ describe('RackLettersManipulationService', () => {
         const clickExpected = { offsetX: firstIndex * (DEFAULT_WIDTH / RACK_SIZE) + 1 } as MouseEvent;
         const onMouseLeftClickSpy = spyOn(service, 'onMouseLeftClick').and.callThrough();
 
-        // Car la fonction est privee
+        // moveToTheRight is private
         // eslint-disable-next-line dot-notation
         service['moveToTheRight'](rack);
 
@@ -117,7 +117,7 @@ describe('RackLettersManipulationService', () => {
         const clickExpected = { offsetX: (firstIndexSelected - 1) * (DEFAULT_WIDTH / RACK_SIZE) + 1 } as MouseEvent;
         const onMouseLeftClickSpy = spyOn(service, 'onMouseLeftClick').and.callThrough();
 
-        // Car la fonction est privee
+        // moveToTheLeft is private
         // eslint-disable-next-line dot-notation
         service['moveToTheLeft'](rack);
 
@@ -140,7 +140,7 @@ describe('RackLettersManipulationService', () => {
         const clickExpected = { offsetX: lastIndex * (DEFAULT_WIDTH / RACK_SIZE) + 1 } as MouseEvent;
         const onMouseLeftClickSpy = spyOn(service, 'onMouseLeftClick').and.callThrough();
 
-        // Car la fonction est privee
+        // moveToTheLeft is private
         // eslint-disable-next-line dot-notation
         service['moveToTheLeft'](rack);
 
@@ -388,7 +388,7 @@ describe('RackLettersManipulationService', () => {
 
         selectionUtilsServiceSpy.getMouseClickIndex.and.returnValue(casePosition);
 
-        // Car la fonction est privee
+        // handleLetterKeySelection is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const handleLetterKeySelectionSpy = spyOn<any>(service, 'handleLetterKeySelection').and.callThrough();
 
@@ -438,7 +438,7 @@ describe('RackLettersManipulationService', () => {
         ];
 
         const getIndexFromKeySpy = spyOn(service, 'getIndexFromKey').and.callThrough();
-        // Car la fonction est privee
+        // handleLetterKeySelection is private
         // eslint-disable-next-line dot-notation
         service['handleLetterKeySelection'](keyEvent, rack);
 
@@ -459,11 +459,11 @@ describe('RackLettersManipulationService', () => {
             { name: 'E', quantity: 15, points: 1, display: 'E' },
         ];
 
-        // Car la fonction est privee
+        // manipulationSteps is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const manipulationStepsSpy = spyOn<any>(service, 'manipulationSteps').and.callThrough();
 
-        // Car la fonction est privee
+        // handleLetterKeySelection is private
         // eslint-disable-next-line dot-notation
         service['handleLetterKeySelection'](keyEvent, rack);
 
@@ -486,7 +486,7 @@ describe('RackLettersManipulationService', () => {
         ];
 
         service.shiftKey = false;
-        // Car la fonction est privee
+        // handleLetterKeySelection is private
         // eslint-disable-next-line dot-notation
         service['handleLetterKeySelection'](keyEvent, rack);
 
@@ -560,5 +560,92 @@ describe('RackLettersManipulationService', () => {
         service.getIndexFromKey(keyEvent, rack);
 
         expect(cancelManipulationSpy).toHaveBeenCalledTimes(1);
+    });
+
+    describe('onKeyBoardClick', () => {
+        let moveToTheLeftSpy: jasmine.Spy<() => void>;
+        let moveToTheRightSpy: jasmine.Spy<() => void>;
+        let flagToCheck: string;
+
+        beforeEach(() => {
+            service = TestBed.inject(RackLettersManipulationService);
+            flagToCheck = 'NOT_FOUND';
+            // moveToTheLeft is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            moveToTheLeftSpy = spyOn<any>(service, 'moveToTheLeft').and.callFake(() => {
+                flagToCheck = 'moveToTheLeft';
+            });
+            // moveToTheRight is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            moveToTheRightSpy = spyOn<any>(service, 'moveToTheRight').and.callFake(() => {
+                flagToCheck = 'moveToTheRight';
+            });
+        });
+
+        it('onKeyBoardClick should move to the left', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.ArrowLeft,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
+
+            service.onKeyBoardClick(keyEvent, rack);
+
+            expect(flagToCheck).toEqual('moveToTheLeft');
+            expect(moveToTheLeftSpy).toHaveBeenCalled();
+            expect(moveToTheRightSpy).not.toHaveBeenCalled();
+        });
+
+        it('onKeyBoardClick should move to the right', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.ArrowRight,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
+
+            service.onKeyBoardClick(keyEvent, rack);
+
+            expect(flagToCheck).toEqual('moveToTheRight');
+            expect(moveToTheLeftSpy).not.toHaveBeenCalled();
+            expect(moveToTheRightSpy).toHaveBeenCalled();
+        });
+
+        it('onKeyBoardClick should not get the right function', () => {
+            flagToCheck = 'NOT_FOUND';
+            const keyEvent = {
+                key: KeyboardKeys.Backspace,
+                preventDefault: () => void '',
+            } as KeyboardEvent;
+
+            const rack: ICharacter[] = [
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'B', quantity: 0, points: 3, display: 'B' },
+                { name: 'D', quantity: 3, points: 2, display: 'D' },
+                { name: 'E', quantity: 15, points: 1, display: 'E' },
+            ];
+
+            service.onKeyBoardClick(keyEvent, rack);
+
+            expect(flagToCheck).toEqual('NOT_FOUND');
+            expect(moveToTheLeftSpy).not.toHaveBeenCalled();
+            expect(moveToTheRightSpy).not.toHaveBeenCalled();
+        });
     });
 });

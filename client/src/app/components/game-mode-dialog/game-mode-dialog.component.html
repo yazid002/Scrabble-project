@@ -1,13 +1,10 @@
 <h2 mat-dialog-title>Veuillez Choisir le nombre de joueurs</h2>
 
-<!-- {{ userSettingsService.settings|json}} -->
-
 <form (keyup)="validateName()" mat-dialog-content aria-details="w">
-    <mat-card>
+    <mat-card class="dialog">
         <div class="setting" *ngFor="let setting of userSettingsService.settings | keyvalue">
-            <!-- {{ setting | json }} -->
             <mat-card-title>{{ setting.value.setting.settingName }}</mat-card-title>
-            <mat-radio-group [name]="setting.key" [(ngModel)]="setting.value.currentChoiceKey">
+            <mat-radio-group (change)="playClickOnButtonAudio()" [name]="setting.key" [(ngModel)]="setting.value.currentChoiceKey">
                 <mat-radio-button
                     color="primary"
                     *ngFor="let choice of setting.value.setting.availableChoices"
@@ -18,6 +15,7 @@
                 </mat-radio-button>
             </mat-radio-group>
         </div>
+
         <div>
             <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
                 <mat-label>{{ error ? errorMessage : userSettingsService.nameOption.displayName }}</mat-label>
@@ -43,7 +41,7 @@
         </div>
 
         <section id="footer">
-            <button mat-raised-button mat-dialog-close>Retour À l'accueil</button>
+            <button mat-raised-button mat-dialog-close (click)="playClickOnButtonAudio()">Retour À l'accueil</button>
             <button
                 mat-raised-button
                 color="primary"

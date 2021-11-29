@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
 import { RoomService } from '@app/services/room.service';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { QuitMultiplayerDialogComponent } from './../quit-multiplayer-dialog/quit-multiplayer-dialog.component';
 import { SwitchDialogComponent } from './../switch-dialog/switch-dialog.component';
@@ -9,13 +10,18 @@ import { SwitchDialogComponent } from './../switch-dialog/switch-dialog.componen
 @Component({
     selector: 'app-waiting-room',
     templateUrl: './waiting-room.component.html',
-    styleUrls: ['./waiting-room.component.scss'],
+    styleUrls: ['./waiting-room.component.scss', './waiting-room.component-buttons.scss'],
 })
 export class WaitingRoomComponent implements OnInit {
     name: string;
     mode: string;
     timer: string;
-    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public roomService: RoomService) {}
+    constructor(
+        public userSettingsService: UserSettingsService,
+        public matDialog: MatDialog,
+        public roomService: RoomService,
+        public soundManagerService: SoundManagerService,
+    ) {}
     ngOnInit(): void {
         const name = this.userSettingsService.nameOption.userChoice;
         const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
@@ -34,12 +40,9 @@ export class WaitingRoomComponent implements OnInit {
         this.matDialog.open(QuitMultiplayerDialogComponent);
     }
 
-    // joinRandomRoom() {
-    //     const random = Math.floor(Math.random() * this.roomService.rooms.length);
-    //     if (this.roomService.rooms[random].settings.mode === this.mode) {
-    //         this.roomService.joinRoom(this.roomService.rooms[random].id);
-    //     }
-    // }
+    playClickOnButtonAudio() {
+        this.soundManagerService.playClickOnButtonAudio();
+    }
     private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined) {
         if (name && mode && timer) {
             this.name = name;
@@ -47,8 +50,9 @@ export class WaitingRoomComponent implements OnInit {
             this.timer = timer.value;
         }
     }
-    get numbers(): number {
-        // console.log('length = ' + this.roomService.rooms.length);
-        return this.roomService.rooms.length;
-    }
+
+    // get numbers(): number {
+    //     // console.log('length = ' + this.roomService.rooms.length);
+    //     return this.roomService.rooms.length;
+    // }
 }

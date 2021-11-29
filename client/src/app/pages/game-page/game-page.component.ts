@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
@@ -11,6 +11,7 @@ import { GridService } from '@app/services/grid.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { Room, RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { TimerService } from '@app/services/timer.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
@@ -19,7 +20,7 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent implements AfterViewInit {
+export class GamePageComponent implements AfterViewInit, OnInit {
     @ViewChild(ChatboxComponent) chatboxComponent: ChatboxComponent;
     @ViewChild(PlayAreaComponent) playAreaComponent: PlayAreaComponent;
 
@@ -39,6 +40,7 @@ export class GamePageComponent implements AfterViewInit {
         private timerService: TimerService,
         private matDialog: MatDialog,
         private gameService: GameService,
+        public soundManagerService: SoundManagerService,
     ) {
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
@@ -47,7 +49,6 @@ export class GamePageComponent implements AfterViewInit {
             this.showAbandonDIalog(signal);
         });
     }
-
     @HostListener('keyup', ['$event'])
     onKeyBoardClick(event: KeyboardEvent) {
         this.selectionManager.onKeyBoardClick(event);
@@ -68,9 +69,9 @@ export class GamePageComponent implements AfterViewInit {
         this.selectionManager.onMouseWheel(event);
     }
 
-    // ngOnInit(): void {
-    //     this.gameSyncService.sendToLocalStorage();
-    // }
+    ngOnInit(): void {
+        this.soundManagerService.stopMainPageAudio();
+    }
 
     ngAfterViewInit(): void {
         this.selectionManager.chatboxComponent = this.chatboxComponent;
@@ -84,12 +85,14 @@ export class GamePageComponent implements AfterViewInit {
         const step = 1;
         const maxValue = 22;
         this.gridService.increaseTileSize(step, step, maxValue);
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     decreaseSize() {
         const step = -1;
         const maxValue = 13;
         this.gridService.decreaseTileSize(step, step, maxValue);
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     onSubmitPlacement(selectionType: SelectionType) {
@@ -102,14 +105,17 @@ export class GamePageComponent implements AfterViewInit {
 
     onCancelPlacement(selectionType: SelectionType) {
         this.selectionManager.onCancelPlacement(selectionType);
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     onSubmitExchange(selectionType: SelectionType) {
         this.selectionManager.onSubmitExchange(selectionType);
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     onCancelManipulation(selectionType: SelectionType) {
         this.selectionManager.onCancelManipulation(selectionType);
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     disableManipulation() {
@@ -124,6 +130,7 @@ export class GamePageComponent implements AfterViewInit {
 
     onCancelExchange(selectionType: SelectionType) {
         this.selectionManager.onCancelExchange(selectionType);
+        this.soundManagerService.playClickOnButtonAudio();
     }
 
     get selectionType(): typeof SelectionType {

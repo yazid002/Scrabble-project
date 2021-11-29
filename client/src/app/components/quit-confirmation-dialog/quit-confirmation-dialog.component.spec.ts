@@ -1,13 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { QuitConfirmationDialogComponent } from './quit-confirmation-dialog.component';
 
 describe('QuitConfirmationDialogComponent', () => {
     let component: QuitConfirmationDialogComponent;
     let fixture: ComponentFixture<QuitConfirmationDialogComponent>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(async () => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playQuitGameAudio']);
         await TestBed.configureTestingModule({
             declarations: [QuitConfirmationDialogComponent],
+            providers: [{ provide: SoundManagerService, useValue: soundManagerServiceSpy }],
         }).compileComponents();
     });
 

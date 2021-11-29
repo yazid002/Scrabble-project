@@ -21,6 +21,7 @@ export class Application {
     app: express.Application;
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
+
     constructor(
         private readonly exampleController: ExampleController,
         private readonly dateController: DateController,

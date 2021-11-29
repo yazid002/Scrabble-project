@@ -5,7 +5,7 @@ const MODE: IOptionList = {
     settingName: 'Mode de jeux',
     availableChoices: [
         { key: 'classic', value: 'Classique' },
-        { key: 'log2990', value: 'LOG2990', disabled: true },
+        { key: 'log2990', value: 'LOG2990' },
     ],
 };
 const NUM_PLAYERS: IOptionList = {
@@ -14,6 +14,10 @@ const NUM_PLAYERS: IOptionList = {
         { key: 'solo', value: 'Solo' },
         { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
     ],
+};
+const NUM_PLAYERS_SWITCH: IOptionList = {
+    settingName: 'Nombre de joueurs',
+    availableChoices: [{ key: 'solo', value: 'Solo' }],
 };
 
 const COMPUTER_LEVEL: IOptionList = {
@@ -54,6 +58,23 @@ export class UserSettingsService {
         computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
+    joinSettings: {
+        mode: IUserSetting;
+    } = {
+        mode: { setting: MODE, currentChoiceKey: 'classic' },
+    };
+    switchToSoloSettings: {
+        mode: IUserSetting;
+        numPlayers: IUserSetting;
+        computerLevel: IUserSetting;
+        timer: IUserSetting;
+    } = {
+        mode: { setting: MODE, currentChoiceKey: 'classic' },
+        numPlayers: { setting: NUM_PLAYERS_SWITCH, currentChoiceKey: 'solo' },
+        computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+        timer: { setting: TIMER, currentChoiceKey: '60' },
+    };
+
     nameOption = NAME_OPTION;
     computerName: string;
 

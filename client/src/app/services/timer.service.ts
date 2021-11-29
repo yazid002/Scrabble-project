@@ -1,4 +1,5 @@
 import { Injectable, Output } from '@angular/core';
+import { Player } from '@app/classes/player';
 import { BehaviorSubject } from 'rxjs';
 import { UserSettingsService } from './user-settings.service';
 
@@ -6,7 +7,10 @@ import { UserSettingsService } from './user-settings.service';
     providedIn: 'root',
 })
 export class TimerService {
-    @Output() timerDone = new BehaviorSubject<boolean>(true); // value of boolean represents wheter or not the player skips his turn
+    @Output() timerDone = new BehaviorSubject<boolean>(true); // value of boolean represents whether or not the player skips his turn
+    // value of boolean represents whether or not the player has finished its time without placing
+    @Output() resetTurnCounter = new BehaviorSubject<boolean | Player>(true);
+
     isEnabled: boolean;
     nextResetValue: number;
     counter: {
@@ -53,6 +57,7 @@ export class TimerService {
         this.counter.totalTimer = (this.counter.totalTimer + 1) % this.counter.resetValue;
         this.calculateMinNSecond();
         if (this.counter.totalTimer === 0 || this.counter.totalTimer >= this.nextResetValue) {
+            this.resetTurnCounter.next(true);
             this.resetTimer(true);
         }
     }
