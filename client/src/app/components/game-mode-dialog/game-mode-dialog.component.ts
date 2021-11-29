@@ -68,4 +68,11 @@ export class GameModeDialogComponent {
     playClickOnButtonAudio() {
         this.soundManagerService.playClickOnButtonAudio();
     }
+
+    changeDic() {
+        console.log(this.userSettingsService.selectedDictionary);
+    }
+    // changeDic(event: MatSelectModule) {
+    //     console.log(event);
+    // }
 }
