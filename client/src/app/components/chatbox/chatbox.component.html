@@ -23,8 +23,8 @@
         <form>
             <div id="textbox-container">
                 <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
-                    <mat-label [innerHTML]=" error ? errorMessage : 'Tapez un message' "></mat-label>
-                    <input matInput autocomplete="off" [(ngModel)]="inputBox" type="text" name="name" (keyup)="validateFormat()"/>
+                    <mat-label [innerHTML]="error ? errorMessage : 'Tapez un message'"></mat-label>
+                    <input matInput autocomplete="off" [(ngModel)]="inputBox" type="text" name="name" (keyup)="validateFormat()" />
                 </mat-form-field>
             </div>
             <div id="button-container">

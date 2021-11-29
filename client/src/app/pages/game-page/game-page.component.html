@@ -3,30 +3,97 @@
 
     <section class="play-area-container">
         <app-play-area #playArea class="play-area" tabindex="0"></app-play-area>
-        <button id="increaseSize" (click)="increaseSize()">+</button>
-        <button id="decreaseSize" (click)="decreaseSize()">-</button>
-        <!-- *ngIf="!hideOperation(operationType.Exchange)" -->
-        <div>
-            <button
-                id="exchange"
-                mat-raised-button
-                color="primary"
-                type="submit"
-                (click)="onSubmitExchange(selectionType.Rack)"
-                [disabled]="disableExchange()"
-            >
-                Echanger
-            </button>
-            <button id="exchange" mat-raised-button color="primary" type="submit" (click)="onCancelExchange(selectionType.Rack)">Annuler</button>
-        </div>
-        <div *ngIf="!disableManipulation()">
-            <button mat-raised-button color="primary" type="submit" (click)="onCancelManipulation(selectionType.Rack)">Annuler</button>
-        </div>
 
-        <div *ngIf="!hideOperation(operationType.Place)">
-            <button mat-raised-button color="primary" type="submit" (click)="onSubmitPlacement(selectionType.Grid)">Jouer</button>
-            <button mat-raised-button color="primary" type="submit" (click)="onCancelPlacement(selectionType.Grid)">Annuler</button>
+        <div class="operations">
+            <img
+                id="img"
+                src="https://cdn4.iconfinder.com/data/icons/arrows-29/96/Arrows1_right-13-512.png"
+                alt="arrow image"
+                display
+                style="display: none"
+            />
+            <img
+                id="img2"
+                src="https://cdn.iconscout.com/icon/free/png-64/down-arrow-1965037-1660430.png"
+                alt="arrow image"
+                display
+                style="display: none"
+            />
+            <div class="size-controls">
+                <div>
+                    <button mat-raised-button color="primary" id="increaseSize" (click)="increaseSize()">+<mat-icon> format_size</mat-icon></button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" id="decreaseSize" (click)="decreaseSize()">-<mat-icon> format_size</mat-icon></button>
+                </div>
+            </div>
+            <span title="Passer">
+                <div class="passer">
+                    <button
+                        id="button"
+                        mat-raised-button
+                        color="primary"
+                        (click)="skipTurn()"
+                        [disabled]="gameService.currentTurn !== player.realPlayer || gameService.didGameEnd() === true"
+                    >
+                        <mat-icon>skip_next</mat-icon>
+                    </button>
+                </div>
+            </span>
+            <div *ngIf="!hideOperation(operationType.Exchange)" class="exchange">
+                <span title="Echanger">
+                    <div>
+                        <button
+                            class="submit"
+                            mat-raised-button
+                            color="primary"
+                            type="submit"
+                            (click)="onSubmitExchange(selectionType.Rack)"
+                            [disabled]="disableExchange()"
+                        >
+                            <mat-icon>repeat</mat-icon>
+                        </button>
+                    </div>
+                </span>
+                <span title="Annuler">
+                    <div>
+                        <button class="exchange-cancel" mat-raised-button type="submit" (click)="onCancelExchange(selectionType.Rack)">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </div>
+                </span>
+            </div>
+            <span *ngIf="!disableManipulation()" title="Annuler">
+                <div class="manipulation">
+                    <button
+                        class="manipulation-cancel"
+                        mat-raised-button
+                        color="primary"
+                        type="submit"
+                        (click)="onCancelManipulation(selectionType.Rack)"
+                    >
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </div>
+            </span>
+            <div *ngIf="!hideOperation(operationType.Place)" class="place">
+                <span title="Jouer">
+                    <div>
+                        <button mat-raised-button color="primary" class="submit" type="submit" (click)="onSubmitPlacement(selectionType.Grid)">
+                            <mat-icon>play_circle_filled</mat-icon>
+                        </button>
+                    </div>
+                </span>
+                <span title="Annuler">
+                    <div>
+                        <button mat-raised-button class="cancel" type="submit" (click)="onCancelPlacement(selectionType.Grid)">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </div>
+                </span>
+            </div>
         </div>
     </section>
+
     <app-chatbox></app-chatbox>
 </div>

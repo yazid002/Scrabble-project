@@ -6,44 +6,45 @@
     </mat-card-title-group>
 
     <mat-card-content>Il y a {{ nbLettersReserve }} lettres restantes dans la réserve</mat-card-content>
+    <div *ngIf="mode === 'LOG2990'">
+        <mat-card class="goals">
+            <mat-card-title class="goalsTitle">Objectifs publiques: </mat-card-title>
 
-    <mat-card class="goals" *ngIf="mode === 'LOG2990'">
-        <mat-card-title class="goalsTitle">Objectifs publiques: </mat-card-title>
-        <mat-card-content [ngClass]="goal.complete ? 'completedGoal' : 'uncompletedGoal'" class="goalsContent" *ngFor="let goal of publicGoals">
-            <app-goal [isPublic]="true" [goal]="goal"></app-goal>
-        </mat-card-content>
-    </mat-card>
-
-    <mat-card
-        *ngFor="let player of gameService.players; let i = index"
-        [id]="i === playerIndex.realPlayer ? 'me' : 'otherPlayer'"
-        [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"
-    >
-        <mat-card-title
-            >{{ player.name }}
+            <mat-card-content [ngClass]="goal.complete ? 'completedGoal' : 'uncompletedGoal'" class="goalsContent" *ngFor="let goal of publicGoals">
+                <app-goal [isPublic]="true" [goal]="goal"></app-goal>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <div class="player-info">
+        <mat-card
+            *ngFor="let player of gameService.players; let i = index"
+            [id]="i === playerIndex.realPlayer ? 'me' : 'otherPlayer'"
+            [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"
+        >
+            <mat-card-title class="playerName">{{ player.name }} </mat-card-title>
             <p>
                 <mat-icon class="player" [ngClass]="gameService.currentTurn === i ? 'activePlayer' : ''"> person_pin</mat-icon>
             </p>
-        </mat-card-title>
-
-        <div *ngIf="mode === 'LOG2990'">
-            <div *ngIf="i === playerIndex.realPlayer || privateGoals[i].complete">
-                <mat-card-title class="goalsTitle">
-                    <div>Objectif privé:</div>
-                </mat-card-title>
-                <mat-card-content [ngClass]="privateGoals[i].complete ? 'completedGoal' : 'uncompletedGoal'" class="goalsContent">
-                    <app-goal [isPublic]="false" [goal]="privateGoals[i]" [player]="player"></app-goal>
-                </mat-card-content>
+            <div *ngIf="mode === 'LOG2990'">
+                <!-- *ngIf="i === playerIndex.realPlayer || privateGoals[i].complete" -->
+                <div>
+                    <mat-card-title class="goalsTitle">
+                        <div>Objectif privé:</div>
+                    </mat-card-title>
+                    <mat-card-content [ngClass]="privateGoals[i].complete ? 'completedGoal' : 'uncompletedGoal'" class="goalsContent">
+                        <app-goal [isPublic]="false" [goal]="privateGoals[i]" [player]="player"></app-goal>
+                    </mat-card-content>
+                </div>
             </div>
-        </div>
-        <mat-card-content *ngIf="gameService.numPlayers === 'solo' && i === playerIndex.otherPlayer">Niveau {{ computerLevel }}</mat-card-content>
-        <mat-card-content>Nombre de points: {{ player.points }}</mat-card-content>
-        <mat-card-content *ngIf="i === gameService.currentTurn">
-            Temps restant au tour:
-            <strong class="time"> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
-        </mat-card-content>
-        <mat-card-content *ngIf="player.rack.length < 7"> Il y a {{ player.rack.length }} lettres dans votre chevalet </mat-card-content>
-        <mat-card-subtitle>{{ player.won }}</mat-card-subtitle>
-        <button mat-raised-button *ngIf="player.won" color="warn" routerLink="home">Quitter</button>
-    </mat-card>
+            <mat-card-content *ngIf="gameService.numPlayers === 'solo' && i === playerIndex.otherPlayer">Niveau {{ computerLevel }}</mat-card-content>
+            <mat-card-content>Nombre de points: {{ player.points }}</mat-card-content>
+            <mat-card-content *ngIf="i === gameService.currentTurn">
+                Temps restant au tour:
+                <strong class="time"> {{ timerService.counter.min }}m{{ timerService.counter.seconds }}s </strong>
+            </mat-card-content>
+            <mat-card-content *ngIf="player.rack.length < 7"> Il y a {{ player.rack.length }} lettres dans votre chevalet </mat-card-content>
+            <mat-card-subtitle>{{ player.won }}</mat-card-subtitle>
+            <button mat-raised-button *ngIf="player.won" color="warn" routerLink="home">Quitter</button>
+        </mat-card>
+    </div>
 </mat-card>
