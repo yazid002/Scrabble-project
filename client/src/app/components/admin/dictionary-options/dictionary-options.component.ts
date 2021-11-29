@@ -1,20 +1,19 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable prefer-const */
-/* eslint-disable no-empty */
-/* eslint-disable arrow-parens */
-/* eslint-disable @typescript-eslint/quotes */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpClient } from '@angular/common/http';
-/* eslint-disable import/no-unresolved */
-/* eslint-disable no-restricted-imports */
 /* eslint-disable no-console */
-/* eslint-disable @angular-eslint/no-empty-lifecycle-method */
+import { HttpClient } from '@angular/common/http';
 /* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-useless-constructor */
+/* eslint-disable no-unused-vars */
+/* eslint-disable arrow-parens */
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+// import { DictionaryModel } from '@app/pages/admin-page/models/dictionary.model';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
 import { DictionaryService } from '@app/services/admin/dictionary.service';
+import { InteractionService } from './../../../services/admin/interaction.service';
+// import { FileMessages } from '../../../pages/admin-page/models/file-messages.model';
+// import { ValidationMessageModel } from './../../../pages/admin-page/models/validation-message.model';
+import { DictionaryFormComponent } from './../dictionary-form/dictionary-form.component';
 
 @Component({
     selector: 'app-dictionary-options',
@@ -23,53 +22,50 @@ import { DictionaryService } from '@app/services/admin/dictionary.service';
 })
 export class DictionaryOptionsComponent implements OnInit {
     listDictionaries: TitleDescriptionOfDictionary[] = [];
-    newDictionary: any;
-    isValid: boolean = true;
-    errorMessage = '';
+    matDialogRef: any;
+    constructor(
+        private dictionaryService: DictionaryService,
+        public matDialog: MatDialog,
+        private interactionService: InteractionService,
+        private http: HttpClient,
+    ) {}
 
-    constructor(private dictionaryService: DictionaryService, private http: HttpClient) {}
+    async ngOnInit(): Promise<void> {
+        this.interactionService.uploadingFileMessage$.subscribe(async (message) => {
+            this.listDictionaries.length = 0;
+            if (message === 'ok') {
+                await this.getAllDictionaries();
+                this.closeDialog();
+            }
+        });
+        await this.getAllDictionaries();
+    }
 
-    ngOnInit(): void {}
+    async getAllDictionaries() {
+        this.listDictionaries.length = 0;
+        const res: any = await this.dictionaryService.getAllDictionaries();
+        this.listDictionaries = res;
+    }
 
-    getAllDictionaries() {
-        this.dictionaryService.getAllDictionaries().subscribe((resp) => {
-            this.listDictionaries = resp;
-            console.log('-----> list inside : ' + JSON.stringify(this.listDictionaries));
+    addNewDictionaryInDialogMat() {
+        this.matDialogRef = this.matDialog.open(DictionaryFormComponent, {
+            width: '500px',
+            minHeight: '400px)',
         });
     }
 
-    addNewDictionary() {
-        this.http.get('assets/dictionariesStorage/newDictionaryN1.json').subscribe((data) => {
-            this.newDictionary = data;
-            console.log('====> new dictionary = ' + JSON.stringify(this.newDictionary) + '   ===> size=' + Object.keys(this.newDictionary).length);
-            this.validateDictionary();
+    closeDialog() {
+        this.matDialogRef.close();
+    }
+    updateDictionary(dictionary: TitleDescriptionOfDictionary) {}
+
+    deleteDictionary(filename: string) {
+        this.http.delete('http://localhost:3000/api/admin/dictionary/delete/' + filename).subscribe((rep) => {
+            console.log(rep);
         });
     }
 
-    validateDictionary() {
-        if (Object.keys(this.newDictionary).length !== 3) {
-            this.isValid = false;
-            this.errorMessage = 'le format json du dictionnaire doit avoir 3 cles, title, description et words';
-            return;
-        }
-        Object.keys(this.newDictionary).forEach((key) => {
-            if (key !== 'title' && key !== 'description' && key !== 'words') {
-                this.isValid = false;
-                this.errorMessage = 'le 3 cles d un dictionnaire sont : title, description et words';
-                return;
-            }
-            if (key === 'title' || key === 'description') {
-                let value = this.newDictionary[key];
-                if (typeof value !== 'string' && value! instanceof String) {
-                    this.isValid = false;
-                    this.errorMessage = 'title et description doivent etre de type string';
-                    return;
-                }
-            }
-            if (key === 'words') {
-            }
-            // let value: any = this.newDictionary[key];
-            // console.log('=====> key = ' + key + '    AND value = ' + value);
-        });
+    onCancel() {
+        // this.isAddNewDictionarySelected = false;
     }
 }

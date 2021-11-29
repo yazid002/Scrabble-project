@@ -4,3 +4,4 @@ export class DictionaryModel{
     description: string;
     words: string[];
 }
+

@@ -1,4 +1,6 @@
-import { DictionaryController } from './controllers/dictionary.controller';
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable prettier/prettier */
 import { HttpException } from '@app/classes/http.exception';
 import { DateController } from '@app/controllers/date.controller';
 import { ExampleController } from '@app/controllers/example.controller';
@@ -10,6 +12,7 @@ import * as logger from 'morgan';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
+import { DictionaryController } from './controllers/dictionary.controller';
 import { VirtualPlayerNamesController } from './controllers/virtual-player-names.controller';
 import { WordValidationController } from './controllers/word-validation.controller';
 
@@ -18,7 +21,6 @@ export class Application {
     app: express.Application;
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
-
     constructor(
         private readonly exampleController: ExampleController,
         private readonly dateController: DateController,
@@ -27,7 +29,6 @@ export class Application {
         private readonly dictionaryController: DictionaryController,
     ) {
         this.app = express();
-
         this.swaggerOptions = {
             swaggerDefinition: {
                 openapi: '3.0.0',
@@ -64,6 +65,12 @@ export class Application {
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(cookieParser());
         this.app.use(cors());
+        this.app.set('etag', false);
+        this.app.use((req, res, next) => {
+            res.set('Cache-Control', 'no-store');
+            next();
+        });
+        this.app.disable('view cache');
     }
 
     private errorHandling(): void {

@@ -1,39 +1,53 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable import/namespace */
-/* eslint-disable import/no-deprecated */
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-useless-constructor */
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/promise-function-async */
 /* eslint-disable prettier/prettier */
-import { Dictionary } from '@app/models/dictionary.model';
+/* eslint-disable no-restricted-imports */
+/* eslint-disable prettier/prettier */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable arrow-parens */
+import { FileMessages } from '@app/models/file-messages.model';
 import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDictionary.model';
+import * as fs from 'fs';
 import { Service } from 'typedi';
+import * as dictionaries from '../assets/list-dictionaries.json';
 
 @Service()
 export class DictionaryService {
-    availableDictionaries: TitleDescriptionOfDictionary[] = [{ title: 'Mon dictionnaire', description: 'Description de base' }];
+    fileMessages: FileMessages = {
+        isuploaded: true,
+        message: '',
+    };
 
     findAllDictionaries(): TitleDescriptionOfDictionary[] {
-        return this.availableDictionaries;
+        return dictionaries;
     }
 
-    addDictionary(newDictionary: Dictionary) {
+    saveTitleAndDescription(titleAndDescription: TitleDescriptionOfDictionary): FileMessages {
         try {
-            const newTitleDescriptionDic = new TitleDescriptionOfDictionary();
-            newTitleDescriptionDic.title = newDictionary.title;
-            newTitleDescriptionDic.description = newDictionary.description;
-            this.availableDictionaries.push(newTitleDescriptionDic);
-            // add also dictionary file
-            return 'Le dictionnaire a ete ajoute avec success';
-        } catch (error) {
-            return "Echec d'ajout du dictionnaire";
+            const path = './app/assets/list-dictionaries.json';
+            const data = fs.readFileSync(path, 'utf-8');
+            const list = JSON.parse(data);
+            list.push(titleAndDescription);
+            fs.writeFileSync(path, JSON.stringify(list, null, 2));
+            this.fileMessages.isuploaded = true;
+            this.fileMessages.message = 'file has been successfully uploaded';
+        } catch {
+            this.fileMessages.isuploaded = false;
+            this.fileMessages.message = 'file was not uploaded, server side problem';
+        }
+        return this.fileMessages;
+    }
+
+    deleteFile(filename: string): string {
+        const path = './app/assets/' + filename;
+        try {
+            fs.unlinkSync(path);
+            return 'file removed successfully';
+        } catch (err) {
+            return 'file was not removed, server side problem';
         }
     }
-
-    removeDictionary(titleValue: string) {
-        this.availableDictionaries = this.availableDictionaries.filter((dict) => dict.title.toLowerCase() !== titleValue.toLowerCase());
-    }
-    // remove also dictionary file
 }

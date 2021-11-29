@@ -1,4 +1,39 @@
-<!-- <div *ngIf="listDicttionaries?.length === 0" ; else elseBlock>wait ....</div> -->
-<!-- <ng-template #elseBlock> -->
-<div *ngFor="let dictionary of listDictionaries">{{ dictionary.title }} --- {{ dictionary.description }}</div>
-<!-- </ng-template> -->
+<br /><br /><br /><br />
+<div>
+    <table>
+        <tr>
+            <th>filename</th>
+            <th>Title</th>
+            <th>description</th>
+            <th colspan="2">Action</th>
+        </tr>
+        <tr *ngFor="let dictionary of listDictionaries">
+            <td>{{ dictionary.filename }}</td>
+            <td>{{ dictionary.title }}</td>
+            <td>{{ dictionary.description }}</td>
+            <td style="text-align: center">
+                <button mat-raised-button color="primary" (click)="updateDictionary(dictionary)">update</button>
+            </td>
+            <td>
+                <button mat-raised-button color="warn" (click)="deleteDictionary(dictionary.filename)">delete</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- <div class="container">
+    <br />
+    <h1 style="text-align: center">Add new dictionary</h1>
+    <div style="text-align: center">
+        <div>
+            <input type="file" name="dictionary" (change)="selectDictionary($event)" />
+        </div>
+        <br /><br /><br />
+        <div>
+            <input type="submit" (click)="onSubmit()" style="margin-right: 10px; cursor: pointer" />
+            <button (click)="onCancel()" style="margin-left: 10px; cursor: pointer">Cancel</button>
+        </div>
+        <br />
+        <br />
+    </div>
+</div> -->

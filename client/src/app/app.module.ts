@@ -1,3 +1,4 @@
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +14,7 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+import { DictionaryFormComponent } from './components/admin/dictionary-form/dictionary-form.component';
 import { DictionaryOptionsComponent } from './components/admin/dictionary-options/dictionary-options.component';
 import { PlayerNamesOptionsComponent } from './components/admin/player-names-options/player-names-options.component';
 import { ChatboxComponent } from './components/chatbox/chatbox.component';
@@ -24,7 +26,6 @@ import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.
 import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
-import { FormDictionaryComponent } from './pages/admin-page/form-dictionary/form-dictionary.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
 /**
  * Main module that is used in main.ts.
@@ -52,7 +53,7 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         AdminPageComponent,
         DictionaryOptionsComponent,
         PlayerNamesOptionsComponent,
-        FormDictionaryComponent,
+        DictionaryFormComponent,
     ],
     // eslint-disable-next-line prettier/prettier
     imports: [
@@ -65,6 +66,7 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         HttpClientModule,
         MatButtonModule,
         MatDialogModule,
+        MatSnackBarModule,
     ],
     // entryComponents[DictionaryOptionsComponent],
     providers: [],
