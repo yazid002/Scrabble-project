@@ -94,4 +94,9 @@ describe('LobbyComponent', () => {
         component['assignValues'](newName, newOption);
         expect(component.name).toEqual(newName);
     });
+    it('completeGoalSound should play an audio', () => {
+        soundManagerServiceSpy.playClickOnButtonAudio.and.returnValue(void '');
+        component.playClickOnButtonAudio();
+        expect(soundManagerServiceSpy.playClickOnButtonAudio).toHaveBeenCalled();
+    });
 });
