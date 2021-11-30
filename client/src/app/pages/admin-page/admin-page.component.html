@@ -1,30 +1,29 @@
 <div *ngIf="nameService.connectionEstablished">
-<div *ngIf="!nameService.error">
-    <section id="header">
-        <button mat-button color="warn" routerLink="/home">Retour</button>
-        <button mat-button color="warn">Réinnitialiser les réglages</button>
-    </section>
-    <section>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title> Dictionaire </mat-panel-title>
-                <mat-panel-description> Options pour ajouter et retirer les dictionnaires disponibles </mat-panel-description>
-            </mat-expansion-panel-header>
+    <div *ngIf="!nameService.error">
+        <section id="header">
+            <button mat-button color="warn" routerLink="/home">Retour</button>
+            <button mat-button color="warn">Réinnitialiser les réglages</button>
+        </section>
+        <section>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title> Dictionaire </mat-panel-title>
+                    <mat-panel-description> Options pour ajouter et retirer les dictionnaires disponibles </mat-panel-description>
+                </mat-expansion-panel-header>
 
-            <app-dictionary-options></app-dictionary-options>
-        </mat-expansion-panel>
+                <app-dictionary-options></app-dictionary-options>
+            </mat-expansion-panel>
 
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title> Nom des joueurs virtuels </mat-panel-title>
-                <mat-panel-description> Options pour modifier les nom possible que peuvent prendre les joeurs virtuels </mat-panel-description>
-            </mat-expansion-panel-header>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title> Nom des joueurs virtuels </mat-panel-title>
+                    <mat-panel-description> Options pour modifier les nom possible que peuvent prendre les joeurs virtuels </mat-panel-description>
+                </mat-expansion-panel-header>
 
-            <app-player-names-options></app-player-names-options>
-        </mat-expansion-panel>
-    </section>
-</div>
-
+                <app-player-names-options></app-player-names-options>
+            </mat-expansion-panel>
+        </section>
+    </div>
 </div>
 <div *ngIf="!nameService.connectionEstablished">
     <mat-card *ngIf="!nameService.error">
@@ -33,5 +32,6 @@
     </mat-card>
     <mat-card *ngIf="nameService.error">
         <mat-card-title>Erreur de communication avec le serveur...</mat-card-title>
+        <mat-card-content *ngIf="nameService.errorResponse">{{ nameService.errorResponse.message }}</mat-card-content>
     </mat-card>
 </div>

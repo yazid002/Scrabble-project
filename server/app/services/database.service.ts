@@ -84,7 +84,6 @@ export class DatabaseService {
             },
         ];
 
-        console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
         for (const player of leaderboards) {
             await this.db.collection(DATABASE_COLLECTION).insertOne(player);
         }
@@ -119,7 +118,6 @@ export class DatabaseService {
             },
         ];
 
-        console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
         for (const player of leaderboards) {
             await this.db.collection(DATABASE_COLLECTION_CLASSIC).insertOne(player);
         }

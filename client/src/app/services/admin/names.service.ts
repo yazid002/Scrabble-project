@@ -13,6 +13,7 @@ interface NameProperties {
 export class NamesService {
     connectionEstablished: boolean;
     error: boolean;
+    errorResponse: HttpErrorResponse;
     beginnerNames: NameProperties[] = [{ name: 'patate', isAdvanced: false, default: true }];
     advancedNames: NameProperties[] = [{ name: 'tomate', isAdvanced: true, default: true }];
     urlString: string;
@@ -57,6 +58,8 @@ export class NamesService {
         return rightArray[Math.floor(rightArray.length * Math.random())].name;
     }
     private handleError(errorResponse: HttpErrorResponse) {
+        this.errorResponse = errorResponse;
+
         this.error = true;
     }
 }

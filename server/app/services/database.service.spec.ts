@@ -69,7 +69,7 @@ describe('Database service', () => {
         expect(players.length).to.equal(DATABASE_MAX_VALUE);
     });
 
-    it('should not populate the database with start function if it is already populated', async () => {
+    it('should not populate the database with start function if it is not full', async () => {
         await databaseService.start(mongoUri);
         let players = await databaseService.database.collection('Mode 2990').find({}).toArray();
         expect(players.length).to.equal(DATABASE_MAX_VALUE);
