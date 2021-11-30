@@ -8,11 +8,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable arrow-parens */
+import { Dictionary } from '@app/classes/dictionary';
 import { FileMessages } from '@app/models/file-messages.model';
 import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDictionary.model';
 import * as fs from 'fs';
 import { Service } from 'typedi';
-import * as dictionaries from '../assets/list-dictionaries.json';
+// import * as dictionaries from '../assets/list-dictionaries.json';
 
 @Service()
 export class DictionaryService {
@@ -20,15 +21,38 @@ export class DictionaryService {
         isuploaded: true,
         message: '',
     };
-
-
+    listDictionarires: { filename: string; title: string; description: string }[] = [
+        {
+            filename: 'dictionary.json',
+            title: 'Mon dictionnaire',
+            description: 'Description de base',
+        },
+        {
+            filename: 'miniDictionnaire.json',
+            title: 'dictionnaire de poche',
+            description: 'Un petit dictionnaire mais util',
+        },
+        {
+            filename: 'larouse.json',
+            title: 'Dictionnaire la rouse',
+            description: 'Dictionnaire de francais',
+        },
+        {
+            filename: 'minidic.json',
+            title: 'Dictionnaire la rouse',
+            description: 'Dictionnaire de francais',
+        },
+    ];
+    updateList(newDict: Dictionary) {
+        console.log(newDict);
+    }
     saveTitleAndDescription(titleAndDescription: TitleDescriptionOfDictionary): FileMessages {
         try {
-            const path = './app/assets/list-dictionaries.json';
-            const data = fs.readFileSync(path, 'utf-8');
-            const list = JSON.parse(data);
-            list.push(titleAndDescription);
-            fs.writeFileSync(path, JSON.stringify(list, null, 2));
+            // const path = './app/assets/list-dictionaries.json';
+            // const data = fs.readFileSync(path, 'utf-8');
+            // const list = this.listDictionarires;
+            this.listDictionarires.push(titleAndDescription);
+            // fs.writeFileSync(path, JSON.stringify(list, null, 2));
             this.fileMessages.isuploaded = true;
             this.fileMessages.message = 'file has been successfully uploaded';
         } catch {
@@ -42,15 +66,14 @@ export class DictionaryService {
         const path = './app/assets/' + filename;
         try {
             fs.unlinkSync(path);
+            this.listDictionarires = this.listDictionarires.filter((dict) => dict.filename !== filename);
             return 'file removed successfully';
         } catch (err) {
             return 'file was not removed, server side problem';
         }
     }
 
-    findAllDictionaries(): TitleDescriptionOfDictionary[]{
-        return dictionaries;
+    findAllDictionaries(): TitleDescriptionOfDictionary[] {
+        return this.listDictionarires;
     }
-
-
 }

@@ -78,9 +78,13 @@ export class DictionaryController {
         const upload = multer({ storage });
 
         this.router.post('/addNewDictionary', upload.single('file'), (req, res) => {
+            console.log('req', req);
+            console.log('res', res);
+
             try {
                 this.fileMessages.isuploaded = true;
                 this.fileMessages.message = 'file uploaded';
+
                 res.json(this.fileMessages); // ('{isuploaded:true, message:"file uploaded"}');
             } catch (error) {
                 this.fileMessages.isuploaded = false;

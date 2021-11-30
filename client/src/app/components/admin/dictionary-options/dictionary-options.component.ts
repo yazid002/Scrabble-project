@@ -54,13 +54,15 @@ export class DictionaryOptionsComponent implements OnInit {
     closeDialog() {
         this.matDialogRef.close();
     }
-    updateDictionary(/* dictionary: TitleDescriptionOfDictionary*/) {
+    updateDictionary(dictionary: TitleDescriptionOfDictionary) {
         // TODO a implementer
+        console.log(dictionary);
     }
 
-    deleteDictionary(filename: string) {
-        this.http.delete('http://localhost:3000/api/admin/dictionary/delete/' + filename).subscribe((/* rep: string*/) => {
+    async deleteDictionary(filename: string) {
+        this.http.delete('http://localhost:3000/api/admin/dictionary/delete/' + filename).subscribe(async (/* rep: string*/) => {
             // TODO a implementer
+            await this.getAllDictionaries();
         });
     }
 
