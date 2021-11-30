@@ -92,6 +92,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         const maxValue = 26;
         this.gridService.increaseTileSize(step, step, maxValue);
         this.soundManagerService.playClickOnButtonAudio();
+        this.selectionManager.updateSelectionType(SelectionType.None);
     }
 
     decreaseSize() {
@@ -99,6 +100,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         const maxValue = 17;
         this.gridService.decreaseTileSize(step, step, maxValue);
         this.soundManagerService.playClickOnButtonAudio();
+        this.selectionManager.updateSelectionType(SelectionType.None);
     }
 
     onSubmitPlacement(selectionType: SelectionType) {
