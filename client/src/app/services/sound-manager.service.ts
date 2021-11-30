@@ -51,13 +51,11 @@ export class SoundManagerService {
         chatAudio.autoplay = true;
         chatAudio.play();
     }
-    // muteAllSound(isMuted: boolean): void {
-    //     // this.mainPageAudio.muted = isMuted;
-    //     this.quitGameAudio.muted = isMuted;
-    //     this.nonValidPlacementAudio.muted = isMuted;
-    //     this.goalAchievementAudio.muted = isMuted;
-    //     this.clickOnButtonAudio.muted = isMuted;
-    //     this.validPlacementAudio.muted = isMuted;
-    //     // this.mainPageAudio.muted = isMuted;
+
+    // playWinGameSound(): void {
+    //     const winGameAudio = new Audio();
+    //     winGameAudio.src = 'assets/sounds/win.wave';
+    //     winGameAudio.autoplay = true;
+    //     winGameAudio.play();
     // }
 }

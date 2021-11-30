@@ -64,6 +64,8 @@ export class GameService {
             // determine who won
             if (player.points >= otherPlayer.points) {
                 player.won = 'Vous avez gagné!';
+                // ajouter son ici
+                // this.soundManagerService.playWinGameSound();
             }
 
             endGameString += '<br>' + this.players[playerIndex].name + ' :<br>';
