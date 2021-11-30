@@ -27,21 +27,6 @@ export class DictionaryService {
             title: 'Mon dictionnaire',
             description: 'Description de base',
         },
-        {
-            filename: 'miniDictionnaire.json',
-            title: 'dictionnaire de poche',
-            description: 'Un petit dictionnaire mais util',
-        },
-        {
-            filename: 'larouse.json',
-            title: 'Dictionnaire la rouse',
-            description: 'Dictionnaire de francais',
-        },
-        {
-            filename: 'minidic.json',
-            title: 'Dictionnaire la rouse',
-            description: 'Dictionnaire de francais',
-        },
     ];
     updateList(newDict: Dictionary) {
         console.log(newDict);
@@ -67,6 +52,7 @@ export class DictionaryService {
         try {
             fs.unlinkSync(path);
             this.listDictionarires = this.listDictionarires.filter((dict) => dict.filename !== filename);
+            console.log(this.listDictionarires);
             return 'file removed successfully';
         } catch (err) {
             return 'file was not removed, server side problem';

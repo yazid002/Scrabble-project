@@ -28,4 +28,11 @@ export class DictionaryService {
             });
         return this.listDictionaries;
     }
+    async deleteDictionary(filename: string) {
+        this.http.delete<string>('http://localhost:3000/api/admin/dictionary/delete/' + filename).subscribe(async (rep) => {
+            // TODO a implementer
+            console.log(rep);
+            await this.getAllDictionaries();
+        });
+    }
 }

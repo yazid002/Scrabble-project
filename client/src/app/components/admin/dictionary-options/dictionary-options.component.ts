@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 /* eslint-disable arrow-parens */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -20,12 +19,7 @@ import { DictionaryFormComponent } from './../dictionary-form/dictionary-form.co
 export class DictionaryOptionsComponent implements OnInit {
     listDictionaries: TitleDescriptionOfDictionary[] = [];
     matDialogRef: any;
-    constructor(
-        private dictionaryService: DictionaryService,
-        public matDialog: MatDialog,
-        private interactionService: InteractionService,
-        private http: HttpClient,
-    ) {}
+    constructor(public dictionaryService: DictionaryService, public matDialog: MatDialog, private interactionService: InteractionService) {}
 
     async ngOnInit(): Promise<void> {
         this.interactionService.uploadingFileMessage$.subscribe(async (message: string) => {
@@ -57,13 +51,6 @@ export class DictionaryOptionsComponent implements OnInit {
     updateDictionary(dictionary: TitleDescriptionOfDictionary) {
         // TODO a implementer
         console.log(dictionary);
-    }
-
-    async deleteDictionary(filename: string) {
-        this.http.delete('http://localhost:3000/api/admin/dictionary/delete/' + filename).subscribe(async (/* rep: string*/) => {
-            // TODO a implementer
-            await this.getAllDictionaries();
-        });
     }
 
     onCancel() {

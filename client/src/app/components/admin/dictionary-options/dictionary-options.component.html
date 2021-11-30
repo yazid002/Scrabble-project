@@ -15,7 +15,7 @@
                 <button mat-raised-button color="primary" (click)="updateDictionary(dictionary)">update</button>
             </td>
             <td>
-                <button mat-raised-button color="warn" (click)="deleteDictionary(dictionary.filename)">delete</button>
+                <button mat-raised-button color="warn" (click)="dictionaryService.deleteDictionary(dictionary.filename)">delete</button>
             </td>
         </tr>
     </table>

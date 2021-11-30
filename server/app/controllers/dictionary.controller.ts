@@ -117,10 +117,10 @@ export class DictionaryController {
             try {
                 const filename = req.params.filename;
                 const rep = this.dictionaryService.deleteFile(filename);
-                res.send(rep);
+                res.json(rep);
             } catch (error) {
                 // res.status(StatusCodes.SERVICE_UNAVAILABLE).send(error.message);
-                res.send('file was not deleted, server side problem');
+                res.json('file was not deleted, server side problem');
             }
         });
     }
