@@ -52,7 +52,7 @@
             </mat-card-content>
             <mat-card-content *ngIf="player.rack.length < 7"> Il y a {{ player.rack.length }} lettres dans votre chevalet </mat-card-content>
             <mat-card-subtitle>{{ player.won }}</mat-card-subtitle>
-            <button mat-raised-button *ngIf="player.won" color="warn" routerLink="home">Quitter</button>
+            <button mat-raised-button *ngIf="player.won" color="warn" routerLink="home" class="game-button quit">Quitter</button>
         </mat-card>
     </div>
 </mat-card>

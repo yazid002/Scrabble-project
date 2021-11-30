@@ -18,6 +18,11 @@ export class AideExecutionService {
             description: "Permet d'échanger les lettres <br>mentionnés du rack",
         },
         {
+            nom: 'passer',
+            format: '!passer',
+            description: 'Permet de passer son tour',
+        },
+        {
             nom: 'debug',
             format: '!debug',
             description: 'La commande active et désactive <br>les affichages de débogage ',
