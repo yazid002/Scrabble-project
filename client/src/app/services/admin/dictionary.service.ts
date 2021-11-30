@@ -5,6 +5,7 @@
 /* eslint-disable prettier/prettier */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { SERVER_URL } from '@app/constants/url';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
 
 @Injectable({
@@ -13,8 +14,10 @@ import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title
 export class DictionaryService {
     listDictionaries: TitleDescriptionOfDictionary[] = [];
 
-    url: string = 'http://localhost:3000/api/admin/dictionary';
-    constructor(private http: HttpClient) {}
+    url: string;
+    constructor(private http: HttpClient) {
+        this.url = SERVER_URL + '/api/admin/dictionary';
+    }
 
     // public getAllDictionaries(): Observable<TitleDescriptionOfDictionary[]> {
     //   return this.http.get<TitleDescriptionOfDictionary[]>(this.url + '/findAll');
@@ -29,10 +32,10 @@ export class DictionaryService {
         return this.listDictionaries;
     }
     async deleteDictionary(filename: string) {
-        this.http.delete<string>('http://localhost:3000/api/admin/dictionary/delete/' + filename).subscribe(async (rep) => {
+        this.http.delete<string>(this.url +'/delete/' + filename).subscribe(async (rep) => {
             // TODO a implementer
             console.log(rep);
-            await this.getAllDictionaries();
+            this.getAllDictionaries();
         });
     }
 }

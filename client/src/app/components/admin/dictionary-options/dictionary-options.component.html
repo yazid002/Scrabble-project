@@ -1,3 +1,4 @@
+<button mat-raised-button color="primary" (click)="addNewDictionaryInDialogMat()">Ajouter dictionnaire</button>
 <br /><br /><br /><br />
 <div>
     <table>
@@ -7,7 +8,7 @@
             <th>description</th>
             <th colspan="2">Action</th>
         </tr>
-        <tr *ngFor="let dictionary of listDictionaries">
+        <tr *ngFor="let dictionary of dictionaryService.listDictionaries">
             <td>{{ dictionary.filename }}</td>
             <td>{{ dictionary.title }}</td>
             <td>{{ dictionary.description }}</td>
