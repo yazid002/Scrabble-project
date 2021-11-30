@@ -65,6 +65,7 @@ export class RoomService {
         });
         this.socket.on('askMasterSync', () => {
             this.router.navigateByUrl('/game');
+            console.log(this.gameSyncService.isMasterClient);
             if (!this.gameSyncService.isMasterClient) return;
             this.gameSyncService.sendToServer();
         });
@@ -83,6 +84,7 @@ export class RoomService {
         this.socket.emit('joinRoom', roomId);
         this.roomId = roomId;
         this.gameSyncService.isMasterClient = false;
+        console.log('ROOM ');
     }
 
     joinRandomRoom() {
@@ -97,6 +99,7 @@ export class RoomService {
         const settings = this.userSettingsService.getSettings();
         const userName = this.gameService.players[0].name;
         this.socket.emit('createRoom', settings, userName);
+        console.log('createRoom', settings, userName);
         this.gameSyncService.isMasterClient = true;
         return this.roomId;
     }

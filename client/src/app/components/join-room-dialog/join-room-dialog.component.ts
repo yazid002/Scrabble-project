@@ -1,8 +1,10 @@
-import { GoalsManagerService } from './../../services/goals-manager.service';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { PLAYER } from '@app/classes/player';
+import { GameService } from '@app/services/game.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
+import { GoalsManagerService } from './../../services/goals-manager.service';
 
 @Component({
     selector: 'app-join-room-dialog',
@@ -19,16 +21,17 @@ export class JoinRoomDialogComponent {
         public matDialog: MatDialog,
         public soundManagerService: SoundManagerService,
         public goalsManagerService: GoalsManagerService,
+        public gameService: GameService,
     ) {}
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);
         this.error = result.error;
         this.errorMessage = result.errorMessage;
-        console.log(this.userSettingsService.settings.numPlayers.currentChoiceKey);
     }
 
     playClickOnButtonAudio() {
+        this.gameService.players[PLAYER.realPlayer].name = this.userSettingsService.nameOption.userChoice;
         this.userSettingsService.settings.mode.currentChoiceKey = 'log2990';
         this.goalsManagerService.isEnabled = this.userSettingsService.settings.mode.currentChoiceKey === 'log2990';
         this.soundManagerService.playClickOnButtonAudio();

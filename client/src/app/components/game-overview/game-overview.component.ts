@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
 import { Goal } from '@app/classes/goal';
 import { PLAYER } from '@app/classes/player';
+import { QuitConfirmationDialogComponent } from '@app/components/quit-confirmation-dialog/quit-confirmation-dialog.component';
 import { GameService } from '@app/services/game.service';
 import { GoalService } from '@app/services/goal.service';
 import { PlaceService } from '@app/services/place.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
-import { QuitConfirmationDialogComponent } from '@app/components/quit-confirmation-dialog/quit-confirmation-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-game-overview',
