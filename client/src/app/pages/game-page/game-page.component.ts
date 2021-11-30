@@ -39,7 +39,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         private virtualPlayerService: VirtualPlayerService,
         public roomService: RoomService,
         public gameSyncService: GameSyncService,
-        private selectionManager: SelectionManagerService,
+        private selectionManagerService: SelectionManagerService,
         private randomMode: RandomModeService,
         private timerService: TimerService,
         private matDialog: MatDialog,
@@ -57,22 +57,22 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     }
     @HostListener('keyup', ['$event'])
     onKeyBoardClick(event: KeyboardEvent) {
-        this.selectionManager.onKeyBoardClick(event);
+        this.selectionManagerService.onKeyBoardClick(event);
     }
 
     @HostListener('click', ['$event'])
     onLeftClick(event: MouseEvent) {
-        this.selectionManager.onLeftClick(event);
+        this.selectionManagerService.onLeftClick(event);
     }
 
     @HostListener('contextmenu', ['$event'])
     onRightClick(event: MouseEvent) {
-        this.selectionManager.onRightClick(event);
+        this.selectionManagerService.onRightClick(event);
     }
 
     @HostListener('window:wheel', ['$event'])
     onMouseWheel(event: WheelEvent) {
-        this.selectionManager.onMouseWheel(event);
+        this.selectionManagerService.onMouseWheel(event);
     }
 
     ngOnInit(): void {
@@ -80,7 +80,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     }
 
     ngAfterViewInit(): void {
-        this.selectionManager.chatboxComponent = this.chatboxComponent;
+        this.selectionManagerService.chatboxComponent = this.chatboxComponent;
     }
 
     randomNumber() {
@@ -92,7 +92,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         const maxValue = 26;
         this.gridService.increaseTileSize(step, step, maxValue);
         this.soundManagerService.playClickOnButtonAudio();
-        //  this.selectionManager.updateSelectionType(SelectionType.None);
+        this.selectionManagerService.updateSelectionType(SelectionType.LetterSizeButton);
     }
 
     decreaseSize() {
@@ -100,44 +100,44 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         const maxValue = 17;
         this.gridService.decreaseTileSize(step, step, maxValue);
         this.soundManagerService.playClickOnButtonAudio();
-        //  this.selectionManager.updateSelectionType(SelectionType.None);
+        this.selectionManagerService.updateSelectionType(SelectionType.LetterSizeButton);
     }
 
     onSubmitPlacement(selectionType: SelectionType) {
-        this.selectionManager.onSubmitPlacement(selectionType);
+        this.selectionManagerService.onSubmitPlacement(selectionType);
     }
 
     hideOperation(operationType: OperationType) {
-        return this.selectionManager.hideOperation(operationType);
+        return this.selectionManagerService.hideOperation(operationType);
     }
 
     onCancelPlacement(selectionType: SelectionType) {
-        this.selectionManager.onCancelPlacement(selectionType);
+        this.selectionManagerService.onCancelPlacement(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
     }
 
     onSubmitExchange(selectionType: SelectionType) {
-        this.selectionManager.onSubmitExchange(selectionType);
+        this.selectionManagerService.onSubmitExchange(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
     }
 
     onCancelManipulation(selectionType: SelectionType) {
-        this.selectionManager.onCancelManipulation(selectionType);
+        this.selectionManagerService.onCancelManipulation(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
     }
 
     disableManipulation() {
-        return this.selectionManager.disableManipulation();
+        return this.selectionManagerService.disableManipulation();
     }
     disableExchange() {
-        return this.selectionManager.disableExchange();
+        return this.selectionManagerService.disableExchange();
     }
     hideExchangeButton() {
-        return this.selectionManager.hideExchangeButton();
+        return this.selectionManagerService.hideExchangeButton();
     }
 
     onCancelExchange(selectionType: SelectionType) {
-        this.selectionManager.onCancelExchange(selectionType);
+        this.selectionManagerService.onCancelExchange(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
     }
 

@@ -208,7 +208,6 @@ export class PlaceSelectionService {
 
     onBoardClick(event: MouseEvent, shouldChangeDirection: boolean): void {
         const notFound = { x: NOT_FOUND, y: NOT_FOUND };
-        console.log(event.offsetX, event.offsetY);
         const coord = this.getClickCoords(event);
 
         if (!this.checkBoardClickFeasibility(coord, shouldChangeDirection)) {
@@ -216,17 +215,17 @@ export class PlaceSelectionService {
         }
 
         if (this.selectedCoord.x === notFound.x && this.selectedCoord.y === notFound.y) {
-            // on clique pour la premiere fois
+            // When I click for the first time
             this.selectedCoord = coord;
         } else if (coord.x !== this.selectedCoord.x || coord.y !== this.selectedCoord.y) {
-            // on clique sur une autre case apres avoir déja cliqué une premiere fois
+            // When I click on another tile after already clicking on one
             if (shouldChangeDirection) {
                 this.direction = true;
             }
             this.gridService.removeArrow(this.selectedCoord);
             this.selectedCoord = coord;
         } else {
-            // on clique sur le même, on change de direction
+            // When I click on the same tile, the direction is changed
             this.direction = !this.direction;
             this.gridService.removeArrow(this.selectedCoord);
         }
@@ -259,6 +258,7 @@ export class PlaceSelectionService {
             this.gridService.removeArrow(this.selectedCoord);
             this.tiles[coord.y][coord.x].text = this.tiles[coord.y][coord.x].oldText;
             this.tiles[coord.y][coord.x].style.color = this.tiles[coord.y][coord.x].oldStyle.color;
+            this.tiles[coord.y][coord.x].style.font = this.tiles[coord.y][coord.x].oldStyle.font;
             this.gridService.fillGridPortion(
                 coord,
                 this.tiles[coord.y][coord.x].text,

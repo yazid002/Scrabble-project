@@ -48,7 +48,6 @@ export class GridService {
     }
 
     drawArrow(direction: boolean, coord: Vec2) {
-        console.log(coord);
         const img = document.getElementById('img') as HTMLImageElement;
         const img2 = document.getElementById('img2') as HTMLImageElement;
 

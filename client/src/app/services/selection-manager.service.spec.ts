@@ -531,6 +531,24 @@ describe('SelectionManagerService', () => {
             expect(handleNoneSelectionOnLeftClickSpy).toHaveBeenCalled();
         });
 
+        it('onLeftClick return void without call any function', () => {
+            flagToCheck = 'NOT_FOUND';
+            const coord = { x: 7, y: 7 };
+            const event = {
+                button: MouseButton.Left,
+                offsetX: coord.x * SQUARE_WIDTH,
+                offsetY: coord.y * SQUARE_WIDTH,
+            } as MouseEvent;
+            service.selectionType = SelectionType.LetterSizeButton;
+            const result = service.onLeftClick(event);
+
+            expect(flagToCheck).toEqual('NOT_FOUND');
+            expect(handleGridSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleRackSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleNoneSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(result).toEqual(void '');
+        });
+
         it('onLeftClick should not get a function', () => {
             flagToCheck = 'NOT_FOUND';
             const coord = { x: 7, y: 7 };
@@ -1001,5 +1019,13 @@ describe('SelectionManagerService', () => {
             expect(result).toEqual(true);
             expect(exchangeSelectionServiceSpy.isLetterAlreadySelected).toHaveBeenCalled();
         });
+    });
+
+    it('cancelPlacementDirectly should call place selection service cancel placement directly', () => {
+        placeSelectionServiceSpy.cancelPlacement.and.returnValue(void '');
+
+        service.cancelPlacementDirectly();
+
+        expect(placeSelectionServiceSpy.cancelPlacement).toHaveBeenCalled();
     });
 });
