@@ -1,6 +1,3 @@
-/* eslint-disable arrow-parens */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FileMessages } from '@app/pages/admin-page/models/file-messages.model';
@@ -39,14 +36,17 @@ export class DictionaryOptionsComponent implements OnInit {
         await this.dictionaryService.getAllDictionaries();
     }
 
+    // Disable the any lint filer because it is hard to know the type of an event
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async selectDictionary(event: any) {
+        console.log('type of event', typeof event);
         if (event.target.files.length > 0) {
             const file = event.target.files[0];
             this.dictionaryService.selectDictionary(file);
         }
     }
 
-    openSnackBar(message: any, action: any) {
+    openSnackBar(message: string, action: string) {
         const snackBarRef = this.snackBar.open(message, action, { duration: 5000 });
         snackBarRef.onAction().subscribe(() => {
             console.log('---> the snackBar action was triggered');

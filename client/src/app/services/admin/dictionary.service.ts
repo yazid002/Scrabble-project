@@ -1,8 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/explicit-member-accessibility */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable @typescript-eslint/quotes */
-/* eslint-disable prettier/prettier */
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Output } from '@angular/core';
 import { Dictionary } from '@app/classes/dictionary';
@@ -16,7 +11,7 @@ import { BehaviorSubject } from 'rxjs';
     providedIn: 'root',
 })
 export class DictionaryService {
-    @Output() snackBarSignal = new BehaviorSubject<{ message: string, action: string }>({ message:'',action: ''});
+    @Output() snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
 
     listDictionaries: TitleDescriptionOfDictionary[] = [];
     titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
@@ -48,7 +43,7 @@ export class DictionaryService {
         this.validationMessage.message = "le dictionnaire a le meme titre q'un autre dictionnaire, svp change le titre !!!";
         return result;
     }
-    public async getAllDictionaries(): Promise<TitleDescriptionOfDictionary[]> {
+    async getAllDictionaries(): Promise<TitleDescriptionOfDictionary[]> {
         await this.http
             .get<TitleDescriptionOfDictionary[]>(this.url + '/findAll')
             .toPromise()
@@ -76,7 +71,6 @@ export class DictionaryService {
                 this.titleAndDescriptionOfDictionary.description = newDic.description;
                 console.log('words type', typeof newDic.words);
                 if (!this.isNewDictionaryHasSameTitleAsAnother()) {
-
                     this.upload(file);
                     this.validationMessage.isValid = true;
                     this.validationMessage.message = 'Le format du fichier est conforme au format attendu';
@@ -92,10 +86,10 @@ export class DictionaryService {
         const fileForm = new FormData();
         fileForm.set('file', file);
         await this.http
-            .post(SERVER_URL + '/api/admin/dictionary/addNewDictionary', fileForm)
+            .post<FileMessages>(SERVER_URL + '/api/admin/dictionary/addNewDictionary', fileForm)
             .toPromise()
             .then(
-                (resp: any) => {
+                (resp: FileMessages) => {
                     this.fileMessage.isuploaded = resp.isuploaded;
                     this.fileMessage.message = resp.message;
                 },
@@ -119,9 +113,9 @@ export class DictionaryService {
 
     async saveTitleAndDescription(): Promise<FileMessages> {
         await this.http
-            .post(SERVER_URL + '/api/admin/dictionary/addTitleAndDescription', this.titleAndDescriptionOfDictionary)
+            .post<FileMessages>(SERVER_URL + '/api/admin/dictionary/addTitleAndDescription', this.titleAndDescriptionOfDictionary)
             .toPromise()
-            .then((res: any) => {
+            .then((res: FileMessages) => {
                 this.fileMessage.isuploaded = res.isuploaded;
                 this.fileMessage.message = res.message;
             });
