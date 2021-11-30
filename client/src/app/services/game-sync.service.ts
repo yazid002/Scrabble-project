@@ -65,6 +65,7 @@ export class GameSyncService {
         this.alreadySynced = false;
     }
     receiveFromServer(gameState: GameState) {
+        console.log('le game state', gameState);
         this.reserveService.alphabets = gameState.alphabetReserve;
         // who is the 'Other Player' is different for the other player
         this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
@@ -72,9 +73,12 @@ export class GameSyncService {
         this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
         this.gameService.skipCounter = gameState.skipCounter;
         this.timerService.counter.totalTimer = gameState.timer;
+        console.log('le temps 1 ', this.timerService.counter.totalTimer);
 
         if (this.gameService.currentTurn === PLAYER.otherPlayer) {
+            this.timerService.counter.totalTimer = gameState.timer;
             this.setGoalsFromGameState(gameState);
+            console.log('le temps 2', this.timerService.counter.totalTimer);
         }
 
         for (let i = 0; i < tiles.length; i++) {
@@ -86,7 +90,9 @@ export class GameSyncService {
             this.alreadySynced = true;
             this.sendToServer();
         } else {
+            this.timerService.counter.totalTimer = gameState.timer;
             this.setGoalsFromGameState(gameState);
+            console.log('le temps 3', this.timerService.counter.totalTimer);
         }
     }
 

@@ -35,10 +35,15 @@ export class LobbyComponent implements OnInit {
             this.mode = mode.value;
         }
     }
-    goInRoom(id?: string) {
-        if (id) {
+    goInRoom(id?: string, index?: number) {
+        if (id && index) {
+            // this.userSettingsService.settings.mode.currentChoiceKey = this.roomService.rooms[+id].settings.mode;
+
             this.roomService.roomId = id;
+
             this.roomService.joinRoom(id);
+            console.log('id ', id, index, this.roomService.rooms[index]);
+            this.userSettingsService.settings.timer.currentChoiceKey = this.roomService.rooms[+id].settings.timer;
         } else {
             this.roomService.createRoom();
         }
