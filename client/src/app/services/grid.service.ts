@@ -23,7 +23,7 @@ export class GridService {
 
     constructor(private reserveService: ReserveService) {
         this.tiles = tiles;
-        this.letterStyle = { color: 'NavajoWhite', font: '15px serif' };
+        this.letterStyle = { color: 'NavajoWhite', font: '20px serif' };
         this.pointStyle = { color: 'NavajoWhite', font: '10px serif' };
         this.squareColor = 'black';
         this.border = { squareBorderColor: 'black' };
@@ -99,7 +99,7 @@ export class GridService {
             } else {
                 this.gridContext.fillText(
                     NUMBERS_STEP.toString(),
-                    SQUARE_WIDTH * i,
+                    SQUARE_WIDTH * i + LETTERS_PIXELS_WIDTH_ADJUSTMENT,
                     SQUARE_HEIGHT * (SQUARE_NUMBER + 1) - NUMBERS_PIXELS_HEIGH_ADJUSTMENT,
                 );
             }
@@ -128,10 +128,10 @@ export class GridService {
     }
 
     fillGridPortion(coord: Vec2, letter: string, color: string, font: string) {
-        const lettersPixelsWidthAdjustment = 2;
-        const lettersPixelsHeighAdjustment = 22;
-        const pointsPixelsWidthAdjustment = 16;
-        const pointsPixelsHeighAdjustment = 30;
+        const lettersPixelsWidthAdjustment = 6.5;
+        const lettersPixelsHeighAdjustment = 24;
+        const pointsPixelsWidthAdjustment = 24;
+        const pointsPixelsHeighAdjustment = 35.5;
         this.gridContext.clearRect(
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,

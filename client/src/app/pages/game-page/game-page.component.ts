@@ -89,14 +89,14 @@ export class GamePageComponent implements AfterViewInit, OnInit {
 
     increaseSize(): void {
         const step = 1;
-        const maxValue = 22;
+        const maxValue = 26;
         this.gridService.increaseTileSize(step, step, maxValue);
         this.soundManagerService.playClickOnButtonAudio();
     }
 
     decreaseSize() {
         const step = -1;
-        const maxValue = 13;
+        const maxValue = 17;
         this.gridService.decreaseTileSize(step, step, maxValue);
         this.soundManagerService.playClickOnButtonAudio();
     }
