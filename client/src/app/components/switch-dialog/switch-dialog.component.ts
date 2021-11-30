@@ -12,4 +12,8 @@ export class SwitchDialogComponent {
     // quitRoom() {
     //     this.roomService.quitRoom();
     // }
+
+    assignSolo() {
+        this.userSettingsService.settings.numPlayers.currentChoiceKey = 'solo';
+    }
 }
