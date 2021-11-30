@@ -4,22 +4,6 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class SoundManagerService {
-    mainPageAudio = new Audio('assets/sounds/mainpage.mp3');
-
-    playMainPageAudio(): void {
-        if (this.mainPageAudio.paused) {
-            this.mainPageAudio.load();
-            this.mainPageAudio.autoplay = true;
-            this.mainPageAudio.play();
-        } else {
-            this.mainPageAudio.pause();
-        }
-    }
-
-    stopMainPageAudio(): void {
-        this.mainPageAudio.pause();
-    }
-
     playPlacementAudio(): void {
         const validPlacementAudio = new Audio();
         validPlacementAudio.src = 'assets/sounds/place.wav';
@@ -58,6 +42,14 @@ export class SoundManagerService {
         nonValidPlacementAudio.load();
         nonValidPlacementAudio.autoplay = true;
         nonValidPlacementAudio.play();
+    }
+
+    playChatAudio(): void {
+        const chatAudio = new Audio();
+        chatAudio.src = 'assets/sounds/chat.mp3';
+        chatAudio.load();
+        chatAudio.autoplay = true;
+        chatAudio.play();
     }
     // muteAllSound(isMuted: boolean): void {
     //     // this.mainPageAudio.muted = isMuted;
