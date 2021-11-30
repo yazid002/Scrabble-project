@@ -51,7 +51,8 @@ export class GameSyncService {
         this.sendGameStateSignal = new BehaviorSubject<GameState>(this.getGameState());
         this.sendAbandonSignal = new BehaviorSubject<string>('');
         this.sendOtherPlayerTrigger = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
-            if (numPlayers !== 'multiplayer') {
+            console.log('numplayers =', numPlayers);
+            if (numPlayers === 'solo') {
                 // this.sendToLocalStorage();
                 return;
             }

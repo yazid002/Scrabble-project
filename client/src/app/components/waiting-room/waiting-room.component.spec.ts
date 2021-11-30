@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { RoomService } from '@app/services/room.service';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 import { of } from 'rxjs';
 import { WaitingRoomComponent } from './waiting-room.component';
 
@@ -20,8 +21,10 @@ class MatDialogMock {
 describe('WaitingRoomComponent', () => {
     let component: WaitingRoomComponent;
     let fixture: ComponentFixture<WaitingRoomComponent>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(async () => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
         await TestBed.configureTestingModule({
             declarations: [WaitingRoomComponent],
             imports: [
@@ -38,6 +41,7 @@ describe('WaitingRoomComponent', () => {
                     useClass: MatDialogMock,
                 },
                 { provide: RoomService },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
         }).compileComponents();
     });
@@ -68,14 +72,21 @@ describe('WaitingRoomComponent', () => {
         component.name = initName;
         let undefString: undefined;
         let undefIoption: undefined;
+        let undefDictionary: undefined;
         // eslint-disable-next-line dot-notation
-        component['assignValues'](undefString, undefIoption, undefIoption);
+        component['assignValues'](undefString, undefIoption, undefIoption, undefDictionary);
         expect(component.name).toEqual(initName);
 
         const newName = 'New Name';
         const newOption = { key: 'a key', value: 'a value' };
+        const newDictionary = { title: 'a value ', description: 'a value', words: [] };
         // eslint-disable-next-line dot-notation
-        component['assignValues'](newName, newOption, newOption);
+        component['assignValues'](newName, newOption, newOption, newDictionary);
         expect(component.name).toEqual(newName);
+    });
+    it('completeGoalSound should play an audio', () => {
+        soundManagerServiceSpy.playClickOnButtonAudio.and.returnValue(void '');
+        component.playClickOnButtonAudio();
+        expect(soundManagerServiceSpy.playClickOnButtonAudio).toHaveBeenCalled();
     });
 });

@@ -26,11 +26,7 @@
                     (ngModelChange)="changeDic()"
                 >
                     <mat-option>--</mat-option>
-                    <mat-option
-                        *ngFor="let dictionnaire of userSettingsService.dictionnaires"
-                        [value]="dictionnaire"
-                        [disabled]="!dictionnaire.isAvailable"
-                    >
+                    <mat-option *ngFor="let dictionnaire of userSettingsService.dictionnaires" [value]="dictionnaire">
                         {{ dictionnaire.title }}
                     </mat-option>
                 </mat-select>

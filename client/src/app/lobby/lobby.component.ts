@@ -26,6 +26,7 @@ export class LobbyComponent implements OnInit {
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
         );
         this.assignValues(name, mode);
+        console.log('rooms = ' + this.roomService.rooms);
     }
 
     assignValues(name: string | undefined, mode: IOption | undefined) {

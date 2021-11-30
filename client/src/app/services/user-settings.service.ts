@@ -60,29 +60,29 @@ export class UserSettingsService {
         computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
-    joinSettings: {
-        mode: IUserSetting;
-    } = {
-        mode: { setting: MODE, currentChoiceKey: 'classic' },
-    };
-    switchToSoloSettings: {
-        mode: IUserSetting;
-        // numPlayers: IUserSetting;
-        // computerLevel: IUserSetting;
-        // timer: IUserSetting;
-    } = {
-        mode: { setting: MODE, currentChoiceKey: 'classic' },
-        // numPlayers: { setting: NUM_PLAYERS_SWITCH, currentChoiceKey: 'solo' },
-        // computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
-        // timer: { setting: TIMER, currentChoiceKey: '60' },
-    };
+    // joinSettings: {
+    //     mode: IUserSetting;
+    // } = {
+    //     mode: { setting: MODE, currentChoiceKey: 'classic' },
+    // };
+    // switchToSoloSettings: {
+    //     mode: IUserSetting;
+    //     numPlayers: IUserSetting;
+    //     computerLevel: IUserSetting;
+    //     timer: IUserSetting;
+    // } = {
+    //     mode: { setting: MODE, currentChoiceKey: 'classic' },
+    //     numPlayers: { setting: NUM_PLAYERS_SWITCH, currentChoiceKey: 'solo' },
+    //     computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+    //     timer: { setting: TIMER, currentChoiceKey: '60' },
+    // };
 
     dictionaryControl = new FormControl('', Validators.required);
     dictionnaires: Dictionary[] = [
-        { title: 'Espagnol', description: 'Langue espagnole', words: [], isAvailable: true },
-        { title: 'Anglais', description: 'Langue anglaise', words: [], isAvailable: true },
-        { title: 'Italien', description: 'Langue italienne', words: [], isAvailable: false },
-        { title: 'Russe', description: 'Langue Russe', words: [], isAvailable: true },
+        { title: 'Espagnol', description: 'Langue espagnole', words: [] },
+        { title: 'Anglais', description: 'Langue anglaise', words: [] },
+        { title: 'Italien', description: 'Langue italienne', words: [] },
+        { title: 'Russe', description: 'Langue Russe', words: [] },
     ];
     selectedDictionary: Dictionary;
 

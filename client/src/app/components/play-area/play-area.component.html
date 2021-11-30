@@ -1,36 +1,5 @@
 <div id="grid-container">
-    <p>Scrabble!</p>
     <canvas id="canvas" #gridCanvas [attr.width]="width" [attr.height]="height"></canvas>
     <canvas id="rack" #rackCanvas [attr.width]="245" [attr.height]="35"></canvas>
-    <canvas id="logo" #logoCanvas [attr.width]="100" [attr.height]="20"></canvas>
-
-    <button
-        id="button"
-        mat-raised-button
-        color="primary"
-        (click)="skipTurn()"
-        [disabled]="gameService.currentTurn !== player.realPlayer || gameService.didGameEnd() === true"
-    >
-        Passer
-    </button>
-    <div>
-        <hr />
-        <p>Appuyez sur un des boutons ci-dessous pour modifier la taille des tuiles</p>
-        <img
-            id="img"
-            src="https://cdn4.iconfinder.com/data/icons/arrows-29/96/Arrows1_right-13-512.png"
-            alt="arrow image"
-            display
-            style="display: none"
-        />
-        <img
-            id="img2"
-            src="https://cdn.iconscout.com/icon/free/png-64/down-arrow-1965037-1660430.png"
-            alt="arrow image"
-            display
-            style="display: none"
-        />
-
-        
-    </div>
+    <!-- <canvas id="logo" #logoCanvas [attr.width]="100" [attr.height]="20"></canvas> -->
 </div>
