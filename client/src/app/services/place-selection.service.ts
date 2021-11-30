@@ -208,6 +208,7 @@ export class PlaceSelectionService {
 
     onBoardClick(event: MouseEvent, shouldChangeDirection: boolean): void {
         const notFound = { x: NOT_FOUND, y: NOT_FOUND };
+        console.log(event.offsetX, event.offsetY);
         const coord = this.getClickCoords(event);
 
         if (!this.checkBoardClickFeasibility(coord, shouldChangeDirection)) {

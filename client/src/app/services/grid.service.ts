@@ -48,6 +48,7 @@ export class GridService {
     }
 
     drawArrow(direction: boolean, coord: Vec2) {
+        console.log(coord);
         const img = document.getElementById('img') as HTMLImageElement;
         const img2 = document.getElementById('img2') as HTMLImageElement;
 
@@ -57,7 +58,7 @@ export class GridService {
         this.gridContext.drawImage(
             arrow,
             (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.x,
-            (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+            (DEFAULT_HEIGHT / SQUARE_NUMBER) * coord.y,
             arrowWidth,
             arrowWidth,
         );
