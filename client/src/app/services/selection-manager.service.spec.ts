@@ -18,6 +18,7 @@ import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
 import { SelectionManagerService } from './selection-manager.service';
 import { SelectionUtilsService } from './selection-utils.service';
+import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
 
 class MockChatboxComponent extends ChatboxComponent {
@@ -40,8 +41,10 @@ describe('SelectionManagerService', () => {
     let exchangeSelectionServiceSpy: jasmine.SpyObj<ExchangeSelectionService>;
     let commandExecutionServiceSpy: jasmine.SpyObj<CommandExecutionService>;
     let chatServiceSpy: jasmine.SpyObj<ChatService>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(() => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playChatAudio']);
         rackServiceSpy = jasmine.createSpyObj('RackService', ['fillRackPortion', 'isLetterOnRack']);
         selectionUtilsServiceSpy = jasmine.createSpyObj('SelectionUtilsService', ['getMouseClickIndex']);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
@@ -117,10 +120,11 @@ describe('SelectionManagerService', () => {
                 { provide: ChatboxComponent, useValue: MockChatboxComponent },
                 { provide: CommandExecutionService, useValue: commandExecutionServiceSpy },
                 { provide: ChatService, useValue: chatServiceSpy },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
         }).compileComponents();
         service = TestBed.inject(SelectionManagerService);
-        service.chatboxComponent = new MockChatboxComponent(chatServiceSpy, commandExecutionServiceSpy, service);
+        service.chatboxComponent = new MockChatboxComponent(chatServiceSpy, commandExecutionServiceSpy, service, soundManagerServiceSpy);
     });
 
     it('should be created', () => {

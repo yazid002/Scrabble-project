@@ -4,6 +4,7 @@ import { SelectionType } from '@app/enums/selection-enum';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
+import { SoundManagerService } from '@app/services/sound-manager.service';
 
 const MAX_MESSAGE_LENGTH = 512;
 const MIN_MESSAGE_LENGTH = 1;
@@ -24,6 +25,7 @@ export class ChatboxComponent implements OnInit {
         public chatService: ChatService,
         private commandExecutionService: CommandExecutionService,
         private selectionManager: SelectionManagerService,
+        public soundManagerService: SoundManagerService,
     ) {}
     @HostListener('click', ['$event'])
     onLeftClick() {
@@ -33,6 +35,10 @@ export class ChatboxComponent implements OnInit {
     ngOnInit(): void {
         this.getMessages();
         document.getElementsByTagName('input')[0].focus();
+    }
+
+    playChatAudio(): void {
+        this.soundManagerService.playChatAudio();
     }
     async validateFormat() {
         this.error = false;
@@ -64,6 +70,7 @@ export class ChatboxComponent implements OnInit {
         this.inputBox = '';
         this.fromSelection = false;
         this.scrollDown();
+        this.playChatAudio();
     }
     private scrollDown() {
         const container = document.getElementById('message-history');
