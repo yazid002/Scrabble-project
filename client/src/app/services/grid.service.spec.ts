@@ -2,15 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
-import { SQUARE_NUMBER } from '@app/constants/board-constants';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_NUMBER } from '@app/constants/board-constants';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { GridService } from '@app/services/grid.service';
 
 describe('GridService', () => {
     let service: GridService;
     let ctxStub: CanvasRenderingContext2D;
 
-    const CANVAS_WIDTH = 500;
-    const CANVAS_HEIGHT = 500;
     const coord: Vec2 = { x: 7, y: 7 };
     const letter = 'a';
     const color = 'NavajoWhite';
@@ -19,7 +18,7 @@ describe('GridService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(GridService);
-        ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
+        ctxStub = CanvasTestHelper.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         service.gridContext = ctxStub;
         service.tiles = JSON.parse(JSON.stringify(tiles));
     });
@@ -81,20 +80,20 @@ describe('GridService', () => {
 
         it(' should color pixels on the GRID canvas in a specified portion', () => {
             let imageData = service.gridContext.getImageData(
-                (CANVAS_WIDTH / SQUARE_NUMBER) * coord.y,
-                (CANVAS_WIDTH / SQUARE_NUMBER) * coord.x,
-                CANVAS_WIDTH / SQUARE_NUMBER,
-                CANVAS_WIDTH / SQUARE_NUMBER,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+                (DEFAULT_HEIGHT / SQUARE_NUMBER) * coord.x,
+                DEFAULT_WIDTH / SQUARE_NUMBER,
+                DEFAULT_HEIGHT / SQUARE_NUMBER,
             ).data;
             const beforeSize = imageData.filter((x) => x !== 0).length;
 
             service.fillGridPortion(coord, letter, color, font);
 
             imageData = service.gridContext.getImageData(
-                (CANVAS_WIDTH / SQUARE_NUMBER) * coord.y,
-                (CANVAS_WIDTH / SQUARE_NUMBER) * coord.x,
-                CANVAS_WIDTH / SQUARE_NUMBER,
-                CANVAS_WIDTH / SQUARE_NUMBER,
+                (DEFAULT_WIDTH / SQUARE_NUMBER) * coord.y,
+                (DEFAULT_HEIGHT / SQUARE_NUMBER) * coord.x,
+                DEFAULT_WIDTH / SQUARE_NUMBER,
+                DEFAULT_HEIGHT / SQUARE_NUMBER,
             ).data;
             const afterSize = imageData.filter((x) => x !== 0).length;
             expect(afterSize).toBeGreaterThan(beforeSize);
@@ -188,39 +187,40 @@ describe('GridService', () => {
         expect(changeTileSizeSpy).not.toHaveBeenCalled();
     });
 
-    // it(' removeArrow should call fillGridPortion 1 time', () => {
-    //     const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.callThrough();
+    it(' removeArrow should call fillGridPortion 1 time', () => {
+        const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.returnValue(void '');
 
-    //     service.removeArrow(coord);
+        service.removeArrow(coord);
 
-    //     //   expect(fillGridPortionSpy).toHaveBeenCalled();
-    // });
+        expect(fillGridPortionSpy).toHaveBeenCalledTimes(1);
+    });
 
-    // it('drawArrow should call drawImage 1 time', () => {
-    //     //  const img = document.getElementById('img') as HTMLImageElement;
-    //     const img = { src: '' } as CanvasImageSource;
+    it('drawArrow should call drawImage 1 time', () => {
+        const img = { src: '' } as CanvasImageSource;
 
-    //     spyOn(document, 'getElementById').and.returnValue(img);
+        spyOn(document, 'getElementById').and.returnValue(img as HTMLImageElement);
 
-    //     const drawImageSpy = spyOn(service.gridContext, 'drawImage').and.callThrough();
+        const drawImageSpy = spyOn(service.gridContext, 'drawImage').and.returnValue(void '');
 
-    //     service.drawArrow(true, coord);
-    //     // service.gridContext.drawImage(img, coord.x, coord.y);
+        service.drawArrow(true, coord);
 
-    //     expect(drawImageSpy).toHaveBeenCalled();
-    // });
+        expect(drawImageSpy).toHaveBeenCalled();
+    });
 
-    // it('drawArrow should call drawImage 1 time', () => {
-    //      const img = document.getElementById('img') as HTMLImageElement;
-    //     const img = { src: '' } as CanvasImageSource;
+    it(' removeArrow should not call fillGridPortion', () => {
+        const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.returnValue(void '');
 
-    //     spyOn(document, 'getElementById').and.returnValue(img);
+        const badCoord = { x: NOT_FOUND, y: NOT_FOUND };
+        service.removeArrow(badCoord);
 
-    //     const drawImageSpy = spyOn(service.gridContext, 'drawImage').and.callThrough();
+        expect(fillGridPortionSpy).not.toHaveBeenCalled();
+    });
 
-    //     service.drawArrow(true, coord);
-    //     service.gridContext.drawImage(img, coord.x, coord.y);
+    it(' writeLetter should call fillGridPortion', () => {
+        const fillGridPortionSpy = spyOn(service, 'fillGridPortion').and.returnValue(void '');
 
-    //     expect(drawImageSpy).toHaveBeenCalled();
-    // });
+        service.writeLetter('A', coord);
+
+        expect(fillGridPortionSpy).toHaveBeenCalled();
+    });
 });

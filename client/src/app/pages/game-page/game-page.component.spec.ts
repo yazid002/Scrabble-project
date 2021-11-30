@@ -65,6 +65,7 @@ describe('GamePageComponent', () => {
             'hideOperation',
             'disableManipulation',
             'disableExchange',
+            'updateSelectionType',
         ]);
         randomModeServiceSpy = jasmine.createSpyObj('RandomModeService', ['randomizeBonus']);
         roomServiceSpy = jasmine.createSpyObj('RoomService', ['createRoom', 'joinRoom']);
@@ -118,9 +119,20 @@ describe('GamePageComponent', () => {
         expect(gridServiceSpy.increaseTileSize).toHaveBeenCalled();
     });
 
+    it('increaseSize should call increaseSize of gridService', () => {
+        component.increaseSize();
+        expect(selectionManagerSpy.updateSelectionType).toHaveBeenCalled();
+    });
+
     it('decreaseSize should call decreaseSize of gridService', () => {
         component.decreaseSize();
+
         expect(gridServiceSpy.decreaseTileSize).toHaveBeenCalled();
+    });
+
+    it('decreaseSize should call update the selection type', () => {
+        component.decreaseSize();
+        expect(selectionManagerSpy.updateSelectionType).toHaveBeenCalled();
     });
 
     it('onKeyBoardClick should call onKeyBoardClick of SelectionManager', () => {
