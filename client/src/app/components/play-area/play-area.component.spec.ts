@@ -32,18 +32,6 @@ describe('PlayAreaComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call execute when skipTurn is called', () => {
-        const passExecutionExecuteSpy = spyOn(component['passExecutionService'], 'execute');
-        component.skipTurn();
-        expect(passExecutionExecuteSpy).toHaveBeenCalled();
-    });
-
-    it('should call execute when skipTurn is called', () => {
-        const passExecutionExecuteSpy = spyOn(component['passExecutionService'], 'execute');
-        component.skipTurn();
-        expect(passExecutionExecuteSpy).toHaveBeenCalled();
-    });
-
     it('onRightClick should update selection type with rack', () => {
         const event = {
             button: MouseButton.Right,

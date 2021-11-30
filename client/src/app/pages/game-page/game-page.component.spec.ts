@@ -247,4 +247,18 @@ describe('GamePageComponent', () => {
     it('should return OperationType', () => {
         expect(component.operationType).toEqual(OperationType);
     });
+
+    it('should call execute when skipTurn is called', () => {
+        // eslint-disable-next-line dot-notation
+        const passExecutionExecuteSpy = spyOn(component['passExecutionService'], 'execute');
+        component.skipTurn();
+        expect(passExecutionExecuteSpy).toHaveBeenCalled();
+    });
+
+    it('should call execute when skipTurn is called', () => {
+        // eslint-disable-next-line dot-notation
+        const passExecutionExecuteSpy = spyOn(component['passExecutionService'], 'execute');
+        component.skipTurn();
+        expect(passExecutionExecuteSpy).toHaveBeenCalled();
+    });
 });

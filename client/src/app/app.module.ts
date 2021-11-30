@@ -23,6 +23,7 @@ import { LobbyComponent } from './lobby/lobby.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
 import { GoalProgressBarComponent } from './components/goal-progress-bar/goal-progress-bar.component';
 import { GoalComponent } from './components/goal/goal.component';
+import { JoinRoomDialogComponent } from './components/join-room-dialog/join-room-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -50,6 +51,7 @@ import { GoalComponent } from './components/goal/goal.component';
         OpponentQuitDialogComponent,
         GoalProgressBarComponent,
         GoalComponent,
+        JoinRoomDialogComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
     providers: [],

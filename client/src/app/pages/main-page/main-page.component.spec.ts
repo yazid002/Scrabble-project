@@ -44,10 +44,16 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should open a MatDialog box asking for the number of players', () => {
+    it('should open a MatDialog box asking for the settings of the game we want to create', () => {
         // eslint-disable-next-line -- matDialog is private and we need access for the test
         const spy = spyOn(component['matDialog'], 'open');
-        component.chooseMode('classic');
+        component.openCreateRoomDialog();
+        expect(spy).toHaveBeenCalled();
+    });
+    it('should open a MatDialog box asking for the mode of the game we want to join', () => {
+        // eslint-disable-next-line -- matDialog is private and we need access for the test
+        const spy = spyOn(component['matDialog'], 'open');
+        component.openJoinRoomDialog();
         expect(spy).toHaveBeenCalled();
     });
 });

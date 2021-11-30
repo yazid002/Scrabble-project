@@ -1,13 +1,11 @@
-<!-- <h2 mat-lobby-title>Waiting Room</h2> -->
-
-<div class="title">Lobby</div>
-
 <body>
+    <div class="title">Lobby</div>
     <mat-card class="summary">
         <mat-card-title>Partie Multijoueurs </mat-card-title>
         <mat-divider></mat-divider>
         <mat-card id="me">
-            <mat-card-title id="name">{{ userSettingsService.nameOption.userChoice }}</mat-card-title>
+            <mat-card-title id="name">Nom: {{ name }}</mat-card-title>
+            <mat-card-title id="name">Mode: {{ mode }}</mat-card-title>
         </mat-card>
     </mat-card>
     <div class="container">
@@ -17,14 +15,35 @@
             <mat-list class="content">
                 <mat-list-item *ngFor="let room of roomService.rooms" class="room">
                     <h3 matLine>Nom de l'adversaire : {{ room.name }}</h3>
-                    <p matLine>Mode : {{ room.settings.mode }}</p>
-                    <p matLine>Temps : {{ room.settings.timer }}</p>
-                    <button mat-raised-button color="basic" (click)="goInRoom(room.id)" routerLink="game" id="join_button">Join</button>
-                    <mat-divider></mat-divider>
+                    <p matLine class="mode">Mode : {{ room.settings.mode }}</p>
+                    <p matLine class="time">Temps : {{ room.settings.timer }}</p>
+                    <button
+                        mat-raised-button
+                        color="basic"
+                        (click)="goInRoom(room.id)"
+                        routerLink="game"
+                        (click)="playClickOnButtonAudio()"
+                        class="game-button green"
+                    >
+                        Join
+                    </button>
+                    <mat-divider class="room-divider"></mat-divider>
                 </mat-list-item>
             </mat-list>
             <mat-card-footer>
-                <button mat-raised-button mat-dialog-close [routerLink]="['/waiting']" id="back_button"><span>Back</span></button>
+                <button mat-raised-button mat-dialog-close [routerLink]="['/home']" (click)="playClickOnButtonAudio()" class="game-button red">
+                    <span>Quitter</span>
+                </button>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    [class.hidden]="numbers === 0"
+                    [disabled]="numbers === 1"
+                    class="game-button"
+                    (click)="roomService.joinRandomRoom(); playClickOnButtonAudio()"
+                >
+                    Placement aléatoire
+                </button>
                 <mat-card-subtitle>En attente </mat-card-subtitle>
                 <mat-progress-bar mode="indeterminate"></mat-progress-bar>
             </mat-card-footer>
