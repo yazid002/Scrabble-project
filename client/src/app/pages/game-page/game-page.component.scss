@@ -1,9 +1,17 @@
 .container {
-    height: 100%;
+    // height: 100%;
     display: flex;
-    right: 4%;
+    // right: 4%;
     position: absolute;
+    // width: 100%;
+    min-height: 100%;
+    height: auto;
+    background-image: url('/assets/bg.jpg');
+    height: 100%;
     width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .play-area {
@@ -13,11 +21,13 @@
     position: relative;
     margin-left: 6%;
     height: fit-content;
+    padding-top: 25%;
 }
 app-chatbox {
     position: relative;
-    margin-left: 7.5%;
+    padding-left: 7.5%;
     width: 25%;
+    // padding-right: 1%;
 }
 #temporary {
     margin-left: 100px;
@@ -33,7 +43,7 @@ app-chatbox {
 app-sidebar {
     position: relative;
     width: 40%;
-    margin-left: 4.5%;
+    padding-left: 2%;
 }
 
 .operations {
@@ -41,8 +51,9 @@ app-sidebar {
     display: inline-flex;
     bottom: 4%;
     height: fit-content;
-    margin-left: 5%;
+    // margin-left: 5%;
     width: 100%;
+    padding-left: 5%;
 }
 
 .play-area-container {
