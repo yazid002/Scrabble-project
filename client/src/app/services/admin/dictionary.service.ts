@@ -5,8 +5,8 @@
 /* eslint-disable prettier/prettier */
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Output } from '@angular/core';
+import { Dictionary } from '@app/classes/dictionary';
 import { SERVER_URL } from '@app/constants/url';
-import { DictionaryModel } from '@app/pages/admin-page/models/dictionary.model';
 import { FileMessages } from '@app/pages/admin-page/models/file-messages.model';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
 import { ValidationMessageModel } from '@app/pages/admin-page/models/validation-message.model';
@@ -44,6 +44,8 @@ export class DictionaryService {
                 result = true;
             }
         });
+        this.validationMessage.isValid = false;
+        this.validationMessage.message = "le dictionnaire a le meme titre q'un autre dictionnaire, svp change le titre !!!";
         return result;
     }
     public async getAllDictionaries(): Promise<TitleDescriptionOfDictionary[]> {
@@ -67,31 +69,24 @@ export class DictionaryService {
         const reader = new FileReader();
         reader.readAsText(file);
         reader.onload = () => {
-            const jsonResp = JSON.stringify(reader.result);
             try {
-                const rep = JSON.parse(jsonResp);
-                const newDic: DictionaryModel = JSON.parse(rep);
+                const newDic: Dictionary = JSON.parse(reader.result as string) as unknown as Dictionary;
+                console.log('new dict type', typeof newDic);
                 this.titleAndDescriptionOfDictionary.title = newDic.title;
                 this.titleAndDescriptionOfDictionary.description = newDic.description;
-                if (Object.keys(newDic).length !== 3) {
-                    this.validationMessage.isValid = false;
-                    this.validationMessage.message = 'Lefichier doit avoir seulement 3 cles: title,description,words';
-                    this.emitToSnackBar(this.validationMessage.message, 'Dismiss');
+                console.log('words type', typeof newDic.words);
+                if (!this.isNewDictionaryHasSameTitleAsAnother()) {
+
+                    this.upload(file);
+                    this.validationMessage.isValid = true;
+                    this.validationMessage.message = 'Le format du fichier est conforme au format attendu';
                 }
             } catch (e) {
                 this.validationMessage.isValid = false;
-                this.validationMessage.message = 'le format du fichier doit etre json';
-                this.emitToSnackBar(this.validationMessage.message, 'Dismiss');
+                this.validationMessage.message = 'le format du fichier doit etre json contenant un objet de type dictionaire.';
             }
-            if (this.isNewDictionaryHasSameTitleAsAnother()) {
-                this.validationMessage.isValid = false;
-                this.validationMessage.message = "le dictionnaire a le meme titre q'un autre dictionnaire, svp change le titre !!!";
-                this.emitToSnackBar(this.validationMessage.message, 'Dismiss');
-            }
-            this.validationMessage.isValid = true;
-            this.validationMessage.message = 'Le format du fichier est conforme au format attendu';
+            this.emitToSnackBar(this.validationMessage.message, 'Dismiss');
         };
-        this.upload(file);
     }
     async upload(file: File) {
         const fileForm = new FormData();
@@ -133,6 +128,6 @@ export class DictionaryService {
         return this.fileMessage;
     }
     private emitToSnackBar(message: string, action: string) {
-        this.snackBarSignal.next({message,action})
+        this.snackBarSignal.next({ message, action });
     }
 }
