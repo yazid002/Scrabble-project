@@ -28,6 +28,10 @@ form:invalid {
     }
 }
 
+.mat-form-field--no-underline .mat-form-field-underline {
+    background-color: transparent !important;
+}
+
 // .dictionnaire mat-form-field {
 //     margin-bottom: 50px;
 // }

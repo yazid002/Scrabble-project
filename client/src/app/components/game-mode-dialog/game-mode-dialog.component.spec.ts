@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { PLAYER } from '@app/classes/player';
@@ -125,6 +126,7 @@ describe('GameModeDialogComponent', () => {
                 MatDialogModule,
                 ReactiveFormsModule,
                 MatFormFieldModule,
+                MatSelectModule,
             ],
         }).compileComponents();
     });
