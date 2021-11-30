@@ -11,9 +11,5 @@ export class SwitchDialogComponent {
     constructor(public roomService: RoomService, public userSettingsService: UserSettingsService, public matDialog: MatDialog) {}
     assignSolo() {
         this.userSettingsService.settings.numPlayers.currentChoiceKey = 'solo';
-        console.log(this.userSettingsService.settings.numPlayers.currentChoiceKey);
     }
-    // quitRoom() {
-    //     this.roomService.quitRoom();
-    // }
 }

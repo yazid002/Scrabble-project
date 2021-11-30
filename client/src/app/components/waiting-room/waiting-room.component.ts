@@ -50,9 +50,4 @@ export class WaitingRoomComponent implements OnInit {
             this.timer = timer.value;
         }
     }
-
-    // get numbers(): number {
-    //     // console.log('length = ' + this.roomService.rooms.length);
-    //     return this.roomService.rooms.length;
-    // }
 }
