@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PLAYER } from '@app/classes/player';
 import { ABANDON_SIGNAL } from '@app/classes/signal';
@@ -22,12 +22,10 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent implements AfterViewInit, OnInit {
+export class GamePageComponent implements AfterViewInit {
     @ViewChild(ChatboxComponent) chatboxComponent: ChatboxComponent;
     @ViewChild(PlayAreaComponent) playAreaComponent: PlayAreaComponent;
 
-    // TODO verifier si les services en parametre sont utilises ou doivent en private
-    // TODO enlever le roomName et isMaster une fois que le loby est intégré et créé les salles pour nous
     roomName: string = '';
     isMaster: boolean;
     rooms: Room[];
@@ -74,11 +72,6 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     onMouseWheel(event: WheelEvent) {
         this.selectionManagerService.onMouseWheel(event);
     }
-
-    ngOnInit(): void {
-        this.soundManagerService.stopMainPageAudio();
-    }
-
     ngAfterViewInit(): void {
         this.selectionManagerService.chatboxComponent = this.chatboxComponent;
     }
