@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -76,6 +76,8 @@ describe('GameModeDialogComponent', () => {
             computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
             timer: { setting: TIMER, currentChoiceKey: '60' },
         };
+        userSettingsServiceSpy.dictionaryControl = new FormControl('', Validators.required);
+        userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole', words: [] }];
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         randomModeServiceSpy = jasmine.createSpyObj('RandomModeService', ['getRandomIntInclusive']);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initPlayers']);
@@ -174,6 +176,11 @@ describe('GameModeDialogComponent', () => {
 
             expect(goalsManagerServiceSpy.isEnabled).toEqual(true);
         });
+    });
+    it('completeGoalSound should play an audio', () => {
+        soundManagerServiceSpy.playClickOnButtonAudio.and.returnValue(void '');
+        component.playClickOnButtonAudio();
+        expect(soundManagerServiceSpy.playClickOnButtonAudio).toHaveBeenCalled();
     });
 
     describe('applyRandomMode()', () => {
