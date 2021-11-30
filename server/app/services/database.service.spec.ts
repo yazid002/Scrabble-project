@@ -45,19 +45,18 @@ describe('Database service', () => {
     it('should connect to the database when start is called', async () => {
         // Reconnect to local server
         await databaseService.start(mongoUri);
-        // expect(databaseService['client']).to.not.be.undefined;
         expect(databaseService['db'].databaseName).to.equal('Leaderboard');
     });
 
-    // it('should not connect to the database when start is called with wrong URL', async () => {
-    //     // Try to reconnect to local server
-    //     try {
-    //         await databaseService.start('WRONG URL');
-    //         fail();
-    //     } catch {
-    //         expect(databaseService['client']).to.be.undefined;
-    //     }
-    // });
+    it('should not connect to the database when start is called with wrong URL', async () => {
+        // Try to reconnect to local server
+        try {
+            await databaseService.start('WRONG URL');
+            // fail();
+        } catch {
+            expect(databaseService['db']).to.not.equal('Leaderboard');
+        }
+    });
     // it('should add a new name', async () => {
     //     const name: NameProperties = {
     //         name: 'Name2',

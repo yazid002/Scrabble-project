@@ -1,8 +1,7 @@
 import { GameState } from '@app/classes/game-state';
 import { Server } from '@app/server';
 import { Room, SocketManager } from '@app/services/socket-manager.service';
-import { expect } from 'chai';
-import { assert } from 'console';
+import { assert, expect } from 'chai';
 import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
@@ -162,7 +161,7 @@ describe('Socket manager service', () => {
             done();
         }, RESPONSE_DELAY);
     });
-    
+
     it('should emit rooms when leaveRoom is emitted', (done) => {
         let callCounter = '';
         clientSocket.on('rooms', () => {

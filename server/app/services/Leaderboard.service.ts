@@ -38,17 +38,17 @@ export class LeaderboardService {
             });
     }
 
-    async getClassicPlayer(player: string): Promise<Leaderboard> {
-        return this.collectionClassic.findOne({ name: player }).then((playerInfo: Leaderboard) => {
-            return playerInfo;
-        });
-    }
+    // async getClassicPlayer(player: string): Promise<Leaderboard> {
+    //     return this.collectionClassic.findOne({ name: player }).then((playerInfo: Leaderboard) => {
+    //         return playerInfo;
+    //     });
+    // }
 
-    async get2990Player(player: string): Promise<Leaderboard> {
-        return this.collection2990.findOne({ name: player }).then((playerInfo: Leaderboard) => {
-            return playerInfo;
-        });
-    }
+    // async get2990Player(player: string): Promise<Leaderboard> {
+    //     return this.collection2990.findOne({ name: player }).then((playerInfo: Leaderboard) => {
+    //         return playerInfo;
+    //     });
+    // }
 
     async addClassicPlayer(player: Leaderboard, leaderboardService: LeaderboardService): Promise<void> {
         await leaderboardService.collectionClassic.insertOne(player);
