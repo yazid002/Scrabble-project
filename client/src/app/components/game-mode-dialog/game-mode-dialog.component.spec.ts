@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormsModule, Validators } from '@angular/forms';
+import { FormControl, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -115,7 +116,16 @@ describe('GameModeDialogComponent', () => {
                 { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
-            imports: [BrowserAnimationsModule, MatRadioModule, MatCardModule, FormsModule, MatInputModule, MatDialogModule],
+            imports: [
+                BrowserAnimationsModule,
+                MatRadioModule,
+                MatCardModule,
+                FormsModule,
+                MatInputModule,
+                MatDialogModule,
+                ReactiveFormsModule,
+                MatFormFieldModule,
+            ],
         }).compileComponents();
     });
 

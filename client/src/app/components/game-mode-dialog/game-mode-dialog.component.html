@@ -24,6 +24,8 @@
                     required
                     [(ngModel)]="userSettingsService.selectedDictionary"
                     (ngModelChange)="changeDic()"
+                    ngDefaultControl
+                    matInput
                 >
                     <mat-option>--</mat-option>
                     <mat-option *ngFor="let dictionnaire of userSettingsService.dictionnaires" [value]="dictionnaire">
