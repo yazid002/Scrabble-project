@@ -1,3 +1,4 @@
+import { GoalsManagerService } from './../../services/goals-manager.service';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SoundManagerService } from '@app/services/sound-manager.service';
@@ -13,15 +14,23 @@ export class JoinRoomDialogComponent {
     errorMessage: string = '';
     isChecked: boolean = false;
     message: string = '';
-    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public soundManagerService: SoundManagerService) {}
+    constructor(
+        public userSettingsService: UserSettingsService,
+        public matDialog: MatDialog,
+        public soundManagerService: SoundManagerService,
+        public goalsManagerService: GoalsManagerService,
+    ) {}
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);
         this.error = result.error;
         this.errorMessage = result.errorMessage;
+        console.log(this.userSettingsService.settings.numPlayers.currentChoiceKey);
     }
 
     playClickOnButtonAudio() {
+        this.userSettingsService.settings.mode.currentChoiceKey = 'log2990';
+        this.goalsManagerService.isEnabled = this.userSettingsService.settings.mode.currentChoiceKey === 'log2990';
         this.soundManagerService.playClickOnButtonAudio();
     }
 }

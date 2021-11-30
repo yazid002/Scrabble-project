@@ -1,3 +1,4 @@
+import { GameService } from './../../services/game.service';
 import { JoinRoomDialogComponent } from './../../components/join-room-dialog/join-room-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,7 +16,12 @@ export class MainPageComponent implements OnInit {
     readonly title: string = 'LOG2990';
 
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
-    constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, private soundManagerService: SoundManagerService) {}
+    constructor(
+        public matDialog: MatDialog,
+        public userSettingsService: UserSettingsService,
+        private soundManagerService: SoundManagerService,
+        public gameService: GameService,
+    ) {}
     // chooseMode(modeKey: string) {
     //     this.userSettingsService.settings.mode.currentChoiceKey = modeKey;
     //     this.openDialog();
@@ -39,6 +45,9 @@ export class MainPageComponent implements OnInit {
     }
 
     openJoinRoomDialog() {
+        this.gameService.numPlayers = 'multiplayer';
+        // this.goalsManagerService.isEnabled = this.userSettingsService.settings.mode.currentChoiceKey === 'log2990';
+        this.userSettingsService.settings.numPlayers.currentChoiceKey = 'multiplayer';
         this.matDialog.open(JoinRoomDialogComponent);
         this.playClickSound();
     }

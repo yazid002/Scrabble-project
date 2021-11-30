@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
 import { RoomService } from '@app/services/room.service';
@@ -10,7 +10,7 @@ import { QuitMultiplayerDialogComponent } from './../components/quit-multiplayer
     templateUrl: './lobby.component.html',
     styleUrls: ['./lobby.component.scss', './lobby.component-button.scss'],
 })
-export class LobbyComponent /* implements OnInit */ {
+export class LobbyComponent implements OnInit {
     name: string;
     mode: string;
 
@@ -20,14 +20,14 @@ export class LobbyComponent /* implements OnInit */ {
         public roomService: RoomService,
         public soundManagerService: SoundManagerService,
     ) {}
-    // ngOnInit(): void {
-    //     const name = this.userSettingsService.nameOption.userChoice;
-    //     const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
-    //         (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
-    //     );
-    //     this.assignValues(name, mode);
-
-    // }
+    ngOnInit(): void {
+        const name = this.userSettingsService.nameOption.userChoice;
+        const mode = this.userSettingsService.settings.mode.setting.availableChoices.find(
+            (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
+        );
+        this.assignValues(name, mode);
+        console.log('rooms = ' + this.roomService.rooms);
+    }
 
     assignValues(name: string | undefined, mode: IOption | undefined) {
         if (name && mode) {
