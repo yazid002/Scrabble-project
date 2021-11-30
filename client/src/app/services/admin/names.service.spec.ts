@@ -26,7 +26,6 @@ describe('NamesService', () => {
             expect(req.request.method).toEqual('GET');
 
             const expectedResponse = new HttpResponse({ body: 'names' });
-            console.log(expectedResponse);
             req.event(expectedResponse);
 
             setTimeout(() => {

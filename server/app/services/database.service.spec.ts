@@ -15,24 +15,13 @@ chai.use(chaiAsPromised); // this allows us to test for rejection
 describe('Database service', () => {
     let databaseService: DatabaseService;
     let mongoServer: MongoMemoryServer;
-    // let virtualPlayerNamesService: VirtualPlayerNamesService;
-    // let testPlayer: NameProperties;
     let mongoUri: string;
     beforeEach(async () => {
         databaseService = new DatabaseService();
 
         // Start a local test server
-        // mongoServer = new MongoMemoryServer();
         mongoServer = await MongoMemoryServer.create();
         mongoUri = await mongoServer.getUri();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // virtualPlayerNamesService = new VirtualPlayerNamesService(databaseService as any);
-        // testPlayer = {
-        //     name: 'Name1',
-        //     default: false,
-        //     isAdvanced: false,
-        // };
-        // await virtualPlayerNamesService.names.insertOne(testPlayer);
     });
 
     afterEach(async () => {
@@ -57,18 +46,6 @@ describe('Database service', () => {
             expect(databaseService['db']).to.not.equal('Leaderboard');
         }
     });
-    // it('should add a new name', async () => {
-    //     const name: NameProperties = {
-    //         name: 'Name2',
-    //         default: false,
-    //         isAdvanced: false,
-    //     };
-
-    //     await databaseService.addName(name);
-    //     const names = await virtualPlayerNamesService.names.find({}).toArray();
-    //     expect(names.length).to.equal(2);
-    //     expect(names.find((x) => x.name === name.name)).to.deep.equals(name);
-    // });
 
     it('should populate the Mode2990 collection with a helper function', async () => {
         const client = await MongoClient.connect(mongoUri, {

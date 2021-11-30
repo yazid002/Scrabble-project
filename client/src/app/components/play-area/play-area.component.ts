@@ -1,9 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/play-area-constants';
 import { SelectionType } from '@app/enums/selection-enum';
-import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 import { ExchangeService } from '@app/services/exchange.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
@@ -19,7 +17,7 @@ export class PlayAreaComponent implements AfterViewInit {
     @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
     @ViewChild('rackCanvas', { static: false }) private rackCanvas!: ElementRef<HTMLCanvasElement>;
     // @ViewChild('logoCanvas', { static: false }) private logoCanvas!: ElementRef<HTMLCanvasElement>;
-    player: { realPlayer: number; otherPlayer: number };
+    // player: { realPlayer: number; otherPlayer: number };
     private canvasSize: Vec2;
 
     constructor(
@@ -28,11 +26,9 @@ export class PlayAreaComponent implements AfterViewInit {
         public exchangeService: ExchangeService,
         public selectionManagerService: SelectionManagerService,
         public randomMode: RandomModeService,
-        public gameService: GameService,
-        private passExecutionService: PassExecutionService,
+        public gameService: GameService, // private passExecutionService: PassExecutionService,
     ) {
-        this.gameService.initPlayers();
-        this.player = PLAYER;
+        // this.player = PLAYER;
         this.canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     }
 
@@ -81,7 +77,7 @@ export class PlayAreaComponent implements AfterViewInit {
         return this.canvasSize.y;
     }
 
-    skipTurn(): void {
-        this.passExecutionService.execute();
-    }
+    // skipTurn(): void {
+    //     this.passExecutionService.execute();
+    // }
 }

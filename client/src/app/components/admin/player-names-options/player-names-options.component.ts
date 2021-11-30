@@ -11,8 +11,7 @@ export class PlayerNamesOptionsComponent implements OnInit {
     isAdvanced: boolean = false;
     error: boolean = false;
     errorMessage: string = '';
-    constructor(public nameService: NamesService, private userSettingsService: UserSettingsService) {
-    }
+    constructor(public nameService: NamesService, private userSettingsService: UserSettingsService) {}
 
     async ngOnInit() {
         await this.nameService.fetchNames();
@@ -21,7 +20,6 @@ export class PlayerNamesOptionsComponent implements OnInit {
         await this.nameService.addName(this.name, this.isAdvanced);
     }
     validateName(): boolean {
-        console.log('form ', this.name, 'isAdvanced: ', this.isAdvanced, 'Error: ', this.error);
         const result = this.userSettingsService.validateName(this.name);
         this.error = result.error;
         this.errorMessage = result.errorMessage;

@@ -54,7 +54,6 @@ export class NamesService {
             ['advanced', this.advancedNames],
         ]);
         const rightArray = arrayMap.get(mode) as NameProperties[];
-        console.log('mode', mode, 'rightArray', rightArray);
         return rightArray[Math.floor(rightArray.length * Math.random())].name;
     }
     private handleError(errorResponse: HttpErrorResponse) {

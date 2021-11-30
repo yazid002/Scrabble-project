@@ -87,17 +87,7 @@ export class GameService {
             score: this.players[PLAYER.realPlayer].points,
             mode: this.userSettingsService.settings.mode.currentChoiceKey,
         };
-        console.log('info', realPlayer);
         this.endGameSignal.next(realPlayer);
-        // if (this.goalManagerService.isEnabled) {
-        // this.leaderboardService.leaderboardClassic = [];
-        // await this.leaderboardService.fetchClassic();
-        // console.log('abc', this.leaderboardService.leaderboardClassic);
-
-        // if (this.players[PLAYER.realPlayer].points > this.leaderboardService.leaderboardClassic[4].score) {
-        //     this.leaderboardService.addPlayer(realPlayer);
-        //     // this.leaderboardService.deletePlayer('Object Oriented Programming');
-        // }
     }
     didGameEnd(): boolean {
         let hasEnded = false;

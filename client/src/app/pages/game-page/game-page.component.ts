@@ -7,6 +7,7 @@ import { OpponentQuitDialogComponent } from '@app/components/opponent-quit-dialo
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
 import { NamesService } from '@app/services/admin/names.service';
+import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
@@ -33,6 +34,8 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     isMaster: boolean;
     rooms: Room[];
 
+    player: { realPlayer: number; otherPlayer: number };
+
     constructor(
         private gridService: GridService,
         private virtualPlayerService: VirtualPlayerService,
@@ -42,12 +45,13 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         private randomMode: RandomModeService,
         private timerService: TimerService,
         private matDialog: MatDialog,
-        private gameService: GameService,
+        public gameService: GameService,
         public soundManagerService: SoundManagerService,
-        private gamesService: GameService,
         private namesService: NamesService,
         private userSettingsService: UserSettingsService,
+        private passExecutionService: PassExecutionService,
     ) {
+        this.player = PLAYER;
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
         this.timerService.startTimer();
@@ -56,7 +60,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         });
         const computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
         const computerName = this.namesService.getRandomName(computerLevel);
-        this.gamesService.players[PLAYER.otherPlayer].name = computerName;
+        this.gameService.players[PLAYER.otherPlayer].name = computerName;
     }
     @HostListener('keyup', ['$event'])
     onKeyBoardClick(event: KeyboardEvent) {
@@ -140,6 +144,10 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     onCancelExchange(selectionType: SelectionType) {
         this.selectionManager.onCancelExchange(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
+    }
+
+    skipTurn(): void {
+        this.passExecutionService.execute();
     }
 
     get selectionType(): typeof SelectionType {

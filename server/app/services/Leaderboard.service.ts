@@ -38,18 +38,6 @@ export class LeaderboardService {
             });
     }
 
-    // async getClassicPlayer(player: string): Promise<Leaderboard> {
-    //     return this.collectionClassic.findOne({ name: player }).then((playerInfo: Leaderboard) => {
-    //         return playerInfo;
-    //     });
-    // }
-
-    // async get2990Player(player: string): Promise<Leaderboard> {
-    //     return this.collection2990.findOne({ name: player }).then((playerInfo: Leaderboard) => {
-    //         return playerInfo;
-    //     });
-    // }
-
     async addClassicPlayer(player: Leaderboard, leaderboardService: LeaderboardService): Promise<void> {
         await leaderboardService.collectionClassic.insertOne(player);
     }
@@ -98,7 +86,6 @@ export class LeaderboardService {
             addFunction = this.add2990Player;
         }
         if (player.score > leaderboard[leaderboard.length - 1].score) {
-            console.log('dans serveur');
             await deleteFunction(leaderboard[leaderboard.length - 1].name, this);
             await addFunction(player, this);
         }

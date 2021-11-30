@@ -10,7 +10,5 @@ export class AppComponent implements OnInit {
     constructor(private namesService: NamesService) {}
     async ngOnInit() {
         this.namesService.fetchNames();
-        
     }
-
 }

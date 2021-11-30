@@ -112,7 +112,6 @@ export class RoomService {
     }
 
     endGame(player: Leaderboard) {
-        console.log('arriver dans room');
         this.socket.emit('endGame', player);
     }
 }

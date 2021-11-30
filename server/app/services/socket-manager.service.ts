@@ -101,5 +101,4 @@ export class SocketManager {
         }
         this.sio.emit('rooms', this.rooms);
     }
-
 }

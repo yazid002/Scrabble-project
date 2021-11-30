@@ -1,5 +1,5 @@
 import { NameProperties } from '@app/classes/name-properties';
-import { Collection} from 'mongodb';
+import { Collection } from 'mongodb';
 import { Service } from 'typedi';
 import { DatabaseService, DATABASE_VIRTUAL_NAMES } from './database.service';
 
