@@ -43,7 +43,6 @@ export class GameSyncService {
     ) {
         this.alreadyInitialized = false;
         this.initialize();
-        // this.sendToLocalStorage();
     }
     initialize() {
         if (this.alreadyInitialized) return;
@@ -51,9 +50,7 @@ export class GameSyncService {
         this.sendGameStateSignal = new BehaviorSubject<GameState>(this.getGameState());
         this.sendAbandonSignal = new BehaviorSubject<string>('');
         this.sendOtherPlayerTrigger = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
-            console.log('numplayers =', numPlayers);
             if (numPlayers === 'solo') {
-                // this.sendToLocalStorage();
                 return;
             }
             this.sendToServer();
@@ -74,6 +71,7 @@ export class GameSyncService {
         this.timerService.counter.totalTimer = gameState.timer;
 
         if (this.gameService.currentTurn === PLAYER.otherPlayer) {
+            this.timerService.counter.totalTimer = gameState.timer;
             this.setGoalsFromGameState(gameState);
         }
 
@@ -86,6 +84,7 @@ export class GameSyncService {
             this.alreadySynced = true;
             this.sendToServer();
         } else {
+            this.timerService.counter.totalTimer = gameState.timer;
             this.setGoalsFromGameState(gameState);
         }
     }
@@ -95,29 +94,6 @@ export class GameSyncService {
         this.sendGameStateSignal.next(gameState);
     }
 
-    // recieveFromLocalStorege() {
-    //     const gameState = JSON.parse(localStorage.getItem('gameState') as string) as GameState;
-
-    //     this.reserveService.alphabets = gameState.alphabetReserve;
-    //     this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
-    //     this.gameService.currentTurn = (gameState.currentTurn + 1) % 2;
-    //     this.gameService.skipCounter = gameState.skipCounter;
-    //     this.timerService.counter.totalTimer = gameState.timer;
-    //     for (let i = 0; i < tiles.length; i++) {
-    //         tiles[i] = gameState.grid[i];
-    //     }
-    //     this.gridService.drawGrid();
-    // }
-
-    // sendToLocalStorage() {
-    //     const sendingDelay = 1000;
-    //     setInterval(() => {
-    //         const gameState = this.getGameState();
-    //         localStorage.clear();
-
-    //         localStorage.setItem('gameState', JSON.stringify(gameState));
-    //     }, sendingDelay);
-    // }
     getGameState(): GameState {
         this.placeSelectionService.cancelPlacement();
 

@@ -26,7 +26,6 @@ export class LobbyComponent implements OnInit {
             (key) => key.key === this.userSettingsService.settings.mode.currentChoiceKey,
         );
         this.assignValues(name, mode);
-        console.log('rooms = ' + this.roomService.rooms);
     }
 
     assignValues(name: string | undefined, mode: IOption | undefined) {
@@ -35,10 +34,11 @@ export class LobbyComponent implements OnInit {
             this.mode = mode.value;
         }
     }
-    goInRoom(id?: string) {
-        if (id) {
+    goInRoom(id?: string, index?: number) {
+        if (id && index !== undefined) {
             this.roomService.roomId = id;
             this.roomService.joinRoom(id);
+            this.userSettingsService.settings.timer.currentChoiceKey = this.roomService.rooms[index].settings.timer;
         } else {
             this.roomService.createRoom();
         }
@@ -53,7 +53,6 @@ export class LobbyComponent implements OnInit {
     }
 
     get numbers(): number {
-        // console.log('length = ' + this.roomService.rooms.length);
         return this.roomService.rooms.length;
     }
 }
