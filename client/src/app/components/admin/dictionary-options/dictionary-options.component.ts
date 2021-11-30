@@ -4,6 +4,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SERVER_URL } from '@app/constants/url';
 import { DictionaryModel } from '@app/pages/admin-page/models/dictionary.model';
 import { FileMessages } from '@app/pages/admin-page/models/file-messages.model';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
@@ -35,7 +36,7 @@ export class DictionaryOptionsComponent implements OnInit {
     constructor(
         public dictionaryService: DictionaryService,
         private http: HttpClient,
-        private snackBarService: MatSnackBar,
+        private snackBar: MatSnackBar,
     ) {}
 
     async ngOnInit(): Promise<void> {
@@ -65,7 +66,7 @@ export class DictionaryOptionsComponent implements OnInit {
                     this.validationMessage.message = 'le format du fichier doit etre json';
                     this.openSnackBar(this.validationMessage.message, 'Dismiss');
                 }
-                if (this.isNewDictionaryHasSameTitleAsAnother()) {
+                if (this.dictionaryService.isNewDictionaryHasSameTitleAsAnother()) {
                     this.validationMessage.isValid = false;
                     this.validationMessage.message = "le dictionnaire a le meme titre q'un autre dictionnaire, svp change le titre !!!";
                     this.openSnackBar(this.validationMessage.message, 'Dismiss');
@@ -77,21 +78,13 @@ export class DictionaryOptionsComponent implements OnInit {
         }
     }
 
-    isNewDictionaryHasSameTitleAsAnother(): boolean {
-        let result = false;
-        this.dictionaryService.listDictionaries.forEach((dic) => {
-            if (dic.title.toLocaleLowerCase() === this.titleAndDescriptionOfDictionary.title.toLocaleLowerCase()) {
-                result = true;
-            }
-        });
-        return result;
-    }
+
 
     async onSubmit() {
         const file = new FormData();
         file.set('file', this.newDictionary);
         await this.http
-            .post('http://localhost:3000/api/admin/dictionary/addNewDictionary', file)
+            .post(SERVER_URL + '/api/admin/dictionary/addNewDictionary', file)
             .toPromise()
             .then(
                 (resp: any) => {
@@ -118,7 +111,7 @@ export class DictionaryOptionsComponent implements OnInit {
 
     async saveTitleAndDescription(): Promise<FileMessages> {
         await this.http
-            .post('http://localhost:3000/api/admin/dictionary/addTitleAndDescription', this.titleAndDescriptionOfDictionary)
+            .post(SERVER_URL + '/api/admin/dictionary/addTitleAndDescription', this.titleAndDescriptionOfDictionary)
             .toPromise()
             .then((res: any) => {
                 this.fileMessage.isuploaded = res.isuploaded;
@@ -128,7 +121,7 @@ export class DictionaryOptionsComponent implements OnInit {
     }
 
     openSnackBar(message: any, action: any) {
-        const snackBarRef = this.snackBarService.open(message, action, { duration: 5000 });
+        const snackBarRef = this.snackBar.open(message, action, { duration: 5000 });
         snackBarRef.onAction().subscribe(() => {
             console.log('---> the snackBar action was triggered');
             snackBarRef.dismiss();
