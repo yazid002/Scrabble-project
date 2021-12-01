@@ -5,6 +5,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { GameService } from './game.service';
 import { GoalService } from './goal.service';
 import { TimerService } from './timer.service';
+import { UserSettingsService } from './user-settings.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,8 +15,13 @@ export class GoalsManagerService {
     isEnabled: boolean;
     resetTurnCounter: Subscription;
 
-    constructor(private gameService: GameService, private goalService: GoalService, private timerService: TimerService) {
-        this.isEnabled = false;
+    constructor(
+        private gameService: GameService,
+        private goalService: GoalService,
+        private timerService: TimerService,
+        private userSettingsService: UserSettingsService,
+    ) {
+        this.isEnabled = this.userSettingsService.settings.mode.currentChoiceKey === 'log2990';
         this.updateGoalProgress = new BehaviorSubject<boolean>(false);
         this.resetTurnCounter = this.timerService.resetTurnCounter.subscribe((shouldResetTurnCounter: boolean | Player) => {
             if (shouldResetTurnCounter) {
