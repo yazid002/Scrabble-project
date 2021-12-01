@@ -54,10 +54,13 @@ export class WordValidationController {
          *             type: string
          */
         this.router.post('/', async (req: Request, res: Response) => {
+            console.log('in controller');
             try {
+                console.log('trying');
                 const wordExists = this.wordValidationService.validateWord(req.body);
                 res.json(wordExists);
             } catch (error) {
+                console.log('error in controller');
                 res.status(StatusCodes.SERVICE_UNAVAILABLE).send(error.message);
             }
         });

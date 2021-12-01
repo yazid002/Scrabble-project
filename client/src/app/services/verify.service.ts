@@ -34,7 +34,7 @@ export class VerifyService {
         this.lettersUsedOnBoard = [];
         this.formedWords = [];
     }
-    assignDictionary(){
+    assignDictionary() {
         this.dictionaryService.fetchDictionary(this.userSettingsService.selectedDictionary.title).then((dict) => (this.dictionary = dict));
     }
     isFitting(coord: Vec2, direction: string, word: string): { error: boolean; message: IChat } {
@@ -214,7 +214,6 @@ export class VerifyService {
             direction === 'h'
                 ? coord.y === h8Coord.y && coord.x <= h8Coord.x && coord.x + word.length > h8Coord.x
                 : coord.x === h8Coord.x && coord.y <= h8Coord.y && coord.y + word.length > h8Coord.y;
-
         if (!valid) {
             this.success = false;
             response.error = true;
@@ -242,38 +241,31 @@ export class VerifyService {
         }
         return false;
     }
-
     private findVerticalAdjacentWord(coord: Vec2): string {
         let up = coord.y;
         let down = coord.y;
         let wordFound = '';
-
         if (BONUSES.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
-
         while (up > 0 && tiles[up - 1][coord.x].text !== '' && !BONUSES.includes(tiles[up - 1][coord.x].text)) {
             up--;
         }
         while (down < SQUARE_NUMBER - 1 && tiles[down + 1][coord.x].text !== '' && !BONUSES.includes(tiles[down + 1][coord.x].text)) {
             down++;
         }
-
         for (let i = up; i <= down; i++) {
             wordFound += tiles[i][coord.x].text;
         }
-
         if (BONUSES.includes(wordFound)) {
             wordFound = '';
         }
         return wordFound;
     }
-
     private findHorizontalAdjacentWord(coord: Vec2): string {
         let right = coord.x;
         let left = coord.x;
         let wordFound = '';
-
         if (BONUSES.includes(tiles[coord.y][coord.x].text)) {
             return wordFound;
         }
@@ -325,13 +317,10 @@ export class VerifyService {
     private validateJokersOccurrencesMatch(word: string, lettersUsedOnBoard: { letter: string; coord: Vec2 }[]): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
         const response = { error: false, message: result };
-
         const wordToChange = word.split('') as string[];
         const upperLettersInWord: string[] = wordToChange.filter((letter) => letter === letter.toUpperCase());
         const numberOfJokersOnBoard = lettersUsedOnBoard.filter((letter) => letter.letter === letter.letter.toUpperCase());
-
         const jokersNumb = this.rackService.findJokersNumberOnRack() + numberOfJokersOnBoard.length;
-
         if (upperLettersInWord.length > jokersNumb) {
             this.success = false;
             response.error = true;
@@ -353,6 +342,8 @@ export class VerifyService {
         return response;
     }
     private validateWords(words: string[]): Observable<{ wordExists: boolean; errorMessage: string }> {
-        return this.http.post<{ wordExists: boolean; errorMessage: string }>(this.urlString, words);
+        const params: { words: string[]; dict: string } = { words, dict: this.dictionaryService.currentDictionary.title };
+        console.log('about to send to server', params);
+        return this.http.post<{ wordExists: boolean; errorMessage: string }>(this.urlString, params);
     }
 }
