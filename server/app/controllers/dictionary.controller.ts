@@ -66,7 +66,7 @@ export class DictionaryController {
          *           $ref: '#/definitions/Message'
          */
         // ============== add new dictionary ===================================
-        let fileName: string = '';
+        let fileName = '';
         const multer = require('multer');
         const storage = multer.diskStorage({
             destination: (req: Request, file: File, cb: (arg0: null, arg1: string) => void) => {
@@ -107,10 +107,10 @@ export class DictionaryController {
                 res.status(StatusCodes.SERVICE_UNAVAILABLE).send(error.message);
             }
         });
-        this.router.delete('/delete/:filename', async (req: Request, res: Response) => {
+        this.router.delete('/delete/:title', async (req: Request, res: Response) => {
             try {
-                const filename = req.params.filename;
-                const rep = this.dictionaryService.deleteFile(filename);
+                const title = req.params.title;
+                const rep = this.dictionaryService.deleteFile(title);
                 res.json(rep);
             } catch (error) {
                 // res.status(StatusCodes.SERVICE_UNAVAILABLE).send(error.message);

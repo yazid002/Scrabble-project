@@ -30,21 +30,17 @@ export class DictionaryService {
     async addDict(fileName: string) {
         console.log('adding ', fileName);
         await this.reafFileService.readDictionary(this.path + fileName).then((dictString) => {
-            this.listDictionarires.push(JSON.parse(dictString) as unknown as Dictionary);
+            const newDict = JSON.parse(dictString) as unknown as Dictionary;
+            newDict.fileName = fileName;
+            this.listDictionarires.push(newDict);
             console.log(this.listDictionarires);
+            fs.unlinkSync(this.path + fileName);
         });
     }
 
-    deleteFile(filename: string): string {
-        const path = './app/assets/' + filename;
-        try {
-            fs.unlinkSync(path);
-            // this.listDictionarires = this.listDictionarires.filter((dict) => dict.filename !== filename);
-            console.log(this.listDictionarires);
-            return 'file removed successfully';
-        } catch (err) {
-            return 'file was not removed, server side problem';
-        }
+    deleteFile(name: string): string {
+        this.listDictionarires = this.listDictionarires.filter((dict) => dict.title !== name);
+        return 'file removed successfully';
     }
 
     findAllDictionaries(): TitleDescriptionOfDictionary[] {
