@@ -15,6 +15,29 @@
                 </mat-radio-button>
             </mat-radio-group>
         </div>
+        <div class="dictionnaire">
+            <mat-card-title>Dictionnaire</mat-card-title>
+            <mat-form-field appearance="fill">
+                <!-- <mat-label>Dictionnaire</mat-label> -->
+                <input matInput style="display: none !important" />
+                <mat-select
+                    matNativeControl
+                    [formControl]="userSettingsService.dictionaryControl"
+                    required
+                    [(ngModel)]="userSettingsService.selectedDictionary"
+                    (ngModelChange)="changeDic()"
+                    ngDefaultControl
+                >
+                    <mat-option>--</mat-option>
+                    <mat-option *ngFor="let dictionnaire of userSettingsService.dictionnaires" [value]="dictionnaire">
+                        {{ dictionnaire.title }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="userSettingsService.dictionaryControl.hasError('required')">Please choose a dictionary</mat-error>
+                <mat-hint>Description : {{ userSettingsService.dictionaryControl.value?.description }}</mat-hint>
+            </mat-form-field>
+            <!-- <h3>your selected dictionary is : {{ userSettingsService.selectedDictionary }}</h3> -->
+        </div>
 
         <div>
             <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
@@ -46,7 +69,7 @@
                 mat-raised-button
                 color="primary"
                 type="submit"
-                [disabled]="error"
+                [disabled]="userSettingsService.dictionaryControl.hasError('required') || error"
                 *ngIf="numPlayerChoice()"
                 routerLink="waiting"
                 mat-dialog-close
@@ -58,7 +81,7 @@
                 mat-raised-button
                 color="primary"
                 type="submit"
-                [disabled]="error"
+                [disabled]="userSettingsService.dictionaryControl.hasError('required') || error"
                 *ngIf="!numPlayerChoice()"
                 routerLink="game"
                 mat-dialog-close

@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { Dictionary } from '@app/classes/dictionary';
 import { IOptionList, IUserSetting, NAME_OPTION } from '@app/classes/game-options';
 
 const MODE: IOptionList = {
@@ -15,10 +17,10 @@ const NUM_PLAYERS: IOptionList = {
         { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
     ],
 };
-const NUM_PLAYERS_SWITCH: IOptionList = {
-    settingName: 'Nombre de joueurs',
-    availableChoices: [{ key: 'solo', value: 'Solo' }],
-};
+// const NUM_PLAYERS_SWITCH: IOptionList = {
+//     settingName: 'Nombre de joueurs',
+//     availableChoices: [{ key: 'solo', value: 'Solo' }],
+// };
 
 const COMPUTER_LEVEL: IOptionList = {
     settingName: "Niveau de l'ordinateur",
@@ -58,22 +60,31 @@ export class UserSettingsService {
         computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
-    joinSettings: {
-        mode: IUserSetting;
-    } = {
-        mode: { setting: MODE, currentChoiceKey: 'classic' },
-    };
-    switchToSoloSettings: {
-        mode: IUserSetting;
-        numPlayers: IUserSetting;
-        computerLevel: IUserSetting;
-        timer: IUserSetting;
-    } = {
-        mode: { setting: MODE, currentChoiceKey: 'classic' },
-        numPlayers: { setting: NUM_PLAYERS_SWITCH, currentChoiceKey: 'solo' },
-        computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
-        timer: { setting: TIMER, currentChoiceKey: '60' },
-    };
+    // joinSettings: {
+    //     mode: IUserSetting;
+    // } = {
+    //     mode: { setting: MODE, currentChoiceKey: 'classic' },
+    // };
+    // switchToSoloSettings: {
+    //     mode: IUserSetting;
+    //     numPlayers: IUserSetting;
+    //     computerLevel: IUserSetting;
+    //     timer: IUserSetting;
+    // } = {
+    //     mode: { setting: MODE, currentChoiceKey: 'classic' },
+    //     numPlayers: { setting: NUM_PLAYERS_SWITCH, currentChoiceKey: 'solo' },
+    //     computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+    //     timer: { setting: TIMER, currentChoiceKey: '60' },
+    // };
+
+    dictionaryControl = new FormControl('', Validators.required);
+    dictionnaires: Dictionary[] = [
+        { title: 'Espagnol', description: 'Langue espagnole', words: [] },
+        { title: 'Anglais', description: 'Langue anglaise', words: [] },
+        { title: 'Italien', description: 'Langue italienne', words: [] },
+        { title: 'Russe', description: 'Langue Russe', words: [] },
+    ];
+    selectedDictionary: Dictionary;
 
     nameOption = NAME_OPTION;
     computerName: string;
@@ -102,5 +113,9 @@ export class UserSettingsService {
         const mode = this.settings.mode.currentChoiceKey;
         const timer = this.settings.timer.currentChoiceKey;
         return { mode, timer };
+    }
+
+    changeDic() {
+        console.log(this.selectedDictionary);
     }
 }

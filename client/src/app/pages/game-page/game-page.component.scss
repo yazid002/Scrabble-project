@@ -1,16 +1,33 @@
 .container {
-    height: 100%;
+    // height: 100%;
     display: flex;
-    max-width: 100vmax;
+    // right: 4%;
+    position: absolute;
+    // width: 100%;
+    min-height: 100%;
+    height: auto;
+    background-image: url('/assets/bg.jpg');
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .play-area {
     display: grid;
     width: min-content;
     outline: none;
+    position: relative;
+    margin-left: 6%;
+    height: fit-content;
+    padding-top: 25%;
 }
 app-chatbox {
-    max-width: 500px;
+    position: relative;
+    padding-left: 7.5%;
+    width: 25%;
+    // padding-right: 1%;
 }
 #temporary {
     margin-left: 100px;
@@ -18,4 +35,53 @@ app-chatbox {
     border: 1px solid black;
 }
 
+.size-controls {
+    position: relative;
+    display: inline-flex;
+}
 
+app-sidebar {
+    position: relative;
+    width: 40%;
+    padding-left: 2%;
+}
+
+.operations {
+    position: relative;
+    display: inline-flex;
+    bottom: 4%;
+    height: fit-content;
+    // margin-left: 5%;
+    width: 100%;
+    padding-left: 5%;
+}
+
+.play-area-container {
+    height: min-content;
+    margin-left: 2%;
+}
+
+.exchange {
+    margin-left: 3%;
+    display: inline-flex;
+}
+
+.place {
+    margin-left: 3%;
+    display: inline-flex;
+}
+
+.manipulation {
+    margin-left: 15%;
+    display: inline-flex;
+}
+
+.passer {
+    margin-left: 10%;
+    display: inline-flex;
+}
+
+button {
+    height: 100%;
+    // width: 45%;
+}

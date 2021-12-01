@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
 import { Goal } from '@app/classes/goal';
 import { PLAYER } from '@app/classes/player';
+import { QuitConfirmationDialogComponent } from '@app/components/quit-confirmation-dialog/quit-confirmation-dialog.component';
 import { GameService } from '@app/services/game.service';
 import { GoalService } from '@app/services/goal.service';
 import { PlaceService } from '@app/services/place.service';
@@ -12,7 +14,7 @@ import { UserSettingsService } from '@app/services/user-settings.service';
 @Component({
     selector: 'app-game-overview',
     templateUrl: './game-overview.component.html',
-    styleUrls: ['./game-overview.component.scss'],
+    styleUrls: ['./game-overview.component.scss', './game-overview-button.component.scss'],
 })
 export class GameOverviewComponent implements OnInit {
     goals: Goal;
@@ -25,6 +27,7 @@ export class GameOverviewComponent implements OnInit {
     otherPlayerName: string = '';
     publicGoals: Goal[];
     privateGoals: Goal[];
+
     constructor(
         public userSettingsService: UserSettingsService,
         public timerService: TimerService,
@@ -32,10 +35,15 @@ export class GameOverviewComponent implements OnInit {
         public placeService: PlaceService,
         public gameService: GameService,
         public goalService: GoalService,
+        public matDialog: MatDialog,
     ) {}
     ngOnInit(): void {
         this.initializeGoals();
         this.updateData();
+    }
+
+    openQuitConfirmationDialog() {
+        this.matDialog.open(QuitConfirmationDialogComponent);
     }
 
     private updateData(): void {

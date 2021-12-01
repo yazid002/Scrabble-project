@@ -63,4 +63,10 @@ describe('QuitMultiplayerDialogComponent', () => {
         component.quitRoom();
         expect(quitRoomSpy).toHaveBeenCalled();
     });
+
+    it('completeGoalSound should play an audio', () => {
+        soundManagerServiceSpy.playClickOnButtonAudio.and.returnValue(void '');
+        component.playClickOnButtonAudio();
+        expect(soundManagerServiceSpy.playClickOnButtonAudio).toHaveBeenCalled();
+    });
 });

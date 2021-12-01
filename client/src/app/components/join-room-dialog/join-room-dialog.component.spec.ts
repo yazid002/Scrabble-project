@@ -5,7 +5,10 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
+import { LobbyComponent } from '@app/lobby/lobby.component';
+import { GoalsManagerService } from '@app/services/goals-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
@@ -18,7 +21,21 @@ class MatDialogMock {
         };
     }
 }
+const NUM_PLAYERS: IOptionList = {
+    settingName: 'Nombre de joueurs',
+    availableChoices: [
+        { key: 'solo', value: 'Solo' },
+        { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
+    ],
+};
 
+const COMPUTER_LEVEL: IOptionList = {
+    settingName: "Niveau de l'ordinateur",
+    availableChoices: [
+        { key: 'beginner', value: 'Débutant' },
+        { key: 'advanced', value: 'Avancé' },
+    ],
+};
 const MODE: IOptionList = {
     settingName: 'Mode de jeux',
     availableChoices: [
@@ -26,20 +43,41 @@ const MODE: IOptionList = {
         { key: 'log2990', value: 'LOG2990', disabled: true },
     ],
 };
+
+const TIMER: IOptionList = {
+    settingName: 'Temps maximal par tour',
+    availableChoices: [
+        { key: '30', value: '30s' },
+        { key: '60', value: '1m' },
+        { key: '90', value: '1m30s' },
+        { key: '120', value: '2m' },
+        { key: '150', value: '2m30s' },
+        { key: '180', value: '3m' },
+        { key: '210', value: '3m30' },
+        { key: '240', value: '4m' },
+        { key: '270', value: '4m30' },
+        { key: '300', value: '5m' },
+    ],
+};
 describe('JoinRoomDialogComponent', () => {
     let component: JoinRoomDialogComponent;
     let fixture: ComponentFixture<JoinRoomDialogComponent>;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
+    let goalsManagerServiceSpy: jasmine.SpyObj<GoalsManagerService>;
 
     beforeEach(async () => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName']);
-        userSettingsServiceSpy.joinSettings = {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getComputerName']);
+        userSettingsServiceSpy.settings = {
             mode: { setting: MODE, currentChoiceKey: 'classic' },
+            numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
+            computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+            timer: { setting: TIMER, currentChoiceKey: '60' },
         };
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         userSettingsServiceSpy.computerName = '';
+        goalsManagerServiceSpy = jasmine.createSpyObj('GoalsManagerService', ['initPlayers']);
         await TestBed.configureTestingModule({
             declarations: [JoinRoomDialogComponent],
             providers: [
@@ -49,8 +87,17 @@ describe('JoinRoomDialogComponent', () => {
                 },
                 { provide: UserSettingsService, useValue: userSettingsServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+                { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
             ],
-            imports: [BrowserAnimationsModule, MatRadioModule, MatCardModule, FormsModule, MatInputModule, MatDialogModule],
+            imports: [
+                BrowserAnimationsModule,
+                MatRadioModule,
+                MatCardModule,
+                FormsModule,
+                MatInputModule,
+                MatDialogModule,
+                RouterTestingModule.withRoutes([{ path: 'lobby', component: LobbyComponent }]),
+            ],
         }).compileComponents();
     });
 
@@ -77,5 +124,13 @@ describe('JoinRoomDialogComponent', () => {
 
         expect(component.error).toEqual(expectedResult.error);
         expect(component.errorMessage).toEqual(expectedResult.errorMessage);
+    });
+    it('should set well goalsManager service enabled/disabled parameter', () => {
+        goalsManagerServiceSpy.isEnabled = false;
+        userSettingsServiceSpy.settings.mode.currentChoiceKey = 'log2990';
+
+        component.playClickOnButtonAudio();
+
+        expect(goalsManagerServiceSpy.isEnabled).toEqual(true);
     });
 });

@@ -1,13 +1,28 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { IOption } from '@app/classes/game-options';
 import { Goal } from '@app/classes/goal';
+import { AppRoutingModule } from '@app/modules/app-routing.module';
+import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { GoalService } from '@app/services/goal.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
+import { of } from 'rxjs';
 import { GameOverviewComponent } from './game-overview.component';
+
+class MatDialogMock {
+    open() {
+        return {
+            afterClosed: () => of({}),
+        };
+    }
+}
 
 describe('GameOverviewComponent', () => {
     let component: GameOverviewComponent;
@@ -18,8 +33,26 @@ describe('GameOverviewComponent', () => {
         goalServiceSpy = jasmine.createSpyObj('GoalService', ['getAUniqueGoal']);
         await TestBed.configureTestingModule({
             declarations: [GameOverviewComponent],
-            imports: [MatCardModule, HttpClientModule],
-            providers: [UserSettingsService, ReserveService, TimerService, { provide: GoalService, useValue: goalServiceSpy }],
+            imports: [
+                MatDialogModule,
+                MatButtonModule,
+                AppRoutingModule,
+                RouterModule,
+                MatCardModule,
+                MatCardModule,
+                HttpClientModule,
+                RouterTestingModule.withRoutes([{ path: 'home', component: MainPageComponent }]),
+            ],
+            providers: [
+                UserSettingsService,
+                ReserveService,
+                TimerService,
+                { provide: GoalService, useValue: goalServiceSpy },
+                {
+                    provide: MatDialog,
+                    useClass: MatDialogMock,
+                },
+            ],
         }).compileComponents();
     });
 
@@ -107,5 +140,12 @@ describe('GameOverviewComponent', () => {
         component['initializeGoals']();
         expect(component.publicGoals).toEqual(publicGoals);
         expect(component.privateGoals).toEqual(privateGoals);
+    });
+
+    it('should open a MatDialog box on "openQuitConfirmationDialog"', () => {
+        // eslint-disable-next-line -- matDialog is private and we need access for the test
+        const spy = spyOn(component['matDialog'], 'open');
+        component.openQuitConfirmationDialog();
+        expect(spy).toHaveBeenCalled();
     });
 });

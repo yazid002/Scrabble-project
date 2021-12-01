@@ -1,19 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { PLAYER } from '@app/classes/player';
+import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { GameService } from '@app/services/game.service';
 import { GoalsManagerService } from '@app/services/goals-manager.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
+import { WaitingRoomComponent } from '../waiting-room/waiting-room.component';
 import { GameModeDialogComponent } from './game-mode-dialog.component';
 
 class MatDialogMock {
@@ -76,6 +82,8 @@ describe('GameModeDialogComponent', () => {
             computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
             timer: { setting: TIMER, currentChoiceKey: '60' },
         };
+        userSettingsServiceSpy.dictionaryControl = new FormControl('', Validators.required);
+        userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole', words: [] }];
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         randomModeServiceSpy = jasmine.createSpyObj('RandomModeService', ['getRandomIntInclusive']);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initPlayers']);
@@ -113,7 +121,22 @@ describe('GameModeDialogComponent', () => {
                 { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
-            imports: [BrowserAnimationsModule, MatRadioModule, MatCardModule, FormsModule, MatInputModule, MatDialogModule],
+            imports: [
+                BrowserAnimationsModule,
+                MatRadioModule,
+                MatCardModule,
+                FormsModule,
+                MatInputModule,
+                MatDialogModule,
+                ReactiveFormsModule,
+                MatFormFieldModule,
+                MatSelectModule,
+                RouterModule,
+                RouterTestingModule.withRoutes([
+                    { path: 'game', component: GamePageComponent },
+                    { path: 'waiting', component: WaitingRoomComponent },
+                ]),
+            ],
         }).compileComponents();
     });
 
@@ -174,6 +197,11 @@ describe('GameModeDialogComponent', () => {
 
             expect(goalsManagerServiceSpy.isEnabled).toEqual(true);
         });
+    });
+    it('completeGoalSound should play an audio', () => {
+        soundManagerServiceSpy.playClickOnButtonAudio.and.returnValue(void '');
+        component.playClickOnButtonAudio();
+        expect(soundManagerServiceSpy.playClickOnButtonAudio).toHaveBeenCalled();
     });
 
     describe('applyRandomMode()', () => {

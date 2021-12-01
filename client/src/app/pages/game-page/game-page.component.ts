@@ -1,10 +1,12 @@
 import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { PLAYER } from '@app/classes/player';
 import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { OpponentQuitDialogComponent } from '@app/components/opponent-quit-dialog/opponent-quit-dialog.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
+import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
@@ -30,6 +32,8 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     isMaster: boolean;
     rooms: Room[];
 
+    player: { realPlayer: number; otherPlayer: number };
+
     constructor(
         private gridService: GridService,
         private virtualPlayerService: VirtualPlayerService,
@@ -39,9 +43,11 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         private randomMode: RandomModeService,
         private timerService: TimerService,
         private matDialog: MatDialog,
-        private gameService: GameService,
+        public gameService: GameService,
         public soundManagerService: SoundManagerService,
+        private passExecutionService: PassExecutionService,
     ) {
+        this.player = PLAYER;
         this.virtualPlayerService.initialize();
         this.gameSyncService.initialize();
         this.timerService.startTimer();
@@ -131,6 +137,10 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     onCancelExchange(selectionType: SelectionType) {
         this.selectionManager.onCancelExchange(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
+    }
+
+    skipTurn(): void {
+        this.passExecutionService.execute();
     }
 
     get selectionType(): typeof SelectionType {
