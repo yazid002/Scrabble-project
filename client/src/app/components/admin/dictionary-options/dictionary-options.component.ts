@@ -39,7 +39,6 @@ export class DictionaryOptionsComponent implements OnInit {
     // Disable the any lint filer because it is hard to know the type of an event
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async selectDictionary(event: any) {
-        console.log('type of event', typeof event);
         if (event.target.files.length > 0) {
             const file = event.target.files[0];
             this.dictionaryService.selectDictionary(file);
@@ -49,7 +48,6 @@ export class DictionaryOptionsComponent implements OnInit {
     openSnackBar(message: string, action: string) {
         const snackBarRef = this.snackBar.open(message, action, { duration: 5000 });
         snackBarRef.onAction().subscribe(() => {
-            console.log('---> the snackBar action was triggered');
             snackBarRef.dismiss();
         });
     }

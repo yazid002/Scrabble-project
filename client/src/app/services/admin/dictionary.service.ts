@@ -63,10 +63,8 @@ export class DictionaryService {
         reader.onload = () => {
             try {
                 const newDic: Dictionary = JSON.parse(reader.result as string) as unknown as Dictionary;
-                console.log('new dict type', typeof newDic);
                 this.titleAndDescriptionOfDictionary.title = newDic.title;
                 this.titleAndDescriptionOfDictionary.description = newDic.description;
-                console.log('words type', typeof newDic.words);
                 if (!this.isNewDictionaryHasSameTitleAsAnother()) {
                     this.upload(file);
                     this.validationMessage.isValid = true;
@@ -89,8 +87,7 @@ export class DictionaryService {
                 this.getAllDictionaries();
             },
             (err) => {
-                console.log('erreur : ' + JSON.stringify(err));
-                this.emitToSnackBar('Probleme de televersement du fichier cote serveur', 'Dismiss');
+                this.emitToSnackBar('Probleme de televersement du fichier cote serveur' + JSON.stringify(err), 'Dismiss');
             },
         );
         if (!this.fileMessage.isuploaded) {

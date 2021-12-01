@@ -31,9 +31,7 @@ export class GoalService {
     ) {
         this.isEnabled = false;
         const dictionaryName = this.userSettingsService.selectedDictionary.title;
-        console.log('dictionaryName', dictionaryName);
         this.dictionaryService.fetchDictionary(dictionaryName).subscribe((dict) => {
-            console.log(dict);
             this.initialize(dict);
         });
     }

@@ -96,8 +96,4 @@ export class UserSettingsService {
         const timer = this.settings.timer.currentChoiceKey;
         return { mode, timer };
     }
-
-    changeDic() {
-        console.log(this.selectedDictionary);
-    }
 }

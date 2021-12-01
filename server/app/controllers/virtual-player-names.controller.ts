@@ -50,12 +50,10 @@ export class VirtualPlayerNamesController {
          *           $ref: '#/definitions/Message'
          */
         this.router.post('/', async (req: Request, res: Response) => {
-            console.log(req.body);
             try {
-                const names = this.virtualPlayerNamesService.getNames();
+                const names = this.virtualPlayerNamesService.names;
                 res.json(names);
             } catch (error) {
-                console.error(error);
                 res.status(StatusCodes.SERVICE_UNAVAILABLE).send(error.message);
             }
         });

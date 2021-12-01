@@ -332,7 +332,6 @@ export class VerifyService {
     }
     private validateWords(words: string[]): Observable<{ wordExists: boolean; errorMessage: string }> {
         const params: { words: string[]; dict: string } = { words, dict: this.userSettingsService.selectedDictionary.title };
-        console.log('about to send to server', params);
         return this.http.post<{ wordExists: boolean; errorMessage: string }>(this.urlString, params);
     }
 }

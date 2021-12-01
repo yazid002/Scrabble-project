@@ -34,8 +34,6 @@ export class WaitingRoomComponent implements OnInit {
         );
 
         const dict = this.userSettingsService.selectedDictionary;
-        console.log('dictionnaire choisi : ', this.userSettingsService.selectedDictionary);
-        // this.assignDictionary(dict);
         this.assignValues(name, mode, timer, dict);
         this.roomService.createRoom();
     }
@@ -68,19 +66,4 @@ export class WaitingRoomComponent implements OnInit {
             this.dictionary = dict;
         }
     }
-
-    // get dic(): Dictionary {
-    //     console.log('dictionary = ' + this.userSettingsService.selectedDictionary);
-    //     return this.userSettingsService.selectedDictionary;
-    // }
-
-    // get numbers(): number {
-    //     // console.log('length = ' + this.roomService.rooms.length);
-    //     return this.roomService.rooms.length;
-    // }
-
-    // get modeRoom(): IUserSetting {
-    //     console.log('mode = ' + this.userSettingsService.settings.mode);
-    //     return this.userSettingsService.settings;
-    // }
 }

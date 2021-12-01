@@ -17,19 +17,4 @@ export class VirtualPlayerNamesService {
             { name: 'Étudiant en littérature', default: true, isAdvanced: true },
         ];
     }
-
-    // addName(name: string, isAdvanced: true): void {
-    //     const item = this.names.get(name);
-    //     if (!item) this.names.set(name, { default: false, isAdvanced });
-    // }
-    // removeName(name: string) {
-    //     const itemToRemove = this.names.get(name);
-    //     if (itemToRemove && !itemToRemove?.default) {
-    //         this.names.delete(name);
-    //     }
-    // }
-    getNames(): NameProperties[] {
-        // console.log(this.names);
-        return this.names;
-    }
 }
