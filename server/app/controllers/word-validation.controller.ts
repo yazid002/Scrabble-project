@@ -1,5 +1,6 @@
 import { WordValidationService } from '@app/services/word-validation.service';
 import { Request, Response, Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';
 
 @Service()
@@ -53,8 +54,12 @@ export class WordValidationController {
          *             type: string
          */
         this.router.post('/', async (req: Request, res: Response) => {
-            const wordExists = this.wordValidationService.validateWord(req.body);
-            res.json(wordExists);
+            try {
+                const wordExists = this.wordValidationService.validateWord(req.body);
+                res.json(wordExists);
+            } catch (error) {
+                res.status(StatusCodes.SERVICE_UNAVAILABLE).send(error.message);
+            }
         });
     }
 }

@@ -18,6 +18,7 @@ import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
 import { VerifyService } from './verify.service';
 
+const DELAY_TO_START = 1000;
 @Injectable({
     providedIn: 'root',
 })
@@ -49,6 +50,11 @@ export class VirtualPlayerService {
         this.alreadyInitialized = true;
         this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => this.reactToSignal(numPlayers));
         this.computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
+        if (this.gameService.currentTurn === PLAYER.otherPlayer) {
+            setTimeout(() => {
+                this.play();
+            }, DELAY_TO_START);
+        }
     }
     private reactToSignal(numPlayers: string) {
         if (numPlayers !== 'solo') return;

@@ -1,18 +1,32 @@
 import { GameState } from '@app/classes/game-state';
+import { Leaderboard } from '@app/classes/Leaderboard';
 import { Server } from '@app/server';
 import { Room, SocketManager } from '@app/services/socket-manager.service';
-import { expect } from 'chai';
+import { assert, expect } from 'chai';
+// import { createSpyObj } from 'jest-createspyobj';
+import * as sinon from 'sinon';
 import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
+// disable car on importe une constante du coté client, on doit utiliser un pattern
+// eslint-disable-next-line no-restricted-imports
+import { RESPONSE_DELAY } from '../../../client/src/app/constants/url';
+// import { LeaderboardService } from './Leaderboard.service';
 
 describe('Socket manager service', () => {
     let service: SocketManager;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // let leaderboardService: LeaderboardService;
     let server: Server;
     let clientSocket: Socket;
-    const RESPONSE_DELAY = 1000;
-    beforeEach(() => {
+    beforeEach(async () => {
         server = Container.get(Server);
         server.init();
+        // eslint-disable-next-line dot-notation
+        // leaderboardService = createSpyObj('leaderboardService', ['addClassicPlayer', 'deleteClassicPlayer']);
+        // leaderboardServiceMock = sinon.fake(service['leaderboardService'].addClassicPlayer).returned('');
+        // leaderboardServiceMock.endGame.returns();
+        // service['leaderboardService'].endGame = sinon.fake.returns({ value: null });
+        // leaderboardServiceMock.endGame.and.callFake();
 
         // eslint-disable-next-line dot-notation
         service = server['socketManger'];
@@ -169,6 +183,28 @@ describe('Socket manager service', () => {
         setTimeout(() => {
             // eslint-disable-next-line dot-notation
             expect(callCounter).to.equal('hello');
+            done();
+        }, RESPONSE_DELAY);
+    });
+    it('should call leaderboardService.endGame on endGame', (done) => {
+        const player: Leaderboard = { name: 'a Name', score: 99, mode: 'classic' };
+        // clientSocket.on('endGame', (player1: Leaderboard) => {
+        //     leaderboardService.endGame(player1);
+        // });
+        // eslint-disable-next-line dot-notation
+        // const endGameFake = sinon.fake(service['leaderboardService'].endGame).returned({});
+        // eslint-disable-next-line dot-notation
+        const endGameSpy = sinon.spy(service['leaderboardService'], 'endGame');
+        // eslint-disable-next-line dot-notation
+        sinon.fake(service['leaderboardService'].addClassicPlayer).returned({ value: '' });
+        // leaderboardService.addClassicPlayer.returnValue('');
+        // leaderboardService.deleteClassicPlayer.returnValue('');
+        // eslint-disable-next-line dot-notation
+        // sinon.fake(leaderboardService.deleteClassicPlayer).returned({ value: '' });
+
+        clientSocket.emit('endGame', player);
+        setTimeout(() => {
+            assert(endGameSpy.called);
             done();
         }, RESPONSE_DELAY);
     });

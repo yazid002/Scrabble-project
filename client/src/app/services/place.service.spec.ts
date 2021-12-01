@@ -7,6 +7,7 @@ import { IChat, SENDER } from '@app/classes/chat';
 import { Dictionary } from '@app/classes/dictionary';
 import { Player, PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board-constants';
 import { SelectionType } from '@app/enums/selection-enum';
 import { GridService } from '@app/services/grid.service';
 import { VerifyService } from '@app/services/verify.service';
@@ -20,9 +21,6 @@ import { RackService } from './rack.service';
 import { SelectionManagerService } from './selection-manager.service';
 import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
-
-const CANVAS_WIDTH = 500;
-const CANVAS_HEIGHT = 500;
 
 describe('PlaceService', () => {
     let service: PlaceService;
@@ -93,7 +91,7 @@ describe('PlaceService', () => {
         rackServiceSpy.gameService = gameServiceSpy;
         gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion', 'writeLetter', 'removeArrow']);
 
-        ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
+        ctxStub = CanvasTestHelper.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         gridServiceSpy.gridContext = ctxStub;
         gridServiceSpy.letterStyle = { color: 'NavajoWhite', font: '15px serif' };
         gridServiceSpy.pointStyle = { color: 'NavajoWhite', font: '10px serif' };
@@ -569,52 +567,4 @@ describe('PlaceService', () => {
             expect(placeSelectionServiceSpy.cancelPlacement).toHaveBeenCalled();
         }));
     });
-
-    // it(' should call writeWord', async () => {
-    //     const wordExistsParams = Promise.resolve({ wordExists: true, errorMessage: '' });
-    //     const result: IChat = { from: SENDER.computer, body: '' };
-    //     const response = { error: false, message: result };
-    //     verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
-    //     verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
-    //     verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
-    //     verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
-    //     const writeWordSpy = spyOn(service, 'writeWord').and.callThrough();
-
-    //     await service.placeWord(wordToCheck, coord, direction, true);
-
-    //     expect(writeWordSpy).toHaveBeenCalledTimes(2);
-    // });
-
-    // it(' should update the tiles letters', async () => {
-    //     const wordExistsParams = Promise.resolve({ wordExists: true, errorMessage: '' });
-    //     const result: IChat = { from: SENDER.computer, body: '' };
-    //     const response = { error: false, message: result };
-    //     verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
-    //     verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
-    //     verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
-    //     verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
-
-    //     const updateTilesLettersSpy = spyOn(service, 'updateTilesLetters').and.callThrough();
-
-    //     await service.placeWord(wordToCheck, coord, direction, true);
-
-    //     expect(updateTilesLettersSpy).toHaveBeenCalled();
-    // });
-
-    // it(' should update the tiles letters', fakeAsync(() => {
-    //     const wordExistsParams = Promise.resolve({ wordExists: false, errorMessage: "Le mot n'est pas valide." });
-    //     const placementDuration = 3000; // 3000 millisecondes soot 3s;
-    //     const result: IChat = { from: SENDER.computer, body: '' };
-    //     const response = { error: false, message: result };
-    //     verifyServiceSpy.computeCoordByDirection.and.returnValue(coord);
-    //     verifyServiceSpy.normalizeWord.and.returnValue(wordToCheck);
-    //     verifyServiceSpy.checkAllWordsExist.and.returnValue(wordExistsParams);
-    //     verifyServiceSpy.validatePlaceFeasibility.and.returnValue(response);
-
-    //     service.placeWord(wordToCheck, coord, direction, true).catch((error) => {
-    //         return error;
-    //     });
-    //     tick(placementDuration);
-    //     expect(gridServiceSpy.fillGridPortion).toHaveBeenCalled();
-    // }));
 });

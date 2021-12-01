@@ -1,7 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { DictionaryOptionsComponent } from '@app/components/admin/dictionary-options/dictionary-options.component';
 import { PlayerNamesOptionsComponent } from '@app/components/admin/player-names-options/player-names-options.component';
+import { NamesService } from '@app/services/admin/names.service';
+
 // import { DictionaryOptionsComponent } from '@app/components/admin/dictionary-options/dictionary-options.component';
 export type Options = 'dictionary' | 'names' | 'none';
 @Component({
@@ -9,10 +11,13 @@ export type Options = 'dictionary' | 'names' | 'none';
     templateUrl: './admin-page.component.html',
     styleUrls: ['./admin-page.component.scss'],
 })
-export class AdminPageComponent {
-
+export class AdminPageComponent implements OnInit {
     @ViewChild(DictionaryOptionsComponent) dictionaryOptionsComponent: DictionaryOptionsComponent;
     @ViewChild(MatAccordion) accordion: MatAccordion;
     @ViewChild(PlayerNamesOptionsComponent) playerNamesOptionsComponent: PlayerNamesOptionsComponent;
 
+    constructor(public nameService: NamesService) {}
+    async ngOnInit() {
+        await this.nameService.fetchNames();
+    }
 }

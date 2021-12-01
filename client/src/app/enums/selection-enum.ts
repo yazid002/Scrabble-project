@@ -3,6 +3,7 @@ export enum SelectionType {
     Rack = 2,
     Chat = 3,
     None = 4,
+    LetterSizeButton = 5,
 }
 
 export enum OperationType {

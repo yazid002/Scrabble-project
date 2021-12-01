@@ -1,9 +1,11 @@
 import { WordValidationService } from '@app/services/word-validation.service';
 import { expect } from 'chai';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
+// disable car on importe une constante du coté client, on doit utiliser un pattern
+// eslint-disable-next-line no-restricted-imports
+import { RESPONSE_DELAY } from '../../../client/src/app/constants/url';
 import { ReadFileService } from './read-file.service';
 
-const RESPONSE_DELAY = 1000;
 describe('WordValidationService', () => {
     let service: WordValidationService;
     let readFileService: SinonStubbedInstance<ReadFileService>;

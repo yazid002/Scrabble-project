@@ -18,6 +18,7 @@ import { RackService } from './rack.service';
 import { ReserveService } from './reserve.service';
 import { SelectionManagerService } from './selection-manager.service';
 import { SelectionUtilsService } from './selection-utils.service';
+import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
 
 class MockChatboxComponent extends ChatboxComponent {
@@ -40,8 +41,10 @@ describe('SelectionManagerService', () => {
     let exchangeSelectionServiceSpy: jasmine.SpyObj<ExchangeSelectionService>;
     let commandExecutionServiceSpy: jasmine.SpyObj<CommandExecutionService>;
     let chatServiceSpy: jasmine.SpyObj<ChatService>;
+    let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
 
     beforeEach(() => {
+        soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playChatAudio']);
         rackServiceSpy = jasmine.createSpyObj('RackService', ['fillRackPortion', 'isLetterOnRack']);
         selectionUtilsServiceSpy = jasmine.createSpyObj('SelectionUtilsService', ['getMouseClickIndex']);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
@@ -117,10 +120,11 @@ describe('SelectionManagerService', () => {
                 { provide: ChatboxComponent, useValue: MockChatboxComponent },
                 { provide: CommandExecutionService, useValue: commandExecutionServiceSpy },
                 { provide: ChatService, useValue: chatServiceSpy },
+                { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
         }).compileComponents();
         service = TestBed.inject(SelectionManagerService);
-        service.chatboxComponent = new MockChatboxComponent(chatServiceSpy, commandExecutionServiceSpy, service);
+        service.chatboxComponent = new MockChatboxComponent(chatServiceSpy, commandExecutionServiceSpy, service, soundManagerServiceSpy);
     });
 
     it('should be created', () => {
@@ -529,6 +533,24 @@ describe('SelectionManagerService', () => {
             expect(handleGridSelectionOnLeftClickSpy).not.toHaveBeenCalled();
             expect(handleRackSelectionOnLeftClickSpy).not.toHaveBeenCalled();
             expect(handleNoneSelectionOnLeftClickSpy).toHaveBeenCalled();
+        });
+
+        it('onLeftClick return void without call any function', () => {
+            flagToCheck = 'NOT_FOUND';
+            const coord = { x: 7, y: 7 };
+            const event = {
+                button: MouseButton.Left,
+                offsetX: coord.x * SQUARE_WIDTH,
+                offsetY: coord.y * SQUARE_WIDTH,
+            } as MouseEvent;
+            service.selectionType = SelectionType.LetterSizeButton;
+            const result = service.onLeftClick(event);
+
+            expect(flagToCheck).toEqual('NOT_FOUND');
+            expect(handleGridSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleRackSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(handleNoneSelectionOnLeftClickSpy).not.toHaveBeenCalled();
+            expect(result).toEqual(void '');
         });
 
         it('onLeftClick should not get a function', () => {
@@ -1001,5 +1023,13 @@ describe('SelectionManagerService', () => {
             expect(result).toEqual(true);
             expect(exchangeSelectionServiceSpy.isLetterAlreadySelected).toHaveBeenCalled();
         });
+    });
+
+    it('cancelPlacementDirectly should call place selection service cancel placement directly', () => {
+        placeSelectionServiceSpy.cancelPlacement.and.returnValue(void '');
+
+        service.cancelPlacementDirectly();
+
+        expect(placeSelectionServiceSpy.cancelPlacement).toHaveBeenCalled();
     });
 });

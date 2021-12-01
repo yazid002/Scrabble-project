@@ -5,6 +5,7 @@ import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatService } from './chat.service';
+import { Leaderboard, LeaderboardService } from './leaderboard.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
@@ -16,6 +17,7 @@ export class GameService {
     @Output() otherPlayerSignal = new BehaviorSubject<string>('');
     @Output() abandonSignal = new BehaviorSubject<string>('');
     @Output() convertToSoloSignal = new BehaviorSubject<string>('');
+    @Output() endGameSignal = new BehaviorSubject<Leaderboard>({ name: '', score: 0, mode: 'classic' });
 
     players: Player[] = [];
     currentTurn: number;
@@ -28,15 +30,15 @@ export class GameService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private chatService: ChatService,
+        // private goalManagerService: GoalsManagerService,
+        public leaderboardService: LeaderboardService,
     ) {
         this.initPlayers();
-        this.randomTurn();
         this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {
             this.changeTurn(skipped);
         });
         this.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
     }
-
     convertGameToSolo() {
         this.numPlayers = 'solo';
         this.convertToSoloSignal.next(ABANDON_SIGNAL);
@@ -48,7 +50,7 @@ export class GameService {
         this.abandonSignal.next('abandon');
         this.endGame();
     }
-    endGame(otherPlayerAbandonned: boolean = false) {
+    async endGame(otherPlayerAbandonned: boolean = false): Promise<void> {
         this.timerService.isEnabled = false;
         let endGameString = `Fin de partie: ${this.reserveService.alphabets.length} lettres restantes`;
         for (let playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
@@ -64,6 +66,8 @@ export class GameService {
             // determine who won
             if (player.points >= otherPlayer.points) {
                 player.won = 'Vous avez gagné!';
+                // ajouter son ici
+                // this.soundManagerService.playWinGameSound();
             }
 
             endGameString += '<br>' + this.players[playerIndex].name + ' :<br>';
@@ -79,6 +83,13 @@ export class GameService {
             body: endGameString,
         };
         this.chatService.addMessage(endGameMessage);
+
+        const realPlayer: Leaderboard = {
+            name: this.players[PLAYER.realPlayer].name,
+            score: this.players[PLAYER.realPlayer].points,
+            mode: this.userSettingsService.settings.mode.currentChoiceKey,
+        };
+        this.endGameSignal.next(realPlayer);
     }
     didGameEnd(): boolean {
         let hasEnded = false;
@@ -94,33 +105,8 @@ export class GameService {
 
         return hasEnded;
     }
-
-    private subtractPoint(player: Player): number {
-        let pointToSub = 0;
-        for (const letter of player.rack) {
-            pointToSub -= letter.points;
-        }
-        return pointToSub;
-    }
-    private changeTurn(skipped: boolean): void {
-        if (skipped) {
-            this.skipCounter++;
-        } else {
-            this.skipCounter = 0;
-        }
-        if (this.didGameEnd()) {
-            this.endGame();
-        } else {
-            this.currentTurn = (this.currentTurn + 1) % 2;
-            if (this.currentTurn === PLAYER.otherPlayer) {
-                this.nextPlayer();
-            }
-        }
-    }
-    private nextPlayer() {
-        this.otherPlayerSignal.next(this.numPlayers);
-    }
-    private initPlayers() {
+    initPlayers() {
+        if (this.players.length !== 0) return;
         const realPlayer: Player = {
             id: PLAYER.realPlayer,
             name: this.userSettingsService.nameOption.userChoice,
@@ -145,6 +131,32 @@ export class GameService {
             words: [],
         };
         this.players.push(computer);
+        this.randomTurn();
+    }
+    private subtractPoint(player: Player): number {
+        let pointToSub = 0;
+        for (const letter of player.rack) {
+            pointToSub -= letter.points;
+        }
+        return pointToSub;
+    }
+    private changeTurn(skipped: boolean): void {
+        if (skipped) {
+            this.skipCounter++;
+        } else {
+            this.skipCounter = 0;
+        }
+        if (this.didGameEnd()) {
+            this.endGame();
+        } else {
+            this.currentTurn = (this.currentTurn + 1) % 2;
+            if (this.currentTurn === PLAYER.otherPlayer) {
+                this.nextPlayer();
+            }
+        }
+    }
+    private nextPlayer() {
+        this.otherPlayerSignal.next(this.numPlayers);
     }
 
     private randomTurn() {

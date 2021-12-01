@@ -1,20 +1,41 @@
+import { NameProperties } from '@app/classes/name-properties';
+import { Collection } from 'mongodb';
 import { Service } from 'typedi';
-interface NameProperties {
-    name: string;
-    default: boolean;
-    isAdvanced: boolean;
-}
+import { DatabaseService, DATABASE_VIRTUAL_NAMES } from './database.service';
+
 @Service()
 export class VirtualPlayerNamesService {
-    names: NameProperties[];
-    constructor() {
-        this.names = [
-            { name: 'Ordi Illetré', default: true, isAdvanced: false },
-            { name: 'Étudiant de la maternelle', default: true, isAdvanced: false },
-            { name: 'Analphabète', default: true, isAdvanced: false },
-            { name: 'Dictionnaire en Personne', default: true, isAdvanced: true },
-            { name: 'Word Master', default: true, isAdvanced: true },
-            { name: 'Étudiant en littérature', default: true, isAdvanced: true },
-        ];
+    constructor(private databaseService: DatabaseService) {
+        this.reset();
+    }
+
+    async getNames() {
+        return this.names
+            .find({})
+            .toArray()
+            .then((name: NameProperties[]) => {
+                return name;
+            });
+    }
+
+    get names(): Collection<NameProperties> {
+        return this.databaseService.database.collection(DATABASE_VIRTUAL_NAMES);
+    }
+    async addName(name: NameProperties) {
+        const names = await this.getNames();
+        const item = names.find((n: NameProperties) => n.name === name.name);
+        if (!item) {
+            name.default = false; // Make sure the client did not try to add a default value
+            await this.databaseService.addName(name);
+        }
+        return undefined;
+    }
+    async delete(playerName: NameProperties) {
+        await this.names.findOneAndDelete({ name: playerName.name, default: false });
+
+        return undefined;
+    }
+    async reset() {
+        await this.databaseService.reset();
     }
 }

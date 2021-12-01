@@ -1,1 +1,33 @@
-<p>leaderboard-page works!</p>
+<div class="title">Meilleurs Scores</div>
+
+<div class="split Classic">
+    <div *ngIf="leaderboardService.leaderboardClassic" class="subtitle">Mode Classic</div>
+    <table style="width: 50%">
+        <tr>
+            <th>Position</th>
+            <th>Nom</th>
+            <th>Score</th>
+        </tr>
+        <tr *ngFor="let player of leaderboardService.leaderboardClassic; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.score }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="split LOG2990">
+    <div *ngIf="leaderboardService.leaderboardMode2990" class="subtitle">Mode LOG2990</div>
+    <table style="width: 50%">
+        <tr>
+            <th>Position</th>
+            <th>Name</th>
+            <th>Score</th>
+        </tr>
+        <tr *ngFor="let player of leaderboardService.leaderboardMode2990; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.score }}</td>
+        </tr>
+    </table>
+</div>

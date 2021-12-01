@@ -1,6 +1,8 @@
 import { GameState } from '@app/classes/game-state';
+import { Leaderboard } from '@app/classes/Leaderboard';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { LeaderboardService } from './Leaderboard.service';
 
 const ROOM_NOT_FOUND_INDEX = -1;
 const EMIT_TIME_DELAY = 1000;
@@ -16,7 +18,7 @@ export interface Room {
 export class SocketManager {
     rooms: Room[] = [];
     private sio: io.Server;
-    constructor(server: http.Server) {
+    constructor(server: http.Server, private leaderboardService: LeaderboardService) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
 
@@ -71,6 +73,10 @@ export class SocketManager {
                     this.sio.to(room.id).emit('abandon', socket.id);
                     this.leaveRoom(socket.id);
                 }, ABANDON_TIMER);
+            });
+
+            socket.on('endGame', (player: Leaderboard) => {
+                this.leaderboardService.endGame(player);
             });
         });
 

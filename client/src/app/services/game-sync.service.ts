@@ -49,11 +49,12 @@ export class GameSyncService {
     }
     initialize() {
         if (this.alreadyInitialized) return;
+        this.gameService.initPlayers();
         this.alreadyInitialized = true;
         this.sendGameStateSignal = new BehaviorSubject<GameState>(this.getGameState());
         this.sendAbandonSignal = new BehaviorSubject<string>('');
         this.sendOtherPlayerTrigger = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => {
-            if (numPlayers === 'solo') {
+            if (numPlayers !== 'multiplayer') {
                 return;
             }
             this.sendToServer();
@@ -100,7 +101,6 @@ export class GameSyncService {
 
     getGameState(): GameState {
         this.placeSelectionService.cancelPlacement();
-
         const tempGrid: Case[][] = tiles;
         for (let i = 0; i < tiles.length; i++) {
             tempGrid[i] = tiles[i];
