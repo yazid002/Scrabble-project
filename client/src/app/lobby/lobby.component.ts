@@ -12,7 +12,7 @@ import { QuitMultiplayerDialogComponent } from './../components/quit-multiplayer
 })
 export class LobbyComponent implements OnInit {
     name: string;
-    mode: string;
+    mode: IOption;
 
     constructor(
         public matDialog: MatDialog,
@@ -31,7 +31,7 @@ export class LobbyComponent implements OnInit {
     assignValues(name: string | undefined, mode: IOption | undefined) {
         if (name && mode) {
             this.name = name;
-            this.mode = mode.value;
+            this.mode = mode;
         }
     }
     goInRoom(id?: string, index?: number) {
