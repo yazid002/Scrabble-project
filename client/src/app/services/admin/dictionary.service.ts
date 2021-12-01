@@ -5,14 +5,14 @@ import { SERVER_URL } from '@app/constants/url';
 import { FileMessages } from '@app/pages/admin-page/models/file-messages.model';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
 import { ValidationMessageModel } from '@app/pages/admin-page/models/validation-message.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class DictionaryService {
     @Output() snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
-    currentDictionary: TitleDescriptionOfDictionary;
+    currentDictionary: Dictionary;
     listDictionaries: TitleDescriptionOfDictionary[] = [];
     titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
         // filename: '',
@@ -100,11 +100,9 @@ export class DictionaryService {
             this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
         }
     }
-    async fetchDictionary(name: string): Promise<TitleDescriptionOfDictionary> {
-        await this.http.get<Dictionary>(this.url + '/getDictionary/' + name).subscribe(async (dict: Dictionary) => {
-            this.currentDictionary = dict;
-        });
-        return this.currentDictionary;
+    fetchDictionary(name: string): Observable<Dictionary> {
+        return this.http.get<Dictionary>(this.url + '/getDictionary/' + name);
+
     }
 
     private emitToSnackBar(message: string, action: string) {

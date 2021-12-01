@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
-import { generateAnagrams } from '@app/classes/chunk-node';
+import { generateAnagrams, setVirtualPlayerDictionary } from '@app/classes/chunk-node';
 import { PLAYER } from '@app/classes/player';
 import { MAX_RACK_SIZE, NumberFct, SortFct, VoidFct, WordNCoord } from '@app/classes/virtual-player';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
+import { DictionaryService } from './admin/dictionary.service';
 import { ChatService } from './chat.service';
 import { DebugExecutionService } from './command-execution/debug-execution.service';
 import { ExchangeService } from './exchange.service';
@@ -35,12 +36,16 @@ export class VirtualPlayerService {
         private chatService: ChatService,
         private userSettingsService: UserSettingsService,
         private goalManagerService: GoalsManagerService,
+        private dictionaryService: DictionaryService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();
     }
     initialize() {
         if (this.alreadyInitialized) return;
+        this.dictionaryService
+            .fetchDictionary(this.userSettingsService.selectedDictionary.title)
+            .subscribe((dictionary) => setVirtualPlayerDictionary(dictionary));
         this.alreadyInitialized = true;
         this.virtualPlayerSignal = this.gameService.otherPlayerSignal.subscribe((numPlayers: string) => this.reactToSignal(numPlayers));
         this.computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;

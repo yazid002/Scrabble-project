@@ -1,8 +1,7 @@
 import { convertDictToTree, DictNode } from '@app/classes/dict-node';
-import { Dictionary } from '@app/classes/dictionary';
-import * as dict from 'src/assets/dictionnary.json';
-const dictList: Dictionary = dict as Dictionary;
-const dictionary: DictNode = convertDictToTree(dictList);
+import { Dictionary } from './dictionary';
+export const virtualPlayerDictionary: Dictionary = { title: 'invalid', description: 'Initial invalid dictionary', words: ['aa', 'bb'] };
+const dictionary: DictNode = convertDictToTree(virtualPlayerDictionary);
 export class ChunkNode {
     parent?: ChunkNode;
     childs: ChunkNode[] = []; // child
@@ -91,4 +90,11 @@ export const generateAnagrams: (rack: string[], pattern: string) => string[] = (
         i++;
     }
     return [...new Set(words.filter((word) => word.includes(pattern)))];
+};
+
+export const setVirtualPlayerDictionary: (dictList: Dictionary) => void = (dicList: Dictionary) => {
+    const three = convertDictToTree(dicList);
+    dictionary.childs = three.childs;
+    dictionary.isLeaf = three.isLeaf;
+    dictionary.letter = three.letter;
 };
