@@ -84,7 +84,7 @@ export class DictionaryService {
     async upload(file: File) {
         const fileForm = new FormData();
         fileForm.set('file', file);
-        await this.http.post<FileMessages>(SERVER_URL + '/api/admin/dictionary/addNewDictionary', fileForm).subscribe(
+        await this.http.post<FileMessages>(this.url + '/addNewDictionary', fileForm).subscribe(
             (resp: FileMessages) => {
                 this.fileMessage.isuploaded = resp.isuploaded;
                 this.fileMessage.message = resp.message;
@@ -100,6 +100,11 @@ export class DictionaryService {
         } else {
             this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
         }
+    }
+    getDictionary(name: string) {
+        this.http.get<File>(this.url + '/getDictionary/' + name).subscribe((file: File) => {
+            console.log(file);
+        });
     }
 
     private emitToSnackBar(message: string, action: string) {

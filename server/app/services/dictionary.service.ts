@@ -37,4 +37,7 @@ export class DictionaryService {
     findAllDictionaries(): TitleDescriptionOfDictionary[] {
         return this.dictionaries.map((dict) => ({ title: dict.title, description: dict.description }));
     }
+    getDictionary(name: string): Dictionary | undefined {
+        return this.dictionaries.find((dict) => dict.title === name);
+    }
 }

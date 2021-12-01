@@ -88,6 +88,10 @@ export class DictionaryController {
             const dictionaries: TitleDescriptionOfDictionary[] = this.dictionaryService.findAllDictionaries();
             res.json(dictionaries);
         });
+        this.router.get('/getDictionary/:name', async (req: Request, res: Response) => {
+            const dictionaries: TitleDescriptionOfDictionary[] = this.dictionaryService.findAllDictionaries();
+            res.json(dictionaries);
+        });
         this.router.delete('/delete/:title', async (req: Request, res: Response) => {
             const title = req.params.title;
             const rep = this.dictionaryService.deleteFile(title);
