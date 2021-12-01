@@ -14,8 +14,6 @@ import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDict
 import * as fs from 'fs';
 import { Service } from 'typedi';
 import { ReadFileService } from './read-file.service';
-// import * as dictionaries from '../assets/list-dictionaries.json';
-
 @Service()
 export class DictionaryService {
     path: string;
@@ -23,26 +21,32 @@ export class DictionaryService {
         isuploaded: true,
         message: '',
     };
-    listDictionarires: Dictionary[] = [];
-    constructor(private reafFileService: ReadFileService) {
+    dictionaries: Dictionary[] = [];
+    constructor(private readFileService: ReadFileService) {
         this.path = './app/assets/';
+        this.readFileService.readDictionary(this.path + 'dictionnary.json').then((dictString) => {
+            const newDict = JSON.parse(dictString) as unknown as Dictionary;
+            newDict.default = true;
+            this.dictionaries.push(newDict);
+        });
     }
     async addDict(fileName: string) {
         console.log('adding ', fileName);
-        await this.reafFileService.readDictionary(this.path + fileName).then((dictString) => {
+        await this.readFileService.readDictionary(this.path + fileName).then((dictString) => {
             const newDict = JSON.parse(dictString) as unknown as Dictionary;
-            this.listDictionarires.push(newDict);
-            console.log(this.listDictionarires);
+            // newDict.default = false;
+            newDict.default = false;
+            this.dictionaries.push(newDict);
             fs.unlinkSync(this.path + fileName);
         });
     }
 
     deleteFile(name: string): string {
-        this.listDictionarires = this.listDictionarires.filter((dict) => dict.title !== name);
+        this.dictionaries = this.dictionaries.filter((dict) => !dict.default && dict.title === name);
         return 'file removed successfully';
     }
 
     findAllDictionaries(): TitleDescriptionOfDictionary[] {
-        return this.listDictionarires.map((dict) => ({ title: dict.title, description: dict.description }));
+        return this.dictionaries.map((dict) => ({ title: dict.title, description: dict.description }));
     }
 }
