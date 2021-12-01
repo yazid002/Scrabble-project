@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-useless-constructor */
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/member-ordering */
-/* eslint-disable no-console */
 import { Component, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { DictionaryOptionsComponent } from '@app/components/admin/dictionary-options/dictionary-options.component';
@@ -15,15 +10,9 @@ export type Options = 'dictionary' | 'names' | 'none';
     styleUrls: ['./admin-page.component.scss'],
 })
 export class AdminPageComponent {
-    constructor() {}
 
     @ViewChild(DictionaryOptionsComponent) dictionaryOptionsComponent: DictionaryOptionsComponent;
     @ViewChild(MatAccordion) accordion: MatAccordion;
     @ViewChild(PlayerNamesOptionsComponent) playerNamesOptionsComponent: PlayerNamesOptionsComponent;
 
-    afficher() {
-        console.log('-----> fonction afficher la liste des dictionnaires');
-    }
-
-    getForm() {}
 }
