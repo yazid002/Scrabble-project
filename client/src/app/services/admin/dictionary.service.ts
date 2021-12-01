@@ -15,7 +15,7 @@ export class DictionaryService {
 
     listDictionaries: TitleDescriptionOfDictionary[] = [];
     titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
-        filename: '',
+        // filename: '',
         title: '',
         description: '',
     };
@@ -59,7 +59,7 @@ export class DictionaryService {
         });
     }
     async selectDictionary(file: File) {
-        this.titleAndDescriptionOfDictionary.filename = file.name;
+        // this.titleAndDescriptionOfDictionary.filename = file.name;
         const reader = new FileReader();
         reader.readAsText(file);
         reader.onload = () => {

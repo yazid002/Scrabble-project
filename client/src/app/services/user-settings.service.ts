@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Dictionary } from '@app/classes/dictionary';
 import { IOptionList, IUserSetting, NAME_OPTION } from '@app/classes/game-options';
+import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
+import { DictionaryService } from './admin/dictionary.service';
 
 const MODE: IOptionList = {
     settingName: 'Mode de jeux',
@@ -60,35 +62,15 @@ export class UserSettingsService {
         computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
-    // joinSettings: {
-    //     mode: IUserSetting;
-    // } = {
-    //     mode: { setting: MODE, currentChoiceKey: 'classic' },
-    // };
-    // switchToSoloSettings: {
-    //     mode: IUserSetting;
-    //     numPlayers: IUserSetting;
-    //     computerLevel: IUserSetting;
-    //     timer: IUserSetting;
-    // } = {
-    //     mode: { setting: MODE, currentChoiceKey: 'classic' },
-    //     numPlayers: { setting: NUM_PLAYERS_SWITCH, currentChoiceKey: 'solo' },
-    //     computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
-    //     timer: { setting: TIMER, currentChoiceKey: '60' },
-    // };
-
     dictionaryControl = new FormControl('', Validators.required);
-    dictionnaires: Dictionary[] = [
-        { title: 'Espagnol', description: 'Langue espagnole', words: [] },
-        { title: 'Anglais', description: 'Langue anglaise', words: [] },
-        { title: 'Italien', description: 'Langue italienne', words: [] },
-        { title: 'Russe', description: 'Langue Russe', words: [] },
-    ];
+    dictionnaires: TitleDescriptionOfDictionary[] = [];
     selectedDictionary: Dictionary;
 
     nameOption = NAME_OPTION;
     computerName: string;
-
+    constructor(public dictionaryService: DictionaryService) {
+        this.dictionaryService.getAllDictionaries().then((dict) => (this.dictionnaires = dict));
+    }
     validateName(name: string): { error: boolean; errorMessage: string } {
         let error = false;
         let errorMessage = '';

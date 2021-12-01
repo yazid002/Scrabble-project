@@ -9,7 +9,6 @@
             <th colspan="2">Action</th>
         </tr>
         <tr *ngFor="let dictionary of dictionaryService.listDictionaries">
-            <td>{{ dictionary.filename }}</td>
             <td>{{ dictionary.title }}</td>
             <td>{{ dictionary.description }}</td>
             <td style="text-align: center">

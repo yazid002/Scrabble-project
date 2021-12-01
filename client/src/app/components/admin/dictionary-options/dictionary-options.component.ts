@@ -12,7 +12,7 @@ import { DictionaryService } from '@app/services/admin/dictionary.service';
 })
 export class DictionaryOptionsComponent implements OnInit {
     titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
-        filename: '',
+        // filename: '',
         title: '',
         description: '',
     };
