@@ -76,12 +76,12 @@ export class DictionaryController {
                 cb(null, `${file.originalname}`);
                 // setTimeout(() => {
                 fileName = file.originalname;
-                    // }, 1000);
-                },
-            });
-            const upload = multer({ storage });
-            this.router.post('/addNewDictionary', upload.single('file'), async (req: Request, res: Response) => {
-                try {
+                // }, 1000);
+            },
+        });
+        const upload = multer({ storage });
+        this.router.post('/addNewDictionary', upload.single('file'), async (req: Request, res: Response) => {
+            try {
                 await this.dictionaryService.addDict(fileName);
                 this.fileMessages.isuploaded = true;
                 this.fileMessages.message = 'file uploaded';
@@ -108,14 +108,9 @@ export class DictionaryController {
             }
         });
         this.router.delete('/delete/:title', async (req: Request, res: Response) => {
-            try {
-                const title = req.params.title;
-                const rep = this.dictionaryService.deleteFile(title);
-                res.json(rep);
-            } catch (error) {
-                // res.status(StatusCodes.SERVICE_UNAVAILABLE).send(error.message);
-                res.json('file was not deleted, server side problem');
-            }
+            const title = req.params.title;
+            const rep = this.dictionaryService.deleteFile(title);
+            res.json(rep);
         });
     }
 }

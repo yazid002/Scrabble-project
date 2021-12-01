@@ -31,7 +31,6 @@ export class DictionaryService {
         console.log('adding ', fileName);
         await this.reafFileService.readDictionary(this.path + fileName).then((dictString) => {
             const newDict = JSON.parse(dictString) as unknown as Dictionary;
-            newDict.fileName = fileName;
             this.listDictionarires.push(newDict);
             console.log(this.listDictionarires);
             fs.unlinkSync(this.path + fileName);
