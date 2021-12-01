@@ -3,9 +3,10 @@ import { Dictionary } from '@app/classes/dictionary';
 import { Goal } from '@app/classes/goal';
 import { Player } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
-import * as dictionary from 'src/assets/dictionnary.json';
+import { DictionaryService } from './admin/dictionary.service';
 import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
+import { UserSettingsService } from './user-settings.service';
 
 @Injectable({
     providedIn: 'root',
@@ -17,15 +18,26 @@ export class GoalService {
     privateGoals: Goal[];
     goalsFunctions: ((wordOrPlayer: string | Player) => boolean)[];
     goalsProgresses: ((goal: Goal, player: Player) => number)[];
-    private dictionary: Dictionary;
     private usedIndex: number[];
     private randomWord: string;
 
-    constructor(private timerService: TimerService, private soundManagerService: SoundManagerService) {
+    constructor(
+        private timerService: TimerService,
+        private soundManagerService: SoundManagerService,
+        private dictionaryService: DictionaryService,
+        private userSettingsService: UserSettingsService,
+    ) {
         this.isEnabled = false;
-        this.dictionary = dictionary as Dictionary;
+        const dictionaryName = this.userSettingsService.selectedDictionary.title;
+        console.log('dictionaryName', dictionaryName);
+        this.dictionaryService.fetchDictionary(dictionaryName).subscribe((dict) => {
+            console.log(dict);
+            this.initialize(dict);
+        });
+    }
+    initialize(dict: Dictionary) {
         this.usedIndex = [];
-        this.randomWord = this.generateRandomWord();
+        this.randomWord = this.generateRandomWord(dict);
 
         this.goalsFunctions = [
             (wordOrPlayer: string | Player): boolean => this.isWordPalindrome(wordOrPlayer as string),
@@ -286,14 +298,14 @@ export class GoalService {
         return false;
     }
 
-    private generateRandomWord(): string {
+    private generateRandomWord(dict: Dictionary): string {
         const maxLength = 7;
         const minLength = 5;
-        let randomIndex = this.generateNumber(0, this.dictionary.words.length - 1);
-        while (this.dictionary.words[randomIndex].length < minLength || this.dictionary.words[randomIndex].length > maxLength) {
-            randomIndex = this.generateNumber(0, this.dictionary.words.length - 1);
+        let randomIndex = this.generateNumber(0, dict.words.length - 1);
+        while (dict.words[randomIndex].length < minLength || dict.words[randomIndex].length > maxLength) {
+            randomIndex = this.generateNumber(0, dict.words.length - 1);
         }
 
-        return this.dictionary.words[randomIndex];
+        return dict.words[randomIndex];
     }
 }

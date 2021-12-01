@@ -12,7 +12,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class DictionaryService {
     @Output() snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
-    currentDictionary: Dictionary;
     listDictionaries: TitleDescriptionOfDictionary[] = [];
     titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
         // filename: '',
@@ -101,8 +100,8 @@ export class DictionaryService {
         }
     }
     fetchDictionary(name: string): Observable<Dictionary> {
-        return this.http.get<Dictionary>(this.url + '/getDictionary/' + name);
-
+        const dictObs = this.http.get<Dictionary>(this.url + '/getDictionary/' + name);
+        return dictObs;
     }
 
     private emitToSnackBar(message: string, action: string) {

@@ -63,7 +63,7 @@ export class UserSettingsService {
     };
     dictionaryControl = new FormControl('', Validators.required);
     dictionnaires: TitleDescriptionOfDictionary[] = [];
-    selectedDictionary: TitleDescriptionOfDictionary = { title: 'Mon Dictionaire', description: 'Le dictionaire par défault' };
+    selectedDictionary: TitleDescriptionOfDictionary = { title: 'Mon dictionnaire', description: 'Le dictionaire par défault' };
 
     nameOption = NAME_OPTION;
     computerName: string;
