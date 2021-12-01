@@ -16,7 +16,6 @@ export class LeaderBoardController {
         this.router = Router();
 
         this.router.get('/', async (req: Request, res: Response) => {
-            console.log(req.body);
             const players = await this.leaderboardService.getAll2990Players();
             res.json(players);
         });
