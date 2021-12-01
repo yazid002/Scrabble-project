@@ -14,8 +14,7 @@ describe('VerifyService', () => {
     let service: VerifyService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
     let httpTestingController: HttpTestingController;
-    // let httpMock: HttpTestingController;
-    // let baseUrl: string;
+
     beforeEach(() => {
         rackServiceSpy = jasmine.createSpyObj('RackService', ['findJokersNumberOnRack', 'isLetterOnRack']);
 
@@ -28,8 +27,6 @@ describe('VerifyService', () => {
             words: ['aa', 'finir', 'manger', 'rouler'],
         } as Dictionary;
         service.dictionary = dictionary;
-        // baseUrl = service.urlString;
-        // httpMock = TestBed.get(HttpTestingController);
     });
 
     afterEach(() => {

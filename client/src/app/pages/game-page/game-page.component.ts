@@ -6,6 +6,7 @@ import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { OpponentQuitDialogComponent } from '@app/components/opponent-quit-dialog/opponent-quit-dialog.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
+import { NamesService } from '@app/services/admin/names.service';
 import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GameService } from '@app/services/game.service';
@@ -15,6 +16,7 @@ import { Room, RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { TimerService } from '@app/services/timer.service';
+import { UserSettingsService } from '@app/services/user-settings.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -43,6 +45,8 @@ export class GamePageComponent implements AfterViewInit {
         private matDialog: MatDialog,
         public gameService: GameService,
         public soundManagerService: SoundManagerService,
+        private namesService: NamesService,
+        private userSettingsService: UserSettingsService,
         private passExecutionService: PassExecutionService,
     ) {
         this.player = PLAYER;
@@ -52,6 +56,9 @@ export class GamePageComponent implements AfterViewInit {
         this.gameService.convertToSoloSignal.subscribe((signal: string) => {
             this.showAbandonDIalog(signal);
         });
+        const computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
+        const computerName = this.namesService.getRandomName(computerLevel);
+        this.gameService.players[PLAYER.otherPlayer].name = computerName;
     }
     @HostListener('keyup', ['$event'])
     onKeyBoardClick(event: KeyboardEvent) {

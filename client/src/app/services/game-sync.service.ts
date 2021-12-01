@@ -46,6 +46,7 @@ export class GameSyncService {
     }
     initialize() {
         if (this.alreadyInitialized) return;
+        this.gameService.initPlayers();
         this.alreadyInitialized = true;
         this.sendGameStateSignal = new BehaviorSubject<GameState>(this.getGameState());
         this.sendAbandonSignal = new BehaviorSubject<string>('');
