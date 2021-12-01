@@ -5,7 +5,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Dictionary } from '@app/classes/dictionary';
 import { ICharacter } from '@app/classes/letter';
 import { PLAYER } from '@app/classes/player';
-import { SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { NOT_FOUND } from '@app/constants/common-constants';
 import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { MouseButton } from '@app/enums/mouse-enums';
@@ -15,8 +15,8 @@ import { PlaceSelectionService } from './place-selection.service';
 import { RackService } from './rack.service';
 import { VerifyService } from './verify.service';
 
-const CANVAS_WIDTH = 500;
-const CANVAS_HEIGHT = 500;
+// const CANVAS_WIDTH = 500;
+// const CANVAS_HEIGHT = 500;
 describe('PlaceSelectionService', () => {
     let service: PlaceSelectionService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
@@ -44,8 +44,8 @@ describe('PlaceSelectionService', () => {
         rackServiceSpy = jasmine.createSpyObj('RackService', ['fillRackPortion', 'isLetterOnRack']);
         gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion', 'writeLetter', 'removeArrow', 'drawArrow']);
 
-        ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
-        ctxStubRack = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
+        ctxStub = CanvasTestHelper.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
+        ctxStubRack = CanvasTestHelper.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         gridServiceSpy.gridContext = ctxStub;
         gridServiceSpy.letterStyle = { color: 'NavajoWhite', font: '15px serif' };
         gridServiceSpy.pointStyle = { color: 'NavajoWhite', font: '10px serif' };

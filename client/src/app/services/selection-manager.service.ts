@@ -38,12 +38,21 @@ export class SelectionManagerService {
         private selectionUtilsService: SelectionUtilsService,
         private gameService: GameService,
     ) {
+        this.timerService.timerDone.subscribe(() => {
+            this.placeSelectionService.cancelPlacement();
+        });
         this.selectionType = SelectionType.Chat;
         this.command = '';
         this.onLeftClickSelectionTypeMapping = new Map([
             [SelectionType.Grid, (event?: MouseEvent) => this.handleGridSelectionOnLeftClick(event as MouseEvent)],
             [SelectionType.Rack, (event?: MouseEvent) => this.handleRackSelectionOnLeftClick(event as MouseEvent)],
             [SelectionType.None, () => this.handleNoneSelectionOnLeftClick()],
+            [
+                SelectionType.LetterSizeButton,
+                () => {
+                    return;
+                },
+            ],
         ]);
         this.onKeyBoardClickSelectionTypeMapping = new Map([
             [SelectionType.Grid, (event?: KeyboardEvent) => this.handleGridSelectionOnKeyBoardClick(event as KeyboardEvent)],
@@ -53,9 +62,6 @@ export class SelectionManagerService {
             [OperationType.Place, () => this.placeSelectionService.hideOperation()],
             [OperationType.Exchange, () => this.exchangeSelectionService.hideOperation()],
         ]);
-        this.timerDone = this.timerService.timerDone.subscribe(() => {
-            this.placeSelectionService.cancelPlacement();
-        });
     }
 
     updateSelectionType(selectionTypeSelected: SelectionType): void {
@@ -151,7 +157,7 @@ export class SelectionManagerService {
         return operation(operationType);
     }
 
-    onCancelPlacement(selectionType: SelectionType) {
+    onCancelPlacement(selectionType: SelectionType): void {
         this.updateSelectionType(selectionType);
         const keyEvent = {
             key: KeyboardKeys.Escape,
@@ -160,7 +166,11 @@ export class SelectionManagerService {
         this.onKeyBoardClick(keyEvent);
     }
 
-    private activePlacement() {
+    cancelPlacementDirectly(): void {
+        this.placeSelectionService.cancelPlacement();
+    }
+
+    private activePlacement(): void {
         this.command = this.placeSelectionService.command;
         if (this.command === '') {
             return;
@@ -171,7 +181,7 @@ export class SelectionManagerService {
     }
     private handleGridSelectionOnKeyBoardClick(event: KeyboardEvent) {
         const itSMyTurn = this.gameService.currentTurn === PLAYER.realPlayer;
-        // On ne peut pas placer si ce n'est pas notre tour
+        // I cannot place if it is not my turn
         if (!itSMyTurn) {
             this.updateSelectionType(SelectionType.Rack);
             return;
@@ -199,7 +209,7 @@ export class SelectionManagerService {
     }
 
     private handleRackSelectionOnLeftClick(event: MouseEvent) {
-        // si on est pas en train de selectionner pour echange, on peut selectionner pour manipulation
+        // If we're not currently selecting tiles for exchange, we can select for manipulation
         const letterIsAlreadySelectedForExchange = this.isLetterClickAlreadySelectedForExchange(event);
         if (!letterIsAlreadySelectedForExchange) {
             this.exchangeSelectionService.cancelExchange();

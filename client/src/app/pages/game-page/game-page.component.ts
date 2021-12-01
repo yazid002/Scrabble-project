@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PLAYER } from '@app/classes/player';
 import { ABANDON_SIGNAL } from '@app/classes/signal';
@@ -24,12 +24,10 @@ import { VirtualPlayerService } from '@app/services/virtual-player.service';
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent implements AfterViewInit, OnInit {
+export class GamePageComponent implements AfterViewInit {
     @ViewChild(ChatboxComponent) chatboxComponent: ChatboxComponent;
     @ViewChild(PlayAreaComponent) playAreaComponent: PlayAreaComponent;
 
-    // TODO verifier si les services en parametre sont utilises ou doivent en private
-    // TODO enlever le roomName et isMaster une fois que le loby est intégré et créé les salles pour nous
     roomName: string = '';
     isMaster: boolean;
     rooms: Room[];
@@ -41,7 +39,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         private virtualPlayerService: VirtualPlayerService,
         public roomService: RoomService,
         public gameSyncService: GameSyncService,
-        private selectionManager: SelectionManagerService,
+        private selectionManagerService: SelectionManagerService,
         private randomMode: RandomModeService,
         private timerService: TimerService,
         private matDialog: MatDialog,
@@ -64,30 +62,25 @@ export class GamePageComponent implements AfterViewInit, OnInit {
     }
     @HostListener('keyup', ['$event'])
     onKeyBoardClick(event: KeyboardEvent) {
-        this.selectionManager.onKeyBoardClick(event);
+        this.selectionManagerService.onKeyBoardClick(event);
     }
 
     @HostListener('click', ['$event'])
     onLeftClick(event: MouseEvent) {
-        this.selectionManager.onLeftClick(event);
+        this.selectionManagerService.onLeftClick(event);
     }
 
     @HostListener('contextmenu', ['$event'])
     onRightClick(event: MouseEvent) {
-        this.selectionManager.onRightClick(event);
+        this.selectionManagerService.onRightClick(event);
     }
 
     @HostListener('window:wheel', ['$event'])
     onMouseWheel(event: WheelEvent) {
-        this.selectionManager.onMouseWheel(event);
+        this.selectionManagerService.onMouseWheel(event);
     }
-
-    ngOnInit(): void {
-        this.soundManagerService.stopMainPageAudio();
-    }
-
     ngAfterViewInit(): void {
-        this.selectionManager.chatboxComponent = this.chatboxComponent;
+        this.selectionManagerService.chatboxComponent = this.chatboxComponent;
     }
 
     randomNumber() {
@@ -96,53 +89,55 @@ export class GamePageComponent implements AfterViewInit, OnInit {
 
     increaseSize(): void {
         const step = 1;
-        const maxValue = 22;
+        const maxValue = 26;
         this.gridService.increaseTileSize(step, step, maxValue);
         this.soundManagerService.playClickOnButtonAudio();
+        this.selectionManagerService.updateSelectionType(SelectionType.LetterSizeButton);
     }
 
     decreaseSize() {
         const step = -1;
-        const maxValue = 13;
+        const maxValue = 17;
         this.gridService.decreaseTileSize(step, step, maxValue);
         this.soundManagerService.playClickOnButtonAudio();
+        this.selectionManagerService.updateSelectionType(SelectionType.LetterSizeButton);
     }
 
     onSubmitPlacement(selectionType: SelectionType) {
-        this.selectionManager.onSubmitPlacement(selectionType);
+        this.selectionManagerService.onSubmitPlacement(selectionType);
     }
 
     hideOperation(operationType: OperationType) {
-        return this.selectionManager.hideOperation(operationType);
+        return this.selectionManagerService.hideOperation(operationType);
     }
 
     onCancelPlacement(selectionType: SelectionType) {
-        this.selectionManager.onCancelPlacement(selectionType);
+        this.selectionManagerService.onCancelPlacement(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
     }
 
     onSubmitExchange(selectionType: SelectionType) {
-        this.selectionManager.onSubmitExchange(selectionType);
+        this.selectionManagerService.onSubmitExchange(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
     }
 
     onCancelManipulation(selectionType: SelectionType) {
-        this.selectionManager.onCancelManipulation(selectionType);
+        this.selectionManagerService.onCancelManipulation(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
     }
 
     disableManipulation() {
-        return this.selectionManager.disableManipulation();
+        return this.selectionManagerService.disableManipulation();
     }
     disableExchange() {
-        return this.selectionManager.disableExchange();
+        return this.selectionManagerService.disableExchange();
     }
     hideExchangeButton() {
-        return this.selectionManager.hideExchangeButton();
+        return this.selectionManagerService.hideExchangeButton();
     }
 
     onCancelExchange(selectionType: SelectionType) {
-        this.selectionManager.onCancelExchange(selectionType);
+        this.selectionManagerService.onCancelExchange(selectionType);
         this.soundManagerService.playClickOnButtonAudio();
     }
 
