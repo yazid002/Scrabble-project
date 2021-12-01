@@ -6,6 +6,7 @@ import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { OpponentQuitDialogComponent } from '@app/components/opponent-quit-dialog/opponent-quit-dialog.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
+import { DictionaryService } from '@app/services/admin/dictionary.service';
 import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GameService } from '@app/services/game.service';
@@ -15,7 +16,7 @@ import { Room, RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { TimerService } from '@app/services/timer.service';
-import { VerifyService } from '@app/services/verify.service';
+import { UserSettingsService } from '@app/services/user-settings.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -47,7 +48,8 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         public gameService: GameService,
         public soundManagerService: SoundManagerService,
         private passExecutionService: PassExecutionService,
-        private verifyService: VerifyService,
+        private dictionaryService: DictionaryService,
+        private userSettingsService: UserSettingsService,
     ) {
         this.player = PLAYER;
         this.virtualPlayerService.initialize();
@@ -77,9 +79,9 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         this.selectionManager.onMouseWheel(event);
     }
 
-    ngOnInit(): void {
+    async ngOnInit() {
+        await this.dictionaryService.fetchDictionary(this.userSettingsService.selectedDictionary.title);
         this.soundManagerService.stopMainPageAudio();
-        this.verifyService.assignDictionary();
     }
 
     ngAfterViewInit(): void {

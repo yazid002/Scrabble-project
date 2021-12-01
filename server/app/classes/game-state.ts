@@ -13,6 +13,7 @@ export interface Player {
 }
 
 export interface GameState {
+    dictionaryName: string;
     players: Player[];
     alphabetReserve: ICharacter[];
     currentTurn: number;

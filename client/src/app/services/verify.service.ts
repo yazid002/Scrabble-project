@@ -2,13 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
-import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
 import { BONUSES, SQUARE_NUMBER } from '@app/constants/board-constants';
 import { SERVER_URL } from '@app/constants/url';
 import { RackService } from '@app/services/rack.service';
 import { Observable } from 'rxjs';
-import { DictionaryService } from './admin/dictionary.service';
 import { UserSettingsService } from './user-settings.service';
 
 @Injectable({
@@ -16,26 +14,17 @@ import { UserSettingsService } from './user-settings.service';
 })
 export class VerifyService {
     urlString: string;
-    dictionary: Dictionary;
     invalidSymbols: string[];
     success: boolean;
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[];
     formedWords: string[];
-    constructor(
-        private rackService: RackService,
-        private http: HttpClient,
-        private dictionaryService: DictionaryService,
-        private userSettingsService: UserSettingsService,
-    ) {
+    constructor(private rackService: RackService, private http: HttpClient, private userSettingsService: UserSettingsService) {
         this.urlString = SERVER_URL + '/api/validate';
 
         this.invalidSymbols = ['-', "'"];
         this.success = true;
         this.lettersUsedOnBoard = [];
         this.formedWords = [];
-    }
-    assignDictionary() {
-        this.dictionaryService.fetchDictionary(this.userSettingsService.selectedDictionary.title).then((dict) => (this.dictionary = dict));
     }
     isFitting(coord: Vec2, direction: string, word: string): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };
@@ -342,7 +331,7 @@ export class VerifyService {
         return response;
     }
     private validateWords(words: string[]): Observable<{ wordExists: boolean; errorMessage: string }> {
-        const params: { words: string[]; dict: string } = { words, dict: this.dictionaryService.currentDictionary.title };
+        const params: { words: string[]; dict: string } = { words, dict: this.userSettingsService.selectedDictionary.title };
         console.log('about to send to server', params);
         return this.http.post<{ wordExists: boolean; errorMessage: string }>(this.urlString, params);
     }

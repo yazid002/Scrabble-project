@@ -11,8 +11,10 @@ import { GridService } from './grid.service';
 import { PlaceSelectionService } from './place-selection.service';
 import { ReserveService } from './reserve.service';
 import { TimerService } from './timer.service';
+import { UserSettingsService } from './user-settings.service';
 
 export interface GameState {
+    dictionaryName: string;
     players: Player[];
     alphabetReserve: ICharacter[];
     currentTurn: number;
@@ -40,6 +42,7 @@ export class GameSyncService {
         private gridService: GridService,
         private placeSelectionService: PlaceSelectionService,
         private goalService: GoalService,
+        private userSettingsService: UserSettingsService,
     ) {
         this.alreadyInitialized = false;
         this.initialize();
@@ -62,6 +65,7 @@ export class GameSyncService {
         this.alreadySynced = false;
     }
     receiveFromServer(gameState: GameState) {
+        this.userSettingsService.selectedDictionary.title = gameState.dictionaryName;
         this.reserveService.alphabets = gameState.alphabetReserve;
         // who is the 'Other Player' is different for the other player
         this.gameService.players[PLAYER.otherPlayer] = gameState.players[PLAYER.realPlayer];
@@ -102,6 +106,7 @@ export class GameSyncService {
             tempGrid[i] = tiles[i];
         }
         const gameState: GameState = {
+            dictionaryName: this.userSettingsService.selectedDictionary.title,
             players: this.gameService.players,
             alphabetReserve: this.reserveService.alphabets,
             currentTurn: this.gameService.currentTurn,
@@ -121,7 +126,9 @@ export class GameSyncService {
         }
 
         const initialReserve = this.reserveService.getInitialReserve();
+        const dictionaryName = this.userSettingsService.selectedDictionary.title;
         const gameState: GameState = {
+            dictionaryName,
             players: [],
             alphabetReserve: initialReserve,
             currentTurn: 0,
