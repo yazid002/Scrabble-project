@@ -77,7 +77,7 @@ export class DictionaryController {
         });
         const upload = multer({ storage });
 
-        this.router.post('/addNewDictionary', upload.single('file'), (req, res) => {
+        this.router.post('/addNewDictionary', upload.single('file'), (req: Request, res: Response) => {
             console.log('req', req);
             console.log('res', res);
 
@@ -94,7 +94,7 @@ export class DictionaryController {
         });
 
         // ============== add new Title And Description  ==========================
-        this.router.post('/addTitleAndDescription', async (req, res) => {
+        this.router.post('/addTitleAndDescription', async (req: Request, res: Response) => {
             const respMesage: FileMessages = await this.dictionaryService.saveTitleAndDescription(req.body);
             this.fileMessages.isuploaded = respMesage.isuploaded;
             this.fileMessages.message = respMesage.message;
