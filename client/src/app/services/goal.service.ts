@@ -3,6 +3,7 @@ import { Dictionary } from '@app/classes/dictionary';
 import { Goal } from '@app/classes/goal';
 import { Player } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
+import { BehaviorSubject } from 'rxjs';
 import { DictionaryService } from './admin/dictionary.service';
 import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
@@ -12,6 +13,7 @@ import { UserSettingsService } from './user-settings.service';
     providedIn: 'root',
 })
 export class GoalService {
+    initializedSignal: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     isEnabled: boolean;
     goalHandler: Goal[];
     publicGoals: Goal[];
@@ -122,6 +124,7 @@ export class GoalService {
             (goal: Goal, player: Player): number => this.getPlayTheSameWordThreeTimesProgress(goal, player),
             (goal: Goal, player: Player): number => this.getGoalUsingWordProgress(goal, player),
         ];
+        this.initializedSignal.next(true);
     }
 
     getAUniqueGoal(): Goal {

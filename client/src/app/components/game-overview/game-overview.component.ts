@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
 import { Goal } from '@app/classes/goal';
@@ -16,7 +16,7 @@ import { UserSettingsService } from '@app/services/user-settings.service';
     templateUrl: './game-overview.component.html',
     styleUrls: ['./game-overview.component.scss', './game-overview-button.component.scss'],
 })
-export class GameOverviewComponent implements OnInit {
+export class GameOverviewComponent {
     goals: Goal;
     mode: string;
     numPlayers: string;
@@ -36,12 +36,12 @@ export class GameOverviewComponent implements OnInit {
         public gameService: GameService,
         public goalService: GoalService,
         public matDialog: MatDialog,
-    ) {}
-    ngOnInit(): void {
-        this.initializeGoals();
+    ) {
         this.updateData();
+        this.goalService.initializedSignal.subscribe((done: boolean) => {
+            this.initializeGoals(done);
+        });
     }
-
     openQuitConfirmationDialog() {
         this.matDialog.open(QuitConfirmationDialogComponent);
     }
@@ -77,8 +77,8 @@ export class GameOverviewComponent implements OnInit {
             this.timer = timer.value;
         }
     }
-
-    private initializeGoals(): void {
+    private initializeGoals(ready: boolean): void {
+        if (!ready) return;
         this.publicGoals = this.goalService.publicGoals
             ? [...this.goalService.publicGoals]
             : (this.goalService.publicGoals = [this.goalService.getAUniqueGoal(), this.goalService.getAUniqueGoal()]);
