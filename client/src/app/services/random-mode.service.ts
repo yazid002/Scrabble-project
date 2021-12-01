@@ -26,7 +26,6 @@ export class RandomModeService {
             { text: 'dl', color: 'LightSkyBlue', quantity: 24 },
         ];
         this.randomBonusIndex = 0;
-        this.isChecked = false;
     }
 
     // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random

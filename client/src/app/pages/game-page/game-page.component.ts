@@ -12,7 +12,6 @@ import { PassExecutionService } from '@app/services/command-execution/pass-execu
 import { GameSyncService } from '@app/services/game-sync.service';
 import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
-import { RandomModeService } from '@app/services/random-mode.service';
 import { Room, RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
@@ -41,7 +40,6 @@ export class GamePageComponent implements AfterViewInit {
         public roomService: RoomService,
         public gameSyncService: GameSyncService,
         private selectionManagerService: SelectionManagerService,
-        private randomMode: RandomModeService,
         private timerService: TimerService,
         private matDialog: MatDialog,
         public gameService: GameService,
@@ -90,10 +88,6 @@ export class GamePageComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.selectionManagerService.chatboxComponent = this.chatboxComponent;
-    }
-
-    randomNumber() {
-        this.randomMode.randomizeBonus(0, 3);
     }
 
     increaseSize(): void {

@@ -64,6 +64,7 @@ export class PlayAreaComponent implements AfterViewInit {
 
         this.rackCanvas.nativeElement.focus();
         this.randomMode.randomizeBonus(min, max);
+        console.log('initialized random mode');
     }
 
     get selectionType(): typeof SelectionType {

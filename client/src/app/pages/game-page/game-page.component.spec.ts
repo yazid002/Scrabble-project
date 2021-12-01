@@ -183,12 +183,6 @@ describe('GamePageComponent', () => {
         expect(selectionManagerSpy.onMouseWheel).toHaveBeenCalled();
     });
 
-    it('randomNumber Should call randomizeBonus of randomMode', () => {
-        // const randomMin = 0;
-        // const randomMax = 3;
-        component.randomNumber();
-        expect(randomModeServiceSpy.randomizeBonus).toHaveBeenCalled();
-    });
 
     it('onSubmitPlacement Should call onSubmitPlacement of SelectionManager', () => {
         const selectionTypeTest: SelectionType = 1;
