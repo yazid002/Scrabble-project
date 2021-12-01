@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
-import { PLAYER } from '@app/classes/player';
-import { GameService } from '@app/services/game.service';
-import { GoalsManagerService } from '@app/services/goals-manager.service';
-import { RandomModeService } from '@app/services/random-mode.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 @Component({
@@ -26,14 +22,7 @@ export class GameModeDialogComponent {
     //     { title: 'Anglais', description: 'Langue Anglaise', words: [], isAvailable: false },
     // ];
 
-    constructor(
-        public userSettingsService: UserSettingsService,
-        public gameService: GameService,
-        private randomModeService: RandomModeService,
-        public matDialog: MatDialog,
-        private goalsManagerService: GoalsManagerService,
-        public soundManagerService: SoundManagerService,
-    ) {}
+    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public soundManagerService: SoundManagerService) {}
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);
@@ -42,15 +31,12 @@ export class GameModeDialogComponent {
     }
 
     configureGame() {
-        this.gameService.players[PLAYER.realPlayer].name = this.userSettingsService.nameOption.userChoice;
-        this.gameService.numPlayers = this.userSettingsService.settings.numPlayers.currentChoiceKey;
-        this.goalsManagerService.isEnabled = this.userSettingsService.settings.mode.currentChoiceKey === 'log2990';
         this.playClickOnButtonAudio();
     }
 
     applyRandomMode(event: MatCheckboxChange) {
         this.playClickOnButtonAudio();
-        this.randomModeService.isChecked = event.checked;
+        this.userSettingsService.randomMode = event.checked;
         this.message = 'MODE BONUS ALEATOIRE ACTIVÉ';
         if (!event.checked) {
             this.message = 'MODE BONUS ALEATOIRE DESACTIVÉ';
@@ -69,7 +55,7 @@ export class GameModeDialogComponent {
     playClickOnButtonAudio() {
         this.soundManagerService.playClickOnButtonAudio();
     }
-    validateDictionary(error: boolean){
+    validateDictionary(error: boolean) {
         this.dictionaryError = error;
     }
 }
