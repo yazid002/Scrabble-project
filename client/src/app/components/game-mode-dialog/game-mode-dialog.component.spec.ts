@@ -139,7 +139,7 @@ describe('GameModeDialogComponent', () => {
             ],
         }).compileComponents();
     });
-
+nameError
     beforeEach(() => {
         fixture = TestBed.createComponent(GameModeDialogComponent);
         component = fixture.componentInstance;

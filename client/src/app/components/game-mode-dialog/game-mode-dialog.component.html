@@ -19,29 +19,27 @@
             <mat-card-title>Dictionnaire</mat-card-title>
             <mat-form-field appearance="fill">
                 <!-- <mat-label>Dictionnaire</mat-label> -->
-                <input matInput style="display: none !important" />
+                <!-- <input matInput style="display: none !important" /> -->
                 <mat-select
-                    matNativeControl
-                    [formControl]="userSettingsService.dictionaryControl"
                     required
-                    [(ngModel)]="userSettingsService.selectedDictionary"
-                    (ngModelChange)="changeDic()"
                     ngDefaultControl
+                    name="dictionary"
+                    [(ngModel)]="userSettingsService.selectedDictionary"
                 >
-                    <mat-option>--</mat-option>
-                    <mat-option *ngFor="let dictionnaire of userSettingsService.dictionnaires" [value]="dictionnaire">
+                    <mat-option  (click)="validateDictionary(true)">--</mat-option>
+                    <mat-option *ngFor="let dictionnaire of userSettingsService.dictionnaires" [value]="dictionnaire"  (click)="validateDictionary(false)">
                         {{ dictionnaire.title }}
                     </mat-option>
                 </mat-select>
-                <mat-error *ngIf="userSettingsService.dictionaryControl.hasError('required')">Please choose a dictionary</mat-error>
-                <mat-hint>Description : {{ userSettingsService.dictionaryControl.value?.description }}</mat-hint>
+                <!-- <mat-error *ngIf="userSettingsService.dictionaryControl.hasError('required')">Please choose a dictionary</mat-error> -->
+                <!-- <mat-hint>Description : {{ userSettingsService.dictionaryControl.value?.description }}</mat-hint> -->
             </mat-form-field>
             <!-- <h3>your selected dictionary is : {{ userSettingsService.selectedDictionary }}</h3> -->
         </div>
 
         <div>
-            <mat-form-field appearance="outline" [color]="error ? 'warn' : 'primary'">
-                <mat-label>{{ error ? errorMessage : userSettingsService.nameOption.displayName }}</mat-label>
+            <mat-form-field appearance="outline" [color]="nameError ? 'warn' : 'primary'">
+                <mat-label>{{ nameError ? errorMessage : userSettingsService.nameOption.displayName }}</mat-label>
                 <input
                     autocomplete="off"
                     matInput
@@ -69,7 +67,7 @@
                 mat-raised-button
                 color="primary"
                 type="submit"
-                [disabled]="userSettingsService.dictionaryControl.hasError('required') || error"
+                [disabled]="nameError || dictionaryError"
                 *ngIf="numPlayerChoice()"
                 routerLink="waiting"
                 mat-dialog-close
@@ -81,7 +79,7 @@
                 mat-raised-button
                 color="primary"
                 type="submit"
-                [disabled]="userSettingsService.dictionaryControl.hasError('required') || error"
+                [disabled]="nameError || dictionaryError"
                 *ngIf="!numPlayerChoice()"
                 routerLink="game"
                 mat-dialog-close

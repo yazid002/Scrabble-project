@@ -8,7 +8,8 @@ import { BONUSES, SQUARE_NUMBER } from '@app/constants/board-constants';
 import { SERVER_URL } from '@app/constants/url';
 import { RackService } from '@app/services/rack.service';
 import { Observable } from 'rxjs';
-import * as dictionary from 'src/assets/dictionnary.json';
+import { DictionaryService } from './admin/dictionary.service';
+import { UserSettingsService } from './user-settings.service';
 
 @Injectable({
     providedIn: 'root',
@@ -20,13 +21,21 @@ export class VerifyService {
     success: boolean;
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[];
     formedWords: string[];
-    constructor(private rackService: RackService, private http: HttpClient) {
+    constructor(
+        private rackService: RackService,
+        private http: HttpClient,
+        private dictionaryService: DictionaryService,
+        private userSettingsService: UserSettingsService,
+    ) {
         this.urlString = SERVER_URL + '/api/validate';
-        this.dictionary = dictionary as Dictionary;
+
         this.invalidSymbols = ['-', "'"];
         this.success = true;
         this.lettersUsedOnBoard = [];
         this.formedWords = [];
+    }
+    assignDictionary(){
+        this.dictionaryService.fetchDictionary(this.userSettingsService.selectedDictionary.title).then((dict) => (this.dictionary = dict));
     }
     isFitting(coord: Vec2, direction: string, word: string): { error: boolean; message: IChat } {
         const result: IChat = { from: SENDER.computer, body: '' };

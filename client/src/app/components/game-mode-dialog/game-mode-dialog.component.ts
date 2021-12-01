@@ -13,8 +13,9 @@ import { UserSettingsService } from '@app/services/user-settings.service';
     styleUrls: ['./game-mode-dialog.component.scss'],
 })
 export class GameModeDialogComponent {
-    error: boolean;
+    nameError: boolean;
     errorMessage: string = '';
+    dictionaryError = true;
     isChecked: boolean = false;
     message: string = '';
 
@@ -36,7 +37,7 @@ export class GameModeDialogComponent {
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);
-        this.error = result.error;
+        this.nameError = result.error;
         this.errorMessage = result.errorMessage;
     }
 
@@ -68,11 +69,7 @@ export class GameModeDialogComponent {
     playClickOnButtonAudio() {
         this.soundManagerService.playClickOnButtonAudio();
     }
-
-    changeDic() {
-        console.log(this.userSettingsService.selectedDictionary);
+    validateDictionary(error: boolean){
+        this.dictionaryError = error;
     }
-    // changeDic(event: MatSelectModule) {
-    //     console.log(event);
-    // }
 }

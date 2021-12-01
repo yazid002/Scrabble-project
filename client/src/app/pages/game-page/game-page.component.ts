@@ -15,6 +15,7 @@ import { Room, RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { TimerService } from '@app/services/timer.service';
+import { VerifyService } from '@app/services/verify.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 
 @Component({
@@ -46,6 +47,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
         public gameService: GameService,
         public soundManagerService: SoundManagerService,
         private passExecutionService: PassExecutionService,
+        private verifyService: VerifyService,
     ) {
         this.player = PLAYER;
         this.virtualPlayerService.initialize();
@@ -77,6 +79,7 @@ export class GamePageComponent implements AfterViewInit, OnInit {
 
     ngOnInit(): void {
         this.soundManagerService.stopMainPageAudio();
+        this.verifyService.assignDictionary();
     }
 
     ngAfterViewInit(): void {

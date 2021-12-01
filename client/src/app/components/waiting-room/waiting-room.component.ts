@@ -1,7 +1,7 @@
-import { Dictionary } from '@app/classes/dictionary';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
+import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
 import { RoomService } from '@app/services/room.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
@@ -17,7 +17,7 @@ export class WaitingRoomComponent implements OnInit {
     name: string;
     mode: string;
     timer: string;
-    dictionary: Dictionary;
+    dictionary: TitleDescriptionOfDictionary;
     constructor(
         public userSettingsService: UserSettingsService,
         public matDialog: MatDialog,
@@ -55,7 +55,12 @@ export class WaitingRoomComponent implements OnInit {
     //         this.dictionary = d;
     //     }
     // }
-    private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined, dict: Dictionary | undefined) {
+    private assignValues(
+        name: string | undefined,
+        mode: IOption | undefined,
+        timer: IOption | undefined,
+        dict: TitleDescriptionOfDictionary | undefined,
+    ) {
         if (name && mode && timer && dict) {
             this.name = name;
             this.mode = mode.value;
@@ -64,10 +69,10 @@ export class WaitingRoomComponent implements OnInit {
         }
     }
 
-    get dic(): Dictionary {
-        console.log('dictionary = ' + this.userSettingsService.selectedDictionary);
-        return this.userSettingsService.selectedDictionary;
-    }
+    // get dic(): Dictionary {
+    //     console.log('dictionary = ' + this.userSettingsService.selectedDictionary);
+    //     return this.userSettingsService.selectedDictionary;
+    // }
 
     // get numbers(): number {
     //     // console.log('length = ' + this.roomService.rooms.length);

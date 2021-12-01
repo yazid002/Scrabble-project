@@ -12,7 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class DictionaryService {
     @Output() snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
-
+    currentDictionary: Dictionary;
     listDictionaries: TitleDescriptionOfDictionary[] = [];
     titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
         // filename: '',
@@ -30,7 +30,6 @@ export class DictionaryService {
     url: string;
     constructor(private http: HttpClient) {
         this.url = SERVER_URL + '/api/admin/dictionary';
-        this.getDictionary('Mon dictionnaire');
     }
 
     isNewDictionaryHasSameTitleAsAnother(): boolean {
@@ -101,10 +100,11 @@ export class DictionaryService {
             this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
         }
     }
-    getDictionary(name: string) {
-        this.http.get<Dictionary>(this.url + '/getDictionary/' + name).subscribe((dict: Dictionary) => {
-            console.log('getDictionary', dict);
+    async fetchDictionary(name: string): Promise<Dictionary> {
+        await this.http.get<Dictionary>(this.url + '/getDictionary/' + name).subscribe(async (dict: Dictionary) => {
+            this.currentDictionary = dict;
         });
+        return this.currentDictionary;
     }
 
     private emitToSnackBar(message: string, action: string) {
