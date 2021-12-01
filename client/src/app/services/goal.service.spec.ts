@@ -31,14 +31,14 @@ describe('GoalService', () => {
             ],
         });
         service = TestBed.inject(GoalService);
-        const dictionary = {
-            title: 'dictionnaire test',
-            description: 'description de test',
-            words: ['aa', 'finir', 'manger', 'rouler', 'kilos', 'jartera'],
-        } as Dictionary;
-        // dictionary is private
-        // eslint-disable-next-line dot-notation
-        service['dictionary'] = dictionary;
+        // const dictionary = {
+        //     title: 'dictionnaire test',
+        //     description: 'description de test',
+        //     words: ['aa', 'finir', 'manger', 'rouler', 'kilos', 'jartera'],
+        // } as Dictionary;
+        // // dictionary is private
+        // // eslint-disable-next-line dot-notation
+        // service['dictionary'] = dictionary;
 
         player = {
             id: PLAYER.realPlayer,
@@ -65,13 +65,18 @@ describe('GoalService', () => {
     it('generateRandomWord should return a word with a length between 5 and 7 from the dictionary', () => {
         const max = 7;
         const min = 5;
+        const dictionary = {
+            title: 'dictionnaire test',
+            description: 'description de test',
+            words: ['aa', 'finir', 'manger', 'rouler'],
+        } as Dictionary;
         // generateRandomWord is private
         // eslint-disable-next-line dot-notation
-        const result = service['generateRandomWord']();
+        const result = service['generateRandomWord'](dictionary);
 
         // dictionary is private
         // eslint-disable-next-line dot-notation
-        expect(service['dictionary'].words).toContain(result);
+        expect(dictionary.words).toContain(result);
         expect(result.length).toBeGreaterThanOrEqual(min);
         expect(result.length).toBeLessThanOrEqual(max);
     });
@@ -82,8 +87,13 @@ describe('GoalService', () => {
         const generateNumberSpy = spyOn<any>(service, 'generateNumber').and.callThrough();
 
         // generateRandomWord is private
+        const dictionary = {
+            title: 'dictionnaire test',
+            description: 'description de test',
+            words: ['aa', 'finir', 'manger', 'rouler'],
+        } as Dictionary;
         // eslint-disable-next-line dot-notation
-        service['generateRandomWord']();
+        service['generateRandomWord'](dictionary);
 
         expect(generateNumberSpy).toHaveBeenCalled();
     });

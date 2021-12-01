@@ -68,6 +68,7 @@ describe('RoomService', () => {
     it('should sync game date on receive on receive syncGameData message', () => {
         // eslint-disable-next-line dot-notation
         const sendGameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 0,
@@ -93,6 +94,7 @@ describe('RoomService', () => {
     it('should sync game date on receive syncGameData message', () => {
         // eslint-disable-next-line dot-notation
         const sendGameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 0,

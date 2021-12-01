@@ -73,9 +73,8 @@ describe('WaitingRoomComponent', () => {
         };
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         userSettingsServiceSpy.nameOption.userChoice = 'un nom';
-        userSettingsServiceSpy.dictionaryControl = new FormControl('', Validators.required);
-        userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole', words: [] }];
-        userSettingsServiceSpy.selectedDictionary = { title: 'Espagnol', description: 'Langue espagnole', words: [] };
+        userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole' }];
+        userSettingsServiceSpy.selectedDictionary = { title: 'Espagnol', description: 'Langue espagnole' };
         await TestBed.configureTestingModule({
             declarations: [WaitingRoomComponent],
             imports: [

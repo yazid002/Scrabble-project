@@ -46,6 +46,7 @@ describe('GameSyncService', () => {
 
     it("should sync only goals with the master's goals when receiving from server if it is the first time", () => {
         const gameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 0,
@@ -67,6 +68,7 @@ describe('GameSyncService', () => {
 
     it("should not sync the master's goals when receiving from server if it is the first time", () => {
         const gameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 1,
@@ -88,6 +90,7 @@ describe('GameSyncService', () => {
 
     it("should also sync goals master's goals when receiving from server if it is not the first time", () => {
         const gameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 0,
@@ -109,6 +112,7 @@ describe('GameSyncService', () => {
 
     it('setGoalsFromGameState should set well goals from game state', () => {
         const gameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 0,
@@ -191,6 +195,7 @@ describe('GameSyncService', () => {
 
     it('receiveResetConfig set game parameters with the reset values', () => {
         const resetGame: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 0,

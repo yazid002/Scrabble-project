@@ -82,8 +82,7 @@ describe('GameModeDialogComponent', () => {
             computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
             timer: { setting: TIMER, currentChoiceKey: '60' },
         };
-        userSettingsServiceSpy.dictionaryControl = new FormControl('', Validators.required);
-        userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole', words: [] }];
+        userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole' }];
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         randomModeServiceSpy = jasmine.createSpyObj('RandomModeService', ['getRandomIntInclusive']);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initPlayers']);
@@ -139,7 +138,7 @@ describe('GameModeDialogComponent', () => {
             ],
         }).compileComponents();
     });
-nameError
+
     beforeEach(() => {
         fixture = TestBed.createComponent(GameModeDialogComponent);
         component = fixture.componentInstance;
@@ -162,7 +161,7 @@ nameError
 
         component.validateName();
 
-        expect(component.error).toEqual(expectedResult.error);
+        expect(component.nameError).toEqual(expectedResult.error);
         expect(component.errorMessage).toEqual(expectedResult.errorMessage);
     });
     describe('numPlayerChoice()', () => {

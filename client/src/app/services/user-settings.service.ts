@@ -62,7 +62,6 @@ export class UserSettingsService {
         timer: { setting: TIMER, currentChoiceKey: '60' },
     };
     randomMode = false;
-    dictionaryControl = new FormControl('', Validators.required);
     dictionnaires: TitleDescriptionOfDictionary[] = [];
     selectedDictionary: TitleDescriptionOfDictionary = { title: 'Mon dictionnaire', description: 'Le dictionaire par défault' };
 

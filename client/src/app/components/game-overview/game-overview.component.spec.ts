@@ -108,7 +108,7 @@ describe('GameOverviewComponent', () => {
 
         // scrollDown is private
         // eslint-disable-next-line dot-notation
-        component['initializeGoals']();
+        component['initializeGoals'](true);
         expect(component.publicGoals).toEqual(goalServiceSpy.publicGoals);
         expect(component.privateGoals).toEqual(goalServiceSpy.privateGoals);
     });
@@ -137,7 +137,7 @@ describe('GameOverviewComponent', () => {
 
         // scrollDown is private
         // eslint-disable-next-line dot-notation
-        component['initializeGoals']();
+        component['initializeGoals'](true);
         expect(component.publicGoals).toEqual(publicGoals);
         expect(component.privateGoals).toEqual(privateGoals);
     });

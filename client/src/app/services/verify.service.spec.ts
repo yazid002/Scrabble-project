@@ -4,7 +4,6 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
-import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
 import { RackService } from '@app/services/rack.service';
 import { VerifyService } from '@app/services/verify.service';
@@ -20,12 +19,12 @@ describe('VerifyService', () => {
         TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }], imports: [HttpClientTestingModule] });
         httpTestingController = TestBed.inject(HttpTestingController);
         service = TestBed.inject(VerifyService);
-        const dictionary = {
-            title: 'dictionnaire test',
-            description: 'description de test',
-            words: ['aa', 'finir', 'manger', 'rouler'],
-        } as Dictionary;
-        service.dictionary = dictionary;
+        // const dictionary = {
+        //     title: 'dictionnaire test',
+        //     description: 'description de test',
+        //     words: ['aa', 'finir', 'manger', 'rouler'],
+        // } as Dictionary;
+        // service
     });
 
     afterEach(() => {
