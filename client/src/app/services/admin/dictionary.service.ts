@@ -30,6 +30,7 @@ export class DictionaryService {
     url: string;
     constructor(private http: HttpClient) {
         this.url = SERVER_URL + '/api/admin/dictionary';
+        this.getDictionary('Mon dictionnaire');
     }
 
     isNewDictionaryHasSameTitleAsAnother(): boolean {
@@ -54,7 +55,6 @@ export class DictionaryService {
     }
     async deleteDictionary(name: string) {
         this.http.delete<string>(this.url + '/delete/' + name).subscribe(async () => {
-
             this.getAllDictionaries();
         });
     }
@@ -102,8 +102,8 @@ export class DictionaryService {
         }
     }
     getDictionary(name: string) {
-        this.http.get<File>(this.url + '/getDictionary/' + name).subscribe((file: File) => {
-            console.log(file);
+        this.http.get<Dictionary>(this.url + '/getDictionary/' + name).subscribe((dict: Dictionary) => {
+            console.log('getDictionary', dict);
         });
     }
 
