@@ -34,7 +34,7 @@ export class WaitingRoomComponent implements OnInit {
         );
 
         const dict = this.userSettingsService.selectedDictionary;
-        console.log(this.userSettingsService.selectedDictionary);
+        console.log('dictionnaire choisi : ', this.userSettingsService.selectedDictionary);
         // this.assignDictionary(dict);
         this.assignValues(name, mode, timer, dict);
         this.roomService.createRoom();

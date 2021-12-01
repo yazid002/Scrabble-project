@@ -16,7 +16,7 @@
                 <mat-list-item *ngFor="let room of roomService.rooms; let i = index" class="room">
                     <h3 matLine>Nom de l'adversaire : {{ room.name }}</h3>
                     <p matLine class="mode">Mode : {{ room.settings.mode }}</p>
-                    <p matLine class="time">Temps : {{ room.settings.timer }}</p>
+                    <p matLine class="time">Temps : {{ room.settings.timer }} secondes</p>
                     <button
                         mat-raised-button
                         color="basic"
