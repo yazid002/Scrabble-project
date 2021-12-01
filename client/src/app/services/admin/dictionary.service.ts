@@ -85,42 +85,24 @@ export class DictionaryService {
     async upload(file: File) {
         const fileForm = new FormData();
         fileForm.set('file', file);
-        await this.http
-            .post<FileMessages>(SERVER_URL + '/api/admin/dictionary/addNewDictionary', fileForm)
-            .toPromise()
-            .then(
-                (resp: FileMessages) => {
-                    this.fileMessage.isuploaded = resp.isuploaded;
-                    this.fileMessage.message = resp.message;
-                },
-                (err) => {
-                    console.log('erreur : ' + JSON.stringify(err));
-                    this.emitToSnackBar('Probleme de televersement du fichier cote serveur', 'Dismiss');
-                },
-            );
+        await this.http.post<FileMessages>(SERVER_URL + '/api/admin/dictionary/addNewDictionary', fileForm).subscribe(
+            (resp: FileMessages) => {
+                this.fileMessage.isuploaded = resp.isuploaded;
+                this.fileMessage.message = resp.message;
+                this.getAllDictionaries();
+            },
+            (err) => {
+                console.log('erreur : ' + JSON.stringify(err));
+                this.emitToSnackBar('Probleme de televersement du fichier cote serveur', 'Dismiss');
+            },
+        );
         if (!this.fileMessage.isuploaded) {
             this.emitToSnackBar('Probleme de televersement du fichier cote serveur', 'Dismiss');
         } else {
-            const statusUploading: FileMessages = await this.saveTitleAndDescription();
-            if (statusUploading.isuploaded) {
-                this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
-                await this.getAllDictionaries();
-            } else {
-                this.emitToSnackBar('Probleme de televersement du fichier cote serveur', 'Dismiss');
-            }
+            this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
         }
     }
 
-    async saveTitleAndDescription(): Promise<FileMessages> {
-        await this.http
-            .post<FileMessages>(SERVER_URL + '/api/admin/dictionary/addTitleAndDescription', this.titleAndDescriptionOfDictionary)
-            .toPromise()
-            .then((res: FileMessages) => {
-                this.fileMessage.isuploaded = res.isuploaded;
-                this.fileMessage.message = res.message;
-            });
-        return this.fileMessage;
-    }
     private emitToSnackBar(message: string, action: string) {
         this.snackBarSignal.next({ message, action });
     }

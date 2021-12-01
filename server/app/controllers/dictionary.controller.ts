@@ -66,6 +66,7 @@ export class DictionaryController {
          *           $ref: '#/definitions/Message'
          */
         // ============== add new dictionary ===================================
+        let fileName: string = '';
         const multer = require('multer');
         const storage = multer.diskStorage({
             destination: (req: Request, file: File, cb: (arg0: null, arg1: string) => void) => {
@@ -73,16 +74,19 @@ export class DictionaryController {
             },
             filename: (req: any, file: { originalname: any }, cb: (arg0: null, arg1: string) => void) => {
                 cb(null, `${file.originalname}`);
-                this.dictionaryService.addDict(file.originalname);
-            },
-        });
-        const upload = multer({ storage });
-        this.router.post('/addNewDictionary', upload.single('file'), (req: Request, res: Response) => {
-            try {
+                // setTimeout(() => {
+                fileName = file.originalname;
+                    // }, 1000);
+                },
+            });
+            const upload = multer({ storage });
+            this.router.post('/addNewDictionary', upload.single('file'), async (req: Request, res: Response) => {
+                try {
+                await this.dictionaryService.addDict(fileName);
                 this.fileMessages.isuploaded = true;
                 this.fileMessages.message = 'file uploaded';
 
-                res.json(this.fileMessages); // ('{isuploaded:true, message:"file uploaded"}');
+                res.json(this.dictionaryService.findAllDictionaries()); // ('{isuploaded:true, message:"file uploaded"}');
             } catch (error) {
                 this.fileMessages.isuploaded = false;
                 this.fileMessages.message = 'error is on the server side, contact administrator';
@@ -90,13 +94,6 @@ export class DictionaryController {
             }
         });
 
-        // ============== add new Title And Description  ==========================
-        this.router.post('/addTitleAndDescription', async (req: Request, res: Response) => {
-            const respMesage: FileMessages = await this.dictionaryService.saveTitleAndDescription(req.body);
-            this.fileMessages.isuploaded = respMesage.isuploaded;
-            this.fileMessages.message = respMesage.message;
-            res.json(this.fileMessages);
-        });
         // ============== get All dictionaries ===================================
         this.router.get('/findAll', async (req: Request, res: Response) => {
             try {

@@ -27,28 +27,12 @@ export class DictionaryService {
     constructor(private reafFileService: ReadFileService) {
         this.path = './app/assets/';
     }
-    addDict(fileName: string) {
+    async addDict(fileName: string) {
         console.log('adding ', fileName);
-        this.reafFileService.readDictionary(this.path + fileName).then((dictString) => {
+        await this.reafFileService.readDictionary(this.path + fileName).then((dictString) => {
             this.listDictionarires.push(JSON.parse(dictString) as unknown as Dictionary);
             console.log(this.listDictionarires);
         });
-    }
-    saveTitleAndDescription(titleAndDescription: TitleDescriptionOfDictionary): FileMessages {
-        try {
-            // const path = './app/assets/list-dictionaries.json';
-            // const data = fs.readFileSync(path, 'utf-8');
-            // const list = this.listDictionarires;
-            // this.listDictionarires.push(titleAndDescription);
-            console.log(titleAndDescription.title);
-            // fs.writeFileSync(path, JSON.stringify(list, null, 2));
-            this.fileMessages.isuploaded = true;
-            this.fileMessages.message = 'file has been successfully uploaded';
-        } catch {
-            this.fileMessages.isuploaded = false;
-            this.fileMessages.message = 'file was not uploaded, server side problem';
-        }
-        return this.fileMessages;
     }
 
     deleteFile(filename: string): string {
