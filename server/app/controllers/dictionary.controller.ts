@@ -68,19 +68,16 @@ export class DictionaryController {
         // ============== add new dictionary ===================================
         const multer = require('multer');
         const storage = multer.diskStorage({
-            destination: (req: any, file: any, cb: (arg0: null, arg1: string) => void) => {
+            destination: (req: Request, file: File, cb: (arg0: null, arg1: string) => void) => {
                 cb(null, './app/assets/');
             },
             filename: (req: any, file: { originalname: any }, cb: (arg0: null, arg1: string) => void) => {
                 cb(null, `${file.originalname}`);
+                this.dictionaryService.addDict(file.originalname);
             },
         });
         const upload = multer({ storage });
-
         this.router.post('/addNewDictionary', upload.single('file'), (req: Request, res: Response) => {
-            console.log('req', req);
-            console.log('res', res);
-
             try {
                 this.fileMessages.isuploaded = true;
                 this.fileMessages.message = 'file uploaded';
