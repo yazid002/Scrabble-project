@@ -5,7 +5,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
+import { LobbyComponent } from '@app/lobby/lobby.component';
 import { GoalsManagerService } from '@app/services/goals-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
@@ -87,7 +89,15 @@ describe('JoinRoomDialogComponent', () => {
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
                 { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
             ],
-            imports: [BrowserAnimationsModule, MatRadioModule, MatCardModule, FormsModule, MatInputModule, MatDialogModule],
+            imports: [
+                BrowserAnimationsModule,
+                MatRadioModule,
+                MatCardModule,
+                FormsModule,
+                MatInputModule,
+                MatDialogModule,
+                RouterTestingModule.withRoutes([{ path: 'lobby', component: LobbyComponent }]),
+            ],
         }).compileComponents();
     });
 

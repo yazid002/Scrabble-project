@@ -8,14 +8,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { PLAYER } from '@app/classes/player';
+import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { GameService } from '@app/services/game.service';
 import { GoalsManagerService } from '@app/services/goals-manager.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
+import { WaitingRoomComponent } from '../waiting-room/waiting-room.component';
 import { GameModeDialogComponent } from './game-mode-dialog.component';
 
 class MatDialogMock {
@@ -127,6 +131,11 @@ describe('GameModeDialogComponent', () => {
                 ReactiveFormsModule,
                 MatFormFieldModule,
                 MatSelectModule,
+                RouterModule,
+                RouterTestingModule.withRoutes([
+                    { path: 'game', component: GamePageComponent },
+                    { path: 'waiting', component: WaitingRoomComponent },
+                ]),
             ],
         }).compileComponents();
     });

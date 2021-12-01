@@ -4,9 +4,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { IOption } from '@app/classes/game-options';
 import { Goal } from '@app/classes/goal';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
+import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { GoalService } from '@app/services/goal.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
@@ -31,7 +33,16 @@ describe('GameOverviewComponent', () => {
         goalServiceSpy = jasmine.createSpyObj('GoalService', ['getAUniqueGoal']);
         await TestBed.configureTestingModule({
             declarations: [GameOverviewComponent],
-            imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule, MatCardModule, MatCardModule, HttpClientModule],
+            imports: [
+                MatDialogModule,
+                MatButtonModule,
+                AppRoutingModule,
+                RouterModule,
+                MatCardModule,
+                MatCardModule,
+                HttpClientModule,
+                RouterTestingModule.withRoutes([{ path: 'home', component: MainPageComponent }]),
+            ],
             providers: [
                 UserSettingsService,
                 ReserveService,
