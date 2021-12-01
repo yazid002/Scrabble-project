@@ -54,8 +54,7 @@ export class DictionaryService {
     }
     async deleteDictionary(name: string) {
         this.http.delete<string>(this.url + '/delete/' + name).subscribe(async (rep) => {
-            // TODO a implementer
-            console.log(rep);
+            
             this.getAllDictionaries();
         });
     }
