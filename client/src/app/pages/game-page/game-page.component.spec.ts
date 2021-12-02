@@ -22,6 +22,7 @@ import { RandomModeService } from '@app/services/random-mode.service';
 import { RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
+import { VirtualPlayerService } from '@app/services/virtual-player.service';
 import { of } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
 
@@ -42,11 +43,34 @@ describe('GamePageComponent', () => {
     let roomServiceSpy: jasmine.SpyObj<RoomService>;
     let randomModeServiceSpy: jasmine.SpyObj<RandomModeService>;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
-
+    let virtualPlayerServiceSpy: jasmine.SpyObj<VirtualPlayerService>;
     const CANVAS_WIDTH = 500;
     const CANVAS_HEIGHT = 500;
 
     beforeEach(async () => {
+        virtualPlayerServiceSpy = jasmine.createSpyObj('VirtualPlayerService', ['initialize']);
+        virtualPlayerServiceSpy.initialize.and.returnValue(undefined);
+        // gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
+        // gameServiceSpy.currentTurn = PLAYER.realPlayer;
+        // gameServiceSpy.players = [
+        //     {
+        //         id: PLAYER.realPlayer,
+        //         name: 'Random name',
+        //         rack: [
+        //             { name: 'A', quantity: 9, points: 1, display: 'A' },
+        //             { name: 'B', quantity: 2, points: 3, display: 'B' },
+        //             { name: 'C', quantity: 2, points: 3, display: 'C' },
+        //             { name: 'D', quantity: 3, points: 2, display: 'D' },
+        //             { name: 'E', quantity: 15, points: 1, display: 'E' },
+        //         ],
+        //         points: 0,
+        //         turnWithoutSkipAndExchangeCounter: 0,
+        //         placeInTenSecondsGoalCounter: 0,
+        //         wordsMapping: new Map<string, number>(),
+        //         words: [],
+        //     },
+        // ];
+        // gameServiceSpy.convertToSoloSignal = new BehaviorSubject<string>('');
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio', 'stopMainPageAudio']);
         gridServiceSpy = jasmine.createSpyObj('GridService', ['increaseTileSize', 'decreaseTileSize', 'drawGrid']);
         selectionManagerSpy = jasmine.createSpyObj('SelectionManagerService', [
@@ -95,7 +119,6 @@ describe('GamePageComponent', () => {
                 { provide: SelectionManagerService, useValue: selectionManagerSpy },
                 { provide: RandomModeService, useValue: randomModeServiceSpy },
                 { provide: RoomService, useValue: roomServiceSpy },
-
                 {
                     provide: MatDialog,
                     useClass: MatDialogMock,
@@ -183,7 +206,6 @@ describe('GamePageComponent', () => {
         component.onMouseWheel(keyEvent);
         expect(selectionManagerSpy.onMouseWheel).toHaveBeenCalled();
     });
-
 
     it('onSubmitPlacement Should call onSubmitPlacement of SelectionManager', () => {
         const selectionTypeTest: SelectionType = 1;

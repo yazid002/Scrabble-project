@@ -6,7 +6,6 @@ import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { OpponentQuitDialogComponent } from '@app/components/opponent-quit-dialog/opponent-quit-dialog.component';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
-import { DictionaryService } from '@app/services/admin/dictionary.service';
 import { NamesService } from '@app/services/admin/names.service';
 import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
 import { GameSyncService } from '@app/services/game-sync.service';
@@ -47,7 +46,6 @@ export class GamePageComponent implements AfterViewInit {
         private namesService: NamesService,
         private userSettingsService: UserSettingsService,
         private passExecutionService: PassExecutionService,
-        private dictionaryService: DictionaryService,
     ) {
         this.player = PLAYER;
         this.virtualPlayerService.initialize();
@@ -78,10 +76,6 @@ export class GamePageComponent implements AfterViewInit {
     @HostListener('window:wheel', ['$event'])
     onMouseWheel(event: WheelEvent) {
         this.selectionManagerService.onMouseWheel(event);
-    }
-
-    async ngOnInit() {
-        await this.dictionaryService.fetchDictionary(this.userSettingsService.selectedDictionary.title);
     }
 
     ngAfterViewInit(): void {
