@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ABANDON_SIGNAL } from '@app/classes/signal';
@@ -82,6 +82,7 @@ describe('GamePageComponent', () => {
                 FormsModule,
                 MatIconModule,
                 BrowserAnimationsModule,
+                NoopAnimationsModule,
                 MatCardModule,
                 MatDialogModule,
                 MatButtonModule,
