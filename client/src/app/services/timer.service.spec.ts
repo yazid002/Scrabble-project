@@ -1,12 +1,35 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { IOptionList, IUserSetting } from '@app/classes/game-options';
 import { TimerService } from './timer.service';
+import { UserSettingsService } from './user-settings.service';
 
 describe('TimerService', () => {
     let service: TimerService;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        const modeOption: IOptionList = {
+            settingName: 'Mode de jeux',
+            availableChoices: [
+                { key: 'classic', value: 'Classique' },
+                { key: 'log2990', value: 'LOG2990' },
+            ],
+        };
+        const modeChoice: IUserSetting = { setting: modeOption, currentChoiceKey: '60' };
+        userSettingsServiceSpy.settings = {
+            mode: modeChoice,
+            timer: modeChoice,
+            numPlayers: modeChoice,
+            computerLevel: modeChoice,
+        };
+
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            providers: [{ provide: UserSettingsService, useValue: userSettingsServiceSpy }],
+        });
         service = TestBed.inject(TimerService);
     });
 

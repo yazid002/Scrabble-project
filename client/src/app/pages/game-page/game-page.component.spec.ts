@@ -50,27 +50,6 @@ describe('GamePageComponent', () => {
     beforeEach(async () => {
         virtualPlayerServiceSpy = jasmine.createSpyObj('VirtualPlayerService', ['initialize']);
         virtualPlayerServiceSpy.initialize.and.returnValue(undefined);
-        // gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
-        // gameServiceSpy.currentTurn = PLAYER.realPlayer;
-        // gameServiceSpy.players = [
-        //     {
-        //         id: PLAYER.realPlayer,
-        //         name: 'Random name',
-        //         rack: [
-        //             { name: 'A', quantity: 9, points: 1, display: 'A' },
-        //             { name: 'B', quantity: 2, points: 3, display: 'B' },
-        //             { name: 'C', quantity: 2, points: 3, display: 'C' },
-        //             { name: 'D', quantity: 3, points: 2, display: 'D' },
-        //             { name: 'E', quantity: 15, points: 1, display: 'E' },
-        //         ],
-        //         points: 0,
-        //         turnWithoutSkipAndExchangeCounter: 0,
-        //         placeInTenSecondsGoalCounter: 0,
-        //         wordsMapping: new Map<string, number>(),
-        //         words: [],
-        //     },
-        // ];
-        // gameServiceSpy.convertToSoloSignal = new BehaviorSubject<string>('');
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio', 'stopMainPageAudio']);
         gridServiceSpy = jasmine.createSpyObj('GridService', ['increaseTileSize', 'decreaseTileSize', 'drawGrid']);
         selectionManagerSpy = jasmine.createSpyObj('SelectionManagerService', [

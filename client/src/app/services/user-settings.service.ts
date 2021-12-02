@@ -63,6 +63,9 @@ export class UserSettingsService {
     nameOption = NAME_OPTION;
     computerName: string;
     constructor(public dictionaryService: DictionaryService) {
+        this.getDictionaries();
+    }
+    getDictionaries() {
         this.dictionaryService.getAllDictionaries().then((dict) => (this.dictionnaires = dict));
     }
     validateName(name: string): { error: boolean; errorMessage: string } {
