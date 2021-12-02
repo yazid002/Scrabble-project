@@ -40,4 +40,13 @@ describe('WordValidationService', () => {
             done();
         }, RESPONSE_DELAY);
     });
+    it('should return that word is invalid if we provide an invalid dictionary to check', (done) => {
+        setTimeout(async () => {
+            const words: string[] = ['allo', 'bonjour', 'patate'];
+            const expectedResult = { wordExists: false, errorMessage: '' };
+            const actualResult = service.validateWord({ words, dict: 'An invalid dictionary' });
+            expect(actualResult.wordExists).equal(expectedResult.wordExists);
+            done();
+        }, RESPONSE_DELAY);
+    });
 });
