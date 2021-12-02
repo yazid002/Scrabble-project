@@ -1,5 +1,6 @@
 import * as DictFile from '@app/assets/dictionnary.json';
 import { Dictionary } from '@app/classes/dictionary';
+import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDictionary.model';
 import { expect } from 'chai';
 import * as fs from 'fs';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
@@ -12,13 +13,17 @@ const exampleDict: Dictionary = {
     description: 'for testing purposes',
     words: ['aa', 'bb', 'cc'],
 };
-describe('WordValidationService', () => {
+const defaultDictionary = DictFile as Dictionary;
+defaultDictionary.default = true;
+defaultDictionary.words = ['aa', 'bb', 'cc']; // to speed up the tests, we make the words array smaller
+describe('DictionaryService', () => {
     let service: DictionaryService;
     let readFileService: SinonStubbedInstance<ReadFileService>;
     beforeEach(async () => {
         readFileService = createStubInstance(ReadFileService);
         readFileService.readDictionary.resolves(DictFile as Dictionary);
         service = new DictionaryService(readFileService);
+        service.dictionaries = [defaultDictionary];
     });
     describe('addDict', () => {
         const newDictFileName = 'newDict.json';
@@ -32,10 +37,35 @@ describe('WordValidationService', () => {
         });
     });
     describe('deleteDictionary', () => {
-        it('should remove the dictionary we want to remove', () => {
+        it('should remove the dictionary we want', () => {
             service.dictionaries.push(exampleDict);
             service.deleteDictionary(exampleDict.title);
             expect(service.dictionaries).not.to.contain(exampleDict);
+            // expect(service.dictionaries).to.include(defaultDictionary);
+        });
+        it('should not let you delete a default dictionary', () => {
+            service.deleteDictionary(defaultDictionary.title);
+            expect(service.dictionaries).to.include(defaultDictionary);
+        });
+    });
+    describe('findAllDictionaries', () => {
+        it('should return a list of dictionarries without the words', () => {
+            service.dictionaries = [defaultDictionary];
+            const expectedResult: TitleDescriptionOfDictionary[] = [{ title: defaultDictionary.title, description: defaultDictionary.description }];
+            const result = service.findAllDictionaries();
+            expect(result).to.deep.equal(expectedResult);
+        });
+    });
+    describe('getDictionary', () => {
+        it('should return the needed dictionary', () => {
+            const expectedResult = defaultDictionary;
+            const result = service.getDictionary(defaultDictionary.title);
+            expect(result).to.deep.equal(expectedResult);
+        });
+        it('should return undefined if we ask for a dictionary that does not exist', () => {
+            const expectedResult = undefined;
+            const result = service.getDictionary('invalid dictionary');
+            expect(result).to.deep.equal(expectedResult);
         });
     });
 });
