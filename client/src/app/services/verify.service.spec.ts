@@ -1128,9 +1128,11 @@ describe('VerifyService', () => {
                 );
 
                 // validateWords devrait faire une seule requete pour 'POST' les mots à valider
+                const expectedRequestBody = { words: wordsToValidate, dict: 'Mon dictionnaire' };
+
                 const req = httpTestingController.expectOne(service.urlString);
                 expect(req.request.method).toEqual('POST');
-                expect(req.request.body).toEqual(wordsToValidate);
+                expect(req.request.body).toEqual(expectedRequestBody);
 
                 // Le serveur devrait retourner que les mots existent après le 'POST'
                 const expectedResponse = new HttpResponse({ body: response });
