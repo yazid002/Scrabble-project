@@ -51,8 +51,4 @@ export class LobbyComponent implements OnInit {
     playClickOnButtonAudio() {
         this.soundManagerService.playClickOnButtonAudio();
     }
-
-    get numbers(): number {
-        return this.roomService.rooms.length;
-    }
 }
