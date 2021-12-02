@@ -1,4 +1,4 @@
-import { Leaderboard } from '@app/classes/Leaderboard';
+import { Leaderboard } from '@app/classes/leaderboard';
 import { Collection, FindAndModifyWriteOpResultObject } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';

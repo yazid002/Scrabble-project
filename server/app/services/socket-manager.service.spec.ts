@@ -1,5 +1,5 @@
 import { GameState } from '@app/classes/game-state';
-import { Leaderboard } from '@app/classes/Leaderboard';
+import { Leaderboard } from '@app/classes/leaderboard';
 import { Server } from '@app/server';
 import { Room, SocketManager } from '@app/services/socket-manager.service';
 import { assert, expect } from 'chai';

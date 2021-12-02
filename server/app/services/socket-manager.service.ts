@@ -1,8 +1,8 @@
 import { GameState } from '@app/classes/game-state';
-import { Leaderboard } from '@app/classes/Leaderboard';
+import { Leaderboard } from '@app/classes/leaderboard';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { LeaderboardService } from './Leaderboard.service';
+import { LeaderboardService } from './leaderboard.service';
 
 const ROOM_NOT_FOUND_INDEX = -1;
 const EMIT_TIME_DELAY = 1000;

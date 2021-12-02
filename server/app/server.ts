@@ -3,7 +3,7 @@ import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
 import { DatabaseService } from './services/database.service';
-import { LeaderboardService } from './services/Leaderboard.service';
+import { LeaderboardService } from './services/leaderboard.service';
 import { SocketManager } from './services/socket-manager.service';
 
 const BASE_DIX = 10;
