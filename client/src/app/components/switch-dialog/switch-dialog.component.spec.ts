@@ -68,7 +68,8 @@ describe('SwitchDialogComponent', () => {
     let roomServiceSpy: jasmine.SpyObj<RoomService>;
 
     beforeEach(async () => {
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName']);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         roomServiceSpy = jasmine.createSpyObj('RoomService', ['quitRoom']);
         userSettingsServiceSpy.settings = {
             mode: { setting: MODE, currentChoiceKey: 'classic' },
@@ -76,6 +77,7 @@ describe('SwitchDialogComponent', () => {
             computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
             timer: { setting: TIMER, currentChoiceKey: '60' },
         };
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
 
         await TestBed.configureTestingModule({
             declarations: [SwitchDialogComponent],

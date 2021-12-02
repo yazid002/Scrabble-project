@@ -68,7 +68,7 @@ describe('GameModeDialogComponent', () => {
 
     beforeEach(async () => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName']);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getDictionaries']);
         userSettingsServiceSpy.settings = {
             mode: { setting: MODE, currentChoiceKey: 'classic' },
             numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
@@ -79,6 +79,8 @@ describe('GameModeDialogComponent', () => {
         userSettingsServiceSpy.nameOption = NAME_OPTION;
 
         userSettingsServiceSpy.computerName = '';
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         await TestBed.configureTestingModule({
             declarations: [GameModeDialogComponent],
             providers: [

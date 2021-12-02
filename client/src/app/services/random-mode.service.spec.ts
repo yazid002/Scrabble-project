@@ -4,12 +4,16 @@ import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { GridService } from './grid.service';
 import { RandomModeService } from './random-mode.service';
+import { UserSettingsService } from './user-settings.service';
 
 describe('RandomModeService', () => {
     let service: RandomModeService;
     let gridServiceSpy: jasmine.SpyObj<GridService>;
     let ctxStub: CanvasRenderingContext2D;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(() => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         const CANVAS_WIDTH = 500;
         const CANVAS_HEIGHT = 500;
 

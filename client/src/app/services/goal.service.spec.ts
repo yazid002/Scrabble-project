@@ -14,6 +14,7 @@ import { DictionaryService } from './admin/dictionary.service';
 import { GoalService } from './goal.service';
 import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
+import { UserSettingsService } from './user-settings.service';
 const dictionary = dictFile as Dictionary;
 
 describe('GoalService', () => {
@@ -22,6 +23,7 @@ describe('GoalService', () => {
     let player: Player;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
     let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
 
     beforeEach(() => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playGoalAchievementAudio']);
@@ -35,6 +37,8 @@ describe('GoalService', () => {
         dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary', 'getAllDictionaries']);
         dictionaryServiceSpy.fetchDictionary.and.returnValue(of(dictionary));
         dictionaryServiceSpy.getAllDictionaries.and.resolveTo([{ title: dictionary.title, description: dictionary.description }]);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
 
         TestBed.configureTestingModule({
             providers: [

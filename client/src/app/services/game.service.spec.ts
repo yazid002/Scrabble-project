@@ -2,12 +2,18 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { PLAYER } from '@app/classes/player';
 import { GameService } from './game.service';
+import { UserSettingsService } from './user-settings.service';
 
 describe('GameService', () => {
     let service: GameService;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+        });
         service = TestBed.inject(GameService);
     });
 

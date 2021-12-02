@@ -22,6 +22,7 @@ import { RandomModeService } from '@app/services/random-mode.service';
 import { RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
+import { UserSettingsService } from '@app/services/user-settings.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
 import { of } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
@@ -46,8 +47,12 @@ describe('GamePageComponent', () => {
     let virtualPlayerServiceSpy: jasmine.SpyObj<VirtualPlayerService>;
     const CANVAS_WIDTH = 500;
     const CANVAS_HEIGHT = 500;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
 
     beforeEach(async () => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+
         virtualPlayerServiceSpy = jasmine.createSpyObj('VirtualPlayerService', ['initialize']);
         virtualPlayerServiceSpy.initialize.and.returnValue(undefined);
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio', 'stopMainPageAudio']);

@@ -8,12 +8,16 @@ import { Vec2 } from '@app/classes/vec2';
 import { RackService } from '@app/services/rack.service';
 import { VerifyService } from '@app/services/verify.service';
 import { Observable } from 'rxjs';
+import { UserSettingsService } from './user-settings.service';
 const getDictUrl = 'http://localhost:3000/api/admin/dictionary/findAll';
 describe('VerifyService', () => {
     let service: VerifyService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
     let httpTestingController: HttpTestingController;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(() => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         rackServiceSpy = jasmine.createSpyObj('RackService', ['findJokersNumberOnRack', 'isLetterOnRack']);
 
         TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }], imports: [HttpClientTestingModule] });

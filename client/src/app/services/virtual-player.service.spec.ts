@@ -13,6 +13,7 @@ import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board-constants';
 // disable because we need a cile that is not in the project scope (we can't use '@app/')
 // eslint-disable-next-line no-restricted-imports
 import * as dictFile from '../../../../server/app/assets/dictionnary.json';
+import { UserSettingsService } from './user-settings.service';
 import { VirtualPlayerService } from './virtual-player.service';
 const dictionary = dictFile as Dictionary;
 type Direction = 'h' | 'v';
@@ -25,7 +26,10 @@ interface WordNCoord {
 describe('VirtualPlayerService', () => {
     let service: VirtualPlayerService;
     let ctxStub: CanvasRenderingContext2D;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(() => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         TestBed.configureTestingModule({ imports: [HttpClientModule] });
         service = TestBed.inject(VirtualPlayerService);
 

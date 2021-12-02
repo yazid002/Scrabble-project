@@ -5,11 +5,14 @@ import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { Socket } from 'socket.io-client';
 import { GameState } from './game-sync.service';
 import { Room, RoomService } from './room.service';
+import { UserSettingsService } from './user-settings.service';
 describe('RoomService', () => {
     let service: RoomService;
     let clientSocket: Socket;
-
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(() => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         clientSocket = jasmine.createSpyObj('socket', ['on', 'emit'], { id: '1' }) as unknown as Socket;
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],

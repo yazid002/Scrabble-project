@@ -11,6 +11,7 @@ import { GameService } from './game.service';
 import { GoalService } from './goal.service';
 import { GridService } from './grid.service';
 import { PlaceSelectionService } from './place-selection.service';
+import { UserSettingsService } from './user-settings.service';
 
 interface GridServiceMock {
     drawGrid(): void;
@@ -21,7 +22,11 @@ describe('GameSyncService', () => {
     let placeSelectionServiceSpy: jasmine.SpyObj<PlaceSelectionService>;
     let gameServiceSpy: jasmine.SpyObj<GameService>;
     let goalServiceSpy: jasmine.SpyObj<GoalService>;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+
     beforeEach(() => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         const gridServiceMock: GridServiceMock = {
             drawGrid: (): void => {
                 return;

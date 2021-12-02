@@ -66,7 +66,7 @@ describe('JoinRoomDialogComponent', () => {
 
     beforeEach(async () => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getComputerName']);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getComputerName', 'getDictionaries']);
         userSettingsServiceSpy.settings = {
             mode: { setting: MODE, currentChoiceKey: 'classic' },
             numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
@@ -75,6 +75,8 @@ describe('JoinRoomDialogComponent', () => {
         };
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         userSettingsServiceSpy.computerName = '';
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
 
         await TestBed.configureTestingModule({
             declarations: [JoinRoomDialogComponent],

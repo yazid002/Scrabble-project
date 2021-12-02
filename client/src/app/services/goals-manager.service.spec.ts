@@ -9,14 +9,17 @@ import { GameService } from './game.service';
 import { GoalService } from './goal.service';
 import { GoalsManagerService } from './goals-manager.service';
 import { TimerService } from './timer.service';
+import { UserSettingsService } from './user-settings.service';
 
 describe('GoalsManagerService', () => {
     let service: GoalsManagerService;
     let goalServiceSpy: jasmine.SpyObj<GoalService>;
     let gameServiceSpy: jasmine.SpyObj<GameService>;
     let timerServiceSpy: jasmine.SpyObj<TimerService>;
-
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(() => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         goalServiceSpy = jasmine.createSpyObj('GoalService', [
             'getProgress',
             'completeGoalSound',

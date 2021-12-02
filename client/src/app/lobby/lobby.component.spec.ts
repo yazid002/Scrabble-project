@@ -78,6 +78,7 @@ describe('LobbyComponent', () => {
             computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
             timer: { setting: TIMER, currentChoiceKey: '60' },
         };
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
 
         roomServiceSpy.rooms = [{ name: 'a room test', id: 'an id', settings: { mode: 'classic', timer: '60' }, clients: ['a client'] }];
         await TestBed.configureTestingModule({
