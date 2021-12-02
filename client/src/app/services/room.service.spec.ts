@@ -12,7 +12,7 @@ describe('RoomService', () => {
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(() => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         clientSocket = jasmine.createSpyObj('socket', ['on', 'emit'], { id: '1' }) as unknown as Socket;
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],

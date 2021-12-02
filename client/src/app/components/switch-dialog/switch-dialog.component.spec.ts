@@ -69,7 +69,7 @@ describe('SwitchDialogComponent', () => {
 
     beforeEach(async () => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         roomServiceSpy = jasmine.createSpyObj('RoomService', ['quitRoom']);
         userSettingsServiceSpy.settings = {
             mode: { setting: MODE, currentChoiceKey: 'classic' },

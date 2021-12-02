@@ -51,7 +51,7 @@ describe('GamePageComponent', () => {
 
     beforeEach(async () => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
 
         virtualPlayerServiceSpy = jasmine.createSpyObj('VirtualPlayerService', ['initialize']);
         virtualPlayerServiceSpy.initialize.and.returnValue(undefined);

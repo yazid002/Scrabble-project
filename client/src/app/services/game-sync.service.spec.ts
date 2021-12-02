@@ -26,7 +26,7 @@ describe('GameSyncService', () => {
 
     beforeEach(() => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         const gridServiceMock: GridServiceMock = {
             drawGrid: (): void => {
                 return;

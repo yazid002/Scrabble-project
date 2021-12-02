@@ -5,14 +5,16 @@ import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { IChat } from '@app/classes/chat';
-import { setVirtualPlayerDictionary } from '@app/classes/chunk-node';
+import { generateAnagrams, setVirtualPlayerDictionary } from '@app/classes/chunk-node';
 import { Dictionary } from '@app/classes/dictionary';
 import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board-constants';
+import { of } from 'rxjs';
 // disable because we need a cile that is not in the project scope (we can't use '@app/')
 // eslint-disable-next-line no-restricted-imports
 import * as dictFile from '../../../../server/app/assets/dictionnary.json';
+import { DictionaryService } from './admin/dictionary.service';
 import { UserSettingsService } from './user-settings.service';
 import { VirtualPlayerService } from './virtual-player.service';
 const dictionary = dictFile as Dictionary;
@@ -27,9 +29,12 @@ describe('VirtualPlayerService', () => {
     let service: VirtualPlayerService;
     let ctxStub: CanvasRenderingContext2D;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
     beforeEach(() => {
+        dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary']);
+        dictionaryServiceSpy.fetchDictionary.and.callFake(() => of(dictionary));
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         TestBed.configureTestingModule({ imports: [HttpClientModule] });
         service = TestBed.inject(VirtualPlayerService);
 
@@ -232,6 +237,11 @@ describe('VirtualPlayerService', () => {
             const spy = spyOn<any>(service['placeService'], 'placeWordInstant');
             spy.and.returnValue(true);
             const h8Coord: Vec2 = { x: 7, y: 7 };
+            const container: { gen: (rack: string[], pattern: string) => string[] } = {
+                gen: generateAnagrams,
+            };
+            const anagramSpy = spyOn(container, 'gen');
+            anagramSpy.and.callFake(() => ['Bon', 'Bonjour', 'jour', 'ou']);
 
             service['gameService'].players[PLAYER.otherPlayer].rack = [
                 { name: 'B', quantity: 9, points: 1, display: 'B' },
@@ -258,11 +268,14 @@ describe('VirtualPlayerService', () => {
             tiles[h8Coord.x + 3][h8Coord.y].letter = 'o';
             tiles[h8Coord.x][h8Coord.y + 1].letter = 'a';
 
+            anagramSpy.and.callFake(() => ['Bon', 'Bonjour', 'jour', 'ou', 'la']);
             possibilities = service['makePossibilities']();
             for (const possibility of possibilities) {
                 if (possibility.coord.x !== h8Coord.x || possibility.coord.y !== h8Coord.y) allCentered = false;
             }
             expect(allCentered).toBe(false);
+            // httpTestingController.expectOne('http://localhost:3000/api/admin/dictionary/getDictionary/Mon dictionnaire');
+            // httpTestingController.verify();
         });
     });
 });

@@ -31,7 +31,7 @@ describe('GameOverviewComponent', () => {
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(async () => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         goalServiceSpy = jasmine.createSpyObj('GoalService', ['getAUniqueGoal']);
         goalServiceSpy.initializedSignal = new BehaviorSubject<boolean>(false);
         await TestBed.configureTestingModule({

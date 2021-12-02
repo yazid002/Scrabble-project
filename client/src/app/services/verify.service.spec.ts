@@ -17,7 +17,7 @@ describe('VerifyService', () => {
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(() => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         rackServiceSpy = jasmine.createSpyObj('RackService', ['findJokersNumberOnRack', 'isLetterOnRack']);
 
         TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }], imports: [HttpClientTestingModule] });

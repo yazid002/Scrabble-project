@@ -38,7 +38,7 @@ describe('GoalService', () => {
         dictionaryServiceSpy.fetchDictionary.and.returnValue(of(dictionary));
         dictionaryServiceSpy.getAllDictionaries.and.resolveTo([{ title: dictionary.title, description: dictionary.description }]);
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
 
         TestBed.configureTestingModule({
             providers: [

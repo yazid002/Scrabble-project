@@ -12,7 +12,7 @@ describe('PlayerNamesOptionsComponent', () => {
 
     beforeEach(async () => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
         await TestBed.configureTestingModule({
             declarations: [PlayerNamesOptionsComponent],

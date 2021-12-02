@@ -75,7 +75,7 @@ describe('JoinRoomDialogComponent', () => {
         };
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         userSettingsServiceSpy.computerName = '';
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
 
         await TestBed.configureTestingModule({
