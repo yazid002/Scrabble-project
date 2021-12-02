@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
 import { IOptionList, IUserSetting, NAME_OPTION } from '@app/classes/game-options';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
 import { DictionaryService } from './admin/dictionary.service';
