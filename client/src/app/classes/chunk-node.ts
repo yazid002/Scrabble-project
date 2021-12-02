@@ -15,7 +15,6 @@ export class ChunkNode {
         else this.chunk = unTestedChunkCopy.splice(0, 1).join('');
         this.unTestedChunks = unTestedChunkCopy;
         const testedChunks = this.currentWord;
-        // for (const unTestedChunk of this.unTestedChunCopy) {
         let i = 0;
         while (i < this.unTestedChunks.length) {
             const word = testedChunks + this.unTestedChunks[i];

@@ -1,4 +1,4 @@
-import { GamePageComponent } from './../../pages/game-page/game-page.component';
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -6,17 +6,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { NAME_OPTION } from '@app/classes/game-options';
-import { UserSettingsService } from '@app/services/user-settings.service';
-import { of } from 'rxjs';
-import { SwitchDialogComponent } from './switch-dialog.component';
-// import { RouterTestingModule } from '@angular/router/testing';
-// import { GamePageComponent } from '@app/pages/game-page/game-page.component';
-import { HttpClientModule } from '@angular/common/http';
-import { RoomService } from './../../services/room.service';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList } from '@app/classes/game-options';
+import { UserSettingsService } from '@app/services/user-settings.service';
+import { of } from 'rxjs';
+import { GamePageComponent } from './../../pages/game-page/game-page.component';
+import { RoomService } from './../../services/room.service';
+import { SwitchDialogComponent } from './switch-dialog.component';
 
 class MatDialogMock {
     open() {
@@ -69,12 +66,10 @@ describe('SwitchDialogComponent', () => {
     let fixture: ComponentFixture<SwitchDialogComponent>;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     let roomServiceSpy: jasmine.SpyObj<RoomService>;
-    // let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
 
     beforeEach(async () => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName']);
         roomServiceSpy = jasmine.createSpyObj('RoomService', ['quitRoom']);
-        // userSettingsServiceSpy.nameOption = NAME_OPTION;
         userSettingsServiceSpy.settings = {
             mode: { setting: MODE, currentChoiceKey: 'classic' },
             numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'log2990' },
@@ -120,7 +115,6 @@ describe('SwitchDialogComponent', () => {
     });
 
     it('should assign solo to ', () => {
-        // eslint-disable-next-line dot-notation
         component.assignSolo();
         expect(userSettingsServiceSpy.settings.numPlayers.currentChoiceKey).toEqual('solo');
     });

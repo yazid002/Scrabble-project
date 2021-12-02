@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DictionaryOptionsComponent } from './dictionary-options.component';
 
 describe('DictionaryOptionsComponent', () => {
@@ -10,7 +11,7 @@ describe('DictionaryOptionsComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [DictionaryOptionsComponent],
-            imports: [HttpClientTestingModule, MatSnackBarModule],
+            imports: [HttpClientTestingModule, MatSnackBarModule, NoopAnimationsModule],
         }).compileComponents();
     });
 

@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Dictionary } from '@app/classes/dictionary';
 import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
@@ -41,17 +42,9 @@ describe('GoalService', () => {
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
                 { provide: DictionaryService, useValue: dictionaryServiceSpy },
             ],
-            imports: [HttpClientTestingModule],
+            imports: [HttpClientTestingModule, NoopAnimationsModule],
         });
         service = TestBed.inject(GoalService);
-        // const dictionary = {
-        //     title: 'dictionnaire test',
-        //     description: 'description de test',
-        //     words: ['aa', 'finir', 'manger', 'rouler', 'kilos', 'jartera'],
-        // } as Dictionary;
-        // // dictionary is private
-        // // eslint-disable-next-line dot-notation
-        // service['dictionary'] = dictionary;
 
         player = {
             id: PLAYER.realPlayer,
@@ -79,11 +72,6 @@ describe('GoalService', () => {
     it('generateRandomWord should return a word with a length between 5 and 7 from the dictionary', () => {
         const max = 7;
         const min = 5;
-        const dictionary = {
-            title: 'dictionnaire test',
-            description: 'description de test',
-            words: ['aa', 'finir', 'manger', 'rouler'],
-        } as Dictionary;
         // generateRandomWord is private
         // eslint-disable-next-line dot-notation
         const result = service['generateRandomWord'](dictionary);

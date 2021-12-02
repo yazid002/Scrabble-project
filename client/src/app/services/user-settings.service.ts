@@ -17,10 +17,6 @@ const NUM_PLAYERS: IOptionList = {
         { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
     ],
 };
-// const NUM_PLAYERS_SWITCH: IOptionList = {
-//     settingName: 'Nombre de joueurs',
-//     availableChoices: [{ key: 'solo', value: 'Solo' }],
-// };
 
 const COMPUTER_LEVEL: IOptionList = {
     settingName: "Niveau de l'ordinateur",

@@ -38,7 +38,6 @@ describe('QuitMultiplayerDialogComponent', () => {
                 { provide: RoomService },
             ],
         }).compileComponents();
-        // RoomService -> GameSyncService -> PlaceSelectionService -> VerifyService -> HttpClient -> HttpClient
     });
 
     beforeEach(async () => {

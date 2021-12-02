@@ -47,12 +47,6 @@ export class WaitingRoomComponent implements OnInit {
     playClickOnButtonAudio() {
         this.soundManagerService.playClickOnButtonAudio();
     }
-
-    // assignDictionary(d: Dictionary | undefined) {
-    //     if (d) {
-    //         this.dictionary = d;
-    //     }
-    // }
     private assignValues(
         name: string | undefined,
         mode: IOption | undefined,

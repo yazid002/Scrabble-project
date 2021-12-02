@@ -40,14 +40,6 @@ export class ExchangeSelectionService {
         return `!echanger ${lettersToExchange.join('')}`;
     }
 
-    // getSelectedLetters(rack: ICharacter[]): string[] {
-    //     const selectedLetters = [];
-    //     for (const index of this.selectedIndexes) {
-    //         selectedLetters.push(rack[index].name.toLocaleLowerCase());
-    //     }
-    //     return selectedLetters;
-    // }
-
     isLetterAlreadySelected(index: number): boolean {
         return this.selectedIndexes.includes(index);
     }

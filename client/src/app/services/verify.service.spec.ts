@@ -19,12 +19,6 @@ describe('VerifyService', () => {
         TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }], imports: [HttpClientTestingModule] });
         httpTestingController = TestBed.inject(HttpTestingController);
         service = TestBed.inject(VerifyService);
-        // const dictionary = {
-        //     title: 'dictionnaire test',
-        //     description: 'description de test',
-        //     words: ['aa', 'finir', 'manger', 'rouler'],
-        // } as Dictionary;
-        // service
     });
     afterEach(() => {
         httpTestingController.verify();

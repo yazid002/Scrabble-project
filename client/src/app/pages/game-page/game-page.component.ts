@@ -82,8 +82,6 @@ export class GamePageComponent implements AfterViewInit {
 
     async ngOnInit() {
         await this.dictionaryService.fetchDictionary(this.userSettingsService.selectedDictionary.title);
-        // Ça me dit que stopMainPageAudio() n'existe pas alors je commente
-        // this.soundManagerService.stopMainPageAudio();
     }
 
     ngAfterViewInit(): void {

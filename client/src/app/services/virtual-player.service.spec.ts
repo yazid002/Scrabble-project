@@ -255,7 +255,6 @@ describe('VirtualPlayerService', () => {
             tiles[h8Coord.x][h8Coord.y + 1].letter = 'a';
 
             possibilities = service['makePossibilities']();
-            console.log(possibilities);
             for (const possibility of possibilities) {
                 if (possibility.coord.x !== h8Coord.x || possibility.coord.y !== h8Coord.y) allCentered = false;
             }

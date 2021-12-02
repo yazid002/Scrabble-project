@@ -16,10 +16,6 @@ export class MainPageComponent implements OnInit {
 
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, private soundManagerService: SoundManagerService) {}
-    // chooseMode(modeKey: string) {
-    //     this.userSettingsService.settings.mode.currentChoiceKey = modeKey;
-    //     this.openDialog();
-    // }
 
     ngOnInit(): void {
         localStorage.clear();
@@ -28,18 +24,12 @@ export class MainPageComponent implements OnInit {
     playClickSound() {
         this.soundManagerService.playClickOnButtonAudio();
     }
-
-    // playMainPageSound() {
-    //     this.soundManagerService.playMainPageAudio();
-    // }
-
     openCreateRoomDialog() {
         this.matDialog.open(GameModeDialogComponent);
         this.playClickSound();
     }
 
     openJoinRoomDialog() {
-        // this.goalsManagerService.isEnabled = this.userSettingsService.settings.mode.currentChoiceKey === 'log2990';
         this.userSettingsService.settings.numPlayers.currentChoiceKey = 'multiplayer';
         this.matDialog.open(JoinRoomDialogComponent);
         this.playClickSound();

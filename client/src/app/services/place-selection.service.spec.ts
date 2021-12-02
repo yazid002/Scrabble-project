@@ -33,12 +33,6 @@ describe('PlaceSelectionService', () => {
             'normalizeWord',
             'areCoordValid',
         ]);
-        // const dictionary = {
-        //     title: 'dictionnaire test',
-        //     description: 'description de test',
-        //     words: ['aa', 'finir', 'manger', 'rouler'],
-        // } as Dictionary;
-        // verifyServiceSpy.dictionary = dictionary;
 
         rackServiceSpy = jasmine.createSpyObj('RackService', ['fillRackPortion', 'isLetterOnRack']);
         gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion', 'writeLetter', 'removeArrow', 'drawArrow']);
