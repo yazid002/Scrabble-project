@@ -8,7 +8,7 @@ import * as logger from 'morgan';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
-import { DictionaryController } from './controllers/dictionary.controller';
+import { DictionaryController } from './classes/dictionary.controller';
 import { VirtualPlayerNamesController } from './controllers/virtual-player-names.controller';
 import { WordValidationController } from './controllers/word-validation.controller';
 

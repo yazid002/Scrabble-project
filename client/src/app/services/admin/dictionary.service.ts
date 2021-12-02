@@ -14,7 +14,6 @@ export class DictionaryService {
     @Output() snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
     listDictionaries: TitleDescriptionOfDictionary[] = [];
     titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
-        // filename: '',
         title: '',
         description: '',
     };
@@ -57,7 +56,6 @@ export class DictionaryService {
         });
     }
     async selectDictionary(file: File) {
-        // this.titleAndDescriptionOfDictionary.filename = file.name;
         const reader = new FileReader();
         reader.readAsText(file);
         reader.onload = () => {

@@ -1,7 +1,7 @@
 import { Application } from '@app/app';
 import { Dictionary } from '@app/classes/dictionary';
-import { FileMessages } from '@app/models/file-messages';
-import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDictionary';
+import { FileMessages } from '@app/classes/file-messages';
+import { TitleDescriptionOfDictionary } from '@app/classes/titleDescriptionOfDictionary';
 import { DictionaryService } from '@app/services/dictionary.service';
 import { expect } from 'chai';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';

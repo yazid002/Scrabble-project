@@ -12,7 +12,6 @@ import { DictionaryService } from '@app/services/admin/dictionary.service';
 })
 export class DictionaryOptionsComponent implements OnInit {
     titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
-        // filename: '',
         title: '',
         description: '',
     };
@@ -50,10 +49,5 @@ export class DictionaryOptionsComponent implements OnInit {
         snackBarRef.onAction().subscribe(() => {
             snackBarRef.dismiss();
         });
-    }
-
-    updateDictionary(dictionary: TitleDescriptionOfDictionary) {
-        // TODO a implementer
-        console.log(dictionary);
     }
 }

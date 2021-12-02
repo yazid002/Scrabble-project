@@ -1,6 +1,6 @@
 import * as DictFile from '@app/assets/dictionnary.json';
 import { Dictionary } from '@app/classes/dictionary';
-import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDictionary';
+import { TitleDescriptionOfDictionary } from '@app/classes/titleDescriptionOfDictionary';
 import { expect } from 'chai';
 import * as fs from 'fs';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';

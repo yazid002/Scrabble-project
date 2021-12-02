@@ -6,14 +6,10 @@
             <th>filename</th>
             <th>Title</th>
             <th>description</th>
-            <th colspan="2">Action</th>
         </tr>
         <tr *ngFor="let dictionary of dictionaryService.listDictionaries">
             <td>{{ dictionary.title }}</td>
             <td>{{ dictionary.description }}</td>
-            <td style="text-align: center">
-                <button mat-raised-button color="primary" (click)="updateDictionary(dictionary)">update</button>
-            </td>
             <td>
                 <button mat-raised-button color="warn" (click)="dictionaryService.deleteDictionary(dictionary.title)">delete</button>
             </td>
