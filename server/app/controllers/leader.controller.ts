@@ -1,5 +1,5 @@
-import { Leaderboard } from '@app/classes/Leaderboard';
-import { LeaderboardService } from '@app/services/Leaderboard.service';
+import { Leaderboard } from '@app/classes/leaderboard';
+import { LeaderboardService } from '@app/services/leaderboard.service';
 // import Types from '@app/types';
 import { Request, Response, Router } from 'express';
 import { Service } from 'typedi';

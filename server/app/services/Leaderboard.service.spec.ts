@@ -1,10 +1,10 @@
-import { Leaderboard } from '@app/classes/Leaderboard';
+import { Leaderboard } from '@app/classes/leaderboard';
 import { expect } from 'chai';
 import { assert } from 'console';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as sinon from 'sinon';
 import { DatabaseService } from './database.service';
-import { LeaderboardService } from './Leaderboard.service';
+import { LeaderboardService } from './leaderboard.service';
 
 describe('leaderboard service', () => {
     let leaderboardService: LeaderboardService;
@@ -19,18 +19,6 @@ describe('leaderboard service', () => {
         await databaseService.start(mongoUri);
         leaderboardService = new LeaderboardService(databaseService);
     });
-
-    // it('should get all players from Classic DB', async () => {
-    //     const players = await leaderboardService.getAllClassicPlayers();
-    //     expect(players.length).to.equal(1);
-    //     expect(testPlayer1).to.deep.equals(players[0]);
-    // });
-
-    // it('should get all players from Mode2990 DB', async () => {
-    //     const players = await leaderboardService.getAll2990Players();
-    //     expect(players.length).to.equal(1);
-    //     expect(testPlayer2).to.deep.equals(players[0]);
-    // });
 
     describe('add and delete Classic', () => {
         it('should delete name if it exists', async () => {

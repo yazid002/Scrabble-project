@@ -1,4 +1,4 @@
-import { Leaderboard } from '@app/classes/Leaderboard';
+import { Leaderboard } from '@app/classes/leaderboard';
 import { NameProperties } from '@app/classes/name-properties';
 import { Db, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
