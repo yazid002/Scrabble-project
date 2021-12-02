@@ -1,9 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-require-imports */
-/* eslint-disable prettier/prettier */
 import { HttpException } from '@app/classes/http.exception';
-import { DateController } from '@app/controllers/date.controller';
-import { ExampleController } from '@app/controllers/example.controller';
 import { LeaderBoardController } from '@app/controllers/leader.controller';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -24,8 +19,6 @@ export class Application {
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
     constructor(
-        private readonly exampleController: ExampleController,
-        private readonly dateController: DateController,
         private leaderBoardController: LeaderBoardController,
         private readonly wordValidationController: WordValidationController,
         private readonly virtualPlayerNamesController: VirtualPlayerNamesController,
@@ -51,8 +44,6 @@ export class Application {
     bindRoutes(): void {
         this.app.use('/leaderboard', this.leaderBoardController.router); // database
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
-        this.app.use('/api/example', this.exampleController.router);
-        this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/validate', this.wordValidationController.router);
         this.app.use('/api/admin/dictionary', this.dictionaryController.router);
         this.app.use('/api/virtual/', this.virtualPlayerNamesController.router);
@@ -69,12 +60,6 @@ export class Application {
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(cookieParser());
         this.app.use(cors());
-        this.app.set('etag', false);
-        this.app.use((req, res, next) => {
-            res.set('Cache-Control', 'no-store');
-            next();
-        });
-        this.app.disable('view cache');
     }
 
     private errorHandling(): void {

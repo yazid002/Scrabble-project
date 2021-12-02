@@ -1,4 +1,3 @@
-import * as DictFile from '@app/assets/dictionnary.json';
 import { Dictionary } from '@app/classes/dictionary';
 import { WordValidationService } from '@app/services/word-validation.service';
 import { expect } from 'chai';
@@ -16,7 +15,12 @@ describe('WordValidationService', () => {
         dictionaryService.addDict.resolves(undefined);
         dictionaryService.deleteDictionary.returns('succes');
         dictionaryService.findAllDictionaries.returns([{ title: 'Mon dictionnaire', description: 'Dictionaire par default' }]);
-        dictionaryService.dictionaries = [DictFile as Dictionary];
+        const dummyDictionary: Dictionary = {
+            title: 'Mon dictionnaire',
+            description: 'a description',
+            words: ['allo', 'bonjour', 'patate'],
+        };
+        dictionaryService.dictionaries = [dummyDictionary];
         service = new WordValidationService(dictionaryService);
     });
 
@@ -33,6 +37,7 @@ describe('WordValidationService', () => {
 
     it('should return that words exists if they exists in service dictionary', (done) => {
         setTimeout(async () => {
+
             const words: string[] = ['allo', 'bonjour', 'patate'];
             const expectedResult = { wordExists: true, errorMessage: '' };
             const actualResult = service.validateWord({ words, dict: 'Mon dictionnaire' });
