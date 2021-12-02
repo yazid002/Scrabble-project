@@ -5,10 +5,16 @@ import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { IChat } from '@app/classes/chat';
+import { setVirtualPlayerDictionary } from '@app/classes/chunk-node';
+import { Dictionary } from '@app/classes/dictionary';
 import { PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board-constants';
+// disable because we need a cile that is not in the project scope (we can't use '@app/')
+// eslint-disable-next-line no-restricted-imports
+import * as dictFile from '../../../../server/app/assets/dictionnary.json';
 import { VirtualPlayerService } from './virtual-player.service';
+const dictionary = dictFile as Dictionary;
 type Direction = 'h' | 'v';
 interface WordNCoord {
     word: string;
@@ -233,7 +239,7 @@ describe('VirtualPlayerService', () => {
                 { name: 'R', quantity: 15, points: 1, display: 'R' },
             ];
             tiles[h8Coord.x][h8Coord.y].letter = ''; // verifyService checks if isFirstMove by looking if center tile is empty
-
+            setVirtualPlayerDictionary(dictionary);
             let possibilities = service['makePossibilities']();
             let allCentered = true;
             for (const possibility of possibilities) {
@@ -249,6 +255,7 @@ describe('VirtualPlayerService', () => {
             tiles[h8Coord.x][h8Coord.y + 1].letter = 'a';
 
             possibilities = service['makePossibilities']();
+            console.log(possibilities);
             for (const possibility of possibilities) {
                 if (possibility.coord.x !== h8Coord.x || possibility.coord.y !== h8Coord.y) allCentered = false;
             }
