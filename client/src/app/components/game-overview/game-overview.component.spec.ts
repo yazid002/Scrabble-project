@@ -13,7 +13,7 @@ import { GoalService } from '@app/services/goal.service';
 import { ReserveService } from '@app/services/reserve.service';
 import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { GameOverviewComponent } from './game-overview.component';
 
 class MatDialogMock {
@@ -31,6 +31,7 @@ describe('GameOverviewComponent', () => {
 
     beforeEach(async () => {
         goalServiceSpy = jasmine.createSpyObj('GoalService', ['getAUniqueGoal']);
+        goalServiceSpy.initializedSignal = new BehaviorSubject<boolean>(false);
         await TestBed.configureTestingModule({
             declarations: [GameOverviewComponent],
             imports: [
