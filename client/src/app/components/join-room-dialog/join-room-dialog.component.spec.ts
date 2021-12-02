@@ -58,7 +58,7 @@ const TIMER: IOptionList = {
         { key: '300', value: '5m' },
     ],
 };
-fdescribe('JoinRoomDialogComponent', () => {
+describe('JoinRoomDialogComponent', () => {
     let component: JoinRoomDialogComponent;
     let fixture: ComponentFixture<JoinRoomDialogComponent>;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;

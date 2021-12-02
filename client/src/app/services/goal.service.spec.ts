@@ -5,15 +5,22 @@ import { Dictionary } from '@app/classes/dictionary';
 import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
+import { of } from 'rxjs';
+// we must disable this import pattern warning because we need a file outside of the project scope (can't use '@app/' pattern)
+// eslint-disable-next-line no-restricted-imports
+import * as dictFile from '../../../../server/app/assets/dictionnary.json';
+import { DictionaryService } from './admin/dictionary.service';
 import { GoalService } from './goal.service';
 import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
+const dictionary = dictFile as Dictionary;
 
 describe('GoalService', () => {
     let service: GoalService;
     let timerServiceSpy: TimerService;
     let player: Player;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
+    let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
 
     beforeEach(() => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playGoalAchievementAudio']);
@@ -24,11 +31,15 @@ describe('GoalService', () => {
             resetValue: 0,
             totalTimer: 0,
         };
+        dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary', 'getAllDictionaries']);
+        dictionaryServiceSpy.fetchDictionary.and.returnValue(of(dictionary));
+        dictionaryServiceSpy.getAllDictionaries.and.resolveTo([{ title: dictionary.title, description: dictionary.description }]);
 
         TestBed.configureTestingModule({
             providers: [
                 { provide: TimerService, useValue: timerServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+                { provide: DictionaryService, useValue: dictionaryServiceSpy },
             ],
             imports: [HttpClientTestingModule],
         });
@@ -58,6 +69,7 @@ describe('GoalService', () => {
             wordsMapping: new Map<string, number>(),
             words: [],
         };
+        service.initialize(dictionary);
     });
 
     it('should be created', () => {
