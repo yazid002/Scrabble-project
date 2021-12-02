@@ -14,15 +14,15 @@ export class DictionaryService {
     dictionaries: Dictionary[] = [];
     constructor(private readFileService: ReadFileService) {
         this.path = './app/assets/';
-        this.readFileService.readDictionary(this.path + 'dictionnary.json').then((dictString) => {
-            const newDict = JSON.parse(dictString) as unknown as Dictionary;
+        this.readFileService.readDictionary(this.path + 'dictionnary.json').then((dict) => {
+            const newDict = dict;
             newDict.default = true;
             this.dictionaries.push(newDict);
         });
     }
     async addDict(fileName: string) {
-        await this.readFileService.readDictionary(this.path + fileName).then((dictString) => {
-            const newDict = JSON.parse(dictString) as unknown as Dictionary;
+        await this.readFileService.readDictionary(this.path + fileName).then((dict) => {
+            const newDict = dict;
             newDict.default = false;
             this.dictionaries.push(newDict);
             fs.unlinkSync(this.path + fileName);
