@@ -1,7 +1,4 @@
 <body>
-    <button mat-raised-button mat-dialog-close [routerLink]="['/home']" (click)="playClickOnButtonAudio()" class="game-button red">
-        <span color="basic" id="Quitter">Quitter</span>
-    </button>
     <div class="title">Meilleurs Scores</div>
 
     <div class="split Classic">
@@ -18,6 +15,9 @@
                 <td>{{ player.score }}</td>
             </tr>
         </table>
+        <button mat-raised-button mat-dialog-close [routerLink]="['/home']" (click)="playClickOnButtonAudio()" class="game-button red">
+            Quitter
+        </button>
     </div>
 
     <div class="split LOG2990">
@@ -35,4 +35,9 @@
             </tr>
         </table>
     </div>
+    <!-- <div class="quit-button">
+        <button mat-raised-button mat-dialog-close [routerLink]="['/home']" (click)="playClickOnButtonAudio()" class="game-button red">
+            Quitter
+        </button>
+    </div> -->
 </body>
