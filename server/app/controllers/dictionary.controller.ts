@@ -94,7 +94,7 @@ export class DictionaryController {
         });
         this.router.delete('/delete/:title', async (req: Request, res: Response) => {
             const title = req.params.title;
-            const rep = this.dictionaryService.deleteFile(title);
+            const rep = this.dictionaryService.deleteDictionary(title);
             res.json(rep);
         });
     }

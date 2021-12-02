@@ -29,7 +29,7 @@ export class DictionaryService {
         });
     }
 
-    deleteFile(name: string): string {
+    deleteDictionary(name: string): string {
         this.dictionaries = this.dictionaries.filter((dict) => !dict.default && dict.title === name);
         return 'file removed successfully';
     }
