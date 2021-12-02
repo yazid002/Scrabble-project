@@ -14,7 +14,7 @@ describe('WordValidationService', () => {
     beforeEach(async () => {
         dictionaryService = createStubInstance(DictionaryService);
         dictionaryService.addDict.resolves(undefined);
-        dictionaryService.deleteFile.returns('succes');
+        dictionaryService.deleteDictionary.returns('succes');
         dictionaryService.findAllDictionaries.returns([{ title: 'Mon dictionnaire', description: 'Dictionaire par default' }]);
         dictionaryService.dictionaries = [DictFile as Dictionary];
         service = new WordValidationService(dictionaryService);

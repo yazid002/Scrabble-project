@@ -30,7 +30,7 @@ export class DictionaryService {
     }
 
     deleteDictionary(name: string): string {
-        this.dictionaries = this.dictionaries.filter((dict) => !dict.default && dict.title === name);
+        this.dictionaries = this.dictionaries.filter((dict) => dict.default || (!dict.default && dict.title !== name));
         return 'file removed successfully';
     }
 
