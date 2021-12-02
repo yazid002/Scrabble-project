@@ -8,7 +8,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { LobbyComponent } from '@app/lobby/lobby.component';
-import { GoalsManagerService } from '@app/services/goals-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
@@ -59,12 +58,11 @@ const TIMER: IOptionList = {
         { key: '300', value: '5m' },
     ],
 };
-describe('JoinRoomDialogComponent', () => {
+fdescribe('JoinRoomDialogComponent', () => {
     let component: JoinRoomDialogComponent;
     let fixture: ComponentFixture<JoinRoomDialogComponent>;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
-    let goalsManagerServiceSpy: jasmine.SpyObj<GoalsManagerService>;
 
     beforeEach(async () => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
@@ -77,7 +75,7 @@ describe('JoinRoomDialogComponent', () => {
         };
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         userSettingsServiceSpy.computerName = '';
-        goalsManagerServiceSpy = jasmine.createSpyObj('GoalsManagerService', ['initPlayers']);
+
         await TestBed.configureTestingModule({
             declarations: [JoinRoomDialogComponent],
             providers: [
@@ -87,7 +85,6 @@ describe('JoinRoomDialogComponent', () => {
                 },
                 { provide: UserSettingsService, useValue: userSettingsServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
-                { provide: GoalsManagerService, useValue: goalsManagerServiceSpy },
             ],
             imports: [
                 BrowserAnimationsModule,
@@ -124,13 +121,5 @@ describe('JoinRoomDialogComponent', () => {
 
         expect(component.error).toEqual(expectedResult.error);
         expect(component.errorMessage).toEqual(expectedResult.errorMessage);
-    });
-    it('should set well goalsManager service enabled/disabled parameter', () => {
-        goalsManagerServiceSpy.isEnabled = false;
-        userSettingsServiceSpy.settings.mode.currentChoiceKey = 'log2990';
-
-        component.playClickOnButtonAudio();
-
-        expect(goalsManagerServiceSpy.isEnabled).toEqual(true);
     });
 });

@@ -4,7 +4,7 @@
         <div class="setting">
             <mat-card-title>{{ userSettingsService.settings.mode.setting.settingName }}</mat-card-title>
             <mat-radio-group
-                (change)="playClickOnButtonAudio()"
+                (change)="soundManagerService.playClickOnButtonAudio()"
                 [name]="userSettingsService.settings.mode.currentChoiceKey"
                 [(ngModel)]="userSettingsService.settings.mode.currentChoiceKey"
             >
@@ -35,7 +35,7 @@
             </mat-form-field>
         </div>
         <section id="footer">
-            <button mat-raised-button mat-dialog-close (click)="playClickOnButtonAudio()">Retour À l'accueil</button>
+            <button mat-raised-button mat-dialog-close (click)="soundManagerService.playClickOnButtonAudio()">Retour À l'accueil</button>
             <button
                 mat-raised-button
                 color="primary"
@@ -43,7 +43,7 @@
                 [disabled]="error"
                 mat-dialog-close
                 [routerLink]="['/lobby']"
-                (click)="playClickOnButtonAudio()"
+                (click)="soundManagerService.playClickOnButtonAudio()"
             >
                 Jouer
             </button>
