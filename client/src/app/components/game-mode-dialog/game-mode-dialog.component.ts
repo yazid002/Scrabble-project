@@ -15,13 +15,6 @@ export class GameModeDialogComponent {
     isChecked: boolean = false;
     message: string = '';
 
-    // selectedDictionary: Dictionary;
-    // dictionaryControl = new FormControl('', Validators.required);
-    // dictionnaires: Dictionary[] = [
-    //     { title: 'Espagnol', description: 'Langue Espagnol', words: [], isAvailable: true },
-    //     { title: 'Anglais', description: 'Langue Anglaise', words: [], isAvailable: false },
-    // ];
-
     constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public soundManagerService: SoundManagerService) {}
 
     validateName() {
@@ -29,13 +22,8 @@ export class GameModeDialogComponent {
         this.nameError = result.error;
         this.errorMessage = result.errorMessage;
     }
-
-    configureGame() {
-        this.playClickOnButtonAudio();
-    }
-
     applyRandomMode(event: MatCheckboxChange) {
-        this.playClickOnButtonAudio();
+        this.soundManagerService.playClickOnButtonAudio();
         this.userSettingsService.randomMode = event.checked;
         this.message = 'MODE BONUS ALEATOIRE ACTIVÉ';
         if (!event.checked) {
@@ -50,10 +38,6 @@ export class GameModeDialogComponent {
         } else {
             return false;
         }
-    }
-
-    playClickOnButtonAudio() {
-        this.soundManagerService.playClickOnButtonAudio();
     }
     validateDictionary(error: boolean) {
         this.dictionaryError = error;

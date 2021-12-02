@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DictionaryOptionsComponent } from './dictionary-options.component';
 
-fdescribe('DictionaryOptionsComponent', () => {
+describe('DictionaryOptionsComponent', () => {
     let component: DictionaryOptionsComponent;
     let fixture: ComponentFixture<DictionaryOptionsComponent>;
 

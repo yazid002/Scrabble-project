@@ -4,7 +4,11 @@
     <mat-card class="dialog">
         <div class="setting" *ngFor="let setting of userSettingsService.settings | keyvalue">
             <mat-card-title>{{ setting.value.setting.settingName }}</mat-card-title>
-            <mat-radio-group (change)="playClickOnButtonAudio()" [name]="setting.key" [(ngModel)]="setting.value.currentChoiceKey">
+            <mat-radio-group
+                (change)="soundManagerService.playClickOnButtonAudio()"
+                [name]="setting.key"
+                [(ngModel)]="setting.value.currentChoiceKey"
+            >
                 <mat-radio-button
                     color="primary"
                     *ngFor="let choice of setting.value.setting.availableChoices"
@@ -20,14 +24,13 @@
             <mat-form-field appearance="fill">
                 <!-- <mat-label>Dictionnaire</mat-label> -->
                 <!-- <input matInput style="display: none !important" /> -->
-                <mat-select
-                    required
-                    ngDefaultControl
-                    name="dictionary"
-                    [(ngModel)]="userSettingsService.selectedDictionary"
-                >
-                    <mat-option  (click)="validateDictionary(true)">--</mat-option>
-                    <mat-option *ngFor="let dictionnaire of userSettingsService.dictionnaires" [value]="dictionnaire"  (click)="validateDictionary(false)">
+                <mat-select required ngDefaultControl name="dictionary" [(ngModel)]="userSettingsService.selectedDictionary">
+                    <mat-option (click)="validateDictionary(true)">--</mat-option>
+                    <mat-option
+                        *ngFor="let dictionnaire of userSettingsService.dictionnaires"
+                        [value]="dictionnaire"
+                        (click)="validateDictionary(false)"
+                    >
                         {{ dictionnaire.title }}
                     </mat-option>
                 </mat-select>
@@ -62,7 +65,7 @@
         </div>
 
         <section id="footer">
-            <button mat-raised-button mat-dialog-close (click)="playClickOnButtonAudio()">Retour À l'accueil</button>
+            <button mat-raised-button mat-dialog-close (click)="soundManagerService.playClickOnButtonAudio()">Retour À l'accueil</button>
             <button
                 mat-raised-button
                 color="primary"
@@ -71,7 +74,7 @@
                 *ngIf="numPlayerChoice()"
                 routerLink="waiting"
                 mat-dialog-close
-                (click)="configureGame()"
+                (click)="soundManagerService.playClickOnButtonAudio()"
             >
                 Jouer
             </button>
@@ -83,7 +86,7 @@
                 *ngIf="!numPlayerChoice()"
                 routerLink="game"
                 mat-dialog-close
-                (click)="configureGame()"
+                (click)="soundManagerService.playClickOnButtonAudio()"
             >
                 Jouer
             </button>
