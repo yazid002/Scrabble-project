@@ -1,33 +1,43 @@
-<div class="title">Meilleurs Scores</div>
+<body>
+    <div class="title">Meilleurs Scores</div>
 
-<div class="split Classic">
-    <div *ngIf="leaderboardService.leaderboardClassic" class="subtitle">Mode Classic</div>
-    <table style="width: 50%">
-        <tr>
-            <th>Position</th>
-            <th>Nom</th>
-            <th>Score</th>
-        </tr>
-        <tr *ngFor="let player of leaderboardService.leaderboardClassic; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ player.name }}</td>
-            <td>{{ player.score }}</td>
-        </tr>
-    </table>
-</div>
+    <div class="split Classic">
+        <div *ngIf="leaderboardService.leaderboardClassic" class="subtitle">Mode Classic</div>
+        <table style="width: 50%" class="content">
+            <tr class="tableTitle">
+                <th>Position</th>
+                <th>Nom</th>
+                <th>Score</th>
+            </tr>
+            <tr *ngFor="let player of leaderboardService.leaderboardClassic; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ player.name }}</td>
+                <td>{{ player.score }}</td>
+            </tr>
+        </table>
+        <button mat-raised-button mat-dialog-close [routerLink]="['/home']" (click)="playClickOnButtonAudio()" class="game-button red">
+            Quitter
+        </button>
+    </div>
 
-<div class="split LOG2990">
-    <div *ngIf="leaderboardService.leaderboardMode2990" class="subtitle">Mode LOG2990</div>
-    <table style="width: 50%">
-        <tr>
-            <th>Position</th>
-            <th>Name</th>
-            <th>Score</th>
-        </tr>
-        <tr *ngFor="let player of leaderboardService.leaderboardMode2990; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ player.name }}</td>
-            <td>{{ player.score }}</td>
-        </tr>
-    </table>
-</div>
+    <div class="split LOG2990">
+        <div *ngIf="leaderboardService.leaderboardMode2990" class="subtitle">Mode LOG2990</div>
+        <table style="width: 50%" class="content">
+            <tr class="tableTitle">
+                <th>Position</th>
+                <th>Name</th>
+                <th>Score</th>
+            </tr>
+            <tr *ngFor="let player of leaderboardService.leaderboardMode2990; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ player.name }}</td>
+                <td>{{ player.score }}</td>
+            </tr>
+        </table>
+    </div>
+    <!-- <div class="quit-button">
+        <button mat-raised-button mat-dialog-close [routerLink]="['/home']" (click)="playClickOnButtonAudio()" class="game-button red">
+            Quitter
+        </button>
+    </div> -->
+</body>

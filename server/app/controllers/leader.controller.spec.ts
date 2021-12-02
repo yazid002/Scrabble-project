@@ -1,6 +1,6 @@
 import { Application } from '@app/app';
-import { Leaderboard } from '@app/classes/Leaderboard';
-import { LeaderboardService } from '@app/services/Leaderboard.service';
+import { Leaderboard } from '@app/classes/leaderboard';
+import { LeaderboardService } from '@app/services/leaderboard.service';
 // import * as chai from 'chai';
 import { expect } from 'chai';
 // import * as spies from 'chai-spies';
