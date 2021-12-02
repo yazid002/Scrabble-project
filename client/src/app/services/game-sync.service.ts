@@ -102,9 +102,9 @@ export class GameSyncService {
     getGameState(): GameState {
         this.placeSelectionService.cancelPlacement();
         const tempGrid: Case[][] = tiles;
-        for (let i = 0; i < tiles.length; i++) {
-            tempGrid[i] = tiles[i];
-        }
+        // for (let i = 0; i < tiles.length; i++) {
+        //     tempGrid[i] = tiles[i];
+        // }
         const gameState: GameState = {
             dictionaryName: this.userSettingsService.selectedDictionary.title,
             players: this.gameService.players,

@@ -1,9 +1,16 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { tiles } from '@app/classes/board';
-import { PLAYER } from '@app/classes/player';
+import { Goal } from '@app/classes/goal';
+import { ICharacter } from '@app/classes/letter';
+import { Player, PLAYER } from '@app/classes/player';
+import { GoalType } from '@app/enums/goals-enum';
 import { GameState, GameSyncService } from './game-sync.service';
+import { GameService } from './game.service';
+import { GoalService } from './goal.service';
 import { GridService } from './grid.service';
+import { PlaceSelectionService } from './place-selection.service';
 
 interface GridServiceMock {
     drawGrid(): void;
@@ -11,16 +18,55 @@ interface GridServiceMock {
 
 describe('GameSyncService', () => {
     let service: GameSyncService;
-
+    let placeSelectionServiceSpy: jasmine.SpyObj<PlaceSelectionService>;
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
+    let goalServiceSpy: jasmine.SpyObj<GoalService>;
     beforeEach(() => {
         const gridServiceMock: GridServiceMock = {
             drawGrid: (): void => {
                 return;
             },
         };
+        goalServiceSpy = jasmine.createSpyObj('GoalService', ['initialize']);
+        const dummyGoal: Goal = {
+            description: 'a description',
+            bonus: 3,
+            complete: false,
+            goalType: GoalType.WritePalindromeWord,
+            usesWord: true,
+        };
+        goalServiceSpy.publicGoals = [dummyGoal, dummyGoal];
+        goalServiceSpy.privateGoals = [dummyGoal, dummyGoal];
+        placeSelectionServiceSpy = jasmine.createSpyObj('PlaceSelectionService', ['cancelPlacement']);
+        placeSelectionServiceSpy.cancelPlacement.and.returnValue(undefined);
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['initPlayers']);
+        gameServiceSpy.currentTurn = 0;
+        const aCharacter: ICharacter = {
+            name: 'A',
+            quantity: 3,
+            points: 1,
+            display: 'A',
+        };
+        const playerDummy: Player = {
+            name: 'a name',
+            turnWithoutSkipAndExchangeCounter: 2,
+            id: 1,
+            rack: [aCharacter, aCharacter, aCharacter, aCharacter, aCharacter, aCharacter, aCharacter],
+            points: 4,
+            placeInTenSecondsGoalCounter: 3,
+            words: ['allo', 'aa', 'bonjour'],
+            wordsMapping: new Map([['allo', 3]]),
+        };
+        gameServiceSpy.players = [playerDummy, playerDummy];
+        gameServiceSpy.skipCounter = 2;
+
         TestBed.configureTestingModule({
-            providers: [{ provide: GridService, useValue: gridServiceMock }],
-            imports: [HttpClientModule],
+            providers: [
+                { provide: GridService, useValue: gridServiceMock },
+                { provide: PlaceSelectionService, useValue: placeSelectionServiceSpy },
+                { provide: GoalService, useValue: goalServiceSpy },
+            ],
+            imports: [HttpClientModule, BrowserAnimationsModule],
         }).compileComponents();
         service = TestBed.inject(GameSyncService);
     });
