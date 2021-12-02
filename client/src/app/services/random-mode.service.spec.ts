@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
@@ -15,6 +16,7 @@ describe('RandomModeService', () => {
         gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion']);
         TestBed.configureTestingModule({
             providers: [{ provide: GridService, useValue: gridServiceSpy }],
+            imports: [HttpClientTestingModule],
         });
         service = TestBed.inject(RandomModeService);
         service.tiles = JSON.parse(JSON.stringify(tiles));

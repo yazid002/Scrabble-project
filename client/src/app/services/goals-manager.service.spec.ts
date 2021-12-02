@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
@@ -50,6 +51,7 @@ describe('GoalsManagerService', () => {
                 { provide: GameService, useValue: gameServiceSpy },
                 { provide: TimerService, useValue: timerServiceSpy },
             ],
+            imports: [HttpClientTestingModule],
         });
         service = TestBed.inject(GoalsManagerService);
     });

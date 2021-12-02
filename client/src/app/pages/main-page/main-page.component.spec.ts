@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -22,7 +23,7 @@ describe('MainPageComponent', () => {
     beforeEach(async () => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
         await TestBed.configureTestingModule({
-            imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule],
+            imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule, HttpClientTestingModule],
             declarations: [MainPageComponent],
             providers: [
                 {

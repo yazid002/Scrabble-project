@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { UserSettingsService } from './user-settings.service';
 
@@ -5,7 +6,7 @@ describe('UserSettingsService', () => {
     let service: UserSettingsService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
         service = TestBed.inject(UserSettingsService);
     });
 

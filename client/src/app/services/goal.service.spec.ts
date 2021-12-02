@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Dictionary } from '@app/classes/dictionary';
 import { Goal } from '@app/classes/goal';
@@ -29,6 +30,7 @@ describe('GoalService', () => {
                 { provide: TimerService, useValue: timerServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
+            imports: [HttpClientTestingModule],
         });
         service = TestBed.inject(GoalService);
         // const dictionary = {
