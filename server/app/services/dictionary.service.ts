@@ -1,6 +1,6 @@
 import { Dictionary } from '@app/classes/dictionary';
-import { FileMessages } from '@app/models/file-messages.model';
-import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDictionary.model';
+import { FileMessages } from '@app/models/file-messages';
+import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDictionary';
 import * as fs from 'fs';
 import { Service } from 'typedi';
 import { ReadFileService } from './read-file.service';
@@ -8,7 +8,7 @@ import { ReadFileService } from './read-file.service';
 export class DictionaryService {
     path: string;
     fileMessages: FileMessages = {
-        isuploaded: true,
+        isSuccess: true,
         message: '',
     };
     dictionaries: Dictionary[] = [];

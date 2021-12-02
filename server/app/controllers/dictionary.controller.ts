@@ -1,16 +1,16 @@
 // disable because we can't seem to import multer using an import statement
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDictionary.model';
+import { TitleDescriptionOfDictionary } from '@app/models/titleDescriptionOfDictionary';
 import { DictionaryService } from '@app/services/dictionary.service';
 import { Request, Response, Router } from 'express';
 import { Service } from 'typedi';
-import { FileMessages } from './../models/file-messages.model';
+import { FileMessages } from '../models/file-messages';
 const multer = require('multer');
 @Service()
 export class DictionaryController {
     fileMessages: FileMessages = {
-        isuploaded: true,
+        isSuccess: true,
         message: '',
     };
     router: Router;
@@ -72,12 +72,11 @@ export class DictionaryController {
         this.router.post('/addNewDictionary', upload.single('file'), async (req: Request, res: Response) => {
             try {
                 await this.dictionaryService.addDict(fileName);
-                this.fileMessages.isuploaded = true;
+                this.fileMessages.isSuccess = true;
                 this.fileMessages.message = 'file uploaded';
-
-                res.json(this.dictionaryService.findAllDictionaries());
+                res.json(this.fileMessages);
             } catch (error) {
-                this.fileMessages.isuploaded = false;
+                this.fileMessages.isSuccess = false;
                 this.fileMessages.message = 'error is on the server side, contact administrator';
                 res.json(this.fileMessages);
             }
