@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +10,9 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { IChat } from '@app/classes/chat';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
+import { Player, PLAYER } from '@app/classes/player';
 import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
@@ -19,15 +22,21 @@ import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { NamesService } from '@app/services/admin/names.service';
+import { PassExecutionService } from '@app/services/command-execution/pass-execution.service';
+import { GameSyncService } from '@app/services/game-sync.service';
+import { GameService } from '@app/services/game.service';
 import { GridService } from '@app/services/grid.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { RoomService } from '@app/services/room.service';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
+import { TimerService } from '@app/services/timer.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { VirtualPlayerService } from '@app/services/virtual-player.service';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
+const message: IChat = { from: 'ME', body: 'a message' };
 
 class MatDialogMock {
     open() {
@@ -78,8 +87,35 @@ describe('GamePageComponent', () => {
     const CANVAS_WIDTH = 500;
     const CANVAS_HEIGHT = 500;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let gameSyncServiceSpy: jasmine.SpyObj<GameSyncService>;
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
+    let timerServiceSpy: jasmine.SpyObj<TimerService>;
+    let passExecutionServiceSpy: jasmine.SpyObj<PassExecutionService>;
+    let namesServiceSpy: jasmine.SpyObj<NamesService>;
 
     beforeEach(async () => {
+        namesServiceSpy = jasmine.createSpyObj('NamesService', ['getRandomName']);
+        namesServiceSpy.getRandomName.and.returnValue('a name');
+        passExecutionServiceSpy = jasmine.createSpyObj('PassExecutionService', ['execute']);
+        passExecutionServiceSpy.execute.and.callFake(() => message);
+
+        gameSyncServiceSpy = jasmine.createSpyObj('GameSyncService', ['initialize']);
+        gameSyncServiceSpy.initialize.and.returnValue(void '');
+        // const gameState: GameState = {
+        //     dictionaryName: 'a name',
+        //     players: [],
+        //     alphabetReserve: [],
+        //     currentTurn: 0,
+        //     skipCounter: 0,
+        //     timer: 0,
+        //     grid: tiles,
+        //     publicGoals: [],
+        //     privateGoals: [],
+        // };
+
+        // gameSyncServiceSpy.sendGameStateSignal = new BehaviorSubject<GameState>(gameState);
+        // gameSyncServiceSpy.sendAbandonSignal = new BehaviorSubject<string>('test');
+        // gameSyncServiceSpy.isMasterClient = true;
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries', 'getComputerName']);
         userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         userSettingsServiceSpy.settings = {
@@ -122,6 +158,55 @@ describe('GamePageComponent', () => {
         gridServiceSpy.letterStyle = { color: 'NavajoWhite', font: '15px serif' };
         gridServiceSpy.pointStyle = { color: 'NavajoWhite', font: '10px serif' };
 
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['didGameEnd']);
+        gameServiceSpy.convertToSoloSignal = new BehaviorSubject<string>('solo');
+        gameServiceSpy.currentTurn = PLAYER.realPlayer;
+        gameServiceSpy.players = [
+            {
+                id: PLAYER.realPlayer,
+                name: 'Random name',
+                rack: [
+                    { name: 'A', quantity: 9, points: 1, display: 'A' },
+                    { name: 'B', quantity: 2, points: 3, display: 'B' },
+                    { name: 'C', quantity: 2, points: 3, display: 'C' },
+                    { name: 'D', quantity: 3, points: 2, display: 'D' },
+                    { name: 'E', quantity: 15, points: 1, display: 'E' },
+                ],
+                points: 0,
+                turnWithoutSkipAndExchangeCounter: 0,
+                placeInTenSecondsGoalCounter: 0,
+                wordsMapping: new Map<string, number>(),
+                words: [],
+            },
+            {
+                id: PLAYER.otherPlayer,
+                name: 'Other Random name',
+                rack: [
+                    { name: 'A', quantity: 9, points: 1, display: 'A' },
+                    { name: 'B', quantity: 2, points: 3, display: 'B' },
+                    { name: 'C', quantity: 2, points: 3, display: 'C' },
+                    { name: 'D', quantity: 3, points: 2, display: 'D' },
+                    { name: 'E', quantity: 15, points: 1, display: 'E' },
+                ],
+                points: 0,
+                turnWithoutSkipAndExchangeCounter: 0,
+                placeInTenSecondsGoalCounter: 0,
+                wordsMapping: new Map<string, number>(),
+                words: [],
+            },
+        ];
+
+        timerServiceSpy = jasmine.createSpyObj('TimerService', ['startTimer']);
+        timerServiceSpy.startTimer.and.returnValue(void '');
+        timerServiceSpy.counter = {
+            min: 0,
+            seconds: 0,
+            resetValue: 0,
+            totalTimer: 0,
+        };
+        timerServiceSpy.timerDone = new BehaviorSubject<boolean>(false);
+        timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean | Player>(false);
+
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, SidebarComponent, PlayAreaComponent, ChatboxComponent, GameOverviewComponent],
             imports: [
@@ -150,6 +235,12 @@ describe('GamePageComponent', () => {
                 },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
                 { provide: UserSettingsService, useValue: userSettingsServiceSpy },
+                { provide: VirtualPlayerService, useValue: virtualPlayerServiceSpy },
+                { provide: GameSyncService, useValue: gameSyncServiceSpy },
+                { provide: GameService, useValue: gameServiceSpy },
+                { provide: TimerService, useValue: timerServiceSpy },
+                { provide: PassExecutionService, useValue: passExecutionServiceSpy },
+                { provide: NamesService, useValue: namesServiceSpy },
             ],
         }).compileComponents();
     });
@@ -304,16 +395,12 @@ describe('GamePageComponent', () => {
     });
 
     it('should call execute when skipTurn is called', () => {
-        // eslint-disable-next-line dot-notation
-        const passExecutionExecuteSpy = spyOn(component['passExecutionService'], 'execute');
         component.skipTurn();
-        expect(passExecutionExecuteSpy).toHaveBeenCalled();
+        expect(passExecutionServiceSpy.execute).toHaveBeenCalled();
     });
 
     it('should call execute when skipTurn is called', () => {
-        // eslint-disable-next-line dot-notation
-        const passExecutionExecuteSpy = spyOn(component['passExecutionService'], 'execute');
         component.skipTurn();
-        expect(passExecutionExecuteSpy).toHaveBeenCalled();
+        expect(passExecutionServiceSpy.execute).toHaveBeenCalled();
     });
 });
