@@ -25,7 +25,7 @@ export class DictionaryService {
             description: '',
         };
         this.fileMessage = {
-            isuploaded: true,
+            isUploaded: true,
             message: '',
         };
 
@@ -88,7 +88,7 @@ export class DictionaryService {
         fileForm.set('file', file);
         await this.http.post<FileMessages>(this.url + '/addNewDictionary', fileForm).subscribe(
             (resp: FileMessages) => {
-                this.fileMessage.isuploaded = resp.isuploaded;
+                this.fileMessage.isUploaded = resp.isUploaded;
                 this.fileMessage.message = resp.message;
                 this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
                 this.getAllDictionaries();
