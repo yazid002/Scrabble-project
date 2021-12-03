@@ -80,8 +80,9 @@ describe('VirtualPlayerService', () => {
     beforeEach(() => {
         placeServiceSpy = jasmine.createSpyObj('PlaceService', ['placeWordInstant']);
         verifyServiceSpy = jasmine.createSpyObj('VerifyService', ['getLettersUsedOnBoardFromPlacement', 'isFirstMove']);
-        dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary']);
+        dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary', 'getAllDictionaries']);
         dictionaryServiceSpy.fetchDictionary.and.callFake(() => of(dictionary));
+        dictionaryServiceSpy.getAllDictionaries.and.returnValue(Promise.resolve([{ title: dictionary.title, description: dictionary.description }]));
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
         userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         userSettingsServiceSpy.settings = {

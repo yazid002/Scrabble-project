@@ -62,8 +62,10 @@ describe('WaitingRoomComponent', () => {
     let fixture: ComponentFixture<WaitingRoomComponent>;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let roomServiceSpy: jasmine.SpyObj<RoomService>;
 
     beforeEach(async () => {
+        roomServiceSpy = jasmine.createSpyObj('RoomService', ['createRoom']);
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getComputerName', 'getDictionaries']);
         userSettingsServiceSpy.settings = {
@@ -94,7 +96,7 @@ describe('WaitingRoomComponent', () => {
                     provide: MatDialog,
                     useClass: MatDialogMock,
                 },
-                { provide: RoomService },
+                { provide: RoomService, useValue: roomServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
                 { provide: UserSettingsService, useValue: userSettingsServiceSpy },
             ],
@@ -104,7 +106,7 @@ describe('WaitingRoomComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(WaitingRoomComponent);
         component = fixture.componentInstance;
-        spyOn(component.roomService, 'createRoom').and.returnValue('created');
+        roomServiceSpy.createRoom.and.returnValue('created');
         fixture.detectChanges();
     });
 

@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
 import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
@@ -36,6 +37,34 @@ class MatDialogMock {
     }
 }
 
+const MODE: IOptionList = {
+    settingName: 'Mode de jeux',
+    availableChoices: [
+        { key: 'classic', value: 'Classique' },
+        { key: 'log2990', value: 'LOG2990', disabled: true },
+    ],
+};
+const NUM_PLAYERS: IOptionList = {
+    settingName: 'Nombre de joueurs',
+    availableChoices: [
+        { key: 'solo', value: 'Solo' },
+        { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
+    ],
+};
+const COMPUTER_LEVEL: IOptionList = {
+    settingName: "Niveau de l'ordinateur",
+    availableChoices: [{ key: 'beginner', value: 'Débutant' }],
+};
+
+const TIMER: IOptionList = {
+    settingName: 'Temps maximal par tour',
+    availableChoices: [
+        { key: '30', value: '30s' },
+        { key: '60', value: '1m' },
+        { key: '90', value: '1m30s' },
+    ],
+};
+
 describe('GamePageComponent', () => {
     let component: GamePageComponent;
     let fixture: ComponentFixture<GamePageComponent>;
@@ -51,8 +80,17 @@ describe('GamePageComponent', () => {
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
 
     beforeEach(async () => {
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries', 'getComputerName']);
         userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
+        userSettingsServiceSpy.settings = {
+            mode: { setting: MODE, currentChoiceKey: 'classic' },
+            numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
+            computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+            timer: { setting: TIMER, currentChoiceKey: '60' },
+        };
+        userSettingsServiceSpy.nameOption = NAME_OPTION;
+        userSettingsServiceSpy.nameOption.userChoice = 'un nom';
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
 
         virtualPlayerServiceSpy = jasmine.createSpyObj('VirtualPlayerService', ['initialize']);
         virtualPlayerServiceSpy.initialize.and.returnValue(undefined);
@@ -111,6 +149,7 @@ describe('GamePageComponent', () => {
                     useClass: MatDialogMock,
                 },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+                { provide: UserSettingsService, useValue: userSettingsServiceSpy },
             ],
         }).compileComponents();
     });

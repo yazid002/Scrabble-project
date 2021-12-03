@@ -1,11 +1,10 @@
-/* eslint-disable max-lines */
 import { Injectable } from '@angular/core';
 import { tiles } from '@app/classes/board';
 import { IChat, SENDER } from '@app/classes/chat';
 import { generateAnagrams, setVirtualPlayerDictionary } from '@app/classes/chunk-node';
 import { Dictionary } from '@app/classes/dictionary';
 import { PLAYER } from '@app/classes/player';
-import { MAX_RACK_SIZE, NumberFct, SortFct, VoidFct, WordNCoord } from '@app/classes/virtual-player';
+import { DELAY_TO_START, MAX_RACK_SIZE, NumberFct, SortFct, VoidFct, WordNCoord } from '@app/classes/virtual-player';
 import { RACK_SIZE } from '@app/constants/rack-constants';
 import { Subscription } from 'rxjs';
 import { DictionaryService } from './admin/dictionary.service';
@@ -20,7 +19,6 @@ import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
 import { VerifyService } from './verify.service';
 
-const DELAY_TO_START = 1000;
 @Injectable({
     providedIn: 'root',
 })
@@ -194,8 +192,7 @@ export class VirtualPlayerService {
         this.chatService.addMessage(message);
     }
     private sortPossibilitiesBeginner(possibilities: WordNCoord[]) {
-        // decidePoints
-        const pointMap: Map<number, { min: number; max: number }> = new Map();
+        const pointMap: Map<number, { min: number; max: number }> = new Map(); // decidePoints
         let i = 0;
         const SMALL_WORD_PROPORTION = 4;
         const MEDIUM_WORD_PROPORTION = 3;
@@ -305,9 +302,7 @@ export class VirtualPlayerService {
         return result;
     }
     private getLetterCombosFromGrid(): WordNCoord[] {
-        /**
-         * Get all letters on grid that are touching. They will be considered as a chunk later since we can't shuffle them
-         */
+        // Get all letters on grid that are touching. They will be considered as a chunk later since we can't shuffle them
         const EMPTY = '';
         let tempWord = EMPTY;
         let x = 0;

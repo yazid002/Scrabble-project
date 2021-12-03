@@ -2,6 +2,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
 import { BehaviorSubject } from 'rxjs';
@@ -10,7 +11,33 @@ import { GoalService } from './goal.service';
 import { GoalsManagerService } from './goals-manager.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
+const MODE: IOptionList = {
+    settingName: 'Mode de jeux',
+    availableChoices: [
+        { key: 'classic', value: 'Classique' },
+        { key: 'log2990', value: 'LOG2990', disabled: true },
+    ],
+};
+const NUM_PLAYERS: IOptionList = {
+    settingName: 'Nombre de joueurs',
+    availableChoices: [
+        { key: 'solo', value: 'Solo' },
+        { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
+    ],
+};
+const COMPUTER_LEVEL: IOptionList = {
+    settingName: "Niveau de l'ordinateur",
+    availableChoices: [{ key: 'beginner', value: 'Débutant' }],
+};
 
+const TIMER: IOptionList = {
+    settingName: 'Temps maximal par tour',
+    availableChoices: [
+        { key: '30', value: '30s' },
+        { key: '60', value: '1m' },
+        { key: '90', value: '1m30s' },
+    ],
+};
 describe('GoalsManagerService', () => {
     let service: GoalsManagerService;
     let goalServiceSpy: jasmine.SpyObj<GoalService>;
@@ -18,8 +45,22 @@ describe('GoalsManagerService', () => {
     let timerServiceSpy: jasmine.SpyObj<TimerService>;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(() => {
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries', 'getComputerName']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.nameOption = NAME_OPTION;
+        userSettingsServiceSpy.nameOption.userChoice = 'un nom';
+        userSettingsServiceSpy.settings = {
+            mode: { setting: MODE, currentChoiceKey: 'classic' },
+            numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
+            computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+            timer: { setting: TIMER, currentChoiceKey: '60' },
+        };
+        userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole' }];
+        userSettingsServiceSpy.nameOption = NAME_OPTION;
+
+        userSettingsServiceSpy.computerName = '';
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
+
         goalServiceSpy = jasmine.createSpyObj('GoalService', [
             'getProgress',
             'completeGoalSound',
@@ -54,6 +95,7 @@ describe('GoalsManagerService', () => {
                 { provide: GoalService, useValue: goalServiceSpy },
                 { provide: GameService, useValue: gameServiceSpy },
                 { provide: TimerService, useValue: timerServiceSpy },
+                { provide: UserSettingsService, useValue: userSettingsServiceSpy },
             ],
             imports: [HttpClientTestingModule, NoopAnimationsModule],
         });
