@@ -4,6 +4,7 @@ import { DictionaryOptionsComponent } from '@app/components/admin/dictionary-opt
 import { PlayerNamesOptionsComponent } from '@app/components/admin/player-names-options/player-names-options.component';
 import { DictionaryService } from '@app/services/admin/dictionary.service';
 import { NamesService } from '@app/services/admin/names.service';
+import { LeaderboardService } from '@app/services/leaderboard.service';
 
 // import { DictionaryOptionsComponent } from '@app/components/admin/dictionary-options/dictionary-options.component';
 export type Options = 'dictionary' | 'names' | 'none';
@@ -17,7 +18,7 @@ export class AdminPageComponent implements OnInit {
     @ViewChild(MatAccordion) accordion: MatAccordion;
     @ViewChild(PlayerNamesOptionsComponent) playerNamesOptionsComponent: PlayerNamesOptionsComponent;
 
-    constructor(public nameService: NamesService, public dictionaryService: DictionaryService) {}
+    constructor(public nameService: NamesService, public dictionaryService: DictionaryService, public leaderboardService: LeaderboardService) {}
     async ngOnInit() {
         await this.nameService.fetchNames();
     }

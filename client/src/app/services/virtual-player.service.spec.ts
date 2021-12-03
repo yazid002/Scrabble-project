@@ -11,9 +11,9 @@ import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { Player, PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { BehaviorSubject, of } from 'rxjs';
-// disable because we need a cile that is not in the project scope (we can't use '@app/')
-// eslint-disable-next-line no-restricted-imports
-import * as dictFile from '../../../../server/app/assets/dictionnary.json';
+// // disable because we need a cile that is not in the project scope (we can't use '@app/')
+// // eslint-disable-next-line no-restricted-imports
+// import * as dictFile from '../../../../server/app/assets/dictionnary.json';
 import { DictionaryService } from './admin/dictionary.service';
 import { ChatService } from './chat.service';
 import { DebugExecutionService } from './command-execution/debug-execution.service';
@@ -26,7 +26,11 @@ import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
 import { VerifyService } from './verify.service';
 import { VirtualPlayerService } from './virtual-player.service';
-const dictionary = dictFile as Dictionary;
+const dictionary: Dictionary = {
+    title: 'first dictionary',
+    description: 'the first dictionary for test purpose',
+    words: ['Bon', 'Bonjour', 'jour', 'ou', 'la'],
+};
 type Direction = 'h' | 'v';
 interface WordNCoord {
     word: string;
@@ -65,7 +69,6 @@ const TIMER: IOptionList = {
 };
 describe('VirtualPlayerService', () => {
     let service: VirtualPlayerService;
-    // let ctxStub: CanvasRenderingContext2D;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
     let exchangeServiceSpy: jasmine.SpyObj<ExchangeService>;
@@ -105,7 +108,7 @@ describe('VirtualPlayerService', () => {
 
         pointsCountingServiceSpy = jasmine.createSpyObj('PointsCountingService', ['processWordPoints']);
         goalsManagerServiceSpy = jasmine.createSpyObj('GoalsManagerService', ['applyAllGoalsBonus', 'setWordsFormedNumber']);
-
+        goalsManagerServiceSpy.updateGoalProgress = new BehaviorSubject<boolean>(false);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
         gameServiceSpy.currentTurn = PLAYER.realPlayer;
         gameServiceSpy.players = [
@@ -397,6 +400,95 @@ describe('VirtualPlayerService', () => {
                 if (possibility.coord.x !== h8Coord.x || possibility.coord.y !== h8Coord.y) allCentered = false;
             }
             expect(allCentered).toBe(false);
+        });
+    });
+
+    describe('sendSkipMessage', () => {
+        it('should reset turnCounter and display a message', async () => {
+            const displayMessageSpy = spyOn<any>(service, 'displayMessage').and.returnValue(void '');
+
+            service['sendSkipMessage']();
+
+            timerServiceSpy.resetTurnCounter.subscribe((result) => {
+                expect(result).toEqual(gameServiceSpy.players[PLAYER.otherPlayer]);
+            });
+
+            expect(displayMessageSpy).toHaveBeenCalled();
+        });
+    });
+
+    describe('sendPlacementMessage', () => {
+        it('should apply goal bonuses and update the progress and display message', async () => {
+            const combination: WordNCoord = { word: 'allo', coord: { x: 5, y: 5 }, direction: 'h', points: 23 };
+            const displayMessageSpy = spyOn<any>(service, 'displayMessage').and.returnValue(void '');
+            goalsManagerServiceSpy.applyAllGoalsBonus.and.returnValue(void '');
+
+            service['sendPlacementMessage'](combination);
+
+            goalsManagerServiceSpy.updateGoalProgress.subscribe((result) => {
+                expect(result).toEqual(true);
+            });
+
+            expect(displayMessageSpy).toHaveBeenCalled();
+            expect(goalsManagerServiceSpy.applyAllGoalsBonus).toHaveBeenCalled();
+        });
+    });
+
+    describe('place', () => {
+        it('should reset the turnCounter and update the goal progress if no placement is done', async () => {
+            const combination: WordNCoord = { word: 'allo', coord: { x: 5, y: 5 }, direction: 'h', points: 0 };
+            const displayMessageSpy = spyOn<any>(service, 'displayMessage').and.returnValue(void '');
+            goalsManagerServiceSpy.applyAllGoalsBonus.and.returnValue(void '');
+
+            spyOn<any>(service, 'sortPossibilitiesBeginner').and.returnValue([combination]);
+            spyOn<any>(service, 'sortPossibilitiesAdvanced').and.returnValue([combination]);
+            spyOn<any>(service, 'makePossibilities').and.returnValue([combination]);
+            spyOn<any>(service, 'tryPossibility').and.returnValue(Promise.resolve(false));
+
+            await service['place']();
+
+            timerServiceSpy.resetTurnCounter.subscribe((result) => {
+                expect(result).toEqual(gameServiceSpy.players[PLAYER.otherPlayer]);
+            });
+
+            goalsManagerServiceSpy.updateGoalProgress.subscribe((result) => {
+                expect(result).toEqual(true);
+            });
+
+            expect(displayMessageSpy).toHaveBeenCalled();
+        });
+
+        it('should send stop after finding 3 valid placements', async () => {
+            const combinations: WordNCoord[] = [
+                { word: 'allo', coord: { x: 5, y: 5 }, direction: 'h', points: 4 },
+                { word: 'ba', coord: { x: 5, y: 5 }, direction: 'h', points: 4 },
+                { word: 'aa', coord: { x: 5, y: 5 }, direction: 'h', points: 2 },
+                { word: 'bc', coord: { x: 5, y: 5 }, direction: 'h', points: 6 },
+            ];
+            const sendPlacementMessageSpy = spyOn<any>(service, 'sendPlacementMessage').and.returnValue(void '');
+            goalsManagerServiceSpy.applyAllGoalsBonus.and.returnValue(void '');
+
+            spyOn<any>(service, 'sortPossibilitiesBeginner').and.returnValue(combinations);
+            spyOn<any>(service, 'sortPossibilitiesAdvanced').and.returnValue(combinations);
+            spyOn<any>(service, 'makePossibilities').and.returnValue(combinations);
+            spyOn<any>(service, 'tryPossibility').and.returnValues(
+                Promise.resolve(true),
+                Promise.resolve(true),
+                Promise.resolve(true),
+                Promise.resolve(false),
+            );
+
+            await service['place']();
+
+            timerServiceSpy.resetTurnCounter.subscribe((result) => {
+                expect(result).not.toEqual(gameServiceSpy.players[PLAYER.otherPlayer]);
+            });
+
+            goalsManagerServiceSpy.updateGoalProgress.subscribe((result) => {
+                expect(result).not.toEqual(true);
+            });
+
+            expect(sendPlacementMessageSpy).toHaveBeenCalled();
         });
     });
 });

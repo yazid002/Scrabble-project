@@ -55,31 +55,38 @@ export class DatabaseService {
         await this.db.collection(DATABASE_VIRTUAL_NAMES).deleteMany({ default: { $eq: false } });
     }
 
+    async resetLeaderboard() {
+        await this.db.collection(DATABASE_COLLECTION).deleteMany({});
+        await this.populateMode2990LeaderBoard();
+        await this.db.collection(DATABASE_COLLECTION_CLASSIC).deleteMany({});
+        await this.populateClassicLeaderBoard();
+    }
+
     async populateMode2990LeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
             {
-                name: 'Player 1',
+                name: 'George',
+                score: 5,
+                mode: 'log2990',
+            },
+            {
+                name: 'Georges',
                 score: 10,
                 mode: 'log2990',
             },
             {
-                name: 'Player 2',
+                name: 'Georgio',
+                score: 15,
+                mode: 'log2990',
+            },
+            {
+                name: 'Georgios',
                 score: 20,
                 mode: 'log2990',
             },
             {
-                name: 'Player 3',
-                score: 30,
-                mode: 'log2990',
-            },
-            {
-                name: 'Player 4',
-                score: 40,
-                mode: 'log2990',
-            },
-            {
-                name: 'Player 5',
-                score: 50,
+                name: 'Georgius',
+                score: 25,
                 mode: 'log2990',
             },
         ];
@@ -92,28 +99,28 @@ export class DatabaseService {
     async populateClassicLeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
             {
-                name: 'Player 6',
+                name: 'Bobby',
+                score: 5,
+                mode: 'classic',
+            },
+            {
+                name: 'Dobby',
                 score: 10,
                 mode: 'classic',
             },
             {
-                name: 'Player 7',
+                name: 'Robby',
+                score: 15,
+                mode: 'classic',
+            },
+            {
+                name: 'Lobby',
                 score: 20,
                 mode: 'classic',
             },
             {
-                name: 'Player 8',
-                score: 30,
-                mode: 'classic',
-            },
-            {
-                name: 'Player 9',
-                score: 40,
-                mode: 'classic',
-            },
-            {
-                name: 'Player 10',
-                score: 50,
+                name: 'Mobby',
+                score: 25,
                 mode: 'classic',
             },
         ];
