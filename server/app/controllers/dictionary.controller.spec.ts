@@ -8,7 +8,7 @@ import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import * as supertest from 'supertest';
 import { Container } from 'typedi';
 
-describe('WordValidationController', () => {
+describe('DictionaryController', () => {
     const findAllResponse: TitleDescriptionOfDictionary[] = [{ title: 'a title', description: 'a description' }];
     const getDictionaryResponse: Dictionary = { title: 'a title', description: 'a description', words: ['aa', 'bb'] };
     const deleteResponse = 'file removed successfully';
