@@ -9,7 +9,7 @@ describe('TimerService', () => {
 
     beforeEach(() => {
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
 
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],

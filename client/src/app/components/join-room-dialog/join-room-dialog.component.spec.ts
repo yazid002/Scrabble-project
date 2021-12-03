@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { LobbyComponent } from '@app/lobby/lobby.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
@@ -75,7 +76,7 @@ describe('JoinRoomDialogComponent', () => {
         };
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         userSettingsServiceSpy.computerName = '';
-        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
 
         await TestBed.configureTestingModule({
@@ -89,6 +90,8 @@ describe('JoinRoomDialogComponent', () => {
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 BrowserAnimationsModule,
                 MatRadioModule,
                 MatCardModule,

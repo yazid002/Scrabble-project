@@ -61,6 +61,7 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
     ],
     imports: [
         AppMaterialModule,
+        FormsModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         BrowserModule,

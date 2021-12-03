@@ -42,13 +42,14 @@ export class DictionaryService {
         return result;
     }
     async getAllDictionaries(): Promise<TitleDescriptionOfDictionary[]> {
-        await this.http
+        const value = await this.http
             .get<TitleDescriptionOfDictionary[]>(this.url + '/findAll')
             .toPromise()
             .then((res) => {
                 this.listDictionaries = res;
+                return this.listDictionaries;
             });
-        return this.listDictionaries;
+        return value;
     }
     async deleteDictionary(name: string) {
         this.http.delete<string>(this.url + '/delete/' + name).subscribe(async () => {

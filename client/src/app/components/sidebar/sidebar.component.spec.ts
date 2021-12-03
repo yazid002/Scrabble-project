@@ -1,12 +1,14 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { GameOverviewComponent } from '@app/components/game-overview/game-overview.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { of } from 'rxjs';
 
 class MatDialogMock {
@@ -22,7 +24,16 @@ describe('SidebarComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [MatDialogModule, MatButtonModule, AppRoutingModule, RouterModule, MatCardModule, HttpClientModule],
+            imports: [
+                FormsModule,
+                AppMaterialModule,
+                MatDialogModule,
+                MatButtonModule,
+                AppRoutingModule,
+                RouterTestingModule,
+                MatCardModule,
+                HttpClientModule,
+            ],
             declarations: [SidebarComponent, GameOverviewComponent],
             providers: [
                 {
