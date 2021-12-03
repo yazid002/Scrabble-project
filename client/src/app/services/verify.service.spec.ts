@@ -15,7 +15,6 @@ import * as dictFile from '../../../../server/app/assets/dictionnary.json';
 import { DictionaryService } from './admin/dictionary.service';
 import { UserSettingsService } from './user-settings.service';
 const dictionary = dictFile as Dictionary;
-// const getDictUrl = 'http://localhost:3000/api/admin/dictionary/findAll';
 describe('VerifyService', () => {
     let service: VerifyService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
@@ -46,11 +45,6 @@ describe('VerifyService', () => {
         httpTestingController.verify();
     });
 
-    // describe('functiuns that will get dictionaries from server', () => {
-    //     afterEach(() => {
-    //         const getDictReq = httpTestingController.expectOne(getDictUrl);
-    //         expect(getDictReq.request.method).toEqual('GET');
-    //     });
     it(
         ' findAdjacentDown should return false if the letter is not place at the extreme bottom of' +
             ' the board and there is no letter bottom of it',
@@ -1156,4 +1150,3 @@ describe('VerifyService', () => {
         });
     });
 });
-// });

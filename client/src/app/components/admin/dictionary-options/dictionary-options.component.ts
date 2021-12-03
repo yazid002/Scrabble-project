@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FileMessages } from '@app/pages/admin-page/models/file-messages.model';
-import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
+import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { ValidationMessageModel } from '@app/pages/admin-page/models/validation-message.model';
 import { DictionaryService } from '@app/services/admin/dictionary.service';
 

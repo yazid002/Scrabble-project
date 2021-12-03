@@ -3,7 +3,7 @@ import { Injectable, Output } from '@angular/core';
 import { Dictionary } from '@app/classes/dictionary';
 import { SERVER_URL } from '@app/constants/url';
 import { FileMessages } from '@app/pages/admin-page/models/file-messages.model';
-import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
+import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { ValidationMessageModel } from '@app/pages/admin-page/models/validation-message.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -11,22 +11,28 @@ import { BehaviorSubject, Observable } from 'rxjs';
     providedIn: 'root',
 })
 export class DictionaryService {
-    @Output() snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
-    listDictionaries: TitleDescriptionOfDictionary[] = [];
-    titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
-        title: '',
-        description: '',
-    };
-    validationMessage: ValidationMessageModel = {
-        isValid: true,
-        message: '',
-    };
-    fileMessage: FileMessages = {
-        isuploaded: true,
-        message: '',
-    };
+    @Output() snackBarSignal: BehaviorSubject<{ message: string; action: string }>;
+    listDictionaries: TitleDescriptionOfDictionary[];
+    titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary;
+    validationMessage: ValidationMessageModel;
+    fileMessage: FileMessages;
     url: string;
     constructor(private http: HttpClient) {
+        this.snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
+        this.listDictionaries = [];
+        this.titleAndDescriptionOfDictionary = {
+            title: '',
+            description: '',
+        };
+        this.fileMessage = {
+            isuploaded: true,
+            message: '',
+        };
+
+        this.validationMessage = {
+            isValid: true,
+            message: '',
+        };
         this.url = SERVER_URL + '/api/admin/dictionary';
     }
 
@@ -51,12 +57,12 @@ export class DictionaryService {
             });
         return value;
     }
-    async deleteDictionary(name: string) {
+    async deleteDictionary(name: string): Promise<void> {
         this.http.delete<string>(this.url + '/delete/' + name).subscribe(async () => {
             this.getAllDictionaries();
         });
     }
-    async selectDictionary(file: File) {
+    async selectDictionary(file: File): Promise<void> {
         const reader = new FileReader();
         reader.readAsText(file);
         reader.onload = () => {
@@ -76,7 +82,7 @@ export class DictionaryService {
             this.emitToSnackBar(this.validationMessage.message, 'Dismiss');
         };
     }
-    async upload(file: File) {
+    async upload(file: File): Promise<void> {
         const fileForm = new FormData();
         fileForm.set('file', file);
         await this.http.post<FileMessages>(this.url + '/addNewDictionary', fileForm).subscribe(
@@ -100,7 +106,7 @@ export class DictionaryService {
         return dictObs;
     }
 
-    private emitToSnackBar(message: string, action: string) {
+    private emitToSnackBar(message: string, action: string): void {
         this.snackBarSignal.next({ message, action });
     }
 }
