@@ -88,8 +88,8 @@ export class DictionaryController {
             res.json(dictionaries);
         });
         this.router.get('/reset', async (req: Request, res: Response) => {
-
-            res.json(this.dictionaryService.reset());
+            const response = this.dictionaryService.reset();
+            res.json(response);
         });
         this.router.get('/getDictionary/:name', async (req: Request, res: Response) => {
             const dictionaries = this.dictionaryService.getDictionary(req.params.name);
