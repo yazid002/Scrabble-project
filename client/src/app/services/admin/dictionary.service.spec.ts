@@ -6,7 +6,7 @@ import { RESPONSE_DELAY } from '@app/constants/url';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { DictionaryService } from './dictionary.service';
 
-fdescribe('DictionaryService', () => {
+describe('DictionaryService', () => {
     let service: DictionaryService;
     let httpTestingController: HttpTestingController;
 
@@ -137,6 +137,23 @@ fdescribe('DictionaryService', () => {
                 expect(getSpy).toHaveBeenCalled();
                 done();
             }, RESPONSE_DELAY);
+        });
+    });
+    describe('selectDictionary', () => {
+        it('sould say a file is invalid if not provides in a dictionary JSON format', async () => {
+            const uploadSpy = spyOn(service, 'upload');
+            uploadSpy.and.callFake(async () => undefined);
+            spyOn(service, 'isNewDictionaryHasSameTitleAsAnother').and.callFake(() => false);
+            const dict = {
+                title: 'dico test',
+                description: 'un dico de test',
+            };
+            const invalidFile = new File([JSON.stringify(dict)], 'file.json');
+
+            service.validationMessage.isValid = false;
+            await service.selectDictionary(invalidFile);
+
+            expect(service.validationMessage.isValid).toEqual(false);
         });
     });
 });
