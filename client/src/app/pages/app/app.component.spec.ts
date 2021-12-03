@@ -1,12 +1,14 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
 
 describe('AppComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [AppRoutingModule, HttpClientModule],
+            imports: [FormsModule, AppMaterialModule, AppRoutingModule, HttpClientModule],
             declarations: [AppComponent],
         }).compileComponents();
     });

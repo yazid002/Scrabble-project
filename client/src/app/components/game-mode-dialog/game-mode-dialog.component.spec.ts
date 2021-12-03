@@ -8,10 +8,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { WaitingRoomComponent } from '@app/components/waiting-room/waiting-room.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
@@ -92,6 +92,8 @@ describe('GameModeDialogComponent', () => {
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
             ],
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 BrowserAnimationsModule,
                 MatRadioModule,
                 MatCardModule,
@@ -101,7 +103,7 @@ describe('GameModeDialogComponent', () => {
                 ReactiveFormsModule,
                 MatFormFieldModule,
                 MatSelectModule,
-                RouterModule,
+                RouterTestingModule,
                 RouterTestingModule.withRoutes([
                     { path: 'game', component: GamePageComponent },
                     { path: 'waiting', component: WaitingRoomComponent },

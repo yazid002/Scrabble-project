@@ -1,5 +1,8 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { LeaderboardService } from '@app/services/leaderboard.service';
 import { LeaderboardPageComponent } from './leaderboard-page.component';
 
@@ -20,7 +23,7 @@ describe('LeaderboardPageComponent', () => {
         await TestBed.configureTestingModule({
             providers: [{ provide: LeaderboardService, useValue: learderboardServiceSpy }],
             declarations: [LeaderboardPageComponent],
-            imports: [HttpClientTestingModule],
+            imports: [FormsModule, AppMaterialModule, HttpClientTestingModule, RouterTestingModule],
         }).compileComponents();
     });
 

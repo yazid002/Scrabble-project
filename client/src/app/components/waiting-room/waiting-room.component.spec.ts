@@ -1,11 +1,13 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { RoomService } from '@app/services/room.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
@@ -77,6 +79,8 @@ describe('WaitingRoomComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [WaitingRoomComponent],
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 MatDividerModule,
                 MatProgressSpinnerModule,
                 MatCardModule,

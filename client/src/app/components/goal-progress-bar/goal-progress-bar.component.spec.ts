@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { GoalsManagerService } from '@app/services/goals-manager.service';
 import { TimerService } from '@app/services/timer.service';
 import { BehaviorSubject } from 'rxjs';
@@ -17,7 +19,7 @@ describe('GoalProgressBarComponent', () => {
         goalsManagerServiceSpy = jasmine.createSpyObj('GoalsManagerService', ['getUpdatedProgress']);
         goalsManagerServiceSpy.updateGoalProgress = new BehaviorSubject<boolean>(false);
         await TestBed.configureTestingModule({
-            imports: [MatProgressBarModule],
+            imports: [FormsModule, AppMaterialModule, MatProgressBarModule],
             declarations: [GoalProgressBarComponent],
             providers: [
                 { provide: TimerService, useValue: timerServiceSpy },

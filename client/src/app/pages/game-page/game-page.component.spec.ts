@@ -7,7 +7,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ABANDON_SIGNAL } from '@app/classes/signal';
 import { ChatboxComponent } from '@app/components/chatbox/chatbox.component';
@@ -17,6 +17,7 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { KeyboardKeys } from '@app/enums/keyboard-enum';
 import { OperationType, SelectionType } from '@app/enums/selection-enum';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { GridService } from '@app/services/grid.service';
 import { RandomModeService } from '@app/services/random-mode.service';
 import { RoomService } from '@app/services/room.service';
@@ -86,6 +87,8 @@ describe('GamePageComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, SidebarComponent, PlayAreaComponent, ChatboxComponent, GameOverviewComponent],
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 MatInputModule,
                 FormsModule,
                 MatIconModule,
@@ -95,7 +98,7 @@ describe('GamePageComponent', () => {
                 MatDialogModule,
                 MatButtonModule,
                 AppRoutingModule,
-                RouterModule,
+                RouterTestingModule,
                 HttpClientModule,
             ],
             providers: [

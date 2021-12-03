@@ -1,10 +1,12 @@
 /* eslint-disable dot-notation */
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { MouseButton } from '@app/enums/mouse-enums';
 import { SelectionType } from '@app/enums/selection-enum';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { SelectionManagerService } from '@app/services/selection-manager.service';
 
 describe('PlayAreaComponent', () => {
@@ -17,7 +19,7 @@ describe('PlayAreaComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [PlayAreaComponent],
-            imports: [MatButtonModule, HttpClientModule],
+            imports: [FormsModule, AppMaterialModule, MatButtonModule, HttpClientModule],
             providers: [{ provide: SelectionManagerService, useValue: selectionManagerServiceSpy }],
         }).compileComponents();
     });

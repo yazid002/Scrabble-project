@@ -9,6 +9,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { of } from 'rxjs';
 
@@ -28,6 +29,8 @@ describe('MaterialPageComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [MaterialPageComponent],
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 BrowserAnimationsModule,
                 FormsModule,
                 MatButtonModule,

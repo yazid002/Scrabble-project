@@ -1,13 +1,14 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IOption } from '@app/classes/game-options';
 import { Goal } from '@app/classes/goal';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { GoalService } from '@app/services/goal.service';
 import { ReserveService } from '@app/services/reserve.service';
@@ -37,10 +38,12 @@ describe('GameOverviewComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [GameOverviewComponent],
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 MatDialogModule,
                 MatButtonModule,
                 AppRoutingModule,
-                RouterModule,
+                RouterTestingModule,
                 MatCardModule,
                 MatCardModule,
                 HttpClientModule,

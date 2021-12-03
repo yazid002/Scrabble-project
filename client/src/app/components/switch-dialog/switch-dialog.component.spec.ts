@@ -6,9 +6,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList } from '@app/classes/game-options';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
 import { GamePageComponent } from './../../pages/game-page/game-page.component';
@@ -89,9 +89,11 @@ describe('SwitchDialogComponent', () => {
                 { provide: UserSettingsService, useValue: userSettingsServiceSpy },
                 { provide: RoomService, useValue: roomServiceSpy },
                 { provide: MatDialog, useClass: MatDialogMock },
-                { provide: RouterModule },
+                { provide: RouterTestingModule },
             ],
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 // RouterTestingModule.withRoutes([{ path: 'home', component: GamePageComponent }]),
                 BrowserAnimationsModule,
                 MatRadioModule,
@@ -100,7 +102,7 @@ describe('SwitchDialogComponent', () => {
                 FormsModule,
                 MatInputModule,
                 MatDialogModule,
-                RouterModule,
+                RouterTestingModule,
                 RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }]),
             ],
         }).compileComponents();

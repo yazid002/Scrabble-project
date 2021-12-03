@@ -1,8 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { RoomService } from '@app/services/room.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
@@ -26,9 +28,12 @@ describe('QuitMultiplayerDialogComponent', () => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
         await TestBed.configureTestingModule({
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 MatButtonModule,
                 MatDialogModule,
                 HttpClientModule,
+                RouterTestingModule,
                 RouterTestingModule.withRoutes([{ path: 'home', component: MainPageComponent }]),
             ],
             declarations: [QuitMultiplayerDialogComponent],

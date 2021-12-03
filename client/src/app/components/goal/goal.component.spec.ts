@@ -1,11 +1,13 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Goal } from '@app/classes/goal';
 import { PLAYER } from '@app/classes/player';
 import { GoalProgressBarComponent } from '@app/components/goal-progress-bar/goal-progress-bar.component';
 import { GoalType } from '@app/enums/goals-enum';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { GoalService } from '@app/services/goal.service';
 import { GoalComponent } from './goal.component';
 
@@ -17,7 +19,7 @@ describe('GoalComponent', () => {
     beforeEach(async () => {
         goalServiceSpy = jasmine.createSpyObj('goalService', ['getPlayTheSameWordThreeTimesProgress', 'getProgress']);
         await TestBed.configureTestingModule({
-            imports: [MatProgressBarModule, HttpClientTestingModule, NoopAnimationsModule],
+            imports: [FormsModule, AppMaterialModule, MatProgressBarModule, HttpClientTestingModule, NoopAnimationsModule],
             declarations: [GoalComponent, GoalProgressBarComponent],
             providers: [{ provide: GoalService, useValue: goalServiceSpy }],
         }).compileComponents();
