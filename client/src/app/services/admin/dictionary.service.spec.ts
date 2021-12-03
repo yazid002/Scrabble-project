@@ -1,10 +1,11 @@
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { Dictionary } from '@app/classes/dictionary';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { DictionaryService } from './dictionary.service';
 
-describe('DictionaryService', () => {
+fdescribe('DictionaryService', () => {
     let service: DictionaryService;
     let httpTestingController: HttpTestingController;
 
@@ -27,7 +28,10 @@ describe('DictionaryService', () => {
             { title: 'second dictionary', description: 'the second dictionary for test purpose' },
         ];
 
-        service.getAllDictionaries().then((dictionaries) => expect(dictionaries).withContext('should receive dictionaries').toEqual(response));
+        service.getAllDictionaries().then((dictionaries) => {
+            expect(dictionaries).withContext('should receive dictionaries').toEqual(response);
+            expect(service.listDictionaries).toEqual(response);
+        });
 
         // getAllDictionaries should make only one request to 'GET' the dictionaries
         const req = httpTestingController.expectOne(service.url + '/findAll');
@@ -62,5 +66,32 @@ describe('DictionaryService', () => {
         // The server should send the response after the 'DELETE'
         const expectedResponse = new HttpResponse({ body: response });
         req.event(expectedResponse);
+    });
+
+    it('fetchDictionary should get the dictionary from the server', async () => {
+        const response: Dictionary = { title: 'first dictionary', description: 'the first dictionary for test purpose', words: ['papa', 'maman'] };
+
+        service.fetchDictionary('first dictionary').subscribe((dictionary) => {
+            expect(dictionary).withContext('should receive dictionaries').toEqual(response);
+        });
+
+        // getAllDictionaries should make only one request to 'GET' the dictionaries
+        const req = httpTestingController.expectOne(service.url + '/getDictionary/' + 'first dictionary');
+        expect(req.request.method).toEqual('GET');
+
+        // The server should send the dictionaries after the 'GET'
+        const expectedResponse = new HttpResponse({ body: response });
+        req.event(expectedResponse);
+    });
+
+    it('emitToSnackBar should send snackBarSignal', async () => {
+        const message = { message: 'test', action: 'test action' };
+
+        // eslint-disable-next-line dot-notation
+        service['emitToSnackBar']('test', 'test action');
+
+        service.snackBarSignal.subscribe((mess) => {
+            expect(mess).toEqual(message);
+        });
     });
 });
