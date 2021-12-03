@@ -25,6 +25,7 @@ export class GameService {
     turnDone: Subscription;
     numPlayers: string;
     skipCounter: number = 0;
+    quit: boolean = false;
     constructor(
         private userSettingsService: UserSettingsService,
         private reserveService: ReserveService,
@@ -47,8 +48,9 @@ export class GameService {
     }
     quitGame() {
         this.abandonSignal.next('abandon');
+        this.quit = true;
         const realPlayer = {
-            name: this.players[PLAYER.otherPlayer].name,
+            name: this.players[PLAYER.realPlayer].name,
             score: 0,
             mode: this.userSettingsService.settings.mode.currentChoiceKey,
         };
@@ -85,11 +87,21 @@ export class GameService {
             body: endGameString,
         };
         this.chatService.addMessage(endGameMessage);
-        const realPlayer = {
-            name: this.players[PLAYER.realPlayer].name,
-            score: this.players[PLAYER.realPlayer].points,
-            mode: this.userSettingsService.settings.mode.currentChoiceKey,
-        };
+        let realPlayer;
+        if (this.quit === true) {
+            realPlayer = {
+                name: this.players[PLAYER.realPlayer].name,
+                score: 0,
+                mode: this.userSettingsService.settings.mode.currentChoiceKey,
+            };
+            this.quit = false;
+        } else {
+            realPlayer = {
+                name: this.players[PLAYER.realPlayer].name,
+                score: this.players[PLAYER.realPlayer].points,
+                mode: this.userSettingsService.settings.mode.currentChoiceKey,
+            };
+        }
         this.endGameSignal.next(realPlayer);
     }
     didGameEnd(): boolean {
