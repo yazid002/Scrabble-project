@@ -9,7 +9,7 @@ import { DictionaryService } from '@app/services/admin/dictionary.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { DictionaryOptionsComponent } from './dictionary-options.component';
 
-fdescribe('DictionaryOptionsComponent', () => {
+describe('DictionaryOptionsComponent', () => {
     let component: DictionaryOptionsComponent;
     let fixture: ComponentFixture<DictionaryOptionsComponent>;
     let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;

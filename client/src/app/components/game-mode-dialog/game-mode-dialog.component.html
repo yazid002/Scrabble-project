@@ -22,8 +22,6 @@
         <div class="dictionnaire">
             <mat-card-title>Dictionnaire</mat-card-title>
             <mat-form-field appearance="fill">
-                <!-- <mat-label>Dictionnaire</mat-label> -->
-                <!-- <input matInput style="display: none !important" /> -->
                 <mat-select required ngDefaultControl name="dictionary" [(ngModel)]="userSettingsService.selectedDictionary">
                     <mat-option (click)="validateDictionary(true)">--</mat-option>
                     <mat-option
@@ -34,10 +32,7 @@
                         {{ dictionnaire.title }}
                     </mat-option>
                 </mat-select>
-                <!-- <mat-error *ngIf="userSettingsService.dictionaryControl.hasError('required')">Please choose a dictionary</mat-error> -->
-                <!-- <mat-hint>Description : {{ userSettingsService.dictionaryControl.value?.description }}</mat-hint> -->
             </mat-form-field>
-            <!-- <h3>your selected dictionary is : {{ userSettingsService.selectedDictionary }}</h3> -->
         </div>
 
         <div>

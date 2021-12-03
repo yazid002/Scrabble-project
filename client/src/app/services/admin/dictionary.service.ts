@@ -3,7 +3,7 @@ import { Injectable, Output } from '@angular/core';
 import { Dictionary } from '@app/classes/dictionary';
 import { SERVER_URL } from '@app/constants/url';
 import { FileMessages } from '@app/pages/admin-page/models/file-messages.model';
-import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
+import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { ValidationMessageModel } from '@app/pages/admin-page/models/validation-message.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -11,22 +11,28 @@ import { BehaviorSubject, Observable } from 'rxjs';
     providedIn: 'root',
 })
 export class DictionaryService {
-    @Output() snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
-    listDictionaries: TitleDescriptionOfDictionary[] = [];
-    titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
-        title: '',
-        description: '',
-    };
-    validationMessage: ValidationMessageModel = {
-        isValid: true,
-        message: '',
-    };
-    fileMessage: FileMessages = {
-        isUploaded: true,
-        message: '',
-    };
+    @Output() snackBarSignal: BehaviorSubject<{ message: string; action: string }>;
+    listDictionaries: TitleDescriptionOfDictionary[];
+    titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary;
+    validationMessage: ValidationMessageModel;
+    fileMessage: FileMessages;
     url: string;
     constructor(private http: HttpClient) {
+        this.snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
+        this.listDictionaries = [];
+        this.titleAndDescriptionOfDictionary = {
+            title: '',
+            description: '',
+        };
+        this.fileMessage = {
+            isUploaded: true,
+            message: '',
+        };
+
+        this.validationMessage = {
+            isValid: true,
+            message: '',
+        };
         this.url = SERVER_URL + '/api/admin/dictionary';
     }
 
@@ -45,18 +51,19 @@ export class DictionaryService {
         const value = await this.http
             .get<TitleDescriptionOfDictionary[]>(this.url + '/findAll')
             .toPromise()
-            .then((res) => {
-                this.listDictionaries = res;
-                return this.listDictionaries;
-            });
+            .then((res) => this.assignDictionary(res));
         return value;
     }
-    async deleteDictionary(name: string) {
+    assignDictionary(dic: TitleDescriptionOfDictionary[]) {
+        this.listDictionaries = dic;
+        return this.listDictionaries;
+    }
+    async deleteDictionary(name: string): Promise<void> {
         this.http.delete<string>(this.url + '/delete/' + name).subscribe(async () => {
             this.getAllDictionaries();
         });
     }
-    async selectDictionary(file: File) {
+    async selectDictionary(file: File): Promise<void> {
         const reader = new FileReader();
         reader.readAsText(file);
         reader.onload = () => {
@@ -76,31 +83,27 @@ export class DictionaryService {
             this.emitToSnackBar(this.validationMessage.message, 'Dismiss');
         };
     }
-    async upload(file: File) {
+    async upload(file: File): Promise<void> {
         const fileForm = new FormData();
         fileForm.set('file', file);
         await this.http.post<FileMessages>(this.url + '/addNewDictionary', fileForm).subscribe(
             (resp: FileMessages) => {
                 this.fileMessage.isUploaded = resp.isUploaded;
                 this.fileMessage.message = resp.message;
+                this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
                 this.getAllDictionaries();
             },
-            (err) => {
+            (err: Error) => {
                 this.emitToSnackBar('Probleme de televersement du fichier cote serveur' + JSON.stringify(err), 'Dismiss');
             },
         );
-        if (!this.fileMessage.isUploaded) {
-            this.emitToSnackBar('Probleme de televersement du fichier cote serveur', 'Dismiss');
-        } else {
-            this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
-        }
     }
     fetchDictionary(name: string): Observable<Dictionary> {
         const dictObs = this.http.get<Dictionary>(this.url + '/getDictionary/' + name);
         return dictObs;
     }
 
-    private emitToSnackBar(message: string, action: string) {
+    private emitToSnackBar(message: string, action: string): void {
         this.snackBarSignal.next({ message, action });
     }
 }
