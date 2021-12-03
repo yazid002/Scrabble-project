@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IOptionList, IUserSetting, NAME_OPTION } from '@app/classes/game-options';
-import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
+import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { DictionaryService } from './admin/dictionary.service';
 
 const MODE: IOptionList = {
