@@ -3,14 +3,49 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { Vec2 } from '@app/classes/vec2';
-import { BINGO_BONUS } from '@app/constants/board-constants';
+import { BINGO_BONUS, SQUARE_NUMBER } from '@app/constants/board-constants';
+import { NOT_FOUND } from '@app/constants/common-constants';
 import { PointsCountingService } from './points-counting.service';
+import { ReserveService } from './reserve.service';
+import { VerifyService } from './verify.service';
 
 describe('PointsCountingService', () => {
     let service: PointsCountingService;
-
+    let reserveServiceSpy: jasmine.SpyObj<ReserveService>;
+    let verifyServiceSpy: jasmine.SpyObj<VerifyService>;
     beforeEach(() => {
-        TestBed.configureTestingModule({ imports: [HttpClientModule] });
+        reserveServiceSpy = jasmine.createSpyObj('ReserveService', ['findLetterInReserve']);
+        reserveServiceSpy.alphabets = [
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 2, points: 3, display: 'B' },
+            { name: 'C', quantity: 2, points: 3, display: 'C' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'F', quantity: 2, points: 4, display: 'F' },
+            { name: 'G', quantity: 2, points: 4, display: 'G' },
+            { name: 'H', quantity: 2, points: 4, display: 'H' },
+        ];
+
+        verifyServiceSpy = jasmine.createSpyObj('VerifyService', ['computeCoordByDirection', 'areCoordValid']);
+        verifyServiceSpy.formedWords = [];
+        verifyServiceSpy.computeCoordByDirection.and.callFake((direction: string, coord: Vec2, step: number) => {
+            const x = direction === 'h' || direction === 'horizontal' ? coord.x + step : coord.x;
+            const y = direction === 'v' || direction === 'vertical' ? coord.y + step : coord.y;
+
+            return { y, x };
+        });
+
+        verifyServiceSpy.areCoordValid.and.callFake((coord: Vec2) => {
+            return coord.y < SQUARE_NUMBER && coord.x < SQUARE_NUMBER && coord.x >= 0 && coord.y >= 0;
+        });
+
+        TestBed.configureTestingModule({
+            imports: [HttpClientModule],
+            providers: [
+                { provide: ReserveService, useValue: reserveServiceSpy },
+                { provide: VerifyService, useValue: verifyServiceSpy },
+            ],
+        });
         service = TestBed.inject(PointsCountingService);
         service.tiles = JSON.parse(JSON.stringify(tiles));
     });
@@ -22,6 +57,9 @@ describe('PointsCountingService', () => {
     it(' getLetterPoints should return the letter points', () => {
         const letterToCheck = 'b';
         const expectedResult = 3;
+        const character = { name: 'B', quantity: 2, points: 3, display: 'B' };
+
+        reserveServiceSpy.findLetterInReserve.and.returnValue(character);
 
         // getLetterPoints is private
         // eslint-disable-next-line dot-notation
@@ -34,6 +72,8 @@ describe('PointsCountingService', () => {
         const letterToCheck = 'ë';
         const expectedResult = -1;
 
+        reserveServiceSpy.findLetterInReserve.and.returnValue(NOT_FOUND);
+
         // getLetterPoints is private
         // eslint-disable-next-line dot-notation
         const result = service['getLetterPoints'](letterToCheck);
@@ -44,13 +84,16 @@ describe('PointsCountingService', () => {
     it(' applyBingo should return the word points with a bonus', () => {
         const wordToCheck = 'abcabca';
         const wordBasePoints = 15;
-        const coord = { x: 3, y: 4 };
-        const direction = 'horizontal';
+        const coordTest = { x: 3, y: 4 };
+        const directionTest = 'horizontal';
         const expectedResult = wordBasePoints + BINGO_BONUS;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3, 1, 3, 3);
 
         // applyBingo is private
         // eslint-disable-next-line dot-notation
-        const result = service['applyBingo'](wordToCheck, coord, direction, wordBasePoints, []);
+        const result = service['applyBingo'](wordToCheck, coordTest, directionTest, wordBasePoints, []);
 
         expect(result).toEqual(expectedResult);
     });
@@ -63,6 +106,8 @@ describe('PointsCountingService', () => {
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [{ letter: 'b', coord: { x: 4, y: 4 } }];
         const expectedResult = wordBasePoints;
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 1, 3, 3);
         // applyBingo is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBingo'](wordToCheck, coord, direction, wordBasePoints, lettersUsedOnBoard);
@@ -77,6 +122,9 @@ describe('PointsCountingService', () => {
         const direction = 'h';
         const expectedResult = wordBasePoints;
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3, 1, 3, 3);
+
         // applyBingo is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBingo'](wordToCheck, coord, direction, wordBasePoints, []);
@@ -89,6 +137,9 @@ describe('PointsCountingService', () => {
         const coord: Vec2 = { x: 7, y: 7 };
         const direction = 'h';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3, 1, 3, 3);
 
         // applyBoardBonuses is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,6 +155,9 @@ describe('PointsCountingService', () => {
         const coord: Vec2 = { x: 7, y: 7 };
         const direction = 'h';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3, 1, 3, 3);
 
         // applyBingo is private
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -126,6 +180,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
+
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
@@ -145,6 +202,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
+
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
@@ -152,7 +212,7 @@ describe('PointsCountingService', () => {
         expect(result).toEqual(expectedResult);
     });
 
-    it(' applyBoardBonuses should return the word basePoint with a triple word bonus applied', () => {
+    it(' applyBoardBonuses should return the word basePoint with a triple letter bonus applied', () => {
         const wordToCheck = 'abc';
         const expectedResult = 9;
 
@@ -163,6 +223,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y][coord.x].bonus = 'tl';
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
 
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
@@ -178,6 +241,9 @@ describe('PointsCountingService', () => {
         const coord: Vec2 = { y: 7, x: 8 };
         const direction = 'v';
         const lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
 
         service.tiles[coord.y][coord.x].bonus = 'xx';
         service.tiles[coord.y + 1][coord.x].bonus = 'tw';
@@ -202,6 +268,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'dw';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
+
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
@@ -220,6 +289,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y][coord.x].bonus = 'xx';
         service.tiles[coord.y + 1][coord.x].bonus = 'dw';
         service.tiles[coord.y + 2][coord.x].bonus = 'tw';
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
 
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
@@ -240,6 +312,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'tw';
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
+
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
@@ -258,6 +333,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y][coord.x].bonus = 'tl';
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'tw';
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
 
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
@@ -278,6 +356,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'dw';
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
+
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
@@ -296,6 +377,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y][coord.x].bonus = 'dl';
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'dw';
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(1, 3, 3);
 
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
@@ -316,6 +400,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(3, 3);
+
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation
         const result = service['applyBoardBonuses'](wordToCheck, coord, direction, lettersUsedOnBoard);
@@ -334,6 +421,9 @@ describe('PointsCountingService', () => {
         service.tiles[coord.y][coord.x].bonus = 'dw';
         service.tiles[coord.y + 1][coord.x].bonus = 'xx';
         service.tiles[coord.y + 2][coord.x].bonus = 'xx';
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        spyOn<any>(service, 'getLetterPoints').and.returnValues(3, 3);
 
         // applyBoardBonuses is private
         // eslint-disable-next-line dot-notation

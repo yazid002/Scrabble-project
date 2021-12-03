@@ -63,7 +63,7 @@ describe('WaitingRoomComponent', () => {
 
     beforeEach(async () => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getComputerName']);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getComputerName', 'getDictionaries']);
         userSettingsServiceSpy.settings = {
             mode: { setting: MODE, currentChoiceKey: 'classic' },
             numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
@@ -74,6 +74,7 @@ describe('WaitingRoomComponent', () => {
         userSettingsServiceSpy.nameOption.userChoice = 'un nom';
         userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole' }];
         userSettingsServiceSpy.selectedDictionary = { title: 'Espagnol', description: 'Langue espagnole' };
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         await TestBed.configureTestingModule({
             declarations: [WaitingRoomComponent],
             imports: [

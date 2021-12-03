@@ -81,6 +81,7 @@ describe('GameModeDialogComponent', () => {
         userSettingsServiceSpy.computerName = '';
         userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
         userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+
         await TestBed.configureTestingModule({
             declarations: [GameModeDialogComponent],
             providers: [

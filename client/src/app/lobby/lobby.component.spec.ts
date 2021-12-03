@@ -69,7 +69,7 @@ describe('LobbyComponent', () => {
 
     beforeEach(async () => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getComputerName']);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getComputerName', 'getDictionaries']);
         userSettingsServiceSpy.nameOption = NAME_OPTION;
         roomServiceSpy = jasmine.createSpyObj('RoomService', ['joinRoom', 'createRoom']);
         userSettingsServiceSpy.settings = {
@@ -79,7 +79,7 @@ describe('LobbyComponent', () => {
             timer: { setting: TIMER, currentChoiceKey: '60' },
         };
         userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
-
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
         roomServiceSpy.rooms = [{ name: 'a room test', id: 'an id', settings: { mode: 'classic', timer: '60' }, clients: ['a client'] }];
         await TestBed.configureTestingModule({
             declarations: [LobbyComponent],

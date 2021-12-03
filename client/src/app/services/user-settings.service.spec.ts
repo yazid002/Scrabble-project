@@ -1,12 +1,26 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { Dictionary } from '@app/classes/dictionary';
+import { of } from 'rxjs';
+// disable because we need a cile that is not in the project scope (we can't use '@app/')
+// eslint-disable-next-line no-restricted-imports
+import * as dictFile from '../../../../server/app/assets/dictionnary.json';
+import { DictionaryService } from './admin/dictionary.service';
 import { UserSettingsService } from './user-settings.service';
+const dictionary = dictFile as Dictionary;
 
 describe('UserSettingsService', () => {
     let service: UserSettingsService;
+    let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+        dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary', 'getAllDictionaries']);
+        dictionaryServiceSpy.fetchDictionary.and.returnValue(of(dictionary));
+        dictionaryServiceSpy.getAllDictionaries.and.returnValue(Promise.resolve([{ title: dictionary.title, description: dictionary.description }]));
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            providers: [{ provide: DictionaryService, useValue: dictionaryServiceSpy }],
+        });
         service = TestBed.inject(UserSettingsService);
     });
 

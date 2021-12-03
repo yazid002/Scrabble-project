@@ -48,7 +48,7 @@ describe('PlaceService', () => {
         ]);
         verifyServiceSpy.formedWords = [];
 
-        timerServiceSpy = jasmine.createSpyObj('TimerService', ['decrementTime']);
+        timerServiceSpy = jasmine.createSpyObj('TimerService', ['resetTimer']);
         timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean | Player>(true);
 
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
@@ -104,6 +104,7 @@ describe('PlaceService', () => {
                 { provide: PlaceSelectionService, useValue: placeSelectionServiceSpy },
                 { provide: SelectionManagerService, useValue: selectionManagerServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+                { provide: TimerService, useValue: timerServiceSpy },
             ],
             imports: [HttpClientModule],
         });
@@ -235,11 +236,6 @@ describe('PlaceService', () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
-            timerServiceSpy.resetTurnCounter.next(false);
-
-            timerServiceSpy.resetTurnCounter.subscribe((value) => {
-                expect(value).toEqual(false);
-            });
             const placeResponse = await service
                 .placeWord(wordToCheck, coord, direction, true)
                 .then((message: { error: boolean; message: IChat }) => {

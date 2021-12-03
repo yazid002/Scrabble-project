@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+/* eslint-disable max-lines */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -36,7 +37,8 @@ describe('GoalService', () => {
         };
         dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary', 'getAllDictionaries']);
         dictionaryServiceSpy.fetchDictionary.and.returnValue(of(dictionary));
-        dictionaryServiceSpy.getAllDictionaries.and.resolveTo([{ title: dictionary.title, description: dictionary.description }]);
+        //  dictionaryServiceSpy.getAllDictionaries.and.resolveTo([{ title: dictionary.title, description: dictionary.description }]);
+        dictionaryServiceSpy.getAllDictionaries.and.returnValue(Promise.resolve([{ title: dictionary.title, description: dictionary.description }]));
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
         userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
 
@@ -93,13 +95,13 @@ describe('GoalService', () => {
         const generateNumberSpy = spyOn<any>(service, 'generateNumber').and.callThrough();
 
         // generateRandomWord is private
-        const dictionary = {
+        const dictionaryTest = {
             title: 'dictionnaire test',
             description: 'description de test',
             words: ['aa', 'finir', 'manger', 'rouler'],
         } as Dictionary;
         // eslint-disable-next-line dot-notation
-        service['generateRandomWord'](dictionary);
+        service['generateRandomWord'](dictionaryTest);
 
         expect(generateNumberSpy).toHaveBeenCalled();
     });
