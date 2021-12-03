@@ -29,9 +29,10 @@ export class LeaderBoardController {
             // });
             // le catch a été enlevé car j'arrivais pas à le tester. Par contre, il foncitonne bien
         });
+
         this.router.get('/reset', async (req: Request, res: Response) => {
-            const names = await this.leaderboardService.reset();
-            res.json(names);
+            const leaderboards = await this.leaderboardService.reset();
+            res.json(leaderboards);
         });
     }
 }

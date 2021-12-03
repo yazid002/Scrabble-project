@@ -66,6 +66,36 @@ describe('leaderboard service', () => {
             }
         });
     });
+
+    describe('reset', () => {
+        it('should reset the players array to its default value when called', async () => {
+            const initArray = await leaderboardService.getAllClassicPlayers();
+            let initArrayNames;
+            for (const i of initArray) {
+                initArrayNames = i.name;
+            }
+
+            const playersToAdd: Leaderboard[] = [
+                { name: 'a', score: 1, mode: 'classic' },
+                { name: 'b', score: 2, mode: 'classic' },
+                { name: 'c', score: 3, mode: 'classic' },
+                { name: 'd', score: 4, mode: 'classic' },
+                { name: 'e', score: 5, mode: 'classic' },
+            ];
+            for (const name of playersToAdd) {
+                await leaderboardService.addClassicPlayer(name, leaderboardService);
+            }
+            await leaderboardService.reset();
+            const afterResetArray = await leaderboardService.getAllClassicPlayers();
+            let afterResetArrayNames;
+            for (const i of afterResetArray) {
+                afterResetArrayNames = i.name;
+            }
+
+            expect(afterResetArrayNames).to.deep.equal(initArrayNames);
+        });
+    });
+
     it('endgame should call get, add and delete', async () => {
         const player: Leaderboard = { name: 'TestPlayer1', score: 50, mode: 'classic' };
         const getSpy = sinon.spy(leaderboardService, 'getAllClassicPlayers');

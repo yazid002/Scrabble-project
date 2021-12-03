@@ -63,4 +63,35 @@ describe('LeaderboardService', () => {
             }, RESPONSE_DELAY);
         });
     });
+    describe('reset', () => {
+        it('call reset from server', () => {
+            service.reset();
+            const req = httpTestingController.expectOne(service.urlString + '/reset');
+            expect(req.request.method).toEqual('GET');
+            // const expectedResponse = new HttpResponse({ body: 'names' });
+            // req.event(expectedResponse);
+        });
+    });
+
+    describe('sort', () => {
+        it('leaderboard should be sorted', () => {
+            const leaderboard: Leaderboard[] = [
+                { name: 'a', score: 1, mode: 'classic' },
+                { name: 'b', score: 2, mode: 'classic' },
+                { name: 'c', score: 3, mode: 'classic' },
+                { name: 'd', score: 4, mode: 'classic' },
+                { name: 'e', score: 5, mode: 'classic' },
+            ];
+
+            const expectLeaderboardAfterSort: Leaderboard[] = [
+                { name: 'e', score: 5, mode: 'classic' },
+                { name: 'd', score: 4, mode: 'classic' },
+                { name: 'c', score: 3, mode: 'classic' },
+                { name: 'b', score: 2, mode: 'classic' },
+                { name: 'a', score: 1, mode: 'classic' },
+            ];
+
+            expect(service.sortLeaderBoard(leaderboard)).toEqual(expectLeaderboardAfterSort);
+        });
+    });
 });

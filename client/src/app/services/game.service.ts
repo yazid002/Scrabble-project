@@ -47,6 +47,12 @@ export class GameService {
     }
     quitGame() {
         this.abandonSignal.next('abandon');
+        const realPlayer = {
+            name: this.players[PLAYER.otherPlayer].name,
+            score: 0,
+            mode: this.userSettingsService.settings.mode.currentChoiceKey,
+        };
+        this.endGameSignal.next(realPlayer);
         this.endGame();
     }
     async endGame(otherPlayerAbandonned: boolean = false): Promise<void> {
@@ -74,14 +80,12 @@ export class GameService {
             this.players[PLAYER.realPlayer].won = 'Votre adversaire a abandonné. Vous gagnez par défaut!';
             this.players[PLAYER.otherPlayer].won = undefined;
         }
-
         const endGameMessage: IChat = {
             from: SENDER.computer,
             body: endGameString,
         };
         this.chatService.addMessage(endGameMessage);
-
-        const realPlayer: Leaderboard = {
+        const realPlayer = {
             name: this.players[PLAYER.realPlayer].name,
             score: this.players[PLAYER.realPlayer].points,
             mode: this.userSettingsService.settings.mode.currentChoiceKey,
