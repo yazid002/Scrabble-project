@@ -3,17 +3,15 @@
 <div>
     <table>
         <tr>
-            <th>filename</th>
-            <th>Title</th>
-            <th>description</th>
+            <th>Titre</th>
+            <th>Descrition</th>
+            <th>Options</th>
         </tr>
         <tr *ngFor="let dictionary of dictionaryService.listDictionaries">
             <td>{{ dictionary.title }}</td>
             <td>{{ dictionary.description }}</td>
             <td>
-                <button mat-raised-button color="warn" (click)="dictionaryService.deleteDictionary(dictionary.title)">delete</button>
-            </td>
-            <td>
+                <button class='delete' mat-raised-button color="warn" (click)="dictionaryService.deleteDictionary(dictionary.title)">Supprimer</button>
                 <button mat-raised-button color="primary" (click)="dictionaryService.download(dictionary.title)">Télécharger</button>
             </td>
         </tr>

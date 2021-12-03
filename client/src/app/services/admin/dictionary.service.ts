@@ -81,7 +81,7 @@ export class DictionaryService {
                 this.validationMessage.isValid = false;
                 this.validationMessage.message = 'le format du fichier doit etre json contenant un objet de type dictionaire.';
             }
-            this.emitToSnackBar(this.validationMessage.message, 'Dismiss');
+            this.emitToSnackBar(this.validationMessage.message, 'Fermer');
         };
     }
     async upload(file: File): Promise<void> {
@@ -91,11 +91,11 @@ export class DictionaryService {
             (resp: FileMessages) => {
                 this.fileMessage.isuploaded = resp.isuploaded;
                 this.fileMessage.message = resp.message;
-                this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
+                this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Fermer');
                 this.getAllDictionaries();
             },
             (err: Error) => {
-                this.emitToSnackBar('Probleme de televersement du fichier cote serveur' + JSON.stringify(err), 'Dismiss');
+                this.emitToSnackBar('Probleme de televersement du fichier cote serveur' + JSON.stringify(err), 'Fermer');
             },
         );
     }
@@ -105,7 +105,7 @@ export class DictionaryService {
     }
     reset() {
         this.http.get<void>(this.url + '/reset').subscribe(async () => {
-            this.emitToSnackBar('Les dictionaires ont été reset avec succès', 'Dismiss');
+            this.emitToSnackBar('Les dictionaires ont été reset avec succès', 'Fermer');
             await this.getAllDictionaries();
         });
     }
@@ -114,11 +114,10 @@ export class DictionaryService {
             return this.writeDict(dict);
         });
     }
-    writeDict(dict: Dictionary):string {
+    writeDict(dict: Dictionary): string {
         const file = new Blob([JSON.stringify(dict)], { type: 'text/json;charset=utf-8' });
         saveAs(file, dict.title + '.json');
-        return 'success'
-
+        return 'success';
     }
 
     private emitToSnackBar(message: string, action: string): void {
