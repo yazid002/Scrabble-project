@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RESPONSE_DELAY } from '@app/constants/url';
 import { NamesService } from './names.service';
-fdescribe('NamesService', () => {
+describe('NamesService', () => {
     let service: NamesService;
     let httpTestingController: HttpTestingController;
     beforeEach(() => {

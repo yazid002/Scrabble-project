@@ -138,6 +138,24 @@ describe('DictionaryService', () => {
                 done();
             }, RESPONSE_DELAY);
         });
+        it('should thould amit a problem to snackBar when response is an error', (done) => {
+            // emit to snackbar is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const getSpy = spyOn<any>(service, 'emitToSnackBar');
+
+            const fileToUpload = new File(['allo'], 'file.json');
+            service.upload(fileToUpload);
+
+            const req = httpTestingController.expectOne(service.url + '/addNewDictionary');
+            expect(req.request.method).toEqual('POST');
+            const expectedResponse = new ErrorEvent('an error')
+            req.error(expectedResponse);
+
+            setTimeout(() => {
+                expect(getSpy).toHaveBeenCalled();
+                done();
+            }, RESPONSE_DELAY);
+        });
     });
     describe('selectDictionary', () => {
         it('sould say a file is invalid if not provides in a dictionary JSON format', async () => {
