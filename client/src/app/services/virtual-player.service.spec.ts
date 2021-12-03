@@ -274,8 +274,6 @@ describe('VirtualPlayerService', () => {
                 if (possibility.coord.x !== h8Coord.x || possibility.coord.y !== h8Coord.y) allCentered = false;
             }
             expect(allCentered).toBe(false);
-            // httpTestingController.expectOne('http://localhost:3000/api/admin/dictionary/getDictionary/Mon dictionnaire');
-            // httpTestingController.verify();
         });
     });
 });
