@@ -55,6 +55,13 @@ export class DatabaseService {
         await this.db.collection(DATABASE_VIRTUAL_NAMES).deleteMany({ default: { $eq: false } });
     }
 
+    async resetLeaderboard() {
+        await this.db.collection(DATABASE_COLLECTION).deleteMany({});
+        await this.populateMode2990LeaderBoard();
+        await this.db.collection(DATABASE_COLLECTION_CLASSIC).deleteMany({});
+        await this.populateClassicLeaderBoard();
+    }
+
     async populateMode2990LeaderBoard(): Promise<void> {
         const leaderboards: Leaderboard[] = [
             {
