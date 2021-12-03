@@ -51,11 +51,12 @@ export class DictionaryService {
         const value = await this.http
             .get<TitleDescriptionOfDictionary[]>(this.url + '/findAll')
             .toPromise()
-            .then((res) => {
-                this.listDictionaries = res;
-                return this.listDictionaries;
-            });
+            .then((res) => this.assignDictionary(res));
         return value;
+    }
+    assignDictionary(dic: TitleDescriptionOfDictionary[]) {
+        this.listDictionaries = dic;
+        return this.listDictionaries;
     }
     async deleteDictionary(name: string): Promise<void> {
         this.http.delete<string>(this.url + '/delete/' + name).subscribe(async () => {
@@ -89,17 +90,13 @@ export class DictionaryService {
             (resp: FileMessages) => {
                 this.fileMessage.isuploaded = resp.isuploaded;
                 this.fileMessage.message = resp.message;
+                this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
                 this.getAllDictionaries();
             },
-            (err) => {
+            (err: Error) => {
                 this.emitToSnackBar('Probleme de televersement du fichier cote serveur' + JSON.stringify(err), 'Dismiss');
             },
         );
-        if (!this.fileMessage.isuploaded) {
-            this.emitToSnackBar('Probleme de televersement du fichier cote serveur', 'Dismiss');
-        } else {
-            this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
-        }
     }
     fetchDictionary(name: string): Observable<Dictionary> {
         const dictObs = this.http.get<Dictionary>(this.url + '/getDictionary/' + name);

@@ -2,6 +2,7 @@ import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Dictionary } from '@app/classes/dictionary';
+import { RESPONSE_DELAY } from '@app/constants/url';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { DictionaryService } from './dictionary.service';
 
@@ -92,6 +93,50 @@ fdescribe('DictionaryService', () => {
 
         service.snackBarSignal.subscribe((mess) => {
             expect(mess).toEqual(message);
+        });
+    });
+    describe('isNewDictionaryHasSameTitleAsAnother', () => {
+        it('should return false if the name is unique', () => {
+            service.listDictionaries = [{ title: 'a name', description: 'a description' }];
+            service.titleAndDescriptionOfDictionary = { title: 'an other name', description: 'adescription' };
+            const result = service.isNewDictionaryHasSameTitleAsAnother();
+            expect(result).toEqual(false);
+        });
+        it('should return true if the name is not unique', () => {
+            const notUniqueName = 'Not unique';
+            service.listDictionaries = [{ title: notUniqueName, description: 'a description' }];
+            service.titleAndDescriptionOfDictionary = { title: notUniqueName, description: 'adescription' };
+            const result = service.isNewDictionaryHasSameTitleAsAnother();
+            expect(result).toEqual(true);
+        });
+    });
+    describe('assignDictionary', () => {
+        it('should assign the dictonaries', () => {
+            const dictionaries: TitleDescriptionOfDictionary[] = [
+                { title: 'first dictionary', description: 'the first dictionary for test purpose' },
+                { title: 'second dictionary', description: 'the second dictionary for test purpose' },
+            ];
+            service.listDictionaries = [];
+            service.assignDictionary(dictionaries);
+            expect(service.listDictionaries).toEqual(dictionaries);
+        });
+    });
+    describe('upload', () => {
+        it('should upload to the server', (done) => {
+            const getSpy = spyOn(service, 'getAllDictionaries');
+
+            const fileToUpload = new File(['allo'], 'file.json');
+            service.upload(fileToUpload);
+
+            const req = httpTestingController.expectOne(service.url + '/addNewDictionary');
+            expect(req.request.method).toEqual('POST');
+            const expectedResponse = new HttpResponse({ body: { isuploaded: true, message: 'a message' } });
+            req.event(expectedResponse);
+
+            setTimeout(() => {
+                expect(getSpy).toHaveBeenCalled();
+                done();
+            }, RESPONSE_DELAY);
         });
     });
 });
