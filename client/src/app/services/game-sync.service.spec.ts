@@ -1,21 +1,61 @@
+/* eslint-disable max-lines */
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { tiles } from '@app/classes/board';
+import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { Goal } from '@app/classes/goal';
 import { ICharacter } from '@app/classes/letter';
 import { Player, PLAYER } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
+import { BehaviorSubject } from 'rxjs';
 import { GameState, GameSyncService } from './game-sync.service';
 import { GameService } from './game.service';
 import { GoalService } from './goal.service';
 import { GridService } from './grid.service';
 import { PlaceSelectionService } from './place-selection.service';
+import { ReserveService } from './reserve.service';
+import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
 
 interface GridServiceMock {
     drawGrid(): void;
 }
+
+const MODE: IOptionList = {
+    settingName: 'Mode de jeux',
+    availableChoices: [
+        { key: 'classic', value: 'Classique' },
+        { key: 'log2990', value: 'LOG2990', disabled: true },
+    ],
+};
+const NUM_PLAYERS: IOptionList = {
+    settingName: 'Nombre de joueurs',
+    availableChoices: [
+        { key: 'solo', value: 'Solo' },
+        { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
+    ],
+};
+const COMPUTER_LEVEL: IOptionList = {
+    settingName: "Niveau de l'ordinateur",
+    availableChoices: [{ key: 'beginner', value: 'Débutant' }],
+};
+
+const TIMER: IOptionList = {
+    settingName: 'Temps maximal par tour',
+    availableChoices: [
+        { key: '30', value: '30s' },
+        { key: '60', value: '1m' },
+        { key: '90', value: '1m30s' },
+        { key: '120', value: '2m' },
+        { key: '150', value: '2m30s' },
+        { key: '180', value: '3m' },
+        { key: '210', value: '3m30' },
+        { key: '240', value: '4m' },
+        { key: '270', value: '4m30' },
+        { key: '300', value: '5m' },
+    ],
+};
 
 describe('GameSyncService', () => {
     let service: GameSyncService;
@@ -23,10 +63,34 @@ describe('GameSyncService', () => {
     let gameServiceSpy: jasmine.SpyObj<GameService>;
     let goalServiceSpy: jasmine.SpyObj<GoalService>;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let reserveServiceSpy: jasmine.SpyObj<ReserveService>;
+    let timerServiceSpy: jasmine.SpyObj<TimerService>;
 
     beforeEach(() => {
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        timerServiceSpy = jasmine.createSpyObj('TimerService', ['resetTimer']);
+        timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean | Player>(false);
+        timerServiceSpy.counter = {
+            min: 0,
+            seconds: 0,
+            resetValue: 0,
+            totalTimer: 0,
+        };
+        reserveServiceSpy = jasmine.createSpyObj('ReserveService', ['getInitialReserve', 'getLettersFromReserve']);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries', 'getComputerName']);
         userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.nameOption = NAME_OPTION;
+        userSettingsServiceSpy.nameOption.userChoice = 'un nom';
+        userSettingsServiceSpy.settings = {
+            mode: { setting: MODE, currentChoiceKey: 'classic' },
+            numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
+            computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+            timer: { setting: TIMER, currentChoiceKey: '60' },
+        };
+        userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole' }];
+        userSettingsServiceSpy.nameOption = NAME_OPTION;
+
+        userSettingsServiceSpy.computerName = '';
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
         const gridServiceMock: GridServiceMock = {
             drawGrid: (): void => {
                 return;
@@ -46,6 +110,8 @@ describe('GameSyncService', () => {
         placeSelectionServiceSpy.cancelPlacement.and.returnValue(undefined);
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initPlayers']);
         gameServiceSpy.currentTurn = 0;
+        gameServiceSpy.otherPlayerSignal = new BehaviorSubject<string>('a player');
+        gameServiceSpy.abandonSignal = new BehaviorSubject<string>('test');
         const aCharacter: ICharacter = {
             name: 'A',
             quantity: 3,
@@ -65,11 +131,26 @@ describe('GameSyncService', () => {
         gameServiceSpy.players = [playerDummy, playerDummy];
         gameServiceSpy.skipCounter = 2;
 
+        reserveServiceSpy.alphabets = [
+            { name: 'A', quantity: 9, points: 1, display: 'A' },
+            { name: 'B', quantity: 2, points: 3, display: 'B' },
+            { name: 'C', quantity: 2, points: 3, display: 'C' },
+            { name: 'D', quantity: 3, points: 2, display: 'D' },
+            { name: 'E', quantity: 15, points: 1, display: 'E' },
+            { name: 'F', quantity: 2, points: 4, display: 'F' },
+            { name: 'G', quantity: 2, points: 4, display: 'G' },
+            { name: 'H', quantity: 2, points: 4, display: 'H' },
+        ];
+
         TestBed.configureTestingModule({
             providers: [
                 { provide: GridService, useValue: gridServiceMock },
                 { provide: PlaceSelectionService, useValue: placeSelectionServiceSpy },
                 { provide: GoalService, useValue: goalServiceSpy },
+                { provide: UserSettingsService, useValue: userSettingsServiceSpy },
+                { provide: ReserveService, useValue: reserveServiceSpy },
+                { provide: TimerService, useValue: timerServiceSpy },
+                { provide: GameService, useValue: gameServiceSpy },
             ],
             imports: [HttpClientModule, BrowserAnimationsModule],
         }).compileComponents();
@@ -227,13 +308,11 @@ describe('GameSyncService', () => {
             { name: 'A', quantity: 9, points: 1, display: 'A' },
             { name: 'B', quantity: 0, points: 3, display: 'B' },
         ];
-
-        // eslint-disable-next-line dot-notation
-        const getInitialReserveSpy = spyOn(service['reserveService'], 'getInitialReserve').and.returnValue(initialReserve);
+        reserveServiceSpy.getInitialReserve.and.returnValue(initialReserve);
 
         const result = service.reset();
 
-        expect(getInitialReserveSpy).toHaveBeenCalled();
+        expect(reserveServiceSpy.getInitialReserve).toHaveBeenCalled();
 
         expect(result.timer).toEqual(0);
         expect(result.skipCounter).toEqual(0);
