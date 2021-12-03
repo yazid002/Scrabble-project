@@ -1,4 +1,4 @@
 export class FileMessages {
-    isuploaded: boolean;
+    isUploaded: boolean;
     message: string;
 }
