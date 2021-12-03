@@ -6,6 +6,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -90,6 +91,7 @@ describe('LobbyComponent', () => {
                 MatProgressSpinnerModule,
                 MatCardModule,
                 MatDialogModule,
+                RouterModule,
                 HttpClientModule,
                 RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }]),
             ],
