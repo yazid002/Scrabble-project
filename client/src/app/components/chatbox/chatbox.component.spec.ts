@@ -31,7 +31,7 @@ describe('ChatboxComponent', () => {
         chatServiceSpy.messages = [];
         chatServiceSpy.getMessages.and.returnValue(of(chatServiceSpy.messages));
         chatServiceSpy.addMessage.and.callFake((newMessage) => chatServiceSpy.messages.push(newMessage));
-        gameServiceSpy = jasmine.createSpyObj('gameService', ['changeTurn', 'randomTurnSelect']);
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['changeTurn', 'randomTurnSelect']);
 
         await TestBed.configureTestingModule({
             declarations: [ChatboxComponent],
