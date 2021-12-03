@@ -22,7 +22,7 @@ export class DictionaryService {
         message: '',
     };
     fileMessage: FileMessages = {
-        isuploaded: true,
+        isUploaded: true,
         message: '',
     };
     url: string;
@@ -81,7 +81,7 @@ export class DictionaryService {
         fileForm.set('file', file);
         await this.http.post<FileMessages>(this.url + '/addNewDictionary', fileForm).subscribe(
             (resp: FileMessages) => {
-                this.fileMessage.isuploaded = resp.isuploaded;
+                this.fileMessage.isUploaded = resp.isUploaded;
                 this.fileMessage.message = resp.message;
                 this.getAllDictionaries();
             },
@@ -89,7 +89,7 @@ export class DictionaryService {
                 this.emitToSnackBar('Probleme de televersement du fichier cote serveur' + JSON.stringify(err), 'Dismiss');
             },
         );
-        if (!this.fileMessage.isuploaded) {
+        if (!this.fileMessage.isUploaded) {
             this.emitToSnackBar('Probleme de televersement du fichier cote serveur', 'Dismiss');
         } else {
             this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');

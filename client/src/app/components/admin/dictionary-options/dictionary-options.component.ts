@@ -21,7 +21,7 @@ export class DictionaryOptionsComponent implements OnInit {
         message: '',
     };
     fileMessage: FileMessages = {
-        isuploaded: true,
+        isUploaded: true,
         message: '',
     };
     myInputVariable: ElementRef;
