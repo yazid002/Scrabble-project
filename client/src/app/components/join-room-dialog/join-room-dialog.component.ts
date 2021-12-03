@@ -20,8 +20,4 @@ export class JoinRoomDialogComponent {
         this.error = result.error;
         this.errorMessage = result.errorMessage;
     }
-
-    playClickOnButtonAudio() {
-        this.soundManagerService.playClickOnButtonAudio();
-    }
 }

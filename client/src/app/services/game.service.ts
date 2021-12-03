@@ -30,7 +30,6 @@ export class GameService {
         private reserveService: ReserveService,
         private timerService: TimerService,
         private chatService: ChatService,
-        // private goalManagerService: GoalsManagerService,
         public leaderboardService: LeaderboardService,
     ) {
         this.initPlayers();
@@ -66,8 +65,6 @@ export class GameService {
             // determine who won
             if (player.points >= otherPlayer.points) {
                 player.won = 'Vous avez gagné!';
-                // ajouter son ici
-                // this.soundManagerService.playWinGameSound();
             }
 
             endGameString += '<br>' + this.players[playerIndex].name + ' :<br>';

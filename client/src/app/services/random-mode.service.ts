@@ -4,6 +4,7 @@ import { Bonus } from '@app/classes/bonus';
 import { Case } from '@app/classes/case';
 import { SQUARE_HEIGHT, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
 import { GridService } from './grid.service';
+import { UserSettingsService } from './user-settings.service';
 
 @Injectable({
     providedIn: 'root',
@@ -15,7 +16,8 @@ export class RandomModeService {
     isChecked: boolean;
     tiles: Case[][];
 
-    constructor(public gridService: GridService) {
+    constructor(public gridService: GridService, private userSettingsService: UserSettingsService) {
+        this.isChecked = this.userSettingsService.randomMode;
         this.tiles = tiles;
         this.bonusOnGrid = [
             { text: 'tw', color: 'IndianRed', quantity: 8 },
@@ -24,7 +26,6 @@ export class RandomModeService {
             { text: 'dl', color: 'LightSkyBlue', quantity: 24 },
         ];
         this.randomBonusIndex = 0;
-        this.isChecked = false;
     }
 
     // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random

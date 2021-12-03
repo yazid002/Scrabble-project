@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { IChat, SENDER } from '@app/classes/chat';
 import { ChatService } from './chat.service';
 
@@ -6,7 +7,7 @@ describe('ChatService', () => {
     let service: ChatService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({ imports: [NoopAnimationsModule] });
         service = TestBed.inject(ChatService);
     });
 

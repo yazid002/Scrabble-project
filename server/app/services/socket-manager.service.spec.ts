@@ -120,6 +120,7 @@ describe('Socket manager service', () => {
 
     it("should emit gameData to members in room when a client calls 'syncGameData'", (done) => {
         const sendGameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 1,
@@ -128,6 +129,7 @@ describe('Socket manager service', () => {
             grid: [],
         };
         const receivedGameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 0,

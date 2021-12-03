@@ -8,9 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IChat, SENDER } from '@app/classes/chat';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 import { GameService } from '@app/services/game.service';
+import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { of } from 'rxjs';
 import { ChatboxComponent } from './chatbox.component';
@@ -22,28 +24,38 @@ describe('ChatboxComponent', () => {
     let chatServiceSpy: jasmine.SpyObj<ChatService>;
     let gameServiceSpy: jasmine.SpyObj<GameService>;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
+    let selectionManagerServiceSpy: jasmine.SpyObj<SelectionManagerService>;
 
     beforeEach(async () => {
+        selectionManagerServiceSpy = jasmine.createSpyObj('SelectionManagerService', ['updateSelectionType']);
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playChatAudio']);
         commandExecutionServiceSpy = jasmine.createSpyObj('CommandExecutionService', ['interpretCommand', 'executeCommand', 'addLetterInReserve']);
         chatServiceSpy = jasmine.createSpyObj('ChatService', ['addMessage', 'getMessages']);
         chatServiceSpy.messages = [];
         chatServiceSpy.getMessages.and.returnValue(of(chatServiceSpy.messages));
         chatServiceSpy.addMessage.and.callFake((newMessage) => chatServiceSpy.messages.push(newMessage));
-        gameServiceSpy = jasmine.createSpyObj('gameService', ['changeTurn', 'randomTurnSelect']);
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['changeTurn', 'randomTurnSelect']);
 
         await TestBed.configureTestingModule({
             declarations: [ChatboxComponent],
             providers: [
-                CommandExecutionService,
-                ChatService,
                 { provide: CommandExecutionService, useValue: commandExecutionServiceSpy },
                 { provide: ChatService, useValue: chatServiceSpy },
                 { provide: GameService, useValue: gameServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+                { provide: SelectionManagerService, useValue: selectionManagerServiceSpy },
                 { provide: LocationStrategy, useClass: MockLocationStrategy },
             ],
-            imports: [BrowserAnimationsModule, MatCardModule, FormsModule, MatInputModule, MatIconModule, HttpClientModule],
+            imports: [
+                FormsModule,
+                AppMaterialModule,
+                BrowserAnimationsModule,
+                MatCardModule,
+                FormsModule,
+                MatInputModule,
+                MatIconModule,
+                HttpClientModule,
+            ],
         }).compileComponents();
     });
 

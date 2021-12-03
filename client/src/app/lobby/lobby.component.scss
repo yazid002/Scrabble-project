@@ -29,7 +29,7 @@ body {
     color: white;
     font-family: 'Carter One', sans-serif;
     font-size: 40px;
-    padding-bottom: 20px;
+    padding-bottom: 40px;
 }
 
 .rooms {
@@ -44,8 +44,6 @@ body {
     border: 55px !important;
     border-radius: 30px !important;
     background-color: rgba(0, 0, 0, 0.5);
-    // border: 55px solid #000;
-    // border-color: red;
 }
 
 .content {
@@ -53,9 +51,6 @@ body {
     overflow: auto;
 }
 
-.room > h3 {
-    float: left;
-}
 .room h3 {
     color: white;
     font-size: 25px;
@@ -63,6 +58,12 @@ body {
 
 .room p {
     color: white;
+    margin-bottom: 10px;
+}
+.description {
+    flex-direction: column;
+    float: left;
+    margin-bottom: 20px;
 }
 .mode {
     font-size: 30px;
@@ -71,7 +72,16 @@ body {
     border-top-color: white;
 }
 
-button {
+.join-button {
+    float: right;
+}
+
+.room-member button {
+    position: absolute;
+    right: 10px;
+}
+
+mat-card-footer button {
     display: inline-block;
     margin: 10px;
 }
@@ -79,6 +89,9 @@ button {
 .footer {
     position: absolute;
     bottom: 5px;
+}
+.footer-buttons {
+    margin-bottom: 20px;
 }
 
 .summary {
@@ -110,6 +123,11 @@ button {
     font-size: 25px;
     color: yellowgreen;
 }
+mat-list-item {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
 mat-card-title-group {
     margin-top: 20px;
 }
@@ -120,7 +138,6 @@ mat-card mat-card {
     width: 200px;
 }
 mat-card-footer mat-card-subtitle {
-    //color: green;
     color: #fff !important;
     font-family: 'Carter One', sans-serif;
     font-size: 20px;

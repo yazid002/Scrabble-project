@@ -1,1 +1,18 @@
-<p>dictionary-options works!</p>
+<div><input #myInput type="file" name="dictionary" (change)="selectDictionary($event)" />Ajouter</div>
+<br /><br /><br /><br />
+<div>
+    <table>
+        <tr>
+            <th>filename</th>
+            <th>Title</th>
+            <th>description</th>
+        </tr>
+        <tr *ngFor="let dictionary of dictionaryService.listDictionaries">
+            <td>{{ dictionary.title }}</td>
+            <td>{{ dictionary.description }}</td>
+            <td>
+                <button mat-raised-button color="warn" (click)="dictionaryService.deleteDictionary(dictionary.title)">delete</button>
+            </td>
+        </tr>
+    </table>
+</div>

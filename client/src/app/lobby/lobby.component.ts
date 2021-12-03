@@ -12,7 +12,7 @@ import { QuitMultiplayerDialogComponent } from './../components/quit-multiplayer
 })
 export class LobbyComponent implements OnInit {
     name: string;
-    mode: string;
+    mode: IOption;
 
     constructor(
         public matDialog: MatDialog,
@@ -31,13 +31,14 @@ export class LobbyComponent implements OnInit {
     assignValues(name: string | undefined, mode: IOption | undefined) {
         if (name && mode) {
             this.name = name;
-            this.mode = mode.value;
+            this.mode = mode;
         }
     }
-    goInRoom(id?: string) {
-        if (id) {
+    goInRoom(id?: string, index?: number) {
+        if (id && index !== undefined) {
             this.roomService.roomId = id;
             this.roomService.joinRoom(id);
+            this.userSettingsService.settings.timer.currentChoiceKey = this.roomService.rooms[index].settings.timer;
         } else {
             this.roomService.createRoom();
         }
@@ -49,10 +50,5 @@ export class LobbyComponent implements OnInit {
 
     playClickOnButtonAudio() {
         this.soundManagerService.playClickOnButtonAudio();
-    }
-
-    get numbers(): number {
-        // console.log('length = ' + this.roomService.rooms.length);
-        return this.roomService.rooms.length;
     }
 }

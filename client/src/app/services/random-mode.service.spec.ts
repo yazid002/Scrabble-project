@@ -1,20 +1,26 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { GridService } from './grid.service';
 import { RandomModeService } from './random-mode.service';
+import { UserSettingsService } from './user-settings.service';
 
 describe('RandomModeService', () => {
     let service: RandomModeService;
     let gridServiceSpy: jasmine.SpyObj<GridService>;
     let ctxStub: CanvasRenderingContext2D;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     beforeEach(() => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         const CANVAS_WIDTH = 500;
         const CANVAS_HEIGHT = 500;
 
         gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion']);
         TestBed.configureTestingModule({
             providers: [{ provide: GridService, useValue: gridServiceSpy }],
+            imports: [HttpClientTestingModule],
         });
         service = TestBed.inject(RandomModeService);
         service.tiles = JSON.parse(JSON.stringify(tiles));

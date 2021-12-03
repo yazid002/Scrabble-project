@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IOption } from '@app/classes/game-options';
+import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/titleDescriptionOfDictionary.model';
 import { RoomService } from '@app/services/room.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
@@ -16,6 +17,7 @@ export class WaitingRoomComponent implements OnInit {
     name: string;
     mode: string;
     timer: string;
+    dictionary: TitleDescriptionOfDictionary;
     constructor(
         public userSettingsService: UserSettingsService,
         public matDialog: MatDialog,
@@ -30,7 +32,9 @@ export class WaitingRoomComponent implements OnInit {
         const timer = this.userSettingsService.settings.timer.setting.availableChoices.find(
             (key) => key.key === this.userSettingsService.settings.timer.currentChoiceKey,
         );
-        this.assignValues(name, mode, timer);
+
+        const dict = this.userSettingsService.selectedDictionary;
+        this.assignValues(name, mode, timer, dict);
         this.roomService.createRoom();
     }
     openSwitchToSoloDialog() {
@@ -43,16 +47,17 @@ export class WaitingRoomComponent implements OnInit {
     playClickOnButtonAudio() {
         this.soundManagerService.playClickOnButtonAudio();
     }
-    private assignValues(name: string | undefined, mode: IOption | undefined, timer: IOption | undefined) {
-        if (name && mode && timer) {
+    private assignValues(
+        name: string | undefined,
+        mode: IOption | undefined,
+        timer: IOption | undefined,
+        dict: TitleDescriptionOfDictionary | undefined,
+    ) {
+        if (name && mode && timer && dict) {
             this.name = name;
             this.mode = mode.value;
             this.timer = timer.value;
+            this.dictionary = dict;
         }
     }
-
-    // get numbers(): number {
-    //     // console.log('length = ' + this.roomService.rooms.length);
-    //     return this.roomService.rooms.length;
-    // }
 }

@@ -85,7 +85,6 @@ export class ReserveService {
         return index !== NOT_FOUND ? this.alphabets[index] : NOT_FOUND;
     }
 
-    // TODO: ENLEVER SI ON UTILISE PAS
     getInitialReserve() {
         const reserve: ICharacter[] = [];
 

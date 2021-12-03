@@ -34,17 +34,4 @@ export class LeaderboardService {
     sortLeaderBoard(data: Leaderboard[]): Leaderboard[] {
         return data.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
     }
-
-    // async addPlayer(player: Leaderboard) {
-    //     console.log('bbb');
-    //     console.log(this.urlString);
-    //     console.log(player);
-    //     this.http.post<Leaderboard>(this.urlString, player).subscribe();
-    // }
-
-    // async deletePlayer(name: string) {
-    //     const url = `${this.urlString}/${name}`;
-    //     console.log(url);
-    //     return this.http.delete(url).subscribe();
-    // }
 }

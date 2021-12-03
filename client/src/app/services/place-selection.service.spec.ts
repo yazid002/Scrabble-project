@@ -2,7 +2,6 @@
 import { TestBed } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
-import { Dictionary } from '@app/classes/dictionary';
 import { ICharacter } from '@app/classes/letter';
 import { PLAYER } from '@app/classes/player';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH, SQUARE_NUMBER, SQUARE_WIDTH } from '@app/constants/board-constants';
@@ -34,12 +33,6 @@ describe('PlaceSelectionService', () => {
             'normalizeWord',
             'areCoordValid',
         ]);
-        const dictionary = {
-            title: 'dictionnaire test',
-            description: 'description de test',
-            words: ['aa', 'finir', 'manger', 'rouler'],
-        } as Dictionary;
-        verifyServiceSpy.dictionary = dictionary;
 
         rackServiceSpy = jasmine.createSpyObj('RackService', ['fillRackPortion', 'isLetterOnRack']);
         gridServiceSpy = jasmine.createSpyObj('GridService', ['fillGridPortion', 'writeLetter', 'removeArrow', 'drawArrow']);

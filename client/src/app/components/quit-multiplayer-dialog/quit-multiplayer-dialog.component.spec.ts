@@ -1,8 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { RoomService } from '@app/services/room.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
@@ -21,24 +23,29 @@ describe('QuitMultiplayerDialogComponent', () => {
     let component: QuitMultiplayerDialogComponent;
     let fixture: ComponentFixture<QuitMultiplayerDialogComponent>;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
+    let roomServiceSpy: jasmine.SpyObj<RoomService>;
 
     beforeEach(async () => {
+        roomServiceSpy = jasmine.createSpyObj('RoomService', ['quitRoom']);
+        roomServiceSpy.quitRoom.and.returnValue(void '');
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playClickOnButtonAudio']);
         await TestBed.configureTestingModule({
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 MatButtonModule,
                 MatDialogModule,
                 HttpClientModule,
+                RouterTestingModule,
                 RouterTestingModule.withRoutes([{ path: 'home', component: MainPageComponent }]),
             ],
             declarations: [QuitMultiplayerDialogComponent],
             providers: [
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
                 { provide: MatDialog, useClass: MatDialogMock },
-                { provide: RoomService },
+                { provide: RoomService, useValue: roomServiceSpy },
             ],
         }).compileComponents();
-        // RoomService -> GameSyncService -> PlaceSelectionService -> VerifyService -> HttpClient -> HttpClient
     });
 
     beforeEach(async () => {
@@ -58,9 +65,13 @@ describe('QuitMultiplayerDialogComponent', () => {
     });
 
     it('should quit Room', () => {
-        // eslint-disable-next-line dot-notation
-        const quitRoomSpy = spyOn(component['roomService'], 'quitRoom');
         component.quitRoom();
-        expect(quitRoomSpy).toHaveBeenCalled();
+        expect(roomServiceSpy.quitRoom).toHaveBeenCalled();
+    });
+
+    it('completeGoalSound should play an audio', () => {
+        soundManagerServiceSpy.playClickOnButtonAudio.and.returnValue(void '');
+        component.playClickOnButtonAudio();
+        expect(soundManagerServiceSpy.playClickOnButtonAudio).toHaveBeenCalled();
     });
 });

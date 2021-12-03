@@ -16,8 +16,6 @@ import { SelectionManagerService } from '@app/services/selection-manager.service
 export class PlayAreaComponent implements AfterViewInit {
     @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
     @ViewChild('rackCanvas', { static: false }) private rackCanvas!: ElementRef<HTMLCanvasElement>;
-    // @ViewChild('logoCanvas', { static: false }) private logoCanvas!: ElementRef<HTMLCanvasElement>;
-    // player: { realPlayer: number; otherPlayer: number };
     private canvasSize: Vec2;
 
     constructor(
@@ -26,9 +24,8 @@ export class PlayAreaComponent implements AfterViewInit {
         public exchangeService: ExchangeService,
         public selectionManagerService: SelectionManagerService,
         public randomMode: RandomModeService,
-        public gameService: GameService, // private passExecutionService: PassExecutionService,
+        public gameService: GameService,
     ) {
-        // this.player = PLAYER;
         this.canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     }
 
@@ -76,8 +73,4 @@ export class PlayAreaComponent implements AfterViewInit {
     get height(): number {
         return this.canvasSize.y;
     }
-
-    // skipTurn(): void {
-    //     this.passExecutionService.execute();
-    // }
 }

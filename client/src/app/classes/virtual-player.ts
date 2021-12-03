@@ -12,3 +12,4 @@ export type SortFct = (possibilities: WordNCoord[]) => WordNCoord[];
 export type VoidFct = (service: VirtualPlayerService) => void;
 export type NumberFct = () => number;
 export const MAX_RACK_SIZE = 7;
+export const DELAY_TO_START = 1000;

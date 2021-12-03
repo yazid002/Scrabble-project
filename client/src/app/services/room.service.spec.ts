@@ -1,18 +1,76 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { tiles } from '@app/classes/board';
+import { PLAYER } from '@app/classes/player';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
+import { BehaviorSubject } from 'rxjs';
 import { Socket } from 'socket.io-client';
-import { GameState } from './game-sync.service';
+import { ChatService } from './chat.service';
+import { GameState, GameSyncService } from './game-sync.service';
+import { GameService } from './game.service';
+import { Leaderboard } from './leaderboard.service';
 import { Room, RoomService } from './room.service';
+import { UserSettingsService } from './user-settings.service';
 describe('RoomService', () => {
     let service: RoomService;
     let clientSocket: Socket;
-
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let gameSyncServiceSpy: jasmine.SpyObj<GameSyncService>;
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
+    let chatServiceSpy: jasmine.SpyObj<ChatService>;
     beforeEach(() => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries', 'getSettings']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        gameSyncServiceSpy = jasmine.createSpyObj('GameSyncService', ['receiveFromServer', 'sendToServer']);
+        const gameState: GameState = {
+            dictionaryName: 'a name',
+            players: [],
+            alphabetReserve: [],
+            currentTurn: 0,
+            skipCounter: 0,
+            timer: 0,
+            grid: tiles,
+            publicGoals: [],
+            privateGoals: [],
+        };
+
+        gameSyncServiceSpy.sendGameStateSignal = new BehaviorSubject<GameState>(gameState);
+        gameSyncServiceSpy.sendAbandonSignal = new BehaviorSubject<string>('test');
+        gameSyncServiceSpy.isMasterClient = true;
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['convertGameToSolo']);
+        gameServiceSpy.endGameSignal = new BehaviorSubject<Leaderboard>({ name: 'Random name', score: 0, mode: 'classic' });
+        gameServiceSpy.currentTurn = PLAYER.realPlayer;
+        gameServiceSpy.players = [
+            {
+                id: PLAYER.realPlayer,
+                name: 'Random name',
+                rack: [
+                    { name: 'A', quantity: 9, points: 1, display: 'A' },
+                    { name: 'B', quantity: 2, points: 3, display: 'B' },
+                    { name: 'C', quantity: 2, points: 3, display: 'C' },
+                    { name: 'D', quantity: 3, points: 2, display: 'D' },
+                    { name: 'E', quantity: 15, points: 1, display: 'E' },
+                ],
+                points: 0,
+                turnWithoutSkipAndExchangeCounter: 0,
+                placeInTenSecondsGoalCounter: 0,
+                wordsMapping: new Map<string, number>(),
+                words: [],
+            },
+        ];
+        chatServiceSpy = jasmine.createSpyObj('ChatService', ['addMessage', 'getMessages']);
+        chatServiceSpy.messageSent = new BehaviorSubject<string>('a message');
+        chatServiceSpy.messages = [];
         clientSocket = jasmine.createSpyObj('socket', ['on', 'emit'], { id: '1' }) as unknown as Socket;
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }])],
+            providers: [
+                { provide: GameService, useValue: gameServiceSpy },
+                { provide: GameSyncService, useValue: gameSyncServiceSpy },
+                { provide: ChatService, useValue: chatServiceSpy },
+                { provide: UserSettingsService, useValue: userSettingsServiceSpy },
+            ],
         }).compileComponents();
         service = TestBed.inject(RoomService);
         service.socket = clientSocket;
@@ -45,7 +103,8 @@ describe('RoomService', () => {
             return undefined as any;
         };
         // eslint-disable-next-line dot-notation
-        const spy = spyOn(service['chatService']['messages'], 'push');
+        const spy = spyOn(chatServiceSpy['messages'], 'push');
+
         service.configureRoomCommunication();
         expect(spy).toHaveBeenCalled();
     });
@@ -60,7 +119,7 @@ describe('RoomService', () => {
             return undefined as any;
         };
         // eslint-disable-next-line dot-notation
-        const spy = spyOn(service['chatService']['messages'], 'push');
+        const spy = spyOn(chatServiceSpy['messages'], 'push');
         service.configureRoomCommunication();
         expect(spy).not.toHaveBeenCalled();
     });
@@ -68,6 +127,7 @@ describe('RoomService', () => {
     it('should sync game date on receive on receive syncGameData message', () => {
         // eslint-disable-next-line dot-notation
         const sendGameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 0,
@@ -84,15 +144,15 @@ describe('RoomService', () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return undefined as any;
         };
-        // eslint-disable-next-line dot-notation
-        const spy = spyOn(service['gameSyncService'], 'receiveFromServer');
+
         service.configureRoomCommunication();
-        expect(spy).toHaveBeenCalled();
+        expect(gameSyncServiceSpy.receiveFromServer).toHaveBeenCalled();
     });
 
     it('should sync game date on receive syncGameData message', () => {
         // eslint-disable-next-line dot-notation
         const sendGameState: GameState = {
+            dictionaryName: 'a name',
             players: [],
             alphabetReserve: [],
             currentTurn: 0,
@@ -109,10 +169,9 @@ describe('RoomService', () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return undefined as any;
         };
-        // eslint-disable-next-line dot-notation
-        const spy = spyOn(service['gameSyncService'], 'receiveFromServer');
+
         service.configureRoomCommunication();
-        expect(spy).not.toHaveBeenCalled();
+        expect(gameSyncServiceSpy.receiveFromServer).not.toHaveBeenCalled();
     });
 
     it('should call gameService.convertGameToSolo when receive abandon signal from opponent', () => {
@@ -124,10 +183,9 @@ describe('RoomService', () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return undefined as any;
         };
-        // eslint-disable-next-line dot-notation
-        const spy = spyOn(service['gameService'], 'convertGameToSolo');
+
         service.configureRoomCommunication();
-        expect(spy).toHaveBeenCalled();
+        expect(gameServiceSpy.convertGameToSolo).toHaveBeenCalled();
     });
 
     it('should not call solo game mode on receive abandon message if socketid is equal to id', () => {
@@ -139,10 +197,9 @@ describe('RoomService', () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return undefined as any;
         };
-        // eslint-disable-next-line dot-notation
-        const spy = spyOn(service['gameService'], 'convertGameToSolo');
+
         service.configureRoomCommunication();
-        expect(spy).not.toHaveBeenCalled();
+        expect(gameServiceSpy.convertGameToSolo).not.toHaveBeenCalled();
     });
 
     it('should send to server on receive askMasterSync message if player is master client', () => {
@@ -156,10 +213,9 @@ describe('RoomService', () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return undefined as any;
         };
-        // eslint-disable-next-line dot-notation
-        const spy = spyOn(service['gameSyncService'], 'sendToServer');
+
         service.configureRoomCommunication();
-        expect(spy).toHaveBeenCalled();
+        expect(gameSyncServiceSpy.sendToServer).toHaveBeenCalled();
     });
 
     it('should not send to server on receive askMasterSync message if player is not master client', () => {
@@ -173,10 +229,9 @@ describe('RoomService', () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return undefined as any;
         };
-        // eslint-disable-next-line dot-notation
-        const spy = spyOn(service['gameSyncService'], 'sendToServer');
+
         service.configureRoomCommunication();
-        expect(spy).not.toHaveBeenCalled();
+        expect(gameSyncServiceSpy.sendToServer).not.toHaveBeenCalled();
     });
 
     it('should room', () => {

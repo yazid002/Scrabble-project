@@ -10,7 +10,7 @@ describe('ReadFileService', () => {
     });
 
     it('should read the dictionary file', async () => {
-        const result = JSON.parse(await readFileService.readDictionary('../server/app/test-utils/test-file.json'));
+        const result = await readFileService.readDictionary('../server/app/test-utils/test-file.json');
         expect(result.title).to.equal('dico test');
     });
 

@@ -1,14 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { NamesService } from '@app/services/admin/names.service';
-
+import { Component } from '@angular/core';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-    constructor(private namesService: NamesService) {}
-    async ngOnInit() {
-        this.namesService.fetchNames();
-    }
-}
+export class AppComponent {}

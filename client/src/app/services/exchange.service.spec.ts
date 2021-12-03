@@ -125,8 +125,6 @@ describe('ExchangeService', () => {
         const lettersToChange = ['B', 'U', 'D'];
         const min = 1;
         const max = 7;
-        // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // const validateArgumentLengthSpy = spyOn<any>(service, 'validateArgumentLength').and.returnValue(true);
 
         // eslint-disable-next-line dot-notation
         const result = service['validateArgumentLength'](lettersToChange, min, max);
@@ -138,8 +136,6 @@ describe('ExchangeService', () => {
         const lettersToChange = ['B'];
         const min = 1;
         const max = 7;
-        // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // const validateArgumentLengthSpy = spyOn<any>(service, 'validateArgumentLength').and.returnValue(true);
 
         // eslint-disable-next-line dot-notation
         const result = service['validateArgumentLength'](lettersToChange, min, max);

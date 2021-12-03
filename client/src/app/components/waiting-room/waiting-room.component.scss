@@ -6,7 +6,7 @@ body {
     min-height: 100%;
     height: auto;
     background-image: url('/assets/background.jpg');
-    height: 105%;
+    height: 109%;
     width: 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -31,7 +31,6 @@ body {
 }
 .loading h1 {
     margin-bottom: 50px;
-    //color: green;
     color: #fff !important;
     font-family: 'Carter One', sans-serif;
     text-decoration: none !important;
@@ -103,4 +102,3 @@ mat-card mat-card {
 .hidden {
     display: none;
 }
-// @import url('https://fonts.googleapis.com/css?family=Carter+One');

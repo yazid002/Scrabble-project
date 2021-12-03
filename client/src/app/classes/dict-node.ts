@@ -41,14 +41,6 @@ export class DictNode {
 
         return true;
     }
-    // find(word: string): string | undefined {
-    //     let child: DictNode | undefined = this;
-    //     for (const letter of word) {
-    //         child = child.childs.find((node) => node.letter === letter);
-    //         if (!child) return;
-    //     }
-    //     return word;
-    // }
 }
 export const convertDictToTree: (dict: Dictionary) => DictNode = (dict: Dictionary) => {
     const root = new DictNode('');

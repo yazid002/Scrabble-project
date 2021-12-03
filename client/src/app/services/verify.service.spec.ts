@@ -8,30 +8,129 @@ import { Dictionary } from '@app/classes/dictionary';
 import { Vec2 } from '@app/classes/vec2';
 import { RackService } from '@app/services/rack.service';
 import { VerifyService } from '@app/services/verify.service';
-import { Observable } from 'rxjs';
-
+import { Observable, of } from 'rxjs';
+// disable because we need a cile that is not in the project scope (we can't use '@app/')
+// eslint-disable-next-line no-restricted-imports
+import * as dictFile from '../../../../server/app/assets/dictionnary.json';
+import { DictionaryService } from './admin/dictionary.service';
+import { UserSettingsService } from './user-settings.service';
+const dictionary = dictFile as Dictionary;
+// const getDictUrl = 'http://localhost:3000/api/admin/dictionary/findAll';
 describe('VerifyService', () => {
     let service: VerifyService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
     let httpTestingController: HttpTestingController;
-
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
     beforeEach(() => {
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon dictionnaire', description: 'a description' };
         rackServiceSpy = jasmine.createSpyObj('RackService', ['findJokersNumberOnRack', 'isLetterOnRack']);
+        dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary', 'getAllDictionaries']);
+        dictionaryServiceSpy.fetchDictionary.and.callFake(() => of(dictionary));
+        dictionaryServiceSpy.getAllDictionaries.and.returnValue(Promise.resolve([{ title: dictionary.title, description: dictionary.description }]));
 
-        TestBed.configureTestingModule({ providers: [{ provide: RackService, useValue: rackServiceSpy }], imports: [HttpClientTestingModule] });
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: RackService, useValue: rackServiceSpy },
+                { provide: UserSettingsService, useValue: userSettingsServiceSpy },
+                { provide: DictionaryService, useValue: dictionaryServiceSpy },
+            ],
+            imports: [HttpClientTestingModule],
+        });
         httpTestingController = TestBed.inject(HttpTestingController);
         service = TestBed.inject(VerifyService);
-        const dictionary = {
-            title: 'dictionnaire test',
-            description: 'description de test',
-            words: ['aa', 'finir', 'manger', 'rouler'],
-        } as Dictionary;
-        service.dictionary = dictionary;
     });
-
     afterEach(() => {
         httpTestingController.verify();
     });
+
+    // describe('functiuns that will get dictionaries from server', () => {
+    //     afterEach(() => {
+    //         const getDictReq = httpTestingController.expectOne(getDictUrl);
+    //         expect(getDictReq.request.method).toEqual('GET');
+    //     });
+    it(
+        ' findAdjacentDown should return false if the letter is not place at the extreme bottom of' +
+            ' the board and there is no letter bottom of it',
+        () => {
+            const coord = { y: 13, x: 4 };
+            tiles[coord.y + 1][coord.x].letter = '';
+
+            // findAdjacentUp is private
+            // eslint-disable-next-line dot-notation
+            const result = service['findAdjacentDown'](coord);
+            expect(result).toBeFalse();
+        },
+    );
+    it(
+        ' isFitting should return an error true' +
+            ' if there are letters on the board where we want to place and if there are not the same than ours',
+        () => {
+            const coord = { x: 9, y: 1 };
+            const word = 'papa';
+            const direction = 'v';
+
+            // isCaseEmpty is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            spyOn<any>(service, 'isCaseEmpty').and.returnValue(false);
+
+            // isLetterOnBoardTheSame is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            spyOn<any>(service, 'isLetterOnBoardTheSame').and.returnValue(false);
+
+            const result = service.isFitting(coord, direction, word);
+            expect(result.error).toEqual(true);
+            expect(result.message.body).toEqual("Commande impossible à réaliser : Il y a déjà une lettre dans l'une des cases ciblées.");
+        },
+    );
+    it(
+        ' findAdjacentRight should return false if the letter is not place at the extreme right' +
+            ' of the board and there is no letter on its right',
+        () => {
+            const coord = { y: 1, x: 13 };
+            tiles[coord.y][coord.x + 1].letter = '';
+
+            // findAdjacentRight is private
+            // eslint-disable-next-line dot-notation
+            const result = service['findAdjacentRight'](coord);
+            expect(result).toBeFalse();
+        },
+    );
+    it(
+        ' validatePlaceFeasibility should call validateInvalidSymbols, validateJokersOccurrencesMatch,' +
+            'if there is adjacency and no firstMove error',
+        () => {
+            const coord = { x: 1, y: 1 };
+            const word = 'moto';
+            const direction = 'v';
+            tiles[7][7].letter = 'A';
+
+            const result: IChat = { from: SENDER.computer, body: '' };
+            const response = { error: false, message: result };
+
+            spyOn(service, 'areCoordValid').and.returnValue(true);
+            spyOn(service, 'isFitting').and.returnValue(response);
+            spyOn(service, 'isFirstMove').and.returnValue(false);
+
+            // validateInvalidSymbols is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const validateInvalidSymbolsSpy = spyOn<any>(service, 'validateInvalidSymbols').and.returnValue(response);
+
+            // validateJokersOccurrencesMatch is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const validateJokersOccurrencesMatchSpy = spyOn<any>(service, 'validateJokersOccurrencesMatch').and.returnValue(response);
+
+            // hasAdjacent is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
+
+            service.validatePlaceFeasibility(word, coord, direction);
+            expect(validateInvalidSymbolsSpy).toHaveBeenCalled();
+            expect(validateJokersOccurrencesMatchSpy).toHaveBeenCalled();
+        },
+    );
 
     it('should be created', () => {
         expect(service).toBeTruthy();
@@ -56,10 +155,10 @@ describe('VerifyService', () => {
 
     it(' validateInvalidSymbols should an error true if the word contains invalid symbols', () => {
         const wordToCheck = 'pa-pa';
-
         // checkInvalidSymbols is private
         // eslint-disable-next-line dot-notation
         const result = service['validateInvalidSymbols'](wordToCheck);
+
         expect(result.error).toEqual(true);
     });
 
@@ -239,20 +338,6 @@ describe('VerifyService', () => {
         expect(result).toBeFalse();
     });
 
-    it(
-        ' findAdjacentDown should return false if the letter is not place at the extreme bottom of' +
-            ' the board and there is no letter bottom of it',
-        () => {
-            const coord = { y: 13, x: 4 };
-            tiles[coord.y + 1][coord.x].letter = '';
-
-            // findAdjacentUp is private
-            // eslint-disable-next-line dot-notation
-            const result = service['findAdjacentDown'](coord);
-            expect(result).toBeFalse();
-        },
-    );
-
     it(' findAdjacentRight should return true', () => {
         const coord = { x: 1, y: 13 };
         tiles[coord.y][coord.x + 1].letter = 'a';
@@ -271,21 +356,6 @@ describe('VerifyService', () => {
         const result = service['findAdjacentRight'](coord);
         expect(result).toBeFalse();
     });
-
-    it(
-        ' findAdjacentRight should return false if the letter is not place at the extreme right' +
-            ' of the board and there is no letter on its right',
-        () => {
-            const coord = { y: 1, x: 13 };
-            tiles[coord.y][coord.x + 1].letter = '';
-
-            // findAdjacentRight is private
-            // eslint-disable-next-line dot-notation
-            const result = service['findAdjacentRight'](coord);
-            expect(result).toBeFalse();
-        },
-    );
-
     it(' findAdjacentLeft should return true', () => {
         const coord = { x: 1, y: 1 };
         tiles[coord.y][coord.x - 1].letter = 'a';
@@ -410,41 +480,6 @@ describe('VerifyService', () => {
         const result = service['hasAdjacent'](word, coord, direction);
         expect(result).toBeFalse();
     });
-
-    it(
-        ' validatePlaceFeasibility should call validateInvalidSymbols, validateJokersOccurrencesMatch,' +
-            'if there is adjacency and no firstMove error',
-        () => {
-            const coord = { x: 1, y: 1 };
-            const word = 'moto';
-            const direction = 'v';
-            tiles[7][7].letter = 'A';
-
-            const result: IChat = { from: SENDER.computer, body: '' };
-            const response = { error: false, message: result };
-
-            spyOn(service, 'areCoordValid').and.returnValue(true);
-            spyOn(service, 'isFitting').and.returnValue(response);
-            spyOn(service, 'isFirstMove').and.returnValue(false);
-
-            // validateInvalidSymbols is private
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const validateInvalidSymbolsSpy = spyOn<any>(service, 'validateInvalidSymbols').and.returnValue(response);
-
-            // validateJokersOccurrencesMatch is private
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const validateJokersOccurrencesMatchSpy = spyOn<any>(service, 'validateJokersOccurrencesMatch').and.returnValue(response);
-
-            // hasAdjacent is private
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'hasAdjacent').and.returnValue(true);
-
-            service.validatePlaceFeasibility(word, coord, direction);
-            expect(validateInvalidSymbolsSpy).toHaveBeenCalled();
-            expect(validateJokersOccurrencesMatchSpy).toHaveBeenCalled();
-        },
-    );
-
     it(' validatePlaceFeasibility should call validateFirstMove if it is the first move', () => {
         const coord = { x: 1, y: 1 };
         const word = 'moto';
@@ -915,29 +950,6 @@ describe('VerifyService', () => {
             'Commande impossible à réaliser : Il y a des lettres qui ne sont ni sur le plateau de jeu, ni sur le chevalet.',
         );
     });
-
-    it(
-        ' isFitting should return an error true' +
-            ' if there are letters on the board where we want to place and if there are not the same than ours',
-        () => {
-            const coord = { x: 9, y: 1 };
-            const word = 'papa';
-            const direction = 'v';
-
-            // isCaseEmpty is private
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'isCaseEmpty').and.returnValue(false);
-
-            // isLetterOnBoardTheSame is private
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            spyOn<any>(service, 'isLetterOnBoardTheSame').and.returnValue(false);
-
-            const result = service.isFitting(coord, direction, word);
-            expect(result.error).toEqual(true);
-            expect(result.message.body).toEqual("Commande impossible à réaliser : Il y a déjà une lettre dans l'une des cases ciblées.");
-        },
-    );
-
     it(' isFitting should update the letters that were on the board and that we used in our placement', () => {
         const coord = { y: 9, x: 1 };
         const word = 'papa';
@@ -1132,9 +1144,11 @@ describe('VerifyService', () => {
             );
 
             // validateWords devrait faire une seule requete pour 'POST' les mots à valider
+            const expectedRequestBody = { words: wordsToValidate, dict: 'Mon dictionnaire' };
+
             const req = httpTestingController.expectOne(service.urlString);
             expect(req.request.method).toEqual('POST');
-            expect(req.request.body).toEqual(wordsToValidate);
+            expect(req.request.body).toEqual(expectedRequestBody);
 
             // Le serveur devrait retourner que les mots existent après le 'POST'
             const expectedResponse = new HttpResponse({ body: response });
@@ -1142,3 +1156,4 @@ describe('VerifyService', () => {
         });
     });
 });
+// });

@@ -1,5 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Message } from '@app/classes/message';
 import { CommunicationService } from '@app/services/communication.service';
 
@@ -10,7 +11,7 @@ describe('CommunicationService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
+            imports: [HttpClientTestingModule, NoopAnimationsModule],
         });
         service = TestBed.inject(CommunicationService);
         httpMock = TestBed.inject(HttpTestingController);

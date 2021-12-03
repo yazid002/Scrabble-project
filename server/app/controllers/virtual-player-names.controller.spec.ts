@@ -1,9 +1,7 @@
 import { Application } from '@app/app';
 import { NameProperties } from '@app/classes/name-properties';
 import { VirtualPlayerNamesService } from '@app/services/virtual-player-names.service';
-// import * as chai from 'chai';
 import { expect } from 'chai';
-// import * as spies from 'chai-spies';
 import { StatusCodes } from 'http-status-codes';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import * as supertest from 'supertest';

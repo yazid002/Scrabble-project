@@ -1,18 +1,57 @@
 /* eslint-disable max-lines */
+/* eslint-disable max-lines */
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Dictionary } from '@app/classes/dictionary';
+import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
+import { of } from 'rxjs';
+// we must disable this import pattern warning because we need a file outside of the project scope (can't use '@app/' pattern)
+// eslint-disable-next-line no-restricted-imports
+import * as dictFile from '../../../../server/app/assets/dictionnary.json';
+import { DictionaryService } from './admin/dictionary.service';
 import { GoalService } from './goal.service';
 import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
+import { UserSettingsService } from './user-settings.service';
+const dictionary = dictFile as Dictionary;
+const MODE: IOptionList = {
+    settingName: 'Mode de jeux',
+    availableChoices: [
+        { key: 'classic', value: 'Classique' },
+        { key: 'log2990', value: 'LOG2990', disabled: true },
+    ],
+};
+const NUM_PLAYERS: IOptionList = {
+    settingName: 'Nombre de joueurs',
+    availableChoices: [
+        { key: 'solo', value: 'Solo' },
+        { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
+    ],
+};
+const COMPUTER_LEVEL: IOptionList = {
+    settingName: "Niveau de l'ordinateur",
+    availableChoices: [{ key: 'beginner', value: 'Débutant' }],
+};
 
+const TIMER: IOptionList = {
+    settingName: 'Temps maximal par tour',
+    availableChoices: [
+        { key: '30', value: '30s' },
+        { key: '60', value: '1m' },
+        { key: '90', value: '1m30s' },
+    ],
+};
 describe('GoalService', () => {
     let service: GoalService;
     let timerServiceSpy: TimerService;
     let player: Player;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
+    let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
 
     beforeEach(() => {
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playGoalAchievementAudio']);
@@ -23,22 +62,36 @@ describe('GoalService', () => {
             resetValue: 0,
             totalTimer: 0,
         };
+        dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary', 'getAllDictionaries']);
+        dictionaryServiceSpy.fetchDictionary.and.returnValue(of(dictionary));
+        //  dictionaryServiceSpy.getAllDictionaries.and.resolveTo([{ title: dictionary.title, description: dictionary.description }]);
+        dictionaryServiceSpy.getAllDictionaries.and.returnValue(Promise.resolve([{ title: dictionary.title, description: dictionary.description }]));
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries', 'getComputerName']);
+        userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);
+        userSettingsServiceSpy.nameOption = NAME_OPTION;
+        userSettingsServiceSpy.nameOption.userChoice = 'un nom';
+        userSettingsServiceSpy.settings = {
+            mode: { setting: MODE, currentChoiceKey: 'classic' },
+            numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
+            computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+            timer: { setting: TIMER, currentChoiceKey: '60' },
+        };
+        userSettingsServiceSpy.dictionnaires = [{ title: 'Espagnol', description: 'Langue espagnole' }];
+        userSettingsServiceSpy.nameOption = NAME_OPTION;
+
+        userSettingsServiceSpy.computerName = '';
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
 
         TestBed.configureTestingModule({
             providers: [
                 { provide: TimerService, useValue: timerServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+                { provide: DictionaryService, useValue: dictionaryServiceSpy },
+                { provide: UserSettingsService, useValue: userSettingsServiceSpy },
             ],
+            imports: [HttpClientTestingModule, NoopAnimationsModule],
         });
         service = TestBed.inject(GoalService);
-        const dictionary = {
-            title: 'dictionnaire test',
-            description: 'description de test',
-            words: ['aa', 'finir', 'manger', 'rouler', 'kilos', 'jartera'],
-        } as Dictionary;
-        // dictionary is private
-        // eslint-disable-next-line dot-notation
-        service['dictionary'] = dictionary;
 
         player = {
             id: PLAYER.realPlayer,
@@ -56,6 +109,7 @@ describe('GoalService', () => {
             wordsMapping: new Map<string, number>(),
             words: [],
         };
+        service.initialize(dictionary);
     });
 
     it('should be created', () => {
@@ -67,11 +121,11 @@ describe('GoalService', () => {
         const min = 5;
         // generateRandomWord is private
         // eslint-disable-next-line dot-notation
-        const result = service['generateRandomWord']();
+        const result = service['generateRandomWord'](dictionary);
 
         // dictionary is private
         // eslint-disable-next-line dot-notation
-        expect(service['dictionary'].words).toContain(result);
+        expect(dictionary.words).toContain(result);
         expect(result.length).toBeGreaterThanOrEqual(min);
         expect(result.length).toBeLessThanOrEqual(max);
     });
@@ -82,8 +136,13 @@ describe('GoalService', () => {
         const generateNumberSpy = spyOn<any>(service, 'generateNumber').and.callThrough();
 
         // generateRandomWord is private
+        const dictionaryTest = {
+            title: 'dictionnaire test',
+            description: 'description de test',
+            words: ['aa', 'finir', 'manger', 'rouler'],
+        } as Dictionary;
         // eslint-disable-next-line dot-notation
-        service['generateRandomWord']();
+        service['generateRandomWord'](dictionaryTest);
 
         expect(generateNumberSpy).toHaveBeenCalled();
     });

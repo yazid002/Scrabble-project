@@ -27,3 +27,7 @@ form:invalid {
         pointer-events: none;
     }
 }
+
+.mat-form-field--no-underline .mat-form-field-underline {
+    background-color: transparent !important;
+}

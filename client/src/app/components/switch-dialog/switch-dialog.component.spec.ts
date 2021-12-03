@@ -1,4 +1,4 @@
-import { GamePageComponent } from './../../pages/game-page/game-page.component';
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -6,16 +6,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { NAME_OPTION } from '@app/classes/game-options';
+import { RouterTestingModule } from '@angular/router/testing';
+import { IOptionList } from '@app/classes/game-options';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { UserSettingsService } from '@app/services/user-settings.service';
 import { of } from 'rxjs';
-import { SwitchDialogComponent } from './switch-dialog.component';
-// import { RouterTestingModule } from '@angular/router/testing';
-// import { GamePageComponent } from '@app/pages/game-page/game-page.component';
-import { HttpClientModule } from '@angular/common/http';
+import { GamePageComponent } from './../../pages/game-page/game-page.component';
 import { RoomService } from './../../services/room.service';
-import { RouterModule } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { SwitchDialogComponent } from './switch-dialog.component';
 
 class MatDialogMock {
     open() {
@@ -24,14 +22,62 @@ class MatDialogMock {
         };
     }
 }
+const NUM_PLAYERS: IOptionList = {
+    settingName: 'Nombre de joueurs',
+    availableChoices: [
+        { key: 'solo', value: 'Solo' },
+        { key: 'multiplayer', value: 'Multijoueurs', disabled: false },
+    ],
+};
+
+const COMPUTER_LEVEL: IOptionList = {
+    settingName: "Niveau de l'ordinateur",
+    availableChoices: [
+        { key: 'beginner', value: 'Débutant' },
+        { key: 'advanced', value: 'Avancé' },
+    ],
+};
+const MODE: IOptionList = {
+    settingName: 'Mode de jeux',
+    availableChoices: [
+        { key: 'classic', value: 'Classique' },
+        { key: 'log2990', value: 'LOG2990', disabled: true },
+    ],
+};
+
+const TIMER: IOptionList = {
+    settingName: 'Temps maximal par tour',
+    availableChoices: [
+        { key: '30', value: '30s' },
+        { key: '60', value: '1m' },
+        { key: '90', value: '1m30s' },
+        { key: '120', value: '2m' },
+        { key: '150', value: '2m30s' },
+        { key: '180', value: '3m' },
+        { key: '210', value: '3m30' },
+        { key: '240', value: '4m' },
+        { key: '270', value: '4m30' },
+        { key: '300', value: '5m' },
+    ],
+};
+
 describe('SwitchDialogComponent', () => {
     let component: SwitchDialogComponent;
     let fixture: ComponentFixture<SwitchDialogComponent>;
-    // let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let roomServiceSpy: jasmine.SpyObj<RoomService>;
 
     beforeEach(async () => {
-        // userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName']);
-        // userSettingsServiceSpy.nameOption = NAME_OPTION;
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['validateName', 'getDictionaries']);
+        userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
+        roomServiceSpy = jasmine.createSpyObj('RoomService', ['quitRoom']);
+        userSettingsServiceSpy.settings = {
+            mode: { setting: MODE, currentChoiceKey: 'classic' },
+            numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'log2990' },
+            computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+            timer: { setting: TIMER, currentChoiceKey: '60' },
+        };
+        userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
 
         await TestBed.configureTestingModule({
             declarations: [SwitchDialogComponent],
@@ -40,12 +86,14 @@ describe('SwitchDialogComponent', () => {
                     provide: MatDialog,
                     useClass: MatDialogMock,
                 },
-                { provide: UserSettingsService },
-                { provide: RoomService },
+                { provide: UserSettingsService, useValue: userSettingsServiceSpy },
+                { provide: RoomService, useValue: roomServiceSpy },
                 { provide: MatDialog, useClass: MatDialogMock },
-                { provide: RouterModule },
+                { provide: RouterTestingModule },
             ],
             imports: [
+                FormsModule,
+                AppMaterialModule,
                 // RouterTestingModule.withRoutes([{ path: 'home', component: GamePageComponent }]),
                 BrowserAnimationsModule,
                 MatRadioModule,
@@ -54,7 +102,7 @@ describe('SwitchDialogComponent', () => {
                 FormsModule,
                 MatInputModule,
                 MatDialogModule,
-                RouterModule,
+                RouterTestingModule,
                 RouterTestingModule.withRoutes([{ path: 'game', component: GamePageComponent }]),
             ],
         }).compileComponents();
@@ -70,10 +118,8 @@ describe('SwitchDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    // it('should quit Room', () => {
-    //     // eslint-disable-next-line dot-notation
-    //     const quitRoomSpy = spyOn(component['roomService'], 'quitRoom');
-    //     component.quitRoom();
-    //     expect(quitRoomSpy).toHaveBeenCalled();
-    // });
+    it('should assign solo to ', () => {
+        component.assignSolo();
+        expect(userSettingsServiceSpy.settings.numPlayers.currentChoiceKey).toEqual('solo');
+    });
 });

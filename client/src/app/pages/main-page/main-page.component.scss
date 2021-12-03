@@ -27,7 +27,8 @@
 .team-name {
     margin-top: 0.25em;
     margin-bottom: 0.25em;
-    color: green;
+    color: greenyellow;
+    text-decoration: underline;
 }
 
 .header-item {
@@ -40,10 +41,10 @@
 }
 
 .footer-item p :nth-child(even) {
-    color: orange;
+    color: white;
 }
 .footer-item p :nth-child(odd) {
-    color: blue;
+    color: red;
 }
 
 .server-message {

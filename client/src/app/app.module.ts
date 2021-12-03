@@ -1,6 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
@@ -16,6 +18,9 @@ import { PlayerNamesOptionsComponent } from './components/admin/player-names-opt
 import { ChatboxComponent } from './components/chatbox/chatbox.component';
 import { GameModeDialogComponent } from './components/game-mode-dialog/game-mode-dialog.component';
 import { GameOverviewComponent } from './components/game-overview/game-overview.component';
+import { GoalProgressBarComponent } from './components/goal-progress-bar/goal-progress-bar.component';
+import { GoalComponent } from './components/goal/goal.component';
+import { JoinRoomDialogComponent } from './components/join-room-dialog/join-room-dialog.component';
 import { OpponentQuitDialogComponent } from './components/opponent-quit-dialog/opponent-quit-dialog.component';
 import { QuitConfirmationDialogComponent } from './components/quit-confirmation-dialog/quit-confirmation-dialog.component';
 import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.component';
@@ -23,9 +28,6 @@ import { WaitingRoomComponent } from './components/waiting-room/waiting-room.com
 import { LobbyComponent } from './lobby/lobby.component';
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
-import { GoalProgressBarComponent } from './components/goal-progress-bar/goal-progress-bar.component';
-import { GoalComponent } from './components/goal/goal.component';
-import { JoinRoomDialogComponent } from './components/join-room-dialog/join-room-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -57,7 +59,18 @@ import { JoinRoomDialogComponent } from './components/join-room-dialog/join-room
         GoalComponent,
         JoinRoomDialogComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule],
+    imports: [
+        AppMaterialModule,
+        FormsModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        MatDialogModule,
+        MatSnackBarModule,
+    ],
     providers: [],
     bootstrap: [AppComponent],
 })

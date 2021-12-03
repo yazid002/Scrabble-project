@@ -1,16 +1,54 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { IChat } from '@app/classes/chat';
+import { GameService } from '@app/services/game.service';
+import { AideExecutionService } from './aide-execution.service';
 import { CommandExecutionService } from './command-execution.service';
 import { DebugExecutionService } from './debug-execution.service';
-
+import { ExchangeExecutionService } from './exchange-execution.service';
+import { PassExecutionService } from './pass-execution.service';
+import { PlaceExecutionService } from './place-execution.service';
+import { ReserveExecutionService } from './reserve-execution.service';
+const message: IChat = { from: 'ME', body: 'a message' };
 describe('CommandExecutionService', () => {
     let service: CommandExecutionService;
     let debugServiceSpy: jasmine.SpyObj<DebugExecutionService>;
-
+    let gameServiceSpy: jasmine.SpyObj<GameService>;
+    let reserveExecutionServiceSpy: jasmine.SpyObj<ReserveExecutionService>;
+    let passExecutionServiceSpy: jasmine.SpyObj<PassExecutionService>;
+    let exchangeExecutionServiceSpy: jasmine.SpyObj<ExchangeExecutionService>;
+    let aideExecutionServiceSpy: jasmine.SpyObj<AideExecutionService>;
+    let debugExecutionServiceSpy: jasmine.SpyObj<DebugExecutionService>;
+    let placeExecutionServiceSpy: jasmine.SpyObj<PlaceExecutionService>;
     beforeEach(() => {
+        passExecutionServiceSpy = jasmine.createSpyObj('PassExecutionService', ['execute']);
+        passExecutionServiceSpy.execute.and.callFake(() => message);
+
+        exchangeExecutionServiceSpy = jasmine.createSpyObj('ExchangeExecutionService', ['execute']);
+        exchangeExecutionServiceSpy.execute.and.callFake(() => message);
+
+        aideExecutionServiceSpy = jasmine.createSpyObj('AideExecutionService', ['execute']);
+        aideExecutionServiceSpy.execute.and.callFake(() => message);
+        debugExecutionServiceSpy = jasmine.createSpyObj('DebugExecutionService', ['execute']);
+        debugExecutionServiceSpy.execute.and.callFake(() => message);
+        reserveExecutionServiceSpy = jasmine.createSpyObj('ReserveExecutionService', ['execute']);
+        reserveExecutionServiceSpy.execute.and.callFake(() => message);
+        placeExecutionServiceSpy = jasmine.createSpyObj('PlaceExecutionService', ['execute']);
+        placeExecutionServiceSpy.execute.and.resolveTo(message);
+        gameServiceSpy = jasmine.createSpyObj('GameService', ['initPlayers']);
+        gameServiceSpy.currentTurn = 1;
         debugServiceSpy = jasmine.createSpyObj('DebugExecutionService', ['execute']);
         TestBed.configureTestingModule({
-            providers: [{ provide: DebugExecutionService, useValue: debugServiceSpy }],
+            providers: [
+                { provide: DebugExecutionService, useValue: debugServiceSpy },
+                { provide: GameService, useValue: gameServiceSpy },
+                { provide: PassExecutionService, useValue: passExecutionServiceSpy },
+                { provide: ExchangeExecutionService, useValue: exchangeExecutionServiceSpy },
+                { provide: AideExecutionService, useValue: aideExecutionServiceSpy },
+                { provide: DebugExecutionService, useValue: debugExecutionServiceSpy },
+                { provide: ReserveExecutionService, useValue: reserveExecutionServiceSpy },
+                { provide: PlaceExecutionService, useValue: placeExecutionServiceSpy },
+            ],
             imports: [HttpClientModule],
         });
         service = TestBed.inject(CommandExecutionService);

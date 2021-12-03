@@ -1,6 +1,4 @@
 import { HttpException } from '@app/classes/http.exception';
-import { DateController } from '@app/controllers/date.controller';
-import { ExampleController } from '@app/controllers/example.controller';
 import { LeaderBoardController } from '@app/controllers/leader.controller';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -10,6 +8,7 @@ import * as logger from 'morgan';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
+import { DictionaryController } from './controllers/dictionary.controller';
 import { VirtualPlayerNamesController } from './controllers/virtual-player-names.controller';
 import { WordValidationController } from './controllers/word-validation.controller';
 
@@ -20,14 +19,12 @@ export class Application {
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
     constructor(
-        private readonly exampleController: ExampleController,
-        private readonly dateController: DateController,
         private leaderBoardController: LeaderBoardController,
         private readonly wordValidationController: WordValidationController,
         private readonly virtualPlayerNamesController: VirtualPlayerNamesController,
+        private readonly dictionaryController: DictionaryController,
     ) {
         this.app = express();
-
         this.swaggerOptions = {
             swaggerDefinition: {
                 openapi: '3.0.0',
@@ -47,9 +44,8 @@ export class Application {
     bindRoutes(): void {
         this.app.use('/leaderboard', this.leaderBoardController.router); // database
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
-        this.app.use('/api/example', this.exampleController.router);
-        this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/validate', this.wordValidationController.router);
+        this.app.use('/api/admin/dictionary', this.dictionaryController.router);
         this.app.use('/api/virtual/', this.virtualPlayerNamesController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');

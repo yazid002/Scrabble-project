@@ -4,7 +4,6 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { tiles } from '@app/classes/board';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { IChat, SENDER } from '@app/classes/chat';
-import { Dictionary } from '@app/classes/dictionary';
 import { Player, PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/constants/board-constants';
@@ -47,15 +46,9 @@ describe('PlaceService', () => {
             'validatePlaceFeasibility',
             'normalizeWord',
         ]);
-        const dictionary = {
-            title: 'dictionnaire test',
-            description: 'description de test',
-            words: ['aa', 'finir', 'manger', 'rouler'],
-        } as Dictionary;
-        verifyServiceSpy.dictionary = dictionary;
         verifyServiceSpy.formedWords = [];
 
-        timerServiceSpy = jasmine.createSpyObj('TimerService', ['decrementTime']);
+        timerServiceSpy = jasmine.createSpyObj('TimerService', ['resetTimer']);
         timerServiceSpy.resetTurnCounter = new BehaviorSubject<boolean | Player>(true);
 
         gameServiceSpy = jasmine.createSpyObj('GameService', ['initializePlayers', 'changeTurn']);
@@ -111,6 +104,7 @@ describe('PlaceService', () => {
                 { provide: PlaceSelectionService, useValue: placeSelectionServiceSpy },
                 { provide: SelectionManagerService, useValue: selectionManagerServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+                { provide: TimerService, useValue: timerServiceSpy },
             ],
             imports: [HttpClientModule],
         });
@@ -242,11 +236,6 @@ describe('PlaceService', () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             spyOn<any>(service, 'restoreAfterPlacement').and.returnValue(void '');
 
-            timerServiceSpy.resetTurnCounter.next(false);
-
-            timerServiceSpy.resetTurnCounter.subscribe((value) => {
-                expect(value).toEqual(false);
-            });
             const placeResponse = await service
                 .placeWord(wordToCheck, coord, direction, true)
                 .then((message: { error: boolean; message: IChat }) => {

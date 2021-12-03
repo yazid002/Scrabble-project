@@ -51,11 +51,4 @@ export class SoundManagerService {
         chatAudio.autoplay = true;
         chatAudio.play();
     }
-
-    // playWinGameSound(): void {
-    //     const winGameAudio = new Audio();
-    //     winGameAudio.src = 'assets/sounds/win.wave';
-    //     winGameAudio.autoplay = true;
-    //     winGameAudio.play();
-    // }
 }
