@@ -6,16 +6,20 @@ import { Goal } from '@app/classes/goal';
 import { PLAYER } from '@app/classes/player';
 import { GoalProgressBarComponent } from '@app/components/goal-progress-bar/goal-progress-bar.component';
 import { GoalType } from '@app/enums/goals-enum';
+import { GoalService } from '@app/services/goal.service';
 import { GoalComponent } from './goal.component';
 
 describe('GoalComponent', () => {
     let component: GoalComponent;
     let fixture: ComponentFixture<GoalComponent>;
+    let goalServiceSpy: jasmine.SpyObj<GoalService>;
 
     beforeEach(async () => {
+        goalServiceSpy = jasmine.createSpyObj('goalService', ['getPlayTheSameWordThreeTimesProgress', 'getProgress']);
         await TestBed.configureTestingModule({
             imports: [MatProgressBarModule, HttpClientTestingModule, NoopAnimationsModule],
             declarations: [GoalComponent, GoalProgressBarComponent],
+            providers: [{ provide: GoalService, useValue: goalServiceSpy }],
         }).compileComponents();
     });
 
