@@ -1,6 +1,6 @@
 import { Dictionary } from '@app/classes/dictionary';
 import { FileMessages } from '@app/classes/file-messages';
-import { TitleDescriptionOfDictionary } from '@app/classes/titleDescriptionOfDictionary';
+import { TitleDescriptionOfDictionary } from '@app/classes/title-description-of-dictionary';
 import * as fs from 'fs';
 import { Service } from 'typedi';
 import { ReadFileService } from './read-file.service';

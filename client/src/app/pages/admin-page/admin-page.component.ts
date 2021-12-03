@@ -17,12 +17,12 @@ export class AdminPageComponent implements OnInit {
     @ViewChild(MatAccordion) accordion: MatAccordion;
     @ViewChild(PlayerNamesOptionsComponent) playerNamesOptionsComponent: PlayerNamesOptionsComponent;
 
-    constructor(public nameService: NamesService, private dictionaryService: DictionaryService) {}
+    constructor(public nameService: NamesService, public dictionaryService: DictionaryService) {}
     async ngOnInit() {
         await this.nameService.fetchNames();
     }
     reset() {
         this.nameService.reset();
-        this.dictionaryService.reset()
+        this.dictionaryService.reset();
     }
 }

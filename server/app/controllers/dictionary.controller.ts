@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { FileMessages } from '@app/classes/file-messages';
-import { TitleDescriptionOfDictionary } from '@app/classes/titleDescriptionOfDictionary';
+import { TitleDescriptionOfDictionary } from '@app/classes/title-description-of-dictionary';
 import { DictionaryService } from '@app/services/dictionary.service';
 import { Request, Response, Router } from 'express';
 import { Service } from 'typedi';

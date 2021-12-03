@@ -1,7 +1,7 @@
 import { Application } from '@app/app';
 import { Dictionary } from '@app/classes/dictionary';
 import { FileMessages } from '@app/classes/file-messages';
-import { TitleDescriptionOfDictionary } from '@app/classes/titleDescriptionOfDictionary';
+import { TitleDescriptionOfDictionary } from '@app/classes/title-description-of-dictionary';
 import { DictionaryService } from '@app/services/dictionary.service';
 import { expect } from 'chai';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
@@ -64,7 +64,6 @@ describe('DictionaryController', () => {
     });
     describe('/reset', () => {
         it('should return an array of dictionary descriptions', async () => {
-
             return supertest(expressApp)
                 .get('/api/admin/dictionary/reset')
                 .then((response) => {

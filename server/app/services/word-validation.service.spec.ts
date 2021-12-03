@@ -37,7 +37,6 @@ describe('WordValidationService', () => {
 
     it('should return that words exists if they exists in service dictionary', (done) => {
         setTimeout(async () => {
-
             const words: string[] = ['allo', 'bonjour', 'patate'];
             const expectedResult = { wordExists: true, errorMessage: '' };
             const actualResult = service.validateWord({ words, dict: 'Mon dictionnaire' });
