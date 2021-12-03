@@ -5,6 +5,7 @@ import { SERVER_URL } from '@app/constants/url';
 import { FileMessages } from '@app/pages/admin-page/models/file-messages.model';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { ValidationMessageModel } from '@app/pages/admin-page/models/validation-message.model';
+import { saveAs } from 'file-saver';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -80,7 +81,7 @@ export class DictionaryService {
                 this.validationMessage.isValid = false;
                 this.validationMessage.message = 'le format du fichier doit etre json contenant un objet de type dictionaire.';
             }
-            this.emitToSnackBar(this.validationMessage.message, 'Dismiss');
+            this.emitToSnackBar(this.validationMessage.message, 'Fermer');
         };
     }
     async upload(file: File): Promise<void> {
@@ -90,17 +91,33 @@ export class DictionaryService {
             (resp: FileMessages) => {
                 this.fileMessage.isUploaded = resp.isUploaded;
                 this.fileMessage.message = resp.message;
-                this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Dismiss');
+                this.emitToSnackBar('Le dictionnaire a ete televerse avec success', 'Fermer');
                 this.getAllDictionaries();
             },
             (err: Error) => {
-                this.emitToSnackBar('Probleme de televersement du fichier cote serveur' + JSON.stringify(err), 'Dismiss');
+                this.emitToSnackBar('Probleme de televersement du fichier cote serveur' + JSON.stringify(err), 'Fermer');
             },
         );
     }
     fetchDictionary(name: string): Observable<Dictionary> {
         const dictObs = this.http.get<Dictionary>(this.url + '/getDictionary/' + name);
         return dictObs;
+    }
+    reset() {
+        this.http.get<void>(this.url + '/reset').subscribe(async () => {
+            this.emitToSnackBar('Les dictionaires ont été reset avec succès', 'Fermer');
+            await this.getAllDictionaries();
+        });
+    }
+    download(name: string) {
+        return this.fetchDictionary(name).subscribe((dict: Dictionary) => {
+            return this.writeDict(dict);
+        });
+    }
+    writeDict(dict: Dictionary): string {
+        const file = new Blob([JSON.stringify(dict)], { type: 'text/json;charset=utf-8' });
+        saveAs(file, dict.title + '.json');
+        return 'success';
     }
 
     private emitToSnackBar(message: string, action: string): void {

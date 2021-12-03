@@ -12,7 +12,7 @@ describe('DictionaryController', () => {
     const findAllResponse: TitleDescriptionOfDictionary[] = [{ title: 'a title', description: 'a description' }];
     const getDictionaryResponse: Dictionary = { title: 'a title', description: 'a description', words: ['aa', 'bb'] };
     const deleteResponse = 'file removed successfully';
-
+    const resetResponse = 'reset successfull';
     let dictionaryService: SinonStubbedInstance<DictionaryService>;
     let expressApp: Express.Application;
 
@@ -20,6 +20,7 @@ describe('DictionaryController', () => {
         dictionaryService = createStubInstance(DictionaryService);
         dictionaryService.addDict.resolves(undefined);
         dictionaryService.findAllDictionaries.returns(findAllResponse);
+        dictionaryService.reset.returns(resetResponse);
         dictionaryService.getDictionary.returns(getDictionaryResponse);
         dictionaryService.deleteDictionary.returns(deleteResponse);
         const app = Container.get(Application);
@@ -58,6 +59,15 @@ describe('DictionaryController', () => {
                 .get('/api/admin/dictionary/findAll')
                 .then((response) => {
                     expect(response.body).to.deep.equal(findAllResponse);
+                });
+        });
+    });
+    describe('/reset', () => {
+        it('should return an array of dictionary descriptions', async () => {
+            return supertest(expressApp)
+                .get('/api/admin/dictionary/reset')
+                .then((response) => {
+                    expect(response.body).to.deep.equal(resetResponse);
                 });
         });
     });

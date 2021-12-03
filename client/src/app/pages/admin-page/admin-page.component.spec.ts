@@ -25,4 +25,11 @@ describe('AdminPageComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+    it('should call reset from the nameService and dictionaryService', () => {
+        const nameSpy = spyOn(component.nameService, 'reset');
+        const dictSpt = spyOn(component.dictionaryService, 'reset');
+        component.reset();
+        expect(nameSpy).toHaveBeenCalled();
+        expect(dictSpt).toHaveBeenCalled();
+    });
 });

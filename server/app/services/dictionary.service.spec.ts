@@ -48,6 +48,19 @@ describe('DictionaryService', () => {
             expect(service.dictionaries).to.include(defaultDictionary);
         });
     });
+    describe('reset', () => {
+        it('should take out all non default dictionaries', () => {
+            const notDefault: Dictionary = {
+                title: 'a dictionary',
+                description: 'description',
+                words: ['aa'],
+            };
+            service.dictionaries = [defaultDictionary, notDefault, notDefault];
+            service.reset();
+            expect(service.dictionaries).not.to.include(notDefault);
+            expect(service.dictionaries).to.include(defaultDictionary);
+        });
+    });
     describe('findAllDictionaries', () => {
         it('should return a list of dictionarries without the words', () => {
             service.dictionaries = [defaultDictionary];

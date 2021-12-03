@@ -2,7 +2,7 @@
     <div *ngIf="!nameService.error">
         <section id="header">
             <button mat-button color="warn" routerLink="/home">Retour</button>
-            <button mat-button color="warn">Réinitialiser les réglages</button>
+            <button mat-button color="warn" (click)="reset()">Réinnitialiser les réglages</button>
         </section>
         <section>
             <mat-expansion-panel>
