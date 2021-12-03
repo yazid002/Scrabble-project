@@ -25,6 +25,7 @@ export class GameService {
     turnDone: Subscription;
     numPlayers: string;
     skipCounter: number = 0;
+    quit: boolean = false;
     constructor(
         private userSettingsService: UserSettingsService,
         private reserveService: ReserveService,
@@ -47,6 +48,13 @@ export class GameService {
     }
     quitGame() {
         this.abandonSignal.next('abandon');
+        this.quit = true;
+        const realPlayer = {
+            name: this.players[PLAYER.realPlayer].name,
+            score: 0,
+            mode: this.userSettingsService.settings.mode.currentChoiceKey,
+        };
+        this.endGameSignal.next(realPlayer);
         this.endGame();
     }
     async endGame(otherPlayerAbandonned: boolean = false): Promise<void> {
@@ -74,18 +82,26 @@ export class GameService {
             this.players[PLAYER.realPlayer].won = 'Votre adversaire a abandonné. Vous gagnez par défaut!';
             this.players[PLAYER.otherPlayer].won = undefined;
         }
-
         const endGameMessage: IChat = {
             from: SENDER.computer,
             body: endGameString,
         };
         this.chatService.addMessage(endGameMessage);
-
-        const realPlayer: Leaderboard = {
-            name: this.players[PLAYER.realPlayer].name,
-            score: this.players[PLAYER.realPlayer].points,
-            mode: this.userSettingsService.settings.mode.currentChoiceKey,
-        };
+        let realPlayer;
+        if (this.quit === true) {
+            realPlayer = {
+                name: this.players[PLAYER.realPlayer].name,
+                score: 0,
+                mode: this.userSettingsService.settings.mode.currentChoiceKey,
+            };
+            this.quit = false;
+        } else {
+            realPlayer = {
+                name: this.players[PLAYER.realPlayer].name,
+                score: this.players[PLAYER.realPlayer].points,
+                mode: this.userSettingsService.settings.mode.currentChoiceKey,
+            };
+        }
         this.endGameSignal.next(realPlayer);
     }
     didGameEnd(): boolean {

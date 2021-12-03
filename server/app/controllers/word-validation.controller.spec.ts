@@ -42,5 +42,4 @@ describe('WordValidationController', () => {
                 expect(error).to.deep.equal('une erreur');
             });
     });
-
 });

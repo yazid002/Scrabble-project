@@ -34,4 +34,8 @@ export class LeaderboardService {
     sortLeaderBoard(data: Leaderboard[]): Leaderboard[] {
         return data.sort((a: Leaderboard, b: Leaderboard) => b.score - a.score);
     }
+
+    async reset() {
+        this.http.get<void>(this.urlString + '/reset').subscribe();
+    }
 }

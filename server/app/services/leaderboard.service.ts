@@ -72,6 +72,10 @@ export class LeaderboardService {
             });
     }
 
+    async reset() {
+        await this.databaseService.resetLeaderboard();
+    }
+
     async endGame(player: Leaderboard) {
         let leaderboard: Leaderboard[] = [];
         let deleteFunction: (name: string, leaderboardService: LeaderboardService) => Promise<void>;

@@ -51,4 +51,7 @@ describe('LeaderBoardController', () => {
                 expect(response.body).to.deep.equal(classicBoard);
             });
     });
+    it('/reset should return status OK', async () => {
+        return supertest(expressApp).get('/leaderboard/reset').expect(HTTP_STATUS_OK);
+    });
 });

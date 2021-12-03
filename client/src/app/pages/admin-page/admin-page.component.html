@@ -2,7 +2,7 @@
     <div *ngIf="!nameService.error">
         <section id="header">
             <button mat-button color="warn" routerLink="/home">Retour</button>
-            <button mat-button color="warn">Réinnitialiser les réglages</button>
+            <button mat-button color="warn">Réinitialiser les réglages</button>
         </section>
         <section>
             <mat-expansion-panel>
@@ -22,6 +22,13 @@
 
                 <app-player-names-options></app-player-names-options>
             </mat-expansion-panel>
+
+            <div class="mat-expansion-panel" style="height: 48px; border-radius: 0">
+                <div class="mat-expansion-panel-header" style="height: 48px">
+                    <mat-panel-title> Meilleurs Scores </mat-panel-title>
+                    <button mat-raised-button color="warn" (click)="leaderboardService.reset()">Réinitialiser les meilleurs scores</button>
+                </div>
+            </div>
         </section>
     </div>
 </div>
