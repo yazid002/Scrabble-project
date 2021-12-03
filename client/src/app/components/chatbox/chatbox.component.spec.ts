@@ -12,6 +12,7 @@ import { AppMaterialModule } from '@app/modules/material.module';
 import { ChatService } from '@app/services/chat.service';
 import { CommandExecutionService } from '@app/services/command-execution/command-execution.service';
 import { GameService } from '@app/services/game.service';
+import { SelectionManagerService } from '@app/services/selection-manager.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { of } from 'rxjs';
 import { ChatboxComponent } from './chatbox.component';
@@ -23,8 +24,10 @@ describe('ChatboxComponent', () => {
     let chatServiceSpy: jasmine.SpyObj<ChatService>;
     let gameServiceSpy: jasmine.SpyObj<GameService>;
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
+    let selectionManagerServiceSpy: jasmine.SpyObj<SelectionManagerService>;
 
     beforeEach(async () => {
+        selectionManagerServiceSpy = jasmine.createSpyObj('SelectionManagerService', ['updateSelectionType']);
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playChatAudio']);
         commandExecutionServiceSpy = jasmine.createSpyObj('CommandExecutionService', ['interpretCommand', 'executeCommand', 'addLetterInReserve']);
         chatServiceSpy = jasmine.createSpyObj('ChatService', ['addMessage', 'getMessages']);
@@ -36,12 +39,11 @@ describe('ChatboxComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [ChatboxComponent],
             providers: [
-                CommandExecutionService,
-                ChatService,
                 { provide: CommandExecutionService, useValue: commandExecutionServiceSpy },
                 { provide: ChatService, useValue: chatServiceSpy },
                 { provide: GameService, useValue: gameServiceSpy },
                 { provide: SoundManagerService, useValue: soundManagerServiceSpy },
+                { provide: SelectionManagerService, useValue: selectionManagerServiceSpy },
                 { provide: LocationStrategy, useClass: MockLocationStrategy },
             ],
             imports: [
