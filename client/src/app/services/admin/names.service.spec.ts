@@ -1,4 +1,4 @@
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -31,6 +31,22 @@ describe('NamesService', () => {
 
             setTimeout(() => {
                 expect(assignNamesSpy).toHaveBeenCalled();
+                done();
+            }, RESPONSE_DELAY);
+        });
+        it('should call handleError() if and error is returned', (done) => {
+            // handleError is private
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const handleErrorSpy = spyOn<any>(service, 'handleError');
+            service.fetchNames();
+            const req = httpTestingController.expectOne(service.urlString);
+            expect(req.request.method).toEqual('GET');
+
+            const expectedResponse = new ErrorEvent('allo');
+            req.error(expectedResponse);
+
+            setTimeout(() => {
+                expect(handleErrorSpy).toHaveBeenCalled();
                 done();
             }, RESPONSE_DELAY);
         });
@@ -97,6 +113,20 @@ describe('NamesService', () => {
                 expect(fetchSpy).toHaveBeenCalled();
                 done();
             }, RESPONSE_DELAY);
+        });
+    });
+    describe('getRandomName', () => {
+        it('should return a string', () => {
+            const result = service.getRandomName('beginner');
+            expect(service.beginnerNames.map((nameProp) => nameProp.name).includes(result)).toEqual(true);
+        });
+    });
+    describe('handleError', () => {
+        it('should setError to true', () => {
+            service.error = false;
+            // eslint-disable-next-line dot-notation
+            service['handleError'](new HttpErrorResponse({ error: true }));
+            expect(service.error).toEqual(true);
         });
     });
 });
