@@ -10,19 +10,19 @@ import { AdminPageComponent } from './admin-page.component';
 describe('AdminPageComponent', () => {
     let component: AdminPageComponent;
     let fixture: ComponentFixture<AdminPageComponent>;
-    let nameServiceSpy: jasmine.SpyObj<NamesService>;
-    let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
+    // let nameServiceSpy: jasmine.SpyObj<NamesService>;
+    // let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
 
     beforeEach(async () => {
-        nameServiceSpy = jasmine.createSpyObj('NamesService', ['reset']);
-        dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['reset']);
+        // nameServiceSpy = jasmine.createSpyObj('NamesService', ['reset']);
+        // dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['reset']);
         await TestBed.configureTestingModule({
             declarations: [AdminPageComponent],
             imports: [FormsModule, AppMaterialModule, HttpClientTestingModule, AppMaterialModule, RouterTestingModule],
-            providers: [
-                { provide: DictionaryService, useValue: dictionaryServiceSpy },
-                { provide: NamesService, useValue: nameServiceSpy },
-            ],
+            // providers: [
+            //     { provide: DictionaryService, useValue: dictionaryServiceSpy },
+            //     { provide: NamesService, useValue: nameServiceSpy },
+            // ],
         }).compileComponents();
     });
 

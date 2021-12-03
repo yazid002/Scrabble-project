@@ -110,6 +110,50 @@ describe('DictionaryService', () => {
             expect(result).toEqual(true);
         });
     });
+    describe('reset', () => {
+        it('should reset', (done) => {
+            const getDictSpy = spyOn(service, 'getAllDictionaries');
+            service.reset();
+            const req = httpTestingController.expectOne(service.url + '/reset');
+            expect(req.request.method).toEqual('GET');
+
+            const serverResponse = new HttpResponse({ body: 'succes' });
+            req.event(serverResponse);
+            setTimeout(() => {
+                expect(getDictSpy).toHaveBeenCalled();
+                done();
+            }, RESPONSE_DELAY);
+        });
+    });
+    describe('download', () => {
+        it('shoud get the dictionary then call writeDict', () => {
+            const writeSpy = spyOn(service, 'writeDict');
+            const response: Dictionary = {
+                title: 'first dictionary',
+                description: 'the first dictionary for test purpose',
+                words: ['papa', 'maman'],
+            };
+            service.download(response.title);
+
+            // getAllDictionaries should make only one request to 'GET' the dictionaries
+            const req = httpTestingController.expectOne(service.url + '/getDictionary/' + 'first dictionary');
+            expect(req.request.method).toEqual('GET');
+
+            // The server should send the dictionaries after the 'GET'
+            const expectedResponse = new HttpResponse({ body: response });
+            req.event(expectedResponse);
+
+            expect(writeSpy).toHaveBeenCalled();
+        });
+        it('writeFile should return status', () => {
+            const response: Dictionary = {
+                title: 'first dictionary',
+                description: 'the first dictionary for test purpose',
+                words: ['papa', 'maman'],
+            };
+            expect(service.writeDict(response)).toEqual('success');
+        });
+    });
     describe('assignDictionary', () => {
         it('should assign the dictonaries', () => {
             const dictionaries: TitleDescriptionOfDictionary[] = [

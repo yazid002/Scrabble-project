@@ -13,6 +13,9 @@
             <td>
                 <button mat-raised-button color="warn" (click)="dictionaryService.deleteDictionary(dictionary.title)">delete</button>
             </td>
+            <td>
+                <button mat-raised-button color="primary" (click)="dictionaryService.download(dictionary.title)">Télécharger</button>
+            </td>
         </tr>
     </table>
 </div>

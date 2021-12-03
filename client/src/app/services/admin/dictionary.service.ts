@@ -5,6 +5,7 @@ import { SERVER_URL } from '@app/constants/url';
 import { FileMessages } from '@app/pages/admin-page/models/file-messages.model';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { ValidationMessageModel } from '@app/pages/admin-page/models/validation-message.model';
+import { saveAs } from 'file-saver';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -107,6 +108,17 @@ export class DictionaryService {
             this.emitToSnackBar('Les dictionaires ont été reset avec succès', 'Dismiss');
             await this.getAllDictionaries();
         });
+    }
+    download(name: string) {
+        return this.fetchDictionary(name).subscribe((dict: Dictionary) => {
+            return this.writeDict(dict);
+        });
+    }
+    writeDict(dict: Dictionary):string {
+        const file = new Blob([JSON.stringify(dict)], { type: 'text/json;charset=utf-8' });
+        saveAs(file, dict.title + '.json');
+        return 'success'
+
     }
 
     private emitToSnackBar(message: string, action: string): void {
