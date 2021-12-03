@@ -102,6 +102,12 @@ export class DictionaryService {
         const dictObs = this.http.get<Dictionary>(this.url + '/getDictionary/' + name);
         return dictObs;
     }
+    reset() {
+        this.http.get<void>(this.url + '/reset').subscribe(async () => {
+            this.emitToSnackBar('Les dictionaires ont été reset avec succès', 'Dismiss');
+            await this.getAllDictionaries();
+        });
+    }
 
     private emitToSnackBar(message: string, action: string): void {
         this.snackBarSignal.next({ message, action });
