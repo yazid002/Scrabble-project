@@ -167,15 +167,6 @@ describe('VirtualPlayerService', () => {
         });
         service = TestBed.inject(VirtualPlayerService);
 
-        // const exchangeRackServiceSpy = spyOn<any>(service['exchangeService']['rackService'], 'fillRackPortion');
-        // ctxStub = CanvasTestHelper.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
-        // // service['exchangeService']['rackService'].rackContext = ctxStub;
-        // // exchangeRackServiceSpy.and.returnValue(undefined);
-
-        // exchangeServiceSpy['rackService'].rackContext = ctxStub;
-        // spyOn(exchangeServiceSpy['rackService'], 'fillRackPortion').and.returnValue(undefined);
-        //   exchangeServiceSpy['rackService'].fillRackPortion.and.returnValue(undefined);
-
         verifyServiceSpy.getLettersUsedOnBoardFromPlacement.and.returnValue([]);
     });
 
@@ -213,7 +204,6 @@ describe('VirtualPlayerService', () => {
     describe('addOutputToMessages', () => {
         it('should add message to the chatService message array if debug state is active', () => {
             const message: IChat = { from: 'someone', body: 'content' };
-            // const spy = spyOn(service['chatService'], 'addMessage');
             service['debugExecutionService'].state = false;
             service['addOutputToMessages'](message);
             expect(chatServiceSpy.addMessage).not.toHaveBeenCalled();
@@ -226,7 +216,6 @@ describe('VirtualPlayerService', () => {
     describe('displayMessages', () => {
         it('should only add message if Virtual player is in advanced mode', () => {
             const message: IChat = { from: 'someone', body: 'content' };
-            // const spy = spyOn(service['chatService'], 'addMessage');
             service['computerLevel'] = ' a random string';
             service['displayMessage'](message);
             expect(chatServiceSpy.addMessage).not.toHaveBeenCalled();
@@ -352,7 +341,6 @@ describe('VirtualPlayerService', () => {
         it('should return true only if placeservice says the possibility is valid', async () => {
             const possibility: WordNCoord = { word: 'kjdv', coord: { x: 4, y: 1000 }, direction: 'h', points: 100 };
 
-            // const spy = spyOn<any>(service['placeService'], 'placeWordInstant');
             placeServiceSpy.placeWordInstant.and.returnValue(Promise.resolve(false));
 
             let actualValue = await service['tryPossibility'](possibility);
@@ -366,8 +354,6 @@ describe('VirtualPlayerService', () => {
     });
     describe('makePossibilities', () => {
         it('should return a list of WordNCoord objects. Coorss of these objects should be x=7 and y =7 if this is the first move', () => {
-            // const spy = spyOn<any>(service['placeService'], 'placeWordInstant');
-            // spy.and.returnValue(true);
             placeServiceSpy.placeWordInstant.and.returnValue(Promise.resolve(true));
             const h8Coord: Vec2 = { x: 7, y: 7 };
             const container: { gen: (rack: string[], pattern: string) => string[] } = {

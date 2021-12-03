@@ -1,11 +1,11 @@
 // disable because we can't seem to import multer using an import statement
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { FileMessages } from '@app/classes/file-messages';
 import { TitleDescriptionOfDictionary } from '@app/classes/titleDescriptionOfDictionary';
 import { DictionaryService } from '@app/services/dictionary.service';
 import { Request, Response, Router } from 'express';
 import { Service } from 'typedi';
-import { FileMessages } from '@app/classes/file-messages';
 const multer = require('multer');
 @Service()
 export class DictionaryController {
@@ -56,6 +56,7 @@ export class DictionaryController {
          *         schema:
          *           $ref: '#/definitions/Message'
          */
+        // ============== add new dictionary ===================================
         let fileName = '';
 
         const storage = multer.diskStorage({
@@ -80,6 +81,8 @@ export class DictionaryController {
                 res.json(this.fileMessages);
             }
         });
+
+        // ============== get All dictionaries ===================================
         this.router.get('/findAll', async (req: Request, res: Response) => {
             const dictionaries: TitleDescriptionOfDictionary[] = this.dictionaryService.findAllDictionaries();
             res.json(dictionaries);
