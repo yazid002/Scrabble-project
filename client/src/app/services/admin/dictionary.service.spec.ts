@@ -148,7 +148,7 @@ describe('DictionaryService', () => {
 
             const req = httpTestingController.expectOne(service.url + '/addNewDictionary');
             expect(req.request.method).toEqual('POST');
-            const expectedResponse = new ErrorEvent('an error')
+            const expectedResponse = new ErrorEvent('an error');
             req.error(expectedResponse);
 
             setTimeout(() => {
