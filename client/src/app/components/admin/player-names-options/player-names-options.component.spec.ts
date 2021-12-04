@@ -1,3 +1,6 @@
+// to spy on private attribute, we need <any> and ['bracketNotation'] in the same line
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable dot-notation */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +15,7 @@ describe('PlayerNamesOptionsComponent', () => {
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
 
     beforeEach(async () => {
-        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
+        userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries', 'validateName']);
         userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         userSettingsServiceSpy.selectedDictionary = { title: 'Mon Dictionnaire', description: 'a description' };
         await TestBed.configureTestingModule({
@@ -30,5 +33,23 @@ describe('PlayerNamesOptionsComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+    describe('addName', () => {
+        it('should call nameService.addName', async () => {
+            component.name = '';
+            component.isAdvanced = false;
+            const nameServiceSpy = spyOn(component.nameService, 'addName');
+            await component.addName();
+            expect(nameServiceSpy).toHaveBeenCalled();
+        });
+    });
+    describe('validateName', () => {
+        it('should call userSettingsService.validateName', async () => {
+            component.name = '';
+            component.isAdvanced = false;
+            userSettingsServiceSpy.validateName.and.callFake(() => ({ error: false, errorMessage: 'a message' }));
+            await component.validateName();
+            expect(userSettingsServiceSpy.validateName).toHaveBeenCalled();
+        });
     });
 });

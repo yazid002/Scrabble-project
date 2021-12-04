@@ -22,6 +22,12 @@ describe('ChatService', () => {
 
         expect(service.messages.length).toEqual(initialMessageSize + 1);
     });
+    it('should return an observable', () => {
+        service.messages = [{ from: 'ME', body: 'a body' }];
+        service.getMessages().subscribe((result) => {
+            expect(result).toEqual(service.messages);
+        });
+    });
     it('should clear messages when the clear() is called', () => {
         const message: IChat = { from: SENDER.me, body: 'Hello world' };
         service.messages = [message, message, message];
