@@ -11,9 +11,6 @@ import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
 import { Player, PLAYER } from '@app/classes/player';
 import { Vec2 } from '@app/classes/vec2';
 import { BehaviorSubject, of } from 'rxjs';
-// // disable because we need a cile that is not in the project scope (we can't use '@app/')
-// // eslint-disable-next-line no-restricted-imports
-// import * as dictFile from '../../../../server/app/assets/dictionnary.json';
 import { DictionaryService } from './admin/dictionary.service';
 import { ChatService } from './chat.service';
 import { DebugExecutionService } from './command-execution/debug-execution.service';
