@@ -24,9 +24,9 @@ export class NamesService {
         this.urlString = SERVER_URL + '/api/virtual/';
         this.error = false;
     }
-    async fetchNames() {
+    async fetchNames(): Promise<void> {
         const response = this.http.get<NameProperties[]>(this.urlString);
-        response.subscribe(
+        return response.toPromise().then(
             (nameProperties) => {
                 this.connectionEstablished = true;
                 this.assignNames(nameProperties);
@@ -51,7 +51,8 @@ export class NamesService {
         const response = this.http.post<void>(this.urlString + 'delete', name);
         response.subscribe(async () => this.fetchNames());
     }
-    getRandomName(mode: string): string {
+    async getRandomName(mode: string): Promise<string> {
+        await this.fetchNames();
         const arrayMap: Map<string, NameProperties[]> = new Map([
             ['beginner', this.beginnerNames],
             ['advanced', this.advancedNames],
