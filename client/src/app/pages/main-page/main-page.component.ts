@@ -12,10 +12,12 @@ import { JoinRoomDialogComponent } from './../../components/join-room-dialog/joi
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent implements OnInit {
-    readonly title: string = 'LOG2990';
+    readonly title: string;
 
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
-    constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, private soundManagerService: SoundManagerService) {}
+    constructor(public matDialog: MatDialog, public userSettingsService: UserSettingsService, private soundManagerService: SoundManagerService) {
+        this.title = 'LOG2990';
+    }
 
     ngOnInit(): void {
         localStorage.clear();

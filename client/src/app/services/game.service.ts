@@ -19,13 +19,14 @@ export class GameService {
     @Output() convertToSoloSignal = new BehaviorSubject<string>('');
     @Output() endGameSignal = new BehaviorSubject<Leaderboard>({ name: '', score: 0, mode: 'classic' });
 
-    players: Player[] = [];
+    players: Player[];
     currentTurn: number;
     timerDone: Subscription;
     turnDone: Subscription;
     numPlayers: string;
-    skipCounter: number = 0;
-    quit: boolean = false;
+    skipCounter: number;
+    quit: boolean;
+
     constructor(
         private userSettingsService: UserSettingsService,
         private reserveService: ReserveService,
@@ -33,6 +34,9 @@ export class GameService {
         private chatService: ChatService,
         public leaderboardService: LeaderboardService,
     ) {
+        this.players = [];
+        this.skipCounter = 0;
+        this.quit = false;
         this.initPlayers();
         this.timerDone = this.timerService.timerDone.subscribe((skipped: boolean) => {
             this.changeTurn(skipped);

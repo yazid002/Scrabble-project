@@ -26,11 +26,7 @@ import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
 import { VerifyService } from './verify.service';
 import { VirtualPlayerService } from './virtual-player.service';
-const dictionary: Dictionary = {
-    title: 'first dictionary',
-    description: 'the first dictionary for test purpose',
-    words: ['Bon', 'Bonjour', 'jour', 'ou', 'la'],
-};
+
 type Direction = 'h' | 'v';
 interface WordNCoord {
     word: string;
@@ -80,7 +76,13 @@ describe('VirtualPlayerService', () => {
     let pointsCountingServiceSpy: jasmine.SpyObj<PointsCountingService>;
     let verifyServiceSpy: jasmine.SpyObj<VerifyService>;
     let placeServiceSpy: jasmine.SpyObj<PlaceService>;
+    let dictionary: Dictionary;
     beforeEach(() => {
+        dictionary = {
+            title: 'first dictionary',
+            description: 'the first dictionary for test purpose',
+            words: ['Bon', 'Bonjour', 'jour', 'ou', 'la'],
+        };
         placeServiceSpy = jasmine.createSpyObj('PlaceService', ['placeWordInstant']);
         verifyServiceSpy = jasmine.createSpyObj('VerifyService', ['getLettersUsedOnBoardFromPlacement', 'isFirstMove']);
         dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary', 'getAllDictionaries']);

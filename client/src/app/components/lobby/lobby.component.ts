@@ -4,7 +4,7 @@ import { IOption } from '@app/classes/game-options';
 import { RoomService } from '@app/services/room.service';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';
-import { QuitMultiplayerDialogComponent } from './../components/quit-multiplayer-dialog/quit-multiplayer-dialog.component';
+import { QuitMultiplayerDialogComponent } from '../quit-multiplayer-dialog/quit-multiplayer-dialog.component';
 @Component({
     selector: 'app-lobby',
     templateUrl: './lobby.component.html',

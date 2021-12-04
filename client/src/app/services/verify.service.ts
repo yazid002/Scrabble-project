@@ -18,6 +18,7 @@ export class VerifyService {
     success: boolean;
     lettersUsedOnBoard: { letter: string; coord: Vec2 }[];
     formedWords: string[];
+
     constructor(private rackService: RackService, private http: HttpClient, private userSettingsService: UserSettingsService) {
         this.urlString = SERVER_URL + '/api/validate';
 

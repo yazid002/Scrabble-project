@@ -14,19 +14,25 @@ const MIN_MESSAGE_LENGTH = 1;
     styleUrls: ['./chatbox.component.scss'],
 })
 export class ChatboxComponent implements OnInit {
-    fromSelection: boolean = false;
-    inputBox: string = '';
+    fromSelection: boolean;
+    inputBox: string;
     error: boolean;
-    errorMessage: string = '';
-    messages: IChat[] = [];
-    readonly possibleSenders = SENDER;
+    errorMessage: string;
+    messages: IChat[];
+    readonly possibleSenders: { computer: string; me: string; otherPlayer: string };
 
     constructor(
         public chatService: ChatService,
         private commandExecutionService: CommandExecutionService,
         private selectionManager: SelectionManagerService,
         public soundManagerService: SoundManagerService,
-    ) {}
+    ) {
+        this.possibleSenders = SENDER;
+        this.fromSelection = false;
+        this.inputBox = '';
+        this.errorMessage = '';
+        this.messages = [];
+    }
     @HostListener('click', ['$event'])
     onLeftClick() {
         this.selectionManager.updateSelectionType(SelectionType.Chat);

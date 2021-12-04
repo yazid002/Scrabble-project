@@ -6,7 +6,6 @@ import { DictionaryService } from '@app/services/admin/dictionary.service';
 import { NamesService } from '@app/services/admin/names.service';
 import { LeaderboardService } from '@app/services/leaderboard.service';
 
-// import { DictionaryOptionsComponent } from '@app/components/admin/dictionary-options/dictionary-options.component';
 export type Options = 'dictionary' | 'names' | 'none';
 @Component({
     selector: 'app-admin-page',
@@ -19,6 +18,7 @@ export class AdminPageComponent implements OnInit {
     @ViewChild(PlayerNamesOptionsComponent) playerNamesOptionsComponent: PlayerNamesOptionsComponent;
 
     constructor(public nameService: NamesService, public dictionaryService: DictionaryService, public leaderboardService: LeaderboardService) {}
+
     async ngOnInit() {
         await this.nameService.fetchNames();
     }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IOptionList, IUserSetting, NAME_OPTION } from '@app/classes/game-options';
+import { IOptionList, ITextChoice, IUserSetting, NAME_OPTION } from '@app/classes/game-options';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { DictionaryService } from './admin/dictionary.service';
 
@@ -50,19 +50,25 @@ export class UserSettingsService {
         numPlayers: IUserSetting;
         computerLevel: IUserSetting;
         timer: IUserSetting;
-    } = {
-        mode: { setting: MODE, currentChoiceKey: 'classic' },
-        numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
-        computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
-        timer: { setting: TIMER, currentChoiceKey: '60' },
     };
-    randomMode = false;
-    dictionnaires: TitleDescriptionOfDictionary[] = [];
-    selectedDictionary: TitleDescriptionOfDictionary = { title: 'Mon dictionnaire', description: 'Le dictionaire par défault' };
+    randomMode: boolean;
+    dictionnaires: TitleDescriptionOfDictionary[];
+    selectedDictionary: TitleDescriptionOfDictionary;
 
-    nameOption = NAME_OPTION;
+    nameOption: ITextChoice;
     computerName: string;
+
     constructor(public dictionaryService: DictionaryService) {
+        this.settings = {
+            mode: { setting: MODE, currentChoiceKey: 'classic' },
+            numPlayers: { setting: NUM_PLAYERS, currentChoiceKey: 'solo' },
+            computerLevel: { setting: COMPUTER_LEVEL, currentChoiceKey: 'beginner' },
+            timer: { setting: TIMER, currentChoiceKey: '60' },
+        };
+        this.randomMode = false;
+        this.dictionnaires = [];
+        this.selectedDictionary = { title: 'Mon dictionnaire', description: 'Le dictionaire par défault' };
+        this.nameOption = NAME_OPTION;
         this.getDictionaries();
     }
     getDictionaries() {

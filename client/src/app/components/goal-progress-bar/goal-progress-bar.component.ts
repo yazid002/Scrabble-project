@@ -15,6 +15,7 @@ export class GoalProgressBarComponent implements OnInit {
 
     value: number;
     private alreadyUpdated: boolean;
+
     constructor(private timerService: TimerService, private goalsManagerService: GoalsManagerService) {
         this.value = 0;
         this.alreadyUpdated = false;

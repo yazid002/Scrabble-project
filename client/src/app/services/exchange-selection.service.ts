@@ -7,8 +7,11 @@ import { SelectionUtilsService } from './selection-utils.service';
     providedIn: 'root',
 })
 export class ExchangeSelectionService {
-    selectedIndexes: number[] = [];
-    constructor(private rackService: RackService, private selectionUtilsService: SelectionUtilsService) {}
+    selectedIndexes: number[];
+
+    constructor(private rackService: RackService, private selectionUtilsService: SelectionUtilsService) {
+        this.selectedIndexes = [];
+    }
 
     onMouseRightClick(event: MouseEvent, rack: ICharacter[]): void {
         const normalColor = 'NavajoWhite';

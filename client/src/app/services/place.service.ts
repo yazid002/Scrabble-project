@@ -19,8 +19,9 @@ import { TimerService } from './timer.service';
     providedIn: 'root',
 })
 export class PlaceService {
-    lettersUsedOnBoard: { letter: string; coord: Vec2 }[] = [];
+    lettersUsedOnBoard: { letter: string; coord: Vec2 }[];
     tiles: Case[][];
+
     constructor(
         private rackService: RackService,
         private verifyService: VerifyService,
@@ -34,6 +35,7 @@ export class PlaceService {
         private soundManagerService: SoundManagerService,
     ) {
         this.tiles = tiles;
+        this.lettersUsedOnBoard = [];
     }
     async placeWordInstant(word: string, coord: Vec2, direction: string): Promise<boolean> {
         word = this.verifyService.normalizeWord(word);
@@ -49,8 +51,6 @@ export class PlaceService {
             this.restoreAfterPlacement(word, direction, coord, true);
             this.timerService.resetTimer();
         }
-
-        // this.soundManagerService.playPlacementAudio();
 
         return wordValidationParameters.wordExists;
     }

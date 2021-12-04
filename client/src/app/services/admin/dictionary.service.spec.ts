@@ -88,6 +88,7 @@ describe('DictionaryService', () => {
     it('emitToSnackBar should send snackBarSignal', async () => {
         const message = { message: 'test', action: 'test action' };
 
+        // emitToSnackBar is private
         // eslint-disable-next-line dot-notation
         service['emitToSnackBar']('test', 'test action');
 

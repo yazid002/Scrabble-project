@@ -4,10 +4,12 @@ export const virtualPlayerDictionary: Dictionary = { title: 'invalid', descripti
 const dictionary: DictNode = convertDictToTree(virtualPlayerDictionary);
 export class ChunkNode {
     parent?: ChunkNode;
-    childs: ChunkNode[] = []; // child
-    unTestedChunks: string[] = []; // letters remaining to build chils
+    childs: ChunkNode[]; // child
+    unTestedChunks: string[]; // letters remaining to build chils
     chunk: string; // chunk of note
     constructor(unTestedChunks: string[], indexToRemove?: number, parent?: ChunkNode) {
+        this.childs = [];
+        this.unTestedChunks = [];
         if (parent) this.parent = parent;
         const unTestedChunkCopy: string[] = [];
         unTestedChunks.forEach((chunk) => unTestedChunkCopy.push(chunk));

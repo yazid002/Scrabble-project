@@ -18,7 +18,6 @@ export class CommandExecutionService {
         private placeExecutionService: PlaceExecutionService,
         public debugExecutionService: DebugExecutionService,
         public aideExecutionService: AideExecutionService,
-
         private passExecutionService: PassExecutionService,
         private exchangeExecutionService: ExchangeExecutionService,
         private gameService: GameService,

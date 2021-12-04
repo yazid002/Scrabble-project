@@ -22,9 +22,9 @@ export class GameOverviewComponent {
     numPlayers: string;
     computerLevel: string;
     timer: string;
-    playerIndex = PLAYER;
-    nbLettersReserve: number = 0;
-    otherPlayerName: string = '';
+    playerIndex: { realPlayer: number; otherPlayer: number };
+    nbLettersReserve: number;
+    otherPlayerName: string;
     publicGoals: Goal[];
     privateGoals: Goal[];
 
@@ -37,6 +37,9 @@ export class GameOverviewComponent {
         public goalService: GoalService,
         public matDialog: MatDialog,
     ) {
+        this.playerIndex = PLAYER;
+        this.nbLettersReserve = 0;
+        this.otherPlayerName = '';
         this.updateData();
         this.goalService.initializedSignal.subscribe((done: boolean) => {
             this.initializeGoals(done);

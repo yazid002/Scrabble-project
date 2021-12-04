@@ -13,7 +13,7 @@ import { UserSettingsService } from './user-settings.service';
     providedIn: 'root',
 })
 export class GoalService {
-    initializedSignal: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    initializedSignal: BehaviorSubject<boolean>;
     isEnabled: boolean;
     goalHandler: Goal[];
     publicGoals: Goal[];
@@ -29,6 +29,7 @@ export class GoalService {
         private dictionaryService: DictionaryService,
         private userSettingsService: UserSettingsService,
     ) {
+        this.initializedSignal = new BehaviorSubject<boolean>(false);
         this.isEnabled = false;
         const dictionaryName = this.userSettingsService.selectedDictionary.title;
         this.dictionaryService.fetchDictionary(dictionaryName).subscribe((dict) => {

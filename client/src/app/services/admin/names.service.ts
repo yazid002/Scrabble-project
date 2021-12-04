@@ -14,11 +14,13 @@ export class NamesService {
     connectionEstablished: boolean;
     error: boolean;
     errorResponse: HttpErrorResponse;
-    beginnerNames: NameProperties[] = [{ name: 'patate', isAdvanced: false, default: true }];
-    advancedNames: NameProperties[] = [{ name: 'tomate', isAdvanced: true, default: true }];
+    beginnerNames: NameProperties[];
+    advancedNames: NameProperties[];
     urlString: string;
 
     constructor(private http: HttpClient) {
+        this.beginnerNames = [{ name: 'patate', isAdvanced: false, default: true }];
+        this.advancedNames = [{ name: 'tomate', isAdvanced: true, default: true }];
         this.urlString = SERVER_URL + '/api/virtual/';
         this.error = false;
     }

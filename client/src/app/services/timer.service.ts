@@ -7,9 +7,9 @@ import { UserSettingsService } from './user-settings.service';
     providedIn: 'root',
 })
 export class TimerService {
-    @Output() timerDone = new BehaviorSubject<boolean>(true); // value of boolean represents whether or not the player skips his turn
+    @Output() timerDone: BehaviorSubject<boolean>; // value of boolean represents whether or not the player skips his turn
     // value of boolean represents whether or not the player has finished its time without placing
-    @Output() resetTurnCounter = new BehaviorSubject<boolean | Player>(true);
+    @Output() resetTurnCounter: BehaviorSubject<boolean | Player>;
 
     isEnabled: boolean;
     nextResetValue: number;
@@ -21,6 +21,8 @@ export class TimerService {
     };
 
     constructor(private userSettingsService: UserSettingsService) {
+        this.timerDone = new BehaviorSubject<boolean>(true);
+        this.resetTurnCounter = new BehaviorSubject<boolean | Player>(true);
         this.counter = {
             min: 0,
             seconds: 0,

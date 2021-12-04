@@ -8,6 +8,7 @@ const ARGUMENTS_INDEX = 1;
 })
 export class ExchangeExecutionService {
     constructor(private exchangeService: ExchangeService) {}
+
     execute(parameters: string[], viaCommand: boolean): IChat {
         const lettersToChange: string[] = parameters[ARGUMENTS_INDEX].split('');
         const result: IChat = {

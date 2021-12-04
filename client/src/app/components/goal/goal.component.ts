@@ -12,6 +12,9 @@ export class GoalComponent {
     @Input() isPublic: boolean;
     @Input() goal: Goal;
     @Input() player: Player;
-    playerIndex = PLAYER;
-    constructor(public gameService: GameService) {}
+    playerIndex: { realPlayer: number; otherPlayer: number };
+
+    constructor(public gameService: GameService) {
+        this.playerIndex = PLAYER;
+    }
 }
