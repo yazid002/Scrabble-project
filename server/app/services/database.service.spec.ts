@@ -1,7 +1,5 @@
 // Disable to have access to private objects
 /* eslint-disable dot-notation */
-// import { NameProperties } from '@app/classes/name-properties';
-// import { VirtualPlayerNamesService } from './virtual-player-names.service';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';

@@ -72,6 +72,7 @@ describe('TimerService', () => {
             totalTimer: 59,
         };
         service.counter.totalTimer = service.counter.resetValue - 1;
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         service.timerDone.subscribe((val) => {
             skipped = val;
         });
@@ -95,5 +96,54 @@ describe('TimerService', () => {
             expect(service.counter.totalTimer).toEqual(timeInit);
             done();
         }, numSeconds * miliInSeconds);
+    });
+
+    it('should not decrement timer if timer is not enabled', (done) => {
+        service.isEnabled = false;
+        const timeInit = 0;
+        service.counter = {
+            min: 0,
+            seconds: 0,
+            resetValue: 60,
+            totalTimer: timeInit,
+        };
+        const numSeconds = 3;
+        const miliInSeconds = 1000;
+        service.startTimer();
+        setTimeout(() => {
+            expect(service.counter.totalTimer).toEqual(timeInit);
+            done();
+        }, numSeconds * miliInSeconds);
+    });
+
+    it('should decrement timer if timer is enabled', (done) => {
+        service.isEnabled = true;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const decrementTimeSpy = spyOn<any>(service, 'decrementTime');
+
+        const timeInit = 0;
+        service.counter = {
+            min: 0,
+            seconds: 0,
+            resetValue: 60,
+            totalTimer: timeInit,
+        };
+        const numSeconds = 3;
+        const miliInSeconds = 1000;
+        service.startTimer();
+        setTimeout(() => {
+            expect(decrementTimeSpy).toHaveBeenCalled();
+            done();
+        }, numSeconds * miliInSeconds);
+    });
+
+    it('nextReset value should equal to totalTimer + delay', () => {
+        const delay = 20;
+        const expectedResult = 30;
+        service.counter.totalTimer = 10;
+        service.resetTimerDelay(delay);
+
+        expect(service.nextResetValue).toEqual(expectedResult);
     });
 });

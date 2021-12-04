@@ -14,8 +14,6 @@ import { PlaceSelectionService } from './place-selection.service';
 import { RackService } from './rack.service';
 import { VerifyService } from './verify.service';
 
-// const CANVAS_WIDTH = 500;
-// const CANVAS_HEIGHT = 500;
 describe('PlaceSelectionService', () => {
     let service: PlaceSelectionService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;

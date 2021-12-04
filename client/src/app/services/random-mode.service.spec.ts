@@ -80,7 +80,6 @@ describe('RandomModeService', () => {
         expect(getRandomIntInclusiveSpy).toHaveBeenCalledTimes(expectCallTimes);
     });
 
-    // TODO: Revoir le comportement pour arranger les tests
     it(' randomizeBonus should call randomizeIndex 61 times', () => {
         const expectCallTimes = 61;
         const minValue = 0;

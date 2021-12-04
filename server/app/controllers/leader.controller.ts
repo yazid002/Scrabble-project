@@ -24,10 +24,6 @@ export class LeaderBoardController {
             this.leaderboardService.getAllClassicPlayers().then((leaderboard: Leaderboard[]) => {
                 res.json(leaderboard);
             });
-            // .catch((error: Error) => {
-            //     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-            // });
-            // le catch a été enlevé car j'arrivais pas à le tester. Par contre, il foncitonne bien
         });
 
         this.router.get('/reset', async (req: Request, res: Response) => {

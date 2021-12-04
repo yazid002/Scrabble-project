@@ -49,9 +49,6 @@ export class PlaceService {
             this.restoreAfterPlacement(word, direction, coord, true);
             this.timerService.resetTimer();
         }
-
-        // this.soundManagerService.playPlacementAudio();
-
         return wordValidationParameters.wordExists;
     }
 
