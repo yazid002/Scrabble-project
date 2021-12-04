@@ -52,6 +52,7 @@ export class DatabaseService {
         return undefined;
     }
     async reset() {
+        if (!this.db) await this.start();
         await this.db.collection(DATABASE_VIRTUAL_NAMES).deleteMany({ default: { $eq: false } });
     }
 
