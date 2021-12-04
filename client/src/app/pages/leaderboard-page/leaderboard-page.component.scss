@@ -1,16 +1,34 @@
 @import url('https://fonts.googleapis.com/css?family=Carter+One');
 @import url('http://fonts.cdnfonts.com/css/common-pixel');
 body {
+    position: absolute;
     min-height: 100%;
     height: auto;
-    background-image: url('/assets/background.jpg');
     height: 100%;
     width: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
 }
 
+// https://css-tricks.com/perfect-full-page-background-image/
+#bg {
+    position: fixed;
+    top: 0;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+}
+
+// https://css-tricks.com/perfect-full-page-background-image/
+#bg img {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    min-width: 50%;
+    min-height: 50%;
+}
 .title {
     font-family: 'Common Pixel', sans-serif;
     font-size: 100px;
