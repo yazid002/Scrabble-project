@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-/* eslint-disable max-lines */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,15 +8,12 @@ import { Goal } from '@app/classes/goal';
 import { PLAYER, Player } from '@app/classes/player';
 import { GoalType } from '@app/enums/goals-enum';
 import { of } from 'rxjs';
-// we must disable this import pattern warning because we need a file outside of the project scope (can't use '@app/' pattern)
-// eslint-disable-next-line no-restricted-imports
-import * as dictFile from '../../../../server/app/assets/dictionnary.json';
 import { DictionaryService } from './admin/dictionary.service';
 import { GoalService } from './goal.service';
 import { SoundManagerService } from './sound-manager.service';
 import { TimerService } from './timer.service';
 import { UserSettingsService } from './user-settings.service';
-const dictionary = dictFile as Dictionary;
+
 const MODE: IOptionList = {
     settingName: 'Mode de jeux',
     availableChoices: [
@@ -52,8 +48,10 @@ describe('GoalService', () => {
     let soundManagerServiceSpy: jasmine.SpyObj<SoundManagerService>;
     let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
+    let dictionary: Dictionary;
 
     beforeEach(() => {
+        dictionary = { title: 'first dictionary', description: 'the first dictionary for test purpose', words: ['papa', 'maman'] };
         soundManagerServiceSpy = jasmine.createSpyObj('SoundManagerService', ['playGoalAchievementAudio']);
         timerServiceSpy = jasmine.createSpyObj('TimerService', ['decrementTime']);
         timerServiceSpy.counter = {
@@ -64,7 +62,6 @@ describe('GoalService', () => {
         };
         dictionaryServiceSpy = jasmine.createSpyObj('DictionaryService', ['fetchDictionary', 'getAllDictionaries']);
         dictionaryServiceSpy.fetchDictionary.and.returnValue(of(dictionary));
-        //  dictionaryServiceSpy.getAllDictionaries.and.resolveTo([{ title: dictionary.title, description: dictionary.description }]);
         dictionaryServiceSpy.getAllDictionaries.and.returnValue(Promise.resolve([{ title: dictionary.title, description: dictionary.description }]));
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries', 'getComputerName']);
         userSettingsServiceSpy.getDictionaries.and.returnValue(undefined);

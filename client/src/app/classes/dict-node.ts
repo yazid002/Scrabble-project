@@ -1,9 +1,11 @@
 import { Dictionary } from './dictionary';
 export class DictNode {
-    letter: string = '';
+    letter: string;
     isLeaf?: boolean;
-    childs: DictNode[] = [];
+    childs: DictNode[];
+
     constructor(letter: string) {
+        this.childs = [];
         this.letter = letter;
     }
     addChild(letter: string): DictNode {

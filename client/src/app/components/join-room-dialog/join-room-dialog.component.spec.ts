@@ -7,7 +7,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IOptionList, NAME_OPTION } from '@app/classes/game-options';
-import { LobbyComponent } from '@app/lobby/lobby.component';
+import { LobbyComponent } from '@app/components/lobby/lobby.component';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { SoundManagerService } from '@app/services/sound-manager.service';
 import { UserSettingsService } from '@app/services/user-settings.service';

@@ -18,6 +18,7 @@ export class DictionaryService {
     validationMessage: ValidationMessageModel;
     fileMessage: FileMessages;
     url: string;
+
     constructor(private http: HttpClient) {
         this.snackBarSignal = new BehaviorSubject<{ message: string; action: string }>({ message: '', action: '' });
         this.listDictionaries = [];

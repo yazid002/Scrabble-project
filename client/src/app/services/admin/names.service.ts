@@ -14,17 +14,19 @@ export class NamesService {
     connectionEstablished: boolean;
     error: boolean;
     errorResponse: HttpErrorResponse;
-    beginnerNames: NameProperties[] = [{ name: 'patate', isAdvanced: false, default: true }];
-    advancedNames: NameProperties[] = [{ name: 'tomate', isAdvanced: true, default: true }];
+    beginnerNames: NameProperties[];
+    advancedNames: NameProperties[];
     urlString: string;
 
     constructor(private http: HttpClient) {
+        this.beginnerNames = [{ name: 'patate', isAdvanced: false, default: true }];
+        this.advancedNames = [{ name: 'tomate', isAdvanced: true, default: true }];
         this.urlString = SERVER_URL + '/api/virtual/';
         this.error = false;
     }
-    async fetchNames() {
+    async fetchNames(): Promise<void> {
         const response = this.http.get<NameProperties[]>(this.urlString);
-        response.subscribe(
+        return response.toPromise().then(
             (nameProperties) => {
                 this.connectionEstablished = true;
                 this.assignNames(nameProperties);
@@ -49,7 +51,8 @@ export class NamesService {
         const response = this.http.post<void>(this.urlString + 'delete', name);
         response.subscribe(async () => this.fetchNames());
     }
-    getRandomName(mode: string): string {
+    async getRandomName(mode: string): Promise<string> {
+        await this.fetchNames();
         const arrayMap: Map<string, NameProperties[]> = new Map([
             ['beginner', this.beginnerNames],
             ['advanced', this.advancedNames],

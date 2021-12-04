@@ -11,6 +11,7 @@ import { GameService } from './game.service';
 })
 export class RackService {
     rackContext: CanvasRenderingContext2D;
+
     constructor(private reserveService: ReserveService, public gameService: GameService) {}
 
     displayRack() {

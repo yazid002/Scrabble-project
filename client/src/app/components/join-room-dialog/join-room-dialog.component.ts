@@ -10,10 +10,15 @@ import { UserSettingsService } from '@app/services/user-settings.service';
 })
 export class JoinRoomDialogComponent {
     error: boolean;
-    errorMessage: string = '';
-    isChecked: boolean = false;
-    message: string = '';
-    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public soundManagerService: SoundManagerService) {}
+    errorMessage: string;
+    isChecked: boolean;
+    message: string;
+
+    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public soundManagerService: SoundManagerService) {
+        this.errorMessage = '';
+        this.isChecked = false;
+        this.message = '';
+    }
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);

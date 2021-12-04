@@ -8,6 +8,7 @@ import { TimerService } from '@app/services/timer.service';
 })
 export class PassExecutionService {
     constructor(private timerService: TimerService, private selectionManagerService: SelectionManagerService) {}
+
     execute(): IChat {
         const result: IChat = {
             from: SENDER.computer,

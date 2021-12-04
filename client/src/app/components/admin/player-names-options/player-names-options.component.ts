@@ -7,11 +7,17 @@ import { UserSettingsService } from '@app/services/user-settings.service';
     styleUrls: ['./player-names-options.component.scss'],
 })
 export class PlayerNamesOptionsComponent implements OnInit {
-    name: string = '';
-    isAdvanced: boolean = false;
-    error: boolean = false;
-    errorMessage: string = '';
-    constructor(public nameService: NamesService, private userSettingsService: UserSettingsService) {}
+    name: string;
+    isAdvanced: boolean;
+    error: boolean;
+    errorMessage: string;
+
+    constructor(public nameService: NamesService, private userSettingsService: UserSettingsService) {
+        this.name = '';
+        this.isAdvanced = false;
+        this.error = false;
+        this.errorMessage = '';
+    }
 
     async ngOnInit() {
         await this.nameService.fetchNames();

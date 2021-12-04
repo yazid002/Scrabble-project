@@ -21,11 +21,11 @@ import { GameOverviewComponent } from './components/game-overview/game-overview.
 import { GoalProgressBarComponent } from './components/goal-progress-bar/goal-progress-bar.component';
 import { GoalComponent } from './components/goal/goal.component';
 import { JoinRoomDialogComponent } from './components/join-room-dialog/join-room-dialog.component';
+import { LobbyComponent } from './components/lobby/lobby.component';
 import { OpponentQuitDialogComponent } from './components/opponent-quit-dialog/opponent-quit-dialog.component';
 import { QuitConfirmationDialogComponent } from './components/quit-confirmation-dialog/quit-confirmation-dialog.component';
 import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.component';
 import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
-import { LobbyComponent } from './lobby/lobby.component';
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
 

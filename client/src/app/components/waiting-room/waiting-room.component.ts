@@ -18,6 +18,7 @@ export class WaitingRoomComponent implements OnInit {
     mode: string;
     timer: string;
     dictionary: TitleDescriptionOfDictionary;
+
     constructor(
         public userSettingsService: UserSettingsService,
         public matDialog: MatDialog,

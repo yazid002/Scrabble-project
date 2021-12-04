@@ -1,4 +1,4 @@
-const URL: { aws: string; dev: string } = {
+export const URL: { aws: string; dev: string } = {
     aws: 'http://ec2-99-79-57-8.ca-central-1.compute.amazonaws.com',
     dev: 'http://localhost',
 };

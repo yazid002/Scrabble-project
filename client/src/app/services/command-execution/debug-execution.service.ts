@@ -5,7 +5,11 @@ import { IChat, SENDER } from '@app/classes/chat';
     providedIn: 'root',
 })
 export class DebugExecutionService {
-    state: boolean = false; // Donne l'état de debug
+    state: boolean; // Donne l'état de debug
+
+    constructor() {
+        this.state = false;
+    }
 
     execute(): IChat {
         this.state = !this.state;

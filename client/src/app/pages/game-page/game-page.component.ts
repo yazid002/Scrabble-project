@@ -54,9 +54,7 @@ export class GamePageComponent implements AfterViewInit {
         this.gameService.convertToSoloSignal.subscribe((signal: string) => {
             this.showAbandonDIalog(signal);
         });
-        const computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
-        const computerName = this.namesService.getRandomName(computerLevel);
-        this.gameService.players[PLAYER.otherPlayer].name = computerName;
+        this.initPlayer();
     }
     @HostListener('keyup', ['$event'])
     onKeyBoardClick(event: KeyboardEvent) {
@@ -89,7 +87,11 @@ export class GamePageComponent implements AfterViewInit {
         this.soundManagerService.playClickOnButtonAudio();
         this.selectionManagerService.updateSelectionType(SelectionType.LetterSizeButton);
     }
-
+    async initPlayer() {
+        const computerLevel = this.userSettingsService.settings.computerLevel.currentChoiceKey;
+        const computerName = await this.namesService.getRandomName(computerLevel);
+        this.gameService.players[PLAYER.otherPlayer].name = computerName;
+    }
     decreaseSize() {
         const step = -1;
         const maxValue = 17;

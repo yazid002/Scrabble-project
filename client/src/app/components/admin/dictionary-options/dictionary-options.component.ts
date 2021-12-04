@@ -11,21 +11,25 @@ import { DictionaryService } from '@app/services/admin/dictionary.service';
     styleUrls: ['./dictionary-options.component.scss'],
 })
 export class DictionaryOptionsComponent implements OnInit {
-    titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary = {
-        title: '',
-        description: '',
-    };
     newDictionary: File;
-    validationMessage: ValidationMessageModel = {
-        isValid: true,
-        message: '',
-    };
-    fileMessage: FileMessages = {
-        isUploaded: true,
-        message: '',
-    };
+    titleAndDescriptionOfDictionary: TitleDescriptionOfDictionary;
+    validationMessage: ValidationMessageModel;
+    fileMessage: FileMessages;
     myInputVariable: ElementRef;
+
     constructor(public dictionaryService: DictionaryService, private snackBar: MatSnackBar) {
+        this.titleAndDescriptionOfDictionary = {
+            title: '',
+            description: '',
+        };
+        this.validationMessage = {
+            isValid: true,
+            message: '',
+        };
+        this.fileMessage = {
+            isUploaded: true,
+            message: '',
+        };
         this.dictionaryService.snackBarSignal.subscribe((snack: { message: string; action: string }) => {
             this.openSnackBar(snack.message, snack.action);
         });

@@ -6,8 +6,13 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
     providedIn: 'root',
 })
 export class ChatService {
-    @Output() messageSent = new BehaviorSubject<string>('');
+    @Output() messageSent: BehaviorSubject<string>;
     messages: IChat[] = [];
+
+    constructor() {
+        this.messageSent = new BehaviorSubject<string>('');
+        this.messages = [];
+    }
 
     getMessages(): Observable<IChat[]> {
         const obs = of(this.messages);

@@ -9,12 +9,8 @@ import { Vec2 } from '@app/classes/vec2';
 import { RackService } from '@app/services/rack.service';
 import { VerifyService } from '@app/services/verify.service';
 import { Observable, of } from 'rxjs';
-// disable because we need a cile that is not in the project scope (we can't use '@app/')
-// eslint-disable-next-line no-restricted-imports
-import * as dictFile from '../../../../server/app/assets/dictionnary.json';
 import { DictionaryService } from './admin/dictionary.service';
 import { UserSettingsService } from './user-settings.service';
-const dictionary = dictFile as Dictionary;
 describe('VerifyService', () => {
     let service: VerifyService;
     let rackServiceSpy: jasmine.SpyObj<RackService>;
@@ -22,6 +18,7 @@ describe('VerifyService', () => {
     let userSettingsServiceSpy: jasmine.SpyObj<UserSettingsService>;
     let dictionaryServiceSpy: jasmine.SpyObj<DictionaryService>;
     beforeEach(() => {
+        const dictionary: Dictionary = { title: 'first dictionary', description: 'the first dictionary for test purpose', words: ['papa', 'maman'] };
         userSettingsServiceSpy = jasmine.createSpyObj('UserSettingsService', ['getDictionaries']);
         userSettingsServiceSpy.getDictionaries.and.callFake(() => undefined);
         userSettingsServiceSpy.selectedDictionary = { title: 'Mon dictionnaire', description: 'a description' };
@@ -1129,22 +1126,23 @@ describe('VerifyService', () => {
 
     describe('validateWords', () => {
         it('should send words to validate to the serveur and receive a response', async () => {
-            const wordsToValidate = ['bla', 'maman'];
+            const wordsToValidate = ['papa', 'maman'];
             const response = { wordExists: false, errorMessage: '' };
 
+            // validateWords is private
             // eslint-disable-next-line dot-notation
             service['validateWords'](wordsToValidate).subscribe((doesWordExists) =>
                 expect(doesWordExists).withContext('should send wordExists as true').toEqual(response),
             );
 
-            // validateWords devrait faire une seule requete pour 'POST' les mots à valider
+            // validateWords should make only one request to  'POST' the word to validate
             const expectedRequestBody = { words: wordsToValidate, dict: 'Mon dictionnaire' };
 
             const req = httpTestingController.expectOne(service.urlString);
             expect(req.request.method).toEqual('POST');
             expect(req.request.body).toEqual(expectedRequestBody);
 
-            // Le serveur devrait retourner que les mots existent après le 'POST'
+            // The server should return that the words exist after the 'POST'
             const expectedResponse = new HttpResponse({ body: response });
             req.event(expectedResponse);
         });

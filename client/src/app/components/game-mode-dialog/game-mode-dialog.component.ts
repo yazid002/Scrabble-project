@@ -10,12 +10,17 @@ import { UserSettingsService } from '@app/services/user-settings.service';
 })
 export class GameModeDialogComponent {
     nameError: boolean;
-    errorMessage: string = '';
-    dictionaryError = true;
-    isChecked: boolean = false;
-    message: string = '';
+    errorMessage: string;
+    dictionaryError: boolean;
+    isChecked: boolean;
+    message: string;
 
-    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public soundManagerService: SoundManagerService) {}
+    constructor(public userSettingsService: UserSettingsService, public matDialog: MatDialog, public soundManagerService: SoundManagerService) {
+        this.errorMessage = '';
+        this.dictionaryError = true;
+        this.isChecked = false;
+        this.message = '';
+    }
 
     validateName() {
         const result = this.userSettingsService.validateName(this.userSettingsService.nameOption.userChoice);
