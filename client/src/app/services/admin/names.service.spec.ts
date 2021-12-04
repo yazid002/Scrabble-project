@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RESPONSE_DELAY } from '@app/constants/url';
+import { RESPONSE_DELAY, URL } from '@app/constants/url';
 import { NamesService } from './names.service';
 describe('NamesService', () => {
     let service: NamesService;
@@ -11,6 +11,7 @@ describe('NamesService', () => {
         TestBed.configureTestingModule({ imports: [HttpClientTestingModule, NoopAnimationsModule] });
         service = TestBed.inject(NamesService);
         httpTestingController = TestBed.inject(HttpTestingController);
+        service.urlString = URL.dev + '/api/virtual/';
     });
     afterEach(() => {
         httpTestingController.verify();
@@ -20,19 +21,16 @@ describe('NamesService', () => {
         expect(service).toBeTruthy();
     });
     describe('fetchNames', () => {
-        it('should fetch names from server', (done) => {
+        it('should fetch names from server', async () => {
             const assignNamesSpy = spyOn(service, 'assignNames');
-            service.fetchNames();
+            service.fetchNames().then(() => {
+                expect(assignNamesSpy).toHaveBeenCalled();
+            });
             const req = httpTestingController.expectOne(service.urlString);
             expect(req.request.method).toEqual('GET');
 
             const expectedResponse = new HttpResponse({ body: 'names' });
             req.event(expectedResponse);
-
-            setTimeout(() => {
-                expect(assignNamesSpy).toHaveBeenCalled();
-                done();
-            }, RESPONSE_DELAY);
         });
         it('should call handleError() if and error is returned', (done) => {
             // handleError is private
@@ -116,8 +114,9 @@ describe('NamesService', () => {
         });
     });
     describe('getRandomName', () => {
-        it('should return a string', () => {
-            const result = service.getRandomName('beginner');
+        it('should return a string', async () => {
+            spyOn(service, 'fetchNames').and.resolveTo(undefined);
+            const result = await service.getRandomName('beginner');
             expect(service.beginnerNames.map((nameProp) => nameProp.name).includes(result)).toEqual(true);
         });
     });

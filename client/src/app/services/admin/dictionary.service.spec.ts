@@ -2,7 +2,7 @@ import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Dictionary } from '@app/classes/dictionary';
-import { RESPONSE_DELAY } from '@app/constants/url';
+import { RESPONSE_DELAY, URL } from '@app/constants/url';
 import { TitleDescriptionOfDictionary } from '@app/pages/admin-page/models/title-description-of-dictionary.model';
 import { DictionaryService } from './dictionary.service';
 
@@ -14,6 +14,7 @@ describe('DictionaryService', () => {
         TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
         httpTestingController = TestBed.inject(HttpTestingController);
         service = TestBed.inject(DictionaryService);
+        service.url = URL.dev + '/api/admin/dictionary';
     });
 
     afterEach(() => {

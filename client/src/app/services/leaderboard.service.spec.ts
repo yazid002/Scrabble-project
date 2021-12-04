@@ -1,6 +1,5 @@
 import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-// import { HttpResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RESPONSE_DELAY } from '@app/constants/url';
 import { Leaderboard, LeaderboardService } from './leaderboard.service';
@@ -68,8 +67,6 @@ describe('LeaderboardService', () => {
             service.reset();
             const req = httpTestingController.expectOne(service.urlString + '/reset');
             expect(req.request.method).toEqual('GET');
-            // const expectedResponse = new HttpResponse({ body: 'names' });
-            // req.event(expectedResponse);
         });
     });
 

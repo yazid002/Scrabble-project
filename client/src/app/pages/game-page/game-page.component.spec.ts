@@ -109,7 +109,7 @@ describe('GamePageComponent', () => {
     beforeEach(async () => {
         placeServiceSpy = jasmine.createSpyObj('PlaceService', ['placeWord']);
         namesServiceSpy = jasmine.createSpyObj('NamesService', ['getRandomName']);
-        namesServiceSpy.getRandomName.and.returnValue('a name');
+        namesServiceSpy.getRandomName.and.resolveTo('a name');
         passExecutionServiceSpy = jasmine.createSpyObj('PassExecutionService', ['execute']);
         passExecutionServiceSpy.execute.and.callFake(() => message);
 

@@ -5,9 +5,7 @@ import 'reflect-metadata';
 import { Service } from 'typedi';
 
 // CHANGE the URL for your database information
-const DATABASE_URL =
-    // "mongodb+srv://Admin:admin12345@cluster0.hcrok.mongodb.net/<dbname>?retryWrites=true&w=majority";
-    'mongodb+srv://Admin:Admin@cluster0.aabdh.mongodb.net/Leaderboard?retryWrites=true&w=majority';
+const DATABASE_URL = 'mongodb+srv://Admin:Admin@cluster0.aabdh.mongodb.net/Leaderboard?retryWrites=true&w=majority';
 const DATABASE_NAME = 'Leaderboard';
 const DATABASE_COLLECTION = 'Mode 2990';
 const DATABASE_COLLECTION_CLASSIC = 'Classic';
