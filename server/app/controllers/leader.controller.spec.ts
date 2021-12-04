@@ -1,9 +1,7 @@
 import { Application } from '@app/app';
 import { Leaderboard } from '@app/classes/leaderboard';
 import { LeaderboardService } from '@app/services/leaderboard.service';
-// import * as chai from 'chai';
 import { expect } from 'chai';
-// import * as spies from 'chai-spies';
 import { StatusCodes } from 'http-status-codes';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import * as supertest from 'supertest';

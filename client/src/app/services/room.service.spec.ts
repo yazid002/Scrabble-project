@@ -263,12 +263,6 @@ describe('RoomService', () => {
         expect(service.roomId).toEqual(id);
     });
 
-    // it('should join a random room', () => {
-    //     const spy = spyOn(service, 'joinRoom');
-    //     service.joinRandomRoom();
-    //     expect(spy).toHaveBeenCalled();
-    // });
-
     it('should quit current room when trying to join another room', () => {
         const spy = spyOn(service, 'quitRoom');
         service.roomId = '';
