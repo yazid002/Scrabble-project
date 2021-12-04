@@ -1,3 +1,4 @@
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,7 +29,6 @@ import { SwitchDialogComponent } from './components/switch-dialog/switch-dialog.
 import { WaitingRoomComponent } from './components/waiting-room/waiting-room.component';
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-page.component';
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -71,7 +71,7 @@ import { LeaderboardPageComponent } from './pages/leaderboard-page/leaderboard-p
         MatDialogModule,
         MatSnackBarModule,
     ],
-    providers: [],
+    providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
